@@ -1,0 +1,27 @@
+.active {
+  @apply bg-graydark dark:bg-meta-4;
+}
+
+.element {
+  @apply hover:bg-graydark dark:hover:bg-meta-4;
+}
+
+.clientBg {
+  @apply bg-black_client dark:bg-black_client;
+  .active {
+    @apply bg-graydark_client dark:bg-graydark_client;
+  }
+  .element {
+    @apply hover:bg-graydark_client dark:hover:bg-graydark_client;
+  }
+}
+
+.employeeBg {
+  @apply bg-black_employee dark:bg-black_employee;
+  .active {
+    @apply bg-graydark_employee dark:bg-graydark_employee;
+  }
+  .element {
+    @apply hover:bg-graydark_employee dark:hover:bg-graydark_employee;
+  }
+}
