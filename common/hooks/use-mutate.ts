@@ -29,7 +29,7 @@ export function useMutation<T>() {
                 data: body,
             });
 
-            if (!response.data.success) {
+            if (!response.data.success || !response.data.data) {
                 throw new Error(response.data.message || "An unknown error occurred");
             }
 

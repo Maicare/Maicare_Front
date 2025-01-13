@@ -5,7 +5,7 @@ import NProgress from "nprogress";
 import { usePathname } from "next/navigation";
 
 const ProgressBar = () => {
-  const [isNavigating, setIsNavigating] = useState(false);
+  const [_isNavigating, setIsNavigating] = useState(false);
   const pathname = usePathname(); // Detects route changes
 
   NProgress.configure({ showSpinner: false });

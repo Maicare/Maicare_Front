@@ -1,5 +1,5 @@
 import React, { FunctionComponent } from "react";
-import { IconProps } from "@/types/IconProps";
+import { IconProps } from "@/types/icon.types";
 import clsx from "clsx";
 
 const XMarkIcon: FunctionComponent<IconProps> = ({ className }) => {

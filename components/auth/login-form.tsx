@@ -1,4 +1,4 @@
-import React from "react";
+"use client";
 import { useForm, FormProvider } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { loginSchema } from "@/schemas/auth.schema";

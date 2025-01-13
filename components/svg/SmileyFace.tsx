@@ -1,6 +1,6 @@
 import React, { FunctionComponent } from "react";
 
-const SmileyFace: FunctionComponent = (props) => {
+const SmileyFace: FunctionComponent = (_props) => {
   return (
     <svg width="78" height="78" viewBox="0 0 78 78" fill="none" xmlns="http://www.w3.org/2000/svg">
       <rect opacity="0.1" width="78" height="78" rx="37" fill="white" />

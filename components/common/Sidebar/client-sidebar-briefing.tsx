@@ -6,7 +6,7 @@ interface ClientSidebarBriefingProps {
   clientId: number;
 }
 
-const ClientSidebarBriefing: React.FC<ClientSidebarBriefingProps> = ({ clientId }) => {
+const ClientSidebarBriefing: React.FC<ClientSidebarBriefingProps> = ({ clientId:_clientId }) => {
     const data = {
         profile_picture: "https://via.placeholder.com/150",
         first_name: "John",

@@ -6,6 +6,7 @@ import usePermissions from "@/common/hooks/use-permissions";
 import { PermissionsObjects } from "@/common/data/permission.data";
 import { useRole } from "@/hooks/role/use-role";
 import { useAuth } from "@/common/hooks/use-auth";
+import { Any } from "@/common/types/types";
 
 const DropdownUser = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -14,8 +15,8 @@ const DropdownUser = () => {
   const {user} = useAuth();
   const {role:userRole} = useRole();
 
-  const trigger = useRef<any>(null);
-  const dropdown = useRef<any>(null);
+  const trigger = useRef<Any>(null);
+  const dropdown = useRef<Any>(null);
 
   useEffect(() => {
     const clickHandler = ({ target }: MouseEvent) => {

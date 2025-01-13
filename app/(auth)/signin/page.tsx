@@ -1,12 +1,10 @@
 "use client";
-import React from "react";
 import Image from "next/image";
 import withAuth, { AUTH_MODE } from "@/common/hocs/with-auth";
 import Routes from "@/common/routes";
 import LoginForm from "@/components/auth/login-form";
 
-
-const SignIn: React.FC = () => {
+const SignIn = () => {
 
   return (
     <div className="p-4 sm:p-12.5 xl:p-17.5">

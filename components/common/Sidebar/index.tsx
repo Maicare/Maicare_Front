@@ -28,11 +28,10 @@ import { Calendar, Goal } from "lucide-react";
 import BellAlertIcon from "@/components/svg/BellAlertIcon";
 import { Permission } from "@/common/types/permission.types";
 import { PermitableComponent } from "@/common/components/permitable-component";
-import { useAuth } from "@/common/hooks/use-auth";
-import { Employee } from "@/types/employee.types";
 import { PermissionsObjects } from "@/common/data/permission.data";
 import usePermissions from "@/common/hooks/use-permissions";
 import ClientSidebarBriefing from "./client-sidebar-briefing";
+import { Any } from "@/common/types/types";
 
 interface SidebarProps {
   sidebarOpen: boolean;
@@ -41,12 +40,12 @@ interface SidebarProps {
 
 const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
   const pathname = usePathname();
-  const trigger = useRef<any>(null);
-  const sidebar = useRef<any>(null);
+  const trigger = useRef<Any>(null);
+  const sidebar = useRef<Any>(null);
 
-  let storedSidebarExpanded = "true";
+  const storedSidebarExpanded:"true"|"false" = "true";
 
-  const [sidebarExpanded, setSidebarExpanded] = useState(
+  const [sidebarExpanded, _setSidebaanded] = useState(
     storedSidebarExpanded === null ? false : storedSidebarExpanded === "true"
   );
 
@@ -201,7 +200,7 @@ const SidebarLink: FunctionComponent<SidebarLinkProps> = ({
 
 const SidebarDropdown: FunctionComponent<SidebarDropdownProps> = ({
   completeHref,
-  getIsActive,
+  getIsActive:_getIsActive,
   icon,
   children,
   subItems,
@@ -215,7 +214,7 @@ const SidebarDropdown: FunctionComponent<SidebarDropdownProps> = ({
         return pathname.startsWith(item.completeHref||"");//TODO: add href
       }
     });
-  }, [subItems, pathname]);
+  }, [subItems, pathname, completeHref]);
   const [isOpen, setIsOpen] = useState(inferOpen);
 
   return (

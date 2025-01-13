@@ -1,5 +1,5 @@
 import React, { FunctionComponent } from "react";
-import { IconProps } from "@/types/IconProps";
+import { IconProps } from "@/types/icon.types";
 import { cn } from "@/utils/cn";
 
 const SmileyFace: FunctionComponent<IconProps> = ({ className }) => {

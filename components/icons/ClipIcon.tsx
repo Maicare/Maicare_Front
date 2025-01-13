@@ -1,7 +1,7 @@
 import React, { FunctionComponent } from "react";
-import { IconProps } from "@/types/IconProps";
+import { IconProps } from "@/types/icon.types";
 
-const ClipIcon: FunctionComponent<IconProps> = ({ className, width = 18, height = 18 }) => {
+const ClipIcon: FunctionComponent<IconProps> = ({  width = 18, height = 18 }) => {
   return (
     <svg width={width} height={height} viewBox="0 0 18 18" className="fill-current">
       <path

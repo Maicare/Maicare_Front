@@ -1,6 +1,6 @@
 import React, { FunctionComponent } from "react";
 
-const LogoutIcon: FunctionComponent = (props) => {
+const LogoutIcon: FunctionComponent = (_props) => {
   return (
     <svg
       className="fill-current"

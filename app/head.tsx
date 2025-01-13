@@ -3,7 +3,7 @@ export default function Head() {
     <>
       <title> MAICare </title>
       <meta content="width=device-width, initial-scale=1" name="viewport" />
-      <meta name="description" content="Built with Next.js and TypeScript" />
+      <meta name="description" content="MAICare Software" />
       <link rel="icon" href="/images/favicon.ico" />
     </>
   );

@@ -3,6 +3,7 @@ import { useRouter } from 'next/navigation';
 import { useAuth } from '../hooks/use-auth';
 import Routes from '../routes';
 import { useEffect, useState } from 'react';
+import { NextPage } from 'next';
 
 
 type Props = Record<string, unknown>;
@@ -17,7 +18,7 @@ interface WithAuthOptions {
   redirectUrl?: string;
 }
 
-const withAuth = (Component: React.ComponentType<Props>, options: WithAuthOptions = {}) => {
+const withAuth = (Component: React.ComponentType<Props>, options: WithAuthOptions = {}):NextPage => {
   // create a new component that renders the original component with auth checking
   const WrappedComponent = (props: Props) => {
     const authEnabled = process.env.NEXT_PUBLIC_AUTH_ENABLED === 'true';
@@ -27,7 +28,7 @@ const withAuth = (Component: React.ComponentType<Props>, options: WithAuthOption
     const { user,isLoading } = useAuth();
     const mode = options.mode ?? AUTH_MODE.LOGGED_IN;
     useEffect(() => {
-      if(isLoading) return;
+      if(isLoading ) return;
       if (authEnabled) {
         if (mode === AUTH_MODE.LOGGED_IN && !user) {
           router.push(options.redirectUrl ?? Routes.Auth.Login);
