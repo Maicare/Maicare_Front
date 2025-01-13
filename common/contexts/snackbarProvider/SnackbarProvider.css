@@ -1,0 +1,41 @@
+/* Apply styles globally for the Snackbar and its elements */
+#__next .SnackbarContent-root {
+    width: 100%;
+    padding: 8px;
+    margin: 2px 0;
+    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1); /* Replace with desired shadow */
+    border-radius: 8px;
+    color: #ffffff; /* Light mode text color */
+    background-color: #212121; /* Light mode background color */
+  }
+  
+  #__next .SnackbarContent-root.SnackbarItem-variantSuccess,
+  #__next .SnackbarContent-root.SnackbarItem-variantError,
+  #__next .SnackbarContent-root.SnackbarItem-variantWarning,
+  #__next .SnackbarContent-root.SnackbarItem-variantInfo {
+    color: #000000; /* Text color for variant messages */
+    background-color: #ffffff; /* Background for variant messages */
+  }
+  
+  @media (min-width: 768px) {
+    /* Apply styles for medium and larger screens */
+    #__next .SnackbarContent-root {
+      min-width: 240px;
+    }
+  }
+  
+  #__next .SnackbarItem-message {
+    padding: 0 !important;
+    font-weight: 500; /* Medium font weight */
+  }
+  
+  #__next .SnackbarItem-action {
+    margin-right: 0;
+    color: #757575; /* Active color */
+  }
+  
+  #__next .SnackbarItem-action svg {
+    width: 20px;
+    height: 20px;
+  }
+  
