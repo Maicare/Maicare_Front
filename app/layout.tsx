@@ -5,14 +5,15 @@ import "./data-tables-css.css";
 // import Providers from "@/components/Providers";
 import { ReactNode } from "react";
 import "./satoshi.css";
-import { SnackbarProvider } from "notistack";
 import ProgressBar from "@/components/common/progress-bar";
+import SnackbarProvider from "@/common/contexts/snackbarProvider";
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html suppressHydrationWarning lang="nl">
       <body>
         {/* <Providers> */}
+
         <SnackbarProvider>
           <ProgressBar/>
           {children}
