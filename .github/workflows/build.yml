@@ -29,8 +29,3 @@ jobs:
 
       - name: Build the Application
         run: npm run build
-
-      - name: Test Production Build
-        run: |
-          npm install -g serve
-          serve -s out
