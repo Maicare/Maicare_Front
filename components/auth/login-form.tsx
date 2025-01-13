@@ -23,7 +23,7 @@ const LoginForm = () => {
     } = methods;
 
     const onSubmit = async (data: LoginInput) => {
-        await login(data);
+        await login(data,{displayProgress:true,displaySuccess:true});
     };
 
     return (
