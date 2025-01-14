@@ -5,7 +5,7 @@ import useSWR from "swr";
 
 
 export function useLocation() {
-    const { data: locations, error, mutate } = useSWR<Location | null>(
+    const { data: locations, error, mutate } = useSWR<Location[] | null>(
         ApiRoutes.Location.ReadAll, // Endpoint to fetch Locations
         async (url) => {
             const response = await api.get(url);
