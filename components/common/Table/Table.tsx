@@ -62,7 +62,7 @@ function Table<T>({
     columns,
     data,
     // TODO: PASS THIS AS A FUNCTION FROM PROPS
-    //@ts-ignore
+    //@ts-expect-error: This function intentionally bypasses type checking due to legacy API constraints.
     getRowId: (row) => row.id,
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
@@ -82,7 +82,7 @@ function Table<T>({
         <thead className="px-4 border-separate">
           {table.getHeaderGroups().map((headerGroup) => (
             <tr className="border-t border-stroke " key={headerGroup.id}>
-              {headerGroup.headers.map((header, i) => {
+              {headerGroup.headers.map((header, _i) => {
                 return (
                   <th
                     key={header.id}
