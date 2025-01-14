@@ -67,20 +67,19 @@ export function useAuth() {
     try {
       // Display progress bar
       if (displayProgress) startProgress();
-      // Call API to log out if necessary
-      await api.post(ApiRoutes.Auth.Logout);
 
       // Remove token
       localStorage.removeItem("accessToken");
+      localStorage.removeItem("refreshToken");
 
       // Update SWR cache
       mutate(null);
       // Display success message
       if (displaySuccess) {
-        enqueueSnackbar("Login successful!", { variant: "success" });
+        enqueueSnackbar("Logout successful!", { variant: "success" });
       }
     } catch (err:any) {
-      enqueueSnackbar(err?.response?.data?.message || "Login failed", { variant: "error" });
+      enqueueSnackbar(err?.response?.data?.message || "Logout failed", { variant: "error" });
       throw err;
     } finally {
       if (displayProgress) stopProgress();

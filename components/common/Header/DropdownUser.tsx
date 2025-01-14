@@ -12,7 +12,7 @@ const DropdownUser = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const {can,transformToPermissionName} = usePermissions();
   const router = useRouter();
-  const {user} = useAuth();
+  const {user,logout} = useAuth();
   const {role:userRole} = useRole();
 
   const trigger = useRef<Any>(null);
@@ -176,8 +176,7 @@ const DropdownUser = () => {
         </ul>
         <button
           onClick={() => {
-            localStorage.clear();
-            router.push("/");
+            logout();
           }}
           className="flex items-center gap-3.5 py-4 px-6 text-sm font-medium duration-300 ease-in-out hover:text-primary lg:text-base"
         >
