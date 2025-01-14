@@ -1,0 +1,1 @@
+export const stringConstructor = (prefix: string, rest:string): string => `${prefix}${rest}`;
