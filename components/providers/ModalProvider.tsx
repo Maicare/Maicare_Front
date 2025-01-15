@@ -89,7 +89,7 @@ export function useModal(Modal: FunctionComponent<ModalProps>) {
   const { push, removeModal, pop } = useContext(ModalContext);
 
   return {
-    open: (additionalProps: { [key: string]: any }) => {
+    open: (additionalProps: { [key: string]: unknown }) => {
       const Component: FunctionComponent<ModalProps> = (props) => (
         <Modal {...props} additionalProps={additionalProps} />
       );

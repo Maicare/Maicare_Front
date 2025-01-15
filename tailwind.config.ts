@@ -604,8 +604,10 @@ module.exports = {
       animation: {
         linspin: "linspin 1568.2353ms linear infinite",
         easespin: "easespin 5332ms cubic-bezier(0.4, 0, 0.2, 1) infinite both",
-        "left-spin": "left-spin 1333ms cubic-bezier(0.4, 0, 0.2, 1) infinite both",
-        "right-spin": "right-spin 1333ms cubic-bezier(0.4, 0, 0.2, 1) infinite both",
+        "left-spin":
+          "left-spin 1333ms cubic-bezier(0.4, 0, 0.2, 1) infinite both",
+        "right-spin":
+          "right-spin 1333ms cubic-bezier(0.4, 0, 0.2, 1) infinite both",
         "ping-once": "ping 5s cubic-bezier(0, 0, 0.2, 1)",
         rotating: "rotating 30s linear infinite",
         topbottom: "topbottom 60s infinite alternate linear",

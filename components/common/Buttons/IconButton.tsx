@@ -1,7 +1,6 @@
 import React, { FunctionComponent } from "react";
 import { ButtonProps } from "@/components/common/Buttons/Button";
 import LoadingCircle from "@/components/icons/LoadingCircle";
-import clsx from "clsx";
 import { BUTTON_CLASS_NAMES } from "@/consts";
 import { cn } from "@/utils/cn";
 

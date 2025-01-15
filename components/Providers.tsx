@@ -4,7 +4,6 @@ import React, { FunctionComponent, PropsWithChildren, useState } from "react";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { ReactQueryDevtools } from "react-query/devtools";
 import ModalProvider from "@/components/providers/ModalProvider";
-import WSProvider from "@/components/providers/WSProvider";
 import { ToastContainer } from "react-toastify";
 
 import "react-toastify/dist/ReactToastify.css";
