@@ -30,7 +30,9 @@ export default function WarningActionConfirmation({
 }
 
 export function getWarningActionConfirmationModal(props: ConfigProps) {
-  return (modalProps: ModalProps) => (
+  const WarningComponent: FunctionComponent<ModalProps> = (modalProps) => (
     <WarningActionConfirmation {...modalProps} {...props} />
   );
+  WarningComponent.displayName = "WarningActionConfirmationModal";
+  return WarningComponent;
 }

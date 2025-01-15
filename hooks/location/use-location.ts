@@ -2,12 +2,10 @@ import api from "@/common/api/axios";
 import ApiRoutes from "@/common/api/routes";
 import { useMutation } from "@/common/hooks/use-mutate";
 import { CreateLocationReqDto, Location } from "@/types/location.types";
-import { useSnackbar } from "notistack";
+import { enqueueSnackbar } from "notistack";
 import useSWR from "swr";
 
 export function useLocation() {
-  const { enqueueSnackbar } = useSnackbar();
-
   const {
     data: locations,
     error,
@@ -38,6 +36,7 @@ export function useLocation() {
     );
     if (created) {
       mutate([...(locations || []), created], false);
+      console.log("created");
       enqueueSnackbar("Location created successfully", {
         variant: "success",
       });

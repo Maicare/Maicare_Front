@@ -1,6 +1,6 @@
 "use client";
 
-import React, { FunctionComponent, useMemo } from "react";
+import React, { FunctionComponent, useMemo, useEffect } from "react";
 
 import Panel from "@/components/common/Panel/Panel";
 import { ColumnDef } from "@tanstack/react-table";
@@ -71,9 +71,10 @@ const LocationFormModal: FunctionComponent<ModalProps> = ({
     onClose();
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     reset(initialData ?? initialValues);
-  }, [initialData, reset, initialValues]);
+  }, [reset, initialData]);
+
   return (
     <FormModal open={open} onClose={onClose} title={"Nieuwe locatie"}>
       <form onSubmit={handleSubmit(onSubmit)}>
@@ -116,7 +117,7 @@ const LocationFormModal: FunctionComponent<ModalProps> = ({
   );
 };
 
-const Page: FunctionComponent = (props) => {
+const Page: FunctionComponent = () => {
   const { open } = useModal(LocationFormModal);
   return (
     <Panel
@@ -183,7 +184,7 @@ const LocationsList = () => {
         },
       },
     ];
-  }, [open]);
+  }, [open, deleteLocation]);
 
   if (isLoading) {
     return <Loader />;

@@ -32,7 +32,9 @@ const DangerActionConfirmation: FunctionComponent<AllProps> = ({
 export default DangerActionConfirmation;
 
 export function getDangerActionConfirmationModal(props: ConfigProps) {
-  return (modalProps: ModalProps) => (
+  const DangerComponent: FunctionComponent<ModalProps> = (modalProps) => (
     <DangerActionConfirmation {...modalProps} {...props} />
   );
+  DangerComponent.displayName = "DangerActionConfirmationModal";
+  return DangerComponent;
 }

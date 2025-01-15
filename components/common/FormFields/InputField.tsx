@@ -1,9 +1,13 @@
-import React, { FunctionComponent, InputHTMLAttributes, ReactNode } from "react";
+import React, {
+  FunctionComponent,
+  InputHTMLAttributes,
+  ReactNode,
+} from "react";
 import clsx from "clsx";
 
 type InputFieldType = InputHTMLAttributes<HTMLInputElement> & {
   label?: string | ReactNode;
-  error?: any;
+  error?: string;
   isPrice?: boolean;
   unit?: string;
 };
@@ -16,25 +20,32 @@ const InputField: FunctionComponent<InputFieldType> = ({
   error,
   isPrice,
   unit,
-  form,
+  // form,
   ...props
 }) => {
   return (
     <div className={className}>
       {label && (
-        <label htmlFor={id} className="mb-2.5 block text-slate-800  dark:text-white">
+        <label
+          htmlFor={id}
+          className="mb-2.5 block text-slate-800  dark:text-white"
+        >
           {label} {required && <span className="text-meta-1">*</span>}
         </label>
       )}
       <div className="relative">
         {isPrice && (
           <span className="absolute top-1/2 right-4 z-30 -translate-y-1/2 pointer-events-none">
-            <span className="text-graydark font-bold text-xl dark:text-white">€</span>
+            <span className="text-graydark font-bold text-xl dark:text-white">
+              €
+            </span>
           </span>
         )}
         {unit && (
           <span className="absolute top-1/2 right-4 z-30 -translate-y-1/2 pointer-events-none">
-            <span className="text-graydark/70 font-bold text-lg dark:text-white">{unit}</span>
+            <span className="text-graydark/70 font-bold text-lg dark:text-white">
+              {unit}
+            </span>
           </span>
         )}
         <input
