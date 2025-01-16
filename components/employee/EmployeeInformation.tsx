@@ -21,14 +21,15 @@ const EmployeeInformation: FunctionComponent<Props> = ({ employeeId }) => {
   const { readOne } = useEmployee({employee_id: employeeId});
   const [employee, setEmployee] = useState<EmployeeDetailsResponse|null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const fetchEmployee = async () => {
-    const data = await readOne(employeeId);
-    setEmployee(data);
-    setIsLoading(false);
-  }
+
   useEffect(() => {
+    const fetchEmployee = async () => {
+      const data = await readOne(employeeId);
+      setEmployee(data);
+      setIsLoading(false);
+    }
     fetchEmployee();
-  },[employeeId,fetchEmployee]);
+  },[employeeId,readOne]);
   
   if (isLoading) return <Loader />;
   // if (isError) return <div className="text-red-600">We failed to load employee data</div>;

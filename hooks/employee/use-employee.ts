@@ -14,7 +14,6 @@ import { useState } from "react";
 import useSWR from "swr";
 import { EmployeeForm as EmployeeFormType } from "@/types/employee.types";
 import { useMutation } from "@/common/hooks/use-mutate";
-import { enqueueSnackbar } from "notistack";
 import { AxiosError } from "axios";
 import { useRouter } from "next/navigation";
 
@@ -22,6 +21,7 @@ import { useRouter } from "next/navigation";
 export function useEmployee({ search, position, department, out_of_service, location_id, is_archived, page: pageParam = 1, page_size = 10,employee_id }: Partial<EmployeesSearchParams&{employee_id?:Id}>) {
     const [page, setPage] = useState(pageParam);
     const { enqueueSnackbar } = useSnackbar();
+    const router = useRouter();
     const { start: startProgress, stop: stopProgress } = useProgressBar();
     const { data: employees, error, mutate } = useSWR<PaginatedResponse<EmployeeList> | null>(
 

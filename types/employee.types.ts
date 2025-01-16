@@ -71,7 +71,6 @@ export type EmployeeDetailsResponse = {
     is_archived: boolean,
     profile_picture: string
 }
-=======
 
 export type EmployeeForm = {
     id?: number;

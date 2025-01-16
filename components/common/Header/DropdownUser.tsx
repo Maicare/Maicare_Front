@@ -6,12 +6,21 @@ import { PermissionsObjects } from "@/common/data/permission.data";
 import { useRole } from "@/hooks/role/use-role";
 import { useAuth } from "@/common/hooks/use-auth";
 import { Any } from "@/common/types/types";
+import { Role } from "@/types/role.types";
 
 const DropdownUser = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const {can,transformToPermissionName} = usePermissions();
   const {user,logout} = useAuth();
-  const {role:userRole} = useRole();
+  const {getUserRole} = useRole();
+  const [userRole, setUserRole] = useState<Role|null>(null);
+  useEffect(() => {
+    const fetchUserRole = async () => {
+      const role = await getUserRole();
+      setUserRole(role);
+    }
+    fetchUserRole();
+  },[getUserRole]);
 
 
   const trigger = useRef<Any>(null);

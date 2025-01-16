@@ -3,17 +3,18 @@ import { useForm, FormProvider, Resolver } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import InputControl from "@/common/components/InputControl";
 import Panel from '@/components/common/Panel/Panel';
-import { EmployeeForm as EmployeeFormType } from "@/types/employee.types";
+import { EmployeeDetailsResponse, EmployeeForm as EmployeeFormType } from "@/types/employee.types";
 import { ControlledLocationSelect } from "../ControlledLocationSelect/ControlledLocationSelect";
 import ControlledCheckboxItem from "@/common/components/ControlledCheckboxItem";
 import { useEmployee } from "@/hooks/employee/use-employee";
 import { GENDER_OPTIONS } from "@/consts";
 import ControlledRadioGroup from "@/common/components/ControlledRadioGroup";
 import { ControlledRoleSelect } from "../ControlledRoleSelect/ControlledRoleSelect";
-import { FunctionComponent, useEffect } from "react";
+import { FunctionComponent, useEffect, useState } from "react";
 import Loader from '@/components/common/loader';
 import dayjs from "dayjs";
 import { employeeSchema } from "@/schemas/employee.schema";
+import { Id } from "@/common/types/types";
 
 type PropsType = {
     employeeId?: number;
@@ -22,8 +23,9 @@ type PropsType = {
 
 const EmployeeForm: FunctionComponent<PropsType> = ({ employeeId }) => {
 
-    const { addEmployee, getEmployeeById, updateEmployee } = useEmployee({});
-
+    const { addEmployee, readOne, updateEmployee } = useEmployee({});
+    const [employee, setEmployee] = useState<EmployeeDetailsResponse | null>(null);
+    const [isLoading, setIsLoading] = useState(true);
     const initialValues: EmployeeFormType = {
         employee_number: '0',
         employment_number: '0',
@@ -43,8 +45,15 @@ const EmployeeForm: FunctionComponent<PropsType> = ({ employeeId }) => {
         role_id: '',
     }
 
-    const { employee, isEmployeeLoading } = employeeId ? getEmployeeById(employeeId) : { employee: initialValues, isEmployeeLoading: false };
-
+    useEffect(() => {
+        const fetchEmployee = async (id:Id) => {
+            const data = await readOne(id);
+            setEmployee(data);
+            setIsLoading(false);
+          }
+          if(employeeId) fetchEmployee(employeeId);
+        },[employeeId,readOne]);
+    
     console.log("STAFF", employee)
 
 
@@ -67,7 +76,7 @@ const EmployeeForm: FunctionComponent<PropsType> = ({ employeeId }) => {
                 date_of_birth: dayjs(employee.date_of_birth).format('YYYY-MM-DD'),
             });
         }
-    }, [isEmployeeLoading, reset, employee, employeeId])
+    }, [isLoading, reset, employee, employeeId])
 
     const onSubmit = async (data: EmployeeFormType) => {
         const structuredData = {
@@ -84,7 +93,7 @@ const EmployeeForm: FunctionComponent<PropsType> = ({ employeeId }) => {
     };
 
 
-    if (employeeId && isEmployeeLoading)
+    if (employeeId && isLoading)
         return <Loader />
 
     return (
