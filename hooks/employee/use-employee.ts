@@ -1,10 +1,15 @@
 "use client";
 import api from "@/common/api/axios";
 import ApiRoutes from "@/common/api/routes";
+import { useApi } from "@/common/hooks/use-api";
+import useProgressBar from "@/common/hooks/use-progress-bar";
+import { ApiOptions } from "@/common/types/api.types";
 import { PaginatedResponse } from "@/common/types/pagination.types";
-import { EmployeeList, EmployeesSearchParams } from "@/types/employee.types";
+import { Id } from "@/common/types/types";
+import { EmployeeDetailsResponse, EmployeeList, EmployeesSearchParams } from "@/types/employee.types";
 import { constructUrlSearchParams } from "@/utils/construct-search-params";
 import { stringConstructor } from "@/utils/string-constructor";
+import { useSnackbar } from "notistack";
 import { useState } from "react";
 import useSWR from "swr";
 import { EmployeeForm as EmployeeFormType } from "@/types/employee.types";
@@ -14,12 +19,21 @@ import { AxiosError } from "axios";
 import { useRouter } from "next/navigation";
 
 
-export function useEmployee({ search, position, department, out_of_service, location_id, is_archived, page: pageParam = 1, page_size = 10 }: Partial<EmployeesSearchParams>) {
-    const router = useRouter();
+export function useEmployee({ search, position, department, out_of_service, location_id, is_archived, page: pageParam = 1, page_size = 10,employee_id }: Partial<EmployeesSearchParams&{employee_id?:Id}>) {
     const [page, setPage] = useState(pageParam);
-    const { data: employees, error, mutate, isLoading } = useSWR<PaginatedResponse<EmployeeList> | null>(
+    const { enqueueSnackbar } = useSnackbar();
+    const { start: startProgress, stop: stopProgress } = useProgressBar();
+    const { data: employees, error, mutate } = useSWR<PaginatedResponse<EmployeeList> | null>(
+
         stringConstructor(ApiRoutes.Employee.ReadAll, constructUrlSearchParams({ search, position, department, out_of_service, location_id, is_archived, page, page_size })), // Endpoint to fetch Locations
         async (url) => {
+            if (employee_id) return {
+                results: [],
+                count: 0,
+                page_size: 0,
+                next: null,
+                previous: null
+            };
             const response = await api.get(url);
             if (!response.data.data) {
                 return null;
@@ -28,21 +42,27 @@ export function useEmployee({ search, position, department, out_of_service, loca
         },
         { shouldRetryOnError: false }
     );
+    const isLoading = !employees && !error;
+    const readOne = async (id: number, options?: ApiOptions) => {
+        const { displayProgress = false, displaySuccess = false } = options || {};
+        try {
+            // Display progress bar
+            if (displayProgress) startProgress();
+            const { message, success, data, error } = await useApi<EmployeeDetailsResponse>(ApiRoutes.Employee.ReadOne.replace("{id}",id.toString()), "GET", {});
+            if (!data)
+                throw new Error(error || message || "An unknown error occurred");
 
-    const getEmployeeById = (employeeId: number) => {
-
-        const { data: employee, error: employeeError, mutate, isLoading: isEmployeeLoading } = useSWR<EmployeeFormType>(
-            ApiRoutes.Employee.ReadOne.replace("{id}", employeeId?.toString()),
-            async (url) => {
-                const response = await api.get(url);
-                if (!response.data.data) {
-                    return null;
-                }
-                return response.data.data;
-            },
-            { shouldRetryOnError: false }
-        );
-        return { employee, employeeError, mutate, isEmployeeLoading }
+            // Display success message
+            if (displaySuccess && success) {
+                enqueueSnackbar("Employee Details fetched successful!", { variant: "success" });
+            }
+            return data;
+        } catch (err: any) {
+            enqueueSnackbar(err?.response?.data?.message || "Employee Details fetching failed", { variant: "error" });
+            throw err;
+        } finally {
+            if (displayProgress) stopProgress();
+        }
     }
 
     const { mutate: createEmployee, error: createEmployeeError } = useMutation<EmployeeFormType>();
@@ -113,12 +133,12 @@ export function useEmployee({ search, position, department, out_of_service, loca
     //TODO: Add logic to CRUD user role
     return {
         employees,
+        readOne,
         error,
         isLoading,
         page,
         setPage,
         addEmployee,
-        getEmployeeById,
         updateEmployee
     }
 }

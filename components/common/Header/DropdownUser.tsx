@@ -1,6 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import ProfilePicture from "../profilePicture/profile-picture";
 import usePermissions from "@/common/hooks/use-permissions";
 import { PermissionsObjects } from "@/common/data/permission.data";
@@ -10,11 +9,10 @@ import { Any } from "@/common/types/types";
 
 const DropdownUser = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
-  const { can, transformToPermissionName } = usePermissions();
-  const router = useRouter();
-  const { user } = useAuth();
-  const { getUserRole } = useRole();
-  const { role: userRole } = getUserRole()
+  const {can,transformToPermissionName} = usePermissions();
+  const {user,logout} = useAuth();
+  const {role:userRole} = useRole();
+
 
   const trigger = useRef<Any>(null);
   const dropdown = useRef<Any>(null);
@@ -176,8 +174,7 @@ const DropdownUser = () => {
         </ul>
         <button
           onClick={() => {
-            localStorage.clear();
-            router.push("/");
+            logout();
           }}
           className="flex items-center gap-3.5 py-4 px-6 text-sm font-medium duration-300 ease-in-out hover:text-primary lg:text-base"
         >

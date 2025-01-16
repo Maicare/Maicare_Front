@@ -1,8 +1,9 @@
 import React, { FunctionComponent } from "react";
-import { ButtonProps } from "@/components/common/Buttons/Button";
 import LoadingCircle from "@/components/icons/LoadingCircle";
-import { BUTTON_CLASS_NAMES } from "@/consts";
 import { cn } from "@/utils/cn";
+import { BUTTON_CLASS_NAMES } from "@/common/data/button.data";
+import { ButtonProps } from "@/common/types/button.types";
+
 
 const IconButton: FunctionComponent<ButtonProps> = ({
   isLoading = false,
@@ -17,8 +18,7 @@ const IconButton: FunctionComponent<ButtonProps> = ({
       {...props}
       className={cn(
         "flex justify-center p-2 font-medium rounded-full",
-        BUTTON_CLASS_NAMES[buttonType ?? "Primary"] ??
-          BUTTON_CLASS_NAMES.Primary,
+        BUTTON_CLASS_NAMES[buttonType  ?? "Primary"] ?? BUTTON_CLASS_NAMES.Primary,
         props.className
       )}
     >
