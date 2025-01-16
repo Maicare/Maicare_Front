@@ -9,10 +9,12 @@ type InputFieldType = {
   placeholder: string;
   icon?: ReactNode;
   className?: string;
+  required?: boolean;
 };
 
 const InputControl: FunctionComponent<InputFieldType> = ({
   name,
+  required,
   label,
   className,
   icon,
@@ -26,7 +28,7 @@ const InputControl: FunctionComponent<InputFieldType> = ({
   return (
     <div className={cn("mb-4", className)}>
       <label htmlFor={name} className="mb-2.5 block font-medium text-slate-800 dark:text-white">
-        {label}
+        {label} {required && <span className="text-meta-1">*</span>}
       </label>
       <Controller
         name={name}

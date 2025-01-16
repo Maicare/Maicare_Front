@@ -13,6 +13,7 @@ const DropdownUser = () => {
   const {user,logout} = useAuth();
   const {role:userRole} = useRole();
 
+
   const trigger = useRef<Any>(null);
   const dropdown = useRef<Any>(null);
 
@@ -90,9 +91,8 @@ const DropdownUser = () => {
         ref={dropdown}
         onFocus={() => setDropdownOpen(true)}
         onBlur={() => setDropdownOpen(false)}
-        className={`absolute right-0 mt-4 flex w-62.5 flex-col rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark ${
-          dropdownOpen === true ? "block" : "hidden"
-        }`}
+        className={`absolute right-0 mt-4 flex w-62.5 flex-col rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark ${dropdownOpen === true ? "block" : "hidden"
+          }`}
       >
         <ul className="flex flex-col gap-5 border-b border-stroke px-6 py-7.5 dark:border-strokedark">
           {can(transformToPermissionName(PermissionsObjects.ViewProfile)) && (

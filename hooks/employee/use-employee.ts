@@ -12,6 +12,11 @@ import { stringConstructor } from "@/utils/string-constructor";
 import { useSnackbar } from "notistack";
 import { useState } from "react";
 import useSWR from "swr";
+import { EmployeeForm as EmployeeFormType } from "@/types/employee.types";
+import { useMutation } from "@/common/hooks/use-mutate";
+import { enqueueSnackbar } from "notistack";
+import { AxiosError } from "axios";
+import { useRouter } from "next/navigation";
 
 
 export function useEmployee({ search, position, department, out_of_service, location_id, is_archived, page: pageParam = 1, page_size = 10,employee_id }: Partial<EmployeesSearchParams&{employee_id?:Id}>) {
@@ -19,6 +24,7 @@ export function useEmployee({ search, position, department, out_of_service, loca
     const { enqueueSnackbar } = useSnackbar();
     const { start: startProgress, stop: stopProgress } = useProgressBar();
     const { data: employees, error, mutate } = useSWR<PaginatedResponse<EmployeeList> | null>(
+
         stringConstructor(ApiRoutes.Employee.ReadAll, constructUrlSearchParams({ search, position, department, out_of_service, location_id, is_archived, page, page_size })), // Endpoint to fetch Locations
         async (url) => {
             if (employee_id) return {
@@ -59,6 +65,71 @@ export function useEmployee({ search, position, department, out_of_service, loca
         }
     }
 
+    const { mutate: createEmployee, error: createEmployeeError } = useMutation<EmployeeFormType>();
+    const { mutate: patchEmployee, error: patchEmployeeError } = useMutation<EmployeeFormType>();
+
+    const addEmployee = async (newEmployee: EmployeeFormType) => {
+        try {
+            const created = await createEmployee(
+                ApiRoutes.Employee.CreateOne,
+                "POST",
+                newEmployee
+            );
+            if (created) {
+                mutate();
+                enqueueSnackbar("Employee added successfully", {
+                    variant: "success",
+                });
+                router.push("/employees");
+                return created;
+            } else {
+                const error = createEmployeeError as AxiosError;
+                console.log("ERROR: ", error?.response?.data);
+                enqueueSnackbar("Employee not added", {
+                    variant: "error",
+                });
+                return error.response?.data;
+            }
+        } catch (err) {
+            console.log("Catch Error", err)
+            enqueueSnackbar("Something Went Wrong!", {
+                variant: "error",
+            });
+            throw err;
+        }
+    };
+
+    const updateEmployee = async (newEmployee: EmployeeFormType, employeeId: number) => {
+        try {
+            const created = await patchEmployee(
+                ApiRoutes.Employee.UpdateOne.replace("{id}", employeeId?.toString()),
+                "PUT",
+                newEmployee
+            );
+            if (created) {
+                mutate();
+                enqueueSnackbar("Employee added successfully", {
+                    variant: "success",
+                });
+                router.push(`/employees/${employeeId}`);
+                return created;
+            } else {
+                const error = patchEmployeeError as AxiosError;
+                console.log("ERROR: ", error.response?.data);
+                enqueueSnackbar("Employee not added", {
+                    variant: "error",
+                });
+                return error.response?.data;
+            }
+        } catch (err) {
+            enqueueSnackbar("Something Went Wrong!", {
+                variant: "error",
+            });
+            throw err;
+        }
+    };
+
+
     //TODO: Add logic to CRUD user role
     return {
         employees,
@@ -67,5 +138,7 @@ export function useEmployee({ search, position, department, out_of_service, loca
         isLoading,
         page,
         setPage,
+        addEmployee,
+        updateEmployee
     }
 }

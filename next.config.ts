@@ -8,8 +8,8 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       {
         hostname: "picsum.photos",
-      }
-    ]
+      },
+    ],
   },
 };
 

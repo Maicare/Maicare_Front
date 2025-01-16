@@ -88,7 +88,7 @@ const EmployeesPage = () => {
         <div className="p-4 sm:p-6 xl:p-7.5 flex items-center justify-between">
             <Pagination
                 page={page}
-                disabled={isLoading||error||employees.results.length===0}
+                disabled={isLoading || error || employees.results.length === 0}
                 onClick={setPage}
                 totalPages={Math.ceil(employees.count / PAGE_SIZE)}
             />
