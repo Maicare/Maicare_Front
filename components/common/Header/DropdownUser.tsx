@@ -1,6 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import ProfilePicture from "../profilePicture/profile-picture";
 import usePermissions from "@/common/hooks/use-permissions";
 import { PermissionsObjects } from "@/common/data/permission.data";
@@ -11,7 +10,6 @@ import { Any } from "@/common/types/types";
 const DropdownUser = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const {can,transformToPermissionName} = usePermissions();
-  const router = useRouter();
   const {user,logout} = useAuth();
   const {role:userRole} = useRole();
 

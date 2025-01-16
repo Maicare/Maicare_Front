@@ -6,15 +6,8 @@ import useProgressBar from "./use-progress-bar";
 import { LoginInput, LoginResponse } from "@/types/auth.types";
 import { Employee } from "@/types/employee.types";
 import { useApi } from "./use-api";
+import { ApiOptions } from "../types/api.types";
 
-
-
-
-
-type ApiOptions = {
-  displayProgress?: boolean;
-  displaySuccess?: boolean;
-};
 
 export function useAuth() {
   const { data: user, error, mutate, } = useSWR<Employee | null>(

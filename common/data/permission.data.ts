@@ -21,6 +21,7 @@ export const PermissionsEnum = {
     ViewPermission : "PERMISSION.VIEW",
     ViewActivityLog : "ACTIVITY_LOG.VIEW",
     ViewContact : "CONTACT.VIEW",
+    ViewEmployeeProfile : "EMPLOYEE_PROFILE.VIEW",
 } as const;
 type PermissionType = keyof typeof PermissionsEnum;
 export const PermissionsObjects:{
@@ -146,4 +147,10 @@ export const PermissionsObjects:{
         resource: "/contacts",
         method: "GET",
     },
+    ViewEmployeeProfile: {
+        id: 21,
+        name: "EMPLOYEE_PROFILE.VIEW",
+        resource: "/employee-profile",
+        method: "GET",
+    }
 }
