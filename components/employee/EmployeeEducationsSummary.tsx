@@ -1,52 +1,37 @@
 "use client";
 
-import React, { FunctionComponent } from "react";
+import React, { FunctionComponent, useEffect, useState } from "react";
 // import { useListEducations } from "@/utils/educations/listEducations";
 
 import { useRouter } from "next/navigation";
 import { dateFormat } from "@/utils/timeFormatting";
 import DetailCell from "../common/DetailCell";
+import { Education } from "@/types/education.types";
+import Loader from "../common/loader";
+import { useEmployee } from "@/hooks/employee/use-employee";
 
 type Props = {
   employeeId: number;
 };
 
 const EmployeeEducationsSummary: FunctionComponent<Props> = ({ employeeId }) => {
-  // const { data, isLoading } = useListEducations(employeeId);
+  const { readEmployeeEducation } = useEmployee({employee_id:employeeId});
+  const [isLoading,setIsLoading] = useState(true);
+  const [educations,setEducations] = useState<Education[]>([]);
   const router = useRouter();
-  // if (isLoading) return <Loader />;
-  const data = {
-    results: [
-      {
-        id: 1,
-        start_date: "2015-09-01",
-        end_date: "2019-06-30",
-        institution_name: "University of Amsterdam",
-        degree: "Bachelor of Science",
-        field_of_study: "Computer Science",
-      },
-      {
-        id: 2,
-        start_date: "2020-09-01",
-        end_date: "2022-06-30",
-        institution_name: "Delft University of Technology",
-        degree: "Master of Science",
-        field_of_study: "Artificial Intelligence",
-      },
-      {
-        id: 3,
-        start_date: null,
-        end_date: null,
-        institution_name: "Coursera",
-        degree: "Certificate",
-        field_of_study: "Data Science",
-      },
-    ],
-  };
-  if (data.results?.length === 0) return <div>Geen opleidingen gevonden</div>;
+  if (isLoading) return <Loader />;
+  useEffect(() => {
+    const fetchEducation = async () => {
+      const data = await readEmployeeEducation(employeeId);
+      setEducations(data);
+      setIsLoading(false);
+    };
+    fetchEducation();
+  },[employeeId,readEmployeeEducation]);
+  if (educations.length === 0) return <div>Geen opleidingen gevonden</div>;
   return (
     <ul className="flex flex-col gap-2">
-      {data.results?.map((education) => {
+      {educations.map((education) => {
         return (
           <li
             key={education.id}
