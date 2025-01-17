@@ -1,4 +1,4 @@
-import { SelectionOption } from "@/types/selection-option.types";
+import { SelectionOption } from "@/common/types/selection-option.types";
 
 export const BUTTON_CLASS_NAMES = {
   Primary: "bg-primary text-white",

@@ -1,5 +1,5 @@
 import React, { FunctionComponent } from "react";
-import { IconProps } from "@/types/icon.types";
+import { IconProps } from "@/common/types/icon.types";
 import clsx from "clsx";
 
 const CheckIcon: FunctionComponent<IconProps> = ({ width = 10, height = 7, className }) => {

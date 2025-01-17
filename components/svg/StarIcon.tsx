@@ -1,5 +1,5 @@
 import React, { FunctionComponent } from "react";
-import { IconProps } from "@/types/icon.types";
+import { IconProps } from "@/common/types/icon.types";
 
 const StarIcon: FunctionComponent<IconProps> = ({ width = 18, height = 18, color = "gray" }) => {
   return (

@@ -15,7 +15,7 @@ import InputField from "@/components/common/FormFields/InputField";
 import { useModal } from "@/components/providers/ModalProvider";
 import XMarkIcon from "@/components/icons/XMarkIcon";
 
-import { ModalProps } from "@/types/modal-props.types";
+import { ModalProps } from "@/common/types/modal-props.types";
 
 import { useForm, SubmitHandler } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";

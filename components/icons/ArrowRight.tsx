@@ -1,6 +1,6 @@
 import React, { FunctionComponent } from "react";
 import clsx from "clsx";
-import { IconProps } from "@/types/icon.types";
+import { IconProps } from "@/common/types/icon.types";
 
 const ArrowRight: FunctionComponent<IconProps> = ({ width = 18, height = 7, className }) => {
   return (

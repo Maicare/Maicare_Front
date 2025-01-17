@@ -1,5 +1,5 @@
 import React, { FunctionComponent, ChangeEvent } from "react";
-import { SelectionOption } from "@/types/selection-option.types";
+import { SelectionOption } from "@/common/types/selection-option.types";
 import clsx from "clsx";
 
 type Props = {

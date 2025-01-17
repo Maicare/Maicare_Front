@@ -1,6 +1,6 @@
 import React, { FunctionComponent, PropsWithChildren, ReactNode } from "react";
 import { Dialog } from "@headlessui/react";
-import { ModalProps } from "@/types/modal-props.types";
+import { ModalProps } from "@/common/types/modal-props.types";
 import XMarkIcon from "@/components/icons/XMarkIcon";
 import { cn } from "@/utils/cn";
 

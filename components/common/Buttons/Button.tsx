@@ -1,6 +1,6 @@
 import React, { ButtonHTMLAttributes, FunctionComponent } from "react";
 import LoadingCircle from "@/components/icons/LoadingCircle";
-import { ButtonType } from "@/types/button-type.types";
+import { ButtonType } from "@/common/types/button-type.types";
 import { BUTTON_CLASS_NAMES } from "@/consts";
 import { cn } from "@/utils/cn";
 

@@ -1,5 +1,5 @@
 import React, { FunctionComponent } from "react";
-import { ModalProps } from "@/types/modal-props.types";
+import { ModalProps } from "@/common/types/modal-props.types";
 import WarningModal from "@/components/common/Modals/WarningModal";
 
 type ConfigProps = {

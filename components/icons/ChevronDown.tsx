@@ -1,5 +1,5 @@
 import React, { FunctionComponent } from "react";
-import { IconProps } from "@/types/icon.types";
+import { IconProps } from "@/common/types/icon.types";
 import clsx from "clsx";
 
 const ChevronDown: FunctionComponent<IconProps> = ({ width = 24, height = 24, className }) => {

@@ -1,6 +1,6 @@
 import React, { FunctionComponent } from "react";
 import { cn } from "@/utils/cn";
-import { IconProps } from "@/types/icon.types";
+import { IconProps } from "@/common/types/icon.types";
 
 const BuildingIcon: FunctionComponent<IconProps> = ({ className }) => {
   return (

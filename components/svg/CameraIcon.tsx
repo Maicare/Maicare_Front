@@ -1,4 +1,4 @@
-import { IconProps } from "@/types/icon.types";
+import { IconProps } from "@/common/types/icon.types";
 import clsx from "clsx";
 import { FunctionComponent } from "react";
 
