@@ -17,6 +17,7 @@ import { useMutation } from "@/common/hooks/use-mutate";
 import { AxiosError } from "axios";
 import { useRouter } from "next/navigation";
 import { Education } from "@/types/education.types";
+import { Experience } from "@/types/experience.types";
 
 
 export function useEmployee({ search, position, department, out_of_service, location_id, is_archived, page: pageParam = 1, page_size = 10,employee_id }: Partial<EmployeesSearchParams&{employee_id?:Id}>) {
@@ -66,10 +67,25 @@ export function useEmployee({ search, position, department, out_of_service, loca
         }
     }
 
-    const readEmployeeEducation = async (id: number, _options?: ApiOptions) => {
+    const readEmployeeEducations = async (id: number, _options?: ApiOptions) => {
 
         try {
-            const { message, success, data, error } = await useApi<Education[]>(ApiRoutes.Employee.ReadEducation.replace("{id}", id.toString()), "GET", {});
+            const { message, success, data, error } = await useApi<Education[]>(ApiRoutes.Employee.ReadEducations.replace("{id}", id.toString()), "GET", {});
+            console.log({message,success,data,error});
+            if (!data)
+                throw new Error(error || message || "An unknown error occurred");
+
+            return data;
+        } catch (err: any) {
+            enqueueSnackbar(err?.response?.data?.message || "Employee Details fetching failed", { variant: "error" });
+            throw err;
+        }
+
+    }
+    const readEmployeeExperiences = async (id: number, _options?: ApiOptions) => {
+
+        try {
+            const { message, success, data, error } = await useApi<Experience[]>(ApiRoutes.Employee.ReadExperiences.replace("{id}", id.toString()), "GET", {});
             console.log({message,success,data,error});
             if (!data)
                 throw new Error(error || message || "An unknown error occurred");
@@ -157,6 +173,7 @@ export function useEmployee({ search, position, department, out_of_service, loca
         setPage,
         addEmployee,
         updateEmployee,
-        readEmployeeEducation
+        readEmployeeEducations,
+        readEmployeeExperiences
     }
 }
