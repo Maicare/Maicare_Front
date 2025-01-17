@@ -12,7 +12,7 @@ function handleLogout() {
 }
 
 const api = axios.create({
-    baseURL: 'https://maicare-go.onrender.com', // Adjust to your API's base URL
+    baseURL: process.env.NEXT_PUBLIC_BACKEND_URL, // Adjust to your API's base URL
 });
 
 api.interceptors.request.use(
