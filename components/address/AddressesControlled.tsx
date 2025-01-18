@@ -1,31 +1,30 @@
+import React, { FunctionComponent } from "react";
+import { useFieldArray, Controller, useFormContext } from "react-hook-form";
 import InputControl from "@/common/components/InputControl";
 import { CreateClientInput } from "@/types/client.types";
-import React, { FunctionComponent } from "react";
-import { useFieldArray,  Controller, useFormContext } from "react-hook-form";
 
 const AddressesControlled: FunctionComponent<{ className?: string; required?: boolean }> = ({
   className,
 }) => {
-// Use the form context from the parent form
-const {
-    control,
-  } = useFormContext<CreateClientInput>(); // access form context
+  const { control } = useFormContext<CreateClientInput>();
 
-  // Use useFieldArray hook for managing the addresses array
+
   const { fields, append, remove } = useFieldArray({
     control,
     name: "addresses", // Field name for the array of addresses
   });
-  console.log({fields})
+
 
   return (
     <div className={className}>
       {fields.map((address, index) => (
         <div key={address.id} className="mb-6">
+          {/* Belongs To */}
           <Controller
             name={`addresses.${index}.belongs_to`}
             control={control}
             defaultValue={address.belongs_to || ""}
+            rules={{ required: "Belongs to is required" }}
             render={({ field }) => (
               <InputControl
                 label={"Behoort Tot"}
@@ -37,10 +36,12 @@ const {
             )}
           />
 
+          {/* Address */}
           <Controller
             name={`addresses.${index}.address`}
             control={control}
             defaultValue={address.address || ""}
+            rules={{ required: "Address is required" }}
             render={({ field }) => (
               <InputControl
                 label={"Adres"}
@@ -52,10 +53,12 @@ const {
             )}
           />
 
+          {/* City */}
           <Controller
             name={`addresses.${index}.city`}
             control={control}
             defaultValue={address.city || ""}
+            rules={{ required: "City is required" }}
             render={({ field }) => (
               <InputControl
                 label={"Stad"}
@@ -67,10 +70,12 @@ const {
             )}
           />
 
+          {/* Zip Code */}
           <Controller
             name={`addresses.${index}.zip_code`}
             control={control}
             defaultValue={address.zip_code || ""}
+            rules={{ required: "Zipcode is required" }}
             render={({ field }) => (
               <InputControl
                 label={"Postcode"}
@@ -82,10 +87,12 @@ const {
             )}
           />
 
+          {/* Phone Number */}
           <Controller
             name={`addresses.${index}.phone_number`}
             control={control}
             defaultValue={address.phone_number || ""}
+            rules={{ required: "Phone number is required" }}
             render={({ field }) => (
               <InputControl
                 label={"Telefoonnummer"}
@@ -111,7 +118,9 @@ const {
       <button
         type="button"
         className="mt-4 bg-blue-500 text-white py-2 px-4 rounded-lg w-full"
-        onClick={() => append({ belongs_to: "", address: "", city: "", zip_code: "", phone_number: "" })}
+        onClick={() =>
+          append({ belongs_to: "", address: "", city: "", zip_code: "", phone_number: "" })
+        }
       >
         Voeg Adres Toe
       </button>

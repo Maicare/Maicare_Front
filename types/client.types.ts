@@ -49,12 +49,8 @@ export type CreateClientInput = {
     bsn: string;
     source: string;
     date_of_birth: string;
-    city: string;
-    Zipcode: string;
     addresses: AddressType[];
     infix?: string; // Optional fields
-    streetname: string;
-    street_number: string;
     added_identity_documents?: string[]; // Optional fields
     removed_identity_documents?: string[];
     departure_reason?: string;

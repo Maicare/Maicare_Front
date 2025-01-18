@@ -43,12 +43,8 @@ export const ClientsForm: FunctionComponent<PropsType> = ({ clientId, mode }) =>
             bsn: "",
             source: "",
             date_of_birth: "",
-            city: "",
-            Zipcode: "",
             addresses: [],
             infix: undefined,
-            streetname: "",
-            street_number: "",
             added_identity_documents: undefined,
             removed_identity_documents: undefined,
             departure_reason: undefined,
@@ -60,12 +56,11 @@ export const ClientsForm: FunctionComponent<PropsType> = ({ clientId, mode }) =>
         handleSubmit,
         formState: { isSubmitting, errors },
     } = methods;
-    console.log(errors);
 
     const onSubmit = async (data: CreateClientInput) => {
         
         // await createOne(data, { displayProgress: true, displaySuccess: true });
-        console.log(data);
+        console.log({data});
     };
 
 
@@ -125,6 +120,7 @@ export const ClientsForm: FunctionComponent<PropsType> = ({ clientId, mode }) =>
                                     placeholder={"Voer tussenvoegsel in"}
                                     type={"text"}
                                     className="w-full mb-4.5"
+                                    required={true}
                                 />
                                 <div className="flex flex-col mb-4.5">
                                     <h3 className="font-medium text-slate-800  dark:text-white mb-2.5">Geslacht</h3>

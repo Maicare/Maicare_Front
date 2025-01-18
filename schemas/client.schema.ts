@@ -26,8 +26,6 @@ export const CreateClientSchema = yup.object({
   bsn: yup.string().required("BSN is required"),
   source: yup.string().required("Source is required"),
   date_of_birth: yup.string().required("Date of birth is required"),
-  city: yup.string().required("City is required"),
-  Zipcode: yup.string().required("Zipcode is required"),
   addresses: yup.array().of(
     yup.object({
       belongs_to: yup.string().optional(),
@@ -38,8 +36,6 @@ export const CreateClientSchema = yup.object({
     })
   ).required("Addresses are required"),
   infix: yup.string().optional(),
-  streetname: yup.string().required("Street name is required"),
-  street_number: yup.string().required("Street number is required"),
   added_identity_documents: yup.array().of(yup.string()).optional(),
   removed_identity_documents: yup.array().of(yup.string()).optional(),
   departure_reason: yup.string().optional(),
