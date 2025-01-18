@@ -20,7 +20,7 @@ export const PermissionsEnum = {
     UpdatePermission : "PERMISSION.UPDATE",
     ViewPermission : "PERMISSION.VIEW",
     ViewActivityLog : "ACTIVITY_LOG.VIEW",
-    ViewContact : "CONTACT.VIEW",
+    ViewContact : "CONTACT.VIEW",//TODO: rename to sender
     ViewEmployeeProfile : "EMPLOYEE_PROFILE.VIEW",
 } as const;
 type PermissionType = keyof typeof PermissionsEnum;

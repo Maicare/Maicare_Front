@@ -12,7 +12,7 @@ const DropdownUser = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const { can, transformToPermissionName } = usePermissions();
   const { user, logout } = useAuth();
-  const { getUserRole } = useRole();
+  const { getUserRole } = useRole({ autoFetch: false });
   const [userRole, setUserRole] = useState<Role | null>(null);
 
 
@@ -22,7 +22,7 @@ const DropdownUser = () => {
       setUserRole(role);
     }
     fetchUserRole();
-  }, []);
+  }, [getUserRole]);
 
   const trigger = useRef<Any>(null);
   const dropdown = useRef<Any>(null);

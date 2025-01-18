@@ -18,7 +18,7 @@ type Props = {
 
 const EmployeeInformation: FunctionComponent<Props> = ({ employeeId }) => {
   // const { open } = useModal(EmployeeProfilePictureModal);
-  const { readOne } = useEmployee({employee_id: employeeId});
+  const { readOne } = useEmployee({autoFetch:false});
   const [employee, setEmployee] = useState<EmployeeDetailsResponse|null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -29,7 +29,7 @@ const EmployeeInformation: FunctionComponent<Props> = ({ employeeId }) => {
       setIsLoading(false);
     }
     fetchEmployee();
-  },[employeeId]);
+  },[employeeId,readOne]);
   
   if (isLoading) return <Loader />;
   // if (isError) return <div className="text-red-600">We failed to load employee data</div>;
