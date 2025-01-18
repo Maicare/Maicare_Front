@@ -27,7 +27,7 @@ const EmployeeInformation: FunctionComponent<Props> = ({ employeeId }) => {
       const data = await readOne(employeeId);
       setEmployee(data);
       setIsLoading(false);
-    }
+    };
     fetchEmployee();
   },[employeeId,readOne]);
   
@@ -55,7 +55,10 @@ const EmployeeInformation: FunctionComponent<Props> = ({ employeeId }) => {
         <DetailCell
           ignoreIfEmpty={true}
           label={"Volledige Naam"}
-          value={`${employee.first_name} ${employee.last_name}` || "Niet gespecificeerd"}
+          value={
+            `${employee.first_name} ${employee.last_name}` ||
+            "Niet gespecificeerd"
+          }
         />
         <DetailCell
           ignoreIfEmpty={true}
@@ -69,8 +72,8 @@ const EmployeeInformation: FunctionComponent<Props> = ({ employeeId }) => {
             employee.is_subcontractor === null
               ? "Niet gespecificeerd"
               : employee.is_subcontractor === true
-                ? "Yes"
-                : "No"
+              ? "Yes"
+              : "No"
           }
         />
         <DetailCell
