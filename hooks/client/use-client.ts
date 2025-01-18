@@ -6,29 +6,19 @@ import useProgressBar from "@/common/hooks/use-progress-bar";
 import { ApiOptions } from "@/common/types/api.types";
 import { PaginatedResponse } from "@/common/types/pagination.types";
 import { Id } from "@/common/types/types";
-import { EmployeeDetailsResponse, EmployeeList, EmployeesSearchParams } from "@/types/employee.types";
-import { constructUrlSearchParams } from "@/utils/construct-search-params";
-import { stringConstructor } from "@/utils/string-constructor";
 import { useSnackbar } from "notistack";
 import { useState } from "react";
 import useSWR from "swr";
-import { EmployeeForm as EmployeeFormType } from "@/types/employee.types";
-import { useMutation } from "@/common/hooks/use-mutate";
-import { AxiosError } from "axios";
-import { useRouter } from "next/navigation";
-import { Education } from "@/types/education.types";
-import { Experience } from "@/types/experience.types";
 import { Client, CreateClientInput } from "@/types/client.types";
 
 
-export function useClient({clientId}: {clientId?: Id}) {
+export function useClient({autoFetch=true}: {autoFetch?: boolean}) {
     const [page, setPage] = useState(1);
     const { enqueueSnackbar } = useSnackbar();
-    const router = useRouter();
     const { start: startProgress, stop: stopProgress } = useProgressBar();
-    const { data: clients, error, mutate } = useSWR<PaginatedResponse<Client> | null>(ApiRoutes.Client.ReadAll, // Endpoint to fetch Locations
+    const { data: clients, error } = useSWR<PaginatedResponse<Client> | null>(ApiRoutes.Client.ReadAll, // Endpoint to fetch Locations
         async (url) => {
-            if (clientId) return {
+            if (!autoFetch) return {
                 results: [],
                 count: 0,
                 page_size: 0,
@@ -165,7 +155,7 @@ export function useClient({clientId}: {clientId?: Id}) {
 
 
     const readOne = async (id: Id, options?: ApiOptions) => {
-        const { displayProgress = false, displaySuccess = false } = options || {};
+        const { displayProgress = false } = options || {};
         try {
             if (displayProgress) startProgress();
             const response = await useApi<Client>(ApiRoutes.Client.ReadOne.replace("{id}",id.toString()), "GET");

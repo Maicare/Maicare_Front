@@ -25,7 +25,7 @@ type PropsType = {
 };
 
 export const ClientsForm: FunctionComponent<PropsType> = ({ clientId, mode }) => {
-    const { createOne } = useClient({ clientId: 1 });
+    const { createOne } = useClient({ autoFetch: false });
     const methods = useForm<CreateClientInput>({
         resolver: yupResolver(CreateClientSchema) as Resolver<CreateClientInput>,
         defaultValues: {

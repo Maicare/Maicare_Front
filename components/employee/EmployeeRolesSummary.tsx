@@ -2,10 +2,8 @@
 
 import React, { FunctionComponent, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { dateFormat } from "@/utils/timeFormatting";
 import DetailCell from "../common/DetailCell";
 import Loader from "../common/loader";
-import { useEmployee } from "@/hooks/employee/use-employee";
 import { useRole } from "@/hooks/role/use-role";
 import { Role } from "@/types/role.types";
 
@@ -14,7 +12,7 @@ type Props = {
 };
 
 const EmployeeRolesSummary: FunctionComponent<Props> = ({ employeeId }) => {
-  const {getUserRole} = useRole();
+  const {getUserRole} = useRole({autoFetch:false});
   const [isLoading, setIsLoading] = useState(true);
   const [role, setRole] = useState<Role|null>(null);
   const router = useRouter();
@@ -29,7 +27,7 @@ const EmployeeRolesSummary: FunctionComponent<Props> = ({ employeeId }) => {
       }
     };
     fetchRole();
-  }, [employeeId, getUserRole]);
+  }, [employeeId,getUserRole]);
   if (isLoading) return <Loader />;
   if (!role) return <div>Geen rollen gevonden</div>;
   

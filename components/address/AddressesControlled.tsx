@@ -5,16 +5,14 @@ import { useFieldArray,  Controller, useFormContext } from "react-hook-form";
 
 const AddressesControlled: FunctionComponent<{ className?: string; required?: boolean }> = ({
   className,
-  required,
 }) => {
 // Use the form context from the parent form
 const {
     control,
-    formState: { errors },
   } = useFormContext<CreateClientInput>(); // access form context
 
   // Use useFieldArray hook for managing the addresses array
-  const { fields, append, remove,update } = useFieldArray({
+  const { fields, append, remove } = useFieldArray({
     control,
     name: "addresses", // Field name for the array of addresses
   });

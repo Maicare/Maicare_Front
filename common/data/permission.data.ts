@@ -20,7 +20,7 @@ export const PermissionsEnum = {
     UpdatePermission : "PERMISSION.UPDATE",
     ViewPermission : "PERMISSION.VIEW",
     ViewActivityLog : "ACTIVITY_LOG.VIEW",
-    ViewContact : "CONTACT.VIEW",//TODO: rename to sender
+    ViewSender : "SENDER.VIEW",//TODO: rename to sender
     ViewEmployeeProfile : "EMPLOYEE_PROFILE.VIEW",
 } as const;
 type PermissionType = keyof typeof PermissionsEnum;
@@ -141,10 +141,10 @@ export const PermissionsObjects:{
         resource: "/employees",
         method: "GET",
     },
-    ViewContact: {
+    ViewSender: {
         id: 20,
-        name: "CONTACT.VIEW",
-        resource: "/contacts",
+        name: "SENDER.VIEW",
+        resource: "/senders",
         method: "GET",
     },
     ViewEmployeeProfile: {

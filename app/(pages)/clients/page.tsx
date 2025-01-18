@@ -9,7 +9,7 @@ import Loader from '@/components/common/loader';
 import Panel from '@/components/common/Panel/Panel';
 import Table from '@/components/common/Table/Table';
 import { useRouter } from 'next/navigation';
-import { useMemo, useState } from 'react';
+import { useMemo } from 'react';
 import { ColumnDef } from '@tanstack/table-core';
 import ProfilePicture from '@/components/common/profilePicture/profile-picture';
 import { getAge } from '@/utils/get-age';
@@ -75,9 +75,9 @@ const ClientsPage = () => {
           {
             accessorKey: "document_info",
             header: () => "Documenten",
-            cell: (info) => {
+            cell: (_info) => {
             //   let missing_documents = info.getValue() ["not_uploaded_document_labels"]?.length;
-              let missing_documents = 0;
+              const missing_documents = 0;
               return missing_documents > 0 ? (
                 <span className="text-red-600">{missing_documents} missende documenten</span>
               ) : (
