@@ -19,9 +19,9 @@ type Props<TData> = Omit<TableProps<TData>, "data"> &
 
 function PaginatedTable<TData>({
   page,
-  adjacentPagesShown,
+  // adjacentPagesShown,
   onPageChange,
-  disabled,
+  // disabled,
   data,
   sideActions,
   isFetching,
