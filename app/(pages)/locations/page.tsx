@@ -22,6 +22,10 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { useLocation } from "@/hooks/location/use-location";
 import { CreateLocationReqDto, Location } from "@/types/location.types";
+import withPermissions from "@/common/hocs/with-permissions";
+import Routes from "@/common/routes";
+import withAuth, { AUTH_MODE } from "@/common/hocs/with-auth";
+import { PermissionsObjects } from "@/common/data/permission.data";
 
 type FormValues = CreateLocationReqDto;
 
@@ -204,4 +208,10 @@ const LocationsList = () => {
   );
 };
 
-export default Page;
+export default withAuth(
+  withPermissions(Page, {
+    redirectUrl: Routes.Common.NotFound,
+    requiredPermissions: PermissionsObjects.ViewEmployee,
+  }),
+  { mode: AUTH_MODE.LOGGED_IN, redirectUrl: Routes.Auth.Login }
+);
