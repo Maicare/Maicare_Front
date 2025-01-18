@@ -8,12 +8,16 @@ import { useSnackbar } from "notistack";
 import useSWR from "swr";
 
 
-export function useRole() {
+export function useRole({autoFetch = true} : {autoFetch?: boolean}) {
     const { enqueueSnackbar } = useSnackbar();
     const { start: startProgress, stop: stopProgress } = useProgressBar();
     const { data: roles, error, mutate } = useSWR<Role[] | null>(
         ApiRoutes.Role.ReadAll, // Endpoint to fetch Roles
         async (url) => {
+            if (!autoFetch) {
+                return [];
+                
+            }
             const response = await api.get(url);
             if (!response.data.data) {
                 return null;

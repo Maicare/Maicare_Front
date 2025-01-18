@@ -20,7 +20,7 @@ import { Education } from "@/types/education.types";
 import { Experience } from "@/types/experience.types";
 
 
-export function useEmployee({ search, position, department, out_of_service, location_id, is_archived, page: pageParam = 1, page_size = 10,employee_id }: Partial<EmployeesSearchParams&{employee_id?:Id}>) {
+export function useEmployee({ search, position, department, out_of_service, location_id, is_archived, page: pageParam = 1, page_size = 10,autoFetch=true }: Partial<EmployeesSearchParams&{autoFetch?:boolean}>) {
     const [page, setPage] = useState(pageParam);
     const { enqueueSnackbar } = useSnackbar();
     const router = useRouter();
@@ -29,7 +29,7 @@ export function useEmployee({ search, position, department, out_of_service, loca
 
         stringConstructor(ApiRoutes.Employee.ReadAll, constructUrlSearchParams({ search, position, department, out_of_service, location_id, is_archived, page, page_size })), // Endpoint to fetch Locations
         async (url) => {
-            if (employee_id) return {
+            if (!autoFetch) return {
                 results: [],
                 count: 0,
                 page_size: 0,

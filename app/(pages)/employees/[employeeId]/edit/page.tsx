@@ -4,7 +4,7 @@ import EmployeeForm from "@/components/employee/EmployeeForm";
 import React from "react";
 import { useParams } from "next/navigation";
 import Loader from "@/components/common/loader";
-import Breadcrumb from "@/components/Breadcrumbs/Breadcrumb";
+import Breadcrumb from "@/components/common/Breadcrumbs/Breadcrumb";
 
 const UpdateEmployee: React.FC = () => {
   const params = useParams();

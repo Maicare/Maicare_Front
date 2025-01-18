@@ -15,9 +15,9 @@ type Props = {
 };
 
 const EmployeeEducationsSummary: FunctionComponent<Props> = ({ employeeId }) => {
-  const { readEmployeeEducations } = useEmployee({ employee_id: employeeId });
-  const [isLoading, setIsLoading] = useState(true);
-  const [educations, setEducations] = useState<Education[]>([]);
+  const { readEmployeeEducations } = useEmployee({autoFetch:false});
+  const [isLoading,setIsLoading] = useState(true);
+  const [educations,setEducations] = useState<Education[]>([]);
   const router = useRouter();
   useEffect(() => {
     const fetchEducation = async () => {
@@ -30,9 +30,12 @@ const EmployeeEducationsSummary: FunctionComponent<Props> = ({ employeeId }) => 
       }
     };
     fetchEducation();
-  }, [employeeId, readEmployeeEducations]);
+  },[employeeId,readEmployeeEducations]);
+
   if (isLoading) return <Loader />;
+
   if (educations.length === 0) return <div>Geen opleidingen gevonden</div>;
+
   return (
     <ul className="flex flex-col gap-2">
       {educations.map((education) => {

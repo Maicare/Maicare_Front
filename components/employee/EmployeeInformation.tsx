@@ -18,7 +18,7 @@ type Props = {
 
 const EmployeeInformation: FunctionComponent<Props> = ({ employeeId }) => {
   // const { open } = useModal(EmployeeProfilePictureModal);
-  const { readOne } = useEmployee({employee_id: employeeId});
+  const { readOne } = useEmployee({autoFetch:false});
   const [employee, setEmployee] = useState<EmployeeDetailsResponse|null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -27,9 +27,9 @@ const EmployeeInformation: FunctionComponent<Props> = ({ employeeId }) => {
       const data = await readOne(employeeId);
       setEmployee(data);
       setIsLoading(false);
-    }
+    };
     fetchEmployee();
-  },[employeeId]);
+  },[employeeId,readOne]);
   
   if (isLoading) return <Loader />;
   // if (isError) return <div className="text-red-600">We failed to load employee data</div>;
@@ -55,7 +55,10 @@ const EmployeeInformation: FunctionComponent<Props> = ({ employeeId }) => {
         <DetailCell
           ignoreIfEmpty={true}
           label={"Volledige Naam"}
-          value={`${employee.first_name} ${employee.last_name}` || "Niet gespecificeerd"}
+          value={
+            `${employee.first_name} ${employee.last_name}` ||
+            "Niet gespecificeerd"
+          }
         />
         <DetailCell
           ignoreIfEmpty={true}
@@ -69,8 +72,8 @@ const EmployeeInformation: FunctionComponent<Props> = ({ employeeId }) => {
             employee.is_subcontractor === null
               ? "Niet gespecificeerd"
               : employee.is_subcontractor === true
-                ? "Yes"
-                : "No"
+              ? "Yes"
+              : "No"
           }
         />
         <DetailCell

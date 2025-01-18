@@ -28,3 +28,6 @@ export const GENDER_OPTIONS: SelectionOption[] = [
     value: "not_specified",
   },
 ];
+
+// TODO: this is assumed to be 10, it should come from the backend
+export const PAGE_SIZE = 10;
