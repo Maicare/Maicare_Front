@@ -1,4 +1,4 @@
-import React, { FunctionComponent, ReactNode } from "react";
+import React, { FunctionComponent, InputHTMLAttributes, ReactNode } from "react";
 import { useFormContext, Controller } from "react-hook-form";
 import { cn } from "@/utils/cn";
 
@@ -9,10 +9,11 @@ type InputFieldType = {
   placeholder: string;
   icon?: ReactNode;
   className?: string;
+  id?: string;
   required?: boolean;
 };
 
-const InputControl: FunctionComponent<InputFieldType> = ({
+const InputControl: FunctionComponent<InputFieldType & InputHTMLAttributes<HTMLInputElement>> = ({
   name,
   required,
   label,
