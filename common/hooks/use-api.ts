@@ -7,7 +7,7 @@ export const useApi = async <T>(
   url: string,
   method: "GET" | "POST" | "PUT" | "PATCH" | "DELETE",
   config: AxiosRequestConfig = {},
-  body?: Record<string, unknown> // Optional body for POST, PUT, or PATCH
+  body?: Record<string, unknown> | FormData // Optional body for POST, PUT, or PATCH
 ): Promise<ApiResponse<T>> => {
   try {
     const finalConfig: AxiosRequestConfig = {

@@ -201,11 +201,11 @@ export const ClientsForm: FunctionComponent<PropsType> = ({ clientId, mode }) =>
                                     required={true}
                                 />
                                 {/* identity documents */}
-                                {/* <FilesUploader
+                                <FilesUploader
                                     label={"Identiteitsdocumenten"}
                                     name={"added_identity_documents"}
                                     endpoint={"global_v2"}
-                                /> */}
+                                />
 
                             </Panel>
                         </div>
