@@ -29,7 +29,7 @@ const PAGE_SIZE = 10;
 const ClientsPage = () => {
     const router = useRouter();
 
-    const { clients, error, isLoading, page, setPage } = useClient({});
+    const { clients, error, isLoading, page, setPage } = useClient({autoFetch:true});
 
     const handleRowClick = (client: Client) => {
         router.push(`/clients/${client.id}`);
