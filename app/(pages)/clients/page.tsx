@@ -19,11 +19,11 @@ import LargeErrorMessage from '@/components/common/Alerts/LargeErrorMessage';
 import { useClient } from '@/hooks/client/use-client';
 import { Client } from '@/types/client.types';
 import styles from "./styles.module.css";
-export const STATUS_RECORD:Record<string,string> = {
-    "On Waiting List": "Wachtlijst",
-    "In Care": "In Zorg",
-    "Out Of Care": "Uit Zorg",
-  };
+// export const STATUS_RECORD:Record<string,string> = {
+//     "On Waiting List": "Wachtlijst",
+//     "In Care": "In Zorg",
+//     "Out Of Care": "Uit Zorg",
+//   };
 const PAGE_SIZE = 10;
 
 const ClientsPage = () => {
@@ -70,7 +70,7 @@ const ClientsPage = () => {
           {
             accessorKey: "status",
             header: () => "Status",
-            cell: (info) => STATUS_RECORD[info.getValue() as string] || "N/A",
+            cell: (_info) =>  "N/A",//TODO: add thiss condition later
           },
           {
             accessorKey: "document_info",

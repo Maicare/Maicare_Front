@@ -24,8 +24,8 @@ type PropsType = {
     mode: string;
 };
 
-export const ClientsForm: FunctionComponent<PropsType> = ({ clientId, mode }) => {
-    const { createOne } = useClient({ autoFetch: false });
+export const ClientsForm: FunctionComponent<PropsType> = ({ }) => {
+    const {  } = useClient({ autoFetch: false });
     const methods = useForm<CreateClientInput>({
         resolver: yupResolver(CreateClientSchema) as Resolver<CreateClientInput>,
         defaultValues: {
@@ -54,7 +54,7 @@ export const ClientsForm: FunctionComponent<PropsType> = ({ clientId, mode }) =>
 
     const {
         handleSubmit,
-        formState: { isSubmitting, errors },
+        formState: { isSubmitting },
     } = methods;
 
     const onSubmit = async (data: CreateClientInput) => {
