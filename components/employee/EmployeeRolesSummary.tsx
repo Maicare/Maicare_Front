@@ -27,7 +27,8 @@ const EmployeeRolesSummary: FunctionComponent<Props> = ({ employeeId }) => {
       }
     };
     fetchRole();
-  }, [employeeId,getUserRole]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [employeeId]);
   if (isLoading) return <Loader />;
   if (!role) return <div>Geen rollen gevonden</div>;
   

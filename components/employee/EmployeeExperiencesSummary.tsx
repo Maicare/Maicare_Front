@@ -13,7 +13,7 @@ type Props = {
 };
 
 const EmployeeExperiencesSummary: FunctionComponent<Props> = ({ employeeId }) => {
-  const { readEmployeeExperiences } = useEmployee({ employee_id: employeeId });
+  const { readEmployeeExperiences } = useEmployee({ autoFetch:false });
   const [isLoading, setIsLoading] = useState(true);
   const [experiences, setExperiences] = useState<Experience[]>([]);
   const router = useRouter();
@@ -28,7 +28,8 @@ const EmployeeExperiencesSummary: FunctionComponent<Props> = ({ employeeId }) =>
         }
       };
       fetchEducation();
-    }, [employeeId, readEmployeeExperiences]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [employeeId]);
   
   if (isLoading) return <Loader />;
 
