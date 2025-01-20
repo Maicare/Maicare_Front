@@ -53,7 +53,6 @@ const EmployeeForm: FunctionComponent<PropsType> = ({ employeeId }) => {
         }
         if (employeeId) fetchEmployee(employeeId);
         // eslint-disable-next-line react-hooks/exhaustive-deps
-
     }, [employeeId]);
 
 
