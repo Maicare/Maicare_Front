@@ -7,13 +7,14 @@ import { useRouter } from "next/navigation";
 import Loader from "../common/loader";
 import DetailCell from "../common/DetailCell";
 import { dateFormat } from "@/utils/timeFormatting";
+import { useEmployee } from "@/hooks/employee/use-employee";
 
 type Props = {
   employeeId: number;
 };
 
 const EmployeeCertificationsSummary: FunctionComponent<Props> = ({ employeeId }) => {
-  // const { data, isLoading } = useListCertificates(employeeId);
+  const {} = useEmployee({autoFetch:false});
   const router = useRouter();
   if (false) return <Loader />;
   const data = {
