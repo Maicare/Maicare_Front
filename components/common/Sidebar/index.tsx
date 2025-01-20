@@ -350,17 +350,17 @@ const GlobalMenu: FunctionComponent = () => {
           children: "Zorgcoördinatie",
           permission: PermissionsObjects.ViewCareCoordination,
           subItems: [
-            can(transformToPermissionName(PermissionsObjects.ViewContarct)) && {
+            can(transformToPermissionName(PermissionsObjects.ViewSender)) && {
               completeHref: "/contacts",
               icon: <BuildingIcon className={"w-4.5 h-5"} />,
               children: "Opdrachtgevers",
-              permission: PermissionsObjects.ViewContarct,
+              permission: PermissionsObjects.ViewSender,
             },
-            can(transformToPermissionName(PermissionsObjects.ViewContarct)) && {
+            can(transformToPermissionName(PermissionsObjects.ViewSender)) && {
               completeHref: "/contracts",
               icon: <InvoiceIcon className={"w-4.5 h-5"} />,
               children: "Contracten",
-              permission: PermissionsObjects.ViewContarct,
+              permission: PermissionsObjects.ViewSender,
             },
             // can(consts.CARE_PLANS_VIEW) && {
             //   completeHref: "/care-plans",
@@ -494,7 +494,7 @@ const ClientMenu: FunctionComponent = () => {
             completeHref: `/clients/${clientId}/contracts`,
             icon: <InvoiceIcon width={18} height={18} />,
             children: "Contracten",
-            permission: PermissionsObjects.ViewContarct,
+            permission: PermissionsObjects.ViewContact,
           },
           {
             completeHref: `/clients/${clientId}/reports`,
