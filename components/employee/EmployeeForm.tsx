@@ -46,15 +46,14 @@ const EmployeeForm: FunctionComponent<PropsType> = ({ employeeId }) => {
     }
 
     useEffect(() => {
-        const fetchEmployee = async (id:Id) => {
+        const fetchEmployee = async (id: Id) => {
             const data = await readOne(id);
             setEmployee(data);
             setIsLoading(false);
-          }
-          if(employeeId) fetchEmployee(employeeId);
-        },[employeeId,readOne]);
-    
-    console.log("STAFF", employee)
+        }
+        if (employeeId) fetchEmployee(employeeId);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [employeeId]);
 
 
     const methods = useForm<EmployeeFormType>({
