@@ -11,7 +11,7 @@ export const PermissionsEnum = {
     ViewClient : "CLIENT.VIEW",
     ViewFinance : "FINANCE.VIEW",
     ViewCareCoordination : "CARE_COORDINATION.VIEW",
-    ViewContarct : "CONTRACT.VIEW",
+    ViewSender : "SENDER.VIEW",
     ViewIncidentOverview : "INCIDENT_OVERVIEW.VIEW",
     ViewLocation : "LOCATION.VIEW",
     ViewTask : "TASK.VIEW",
@@ -57,10 +57,10 @@ export const PermissionsObjects:{
         resource: "/care-coordination",
         method: "GET",
     },
-    ViewContarct: {
+    ViewSender: {
         id: 6,
-        name: "CONTRACT.VIEW",
-        resource: "/contracts",
+        name: "SENDER.VIEW",
+        resource: "/senders",
         method: "GET",
     },
     ViewIncidentOverview: {
