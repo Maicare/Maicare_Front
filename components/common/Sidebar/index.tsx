@@ -481,7 +481,7 @@ const ClientMenu: FunctionComponent = () => {
             completeHref: `/clients/${clientId}/client-network`,
             icon: <GroupIcon width={18} height={18} />,
             children: "Cliëntennetwerk",
-            permission: PermissionsObjects.ViewContact,
+            permission: PermissionsObjects.ViewSender,
             getIsActive: (pathname) => {
               return (
                 pathname.startsWith(`/clients/${clientId}/client-network`) ||
@@ -494,7 +494,7 @@ const ClientMenu: FunctionComponent = () => {
             completeHref: `/clients/${clientId}/contracts`,
             icon: <InvoiceIcon width={18} height={18} />,
             children: "Contracten",
-            permission: PermissionsObjects.ViewContact,
+            permission: PermissionsObjects.ViewContract,
           },
           {
             completeHref: `/clients/${clientId}/reports`,

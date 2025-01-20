@@ -15,15 +15,19 @@ type Props = {
 };
 
 const EmployeeEducationsSummary: FunctionComponent<Props> = ({ employeeId }) => {
-  const { readEmployeeEducation } = useEmployee({autoFetch:false});
+  const { readEmployeeEducations } = useEmployee({autoFetch:false});
   const [isLoading,setIsLoading] = useState(true);
   const [educations,setEducations] = useState<Education[]>([]);
   const router = useRouter();
   useEffect(() => {
     const fetchEducation = async () => {
-      const data = await readEmployeeEducation(employeeId);
-      setEducations(data);
-      setIsLoading(false);
+      try {
+        const data = await readEmployeeEducations(employeeId);
+        setEducations(data);
+        setIsLoading(false);
+      } catch (error) {
+        console.error(error);
+      }
     };
     fetchEducation();
     // eslint-disable-next-line react-hooks/exhaustive-deps

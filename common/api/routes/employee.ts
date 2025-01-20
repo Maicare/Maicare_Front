@@ -5,7 +5,9 @@ const ApiRoutes = {
   CreateOne: prefix,
   ReadAll: prefix,
   ReadOne: prefix + '/{id}',
-  ReadEducation: prefix + '/{id}/education',
+  ReadEducations: prefix + '/{id}/education',
+  ReadExperiences: prefix + '/{id}/experience',
+  ReadCertificates: prefix + '/{id}/certification',
   UpdateOne: prefix + '/{id}',
   DeleteOne: prefix + '/{id}',
 };

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { FunctionComponent } from "react";
+import React, { FunctionComponent, useEffect, useState } from "react";
 // import { useListCertificates } from "@/utils/certificates/listCertificates";
 
 import { useRouter } from "next/navigation";
@@ -8,42 +8,37 @@ import Loader from "../common/loader";
 import DetailCell from "../common/DetailCell";
 import { dateFormat } from "@/utils/timeFormatting";
 import { useEmployee } from "@/hooks/employee/use-employee";
+import { Certification } from "@/types/certification.types";
 
 type Props = {
   employeeId: number;
 };
 
 const EmployeeCertificationsSummary: FunctionComponent<Props> = ({ employeeId }) => {
-  const {} = useEmployee({autoFetch:false});
+  const {readEmployeeCertificates} = useEmployee({autoFetch:false});
+  const [isLoading, setIsLoading] = useState(true);
+    const [certifications, setCertifications] = useState<Certification[]>([]);
   const router = useRouter();
-  if (false) return <Loader />;
-  const data = {
-    results: [
-      {
-        id: 1,
-        name: "Certificaat Veiligheid",
-        date_issued: "2023-05-15",
-        issued_by: "Veiligheidsinstituut Nederland",
-      },
-      {
-        id: 2,
-        name: "ISO 9001",
-        date_issued: "2022-11-20",
-        issued_by: "Kwaliteitscertificaten BV",
-      },
-      {
-        id: 3,
-        name: "EHBO Certificaat",
-        date_issued: "2021-03-10",
-        issued_by: "Rode Kruis Nederland",
-      },
-    ],
-  };
+    useEffect(() => {
+        const fetchCertifications = async () => {
+          try {
+            const data = await readEmployeeCertificates(employeeId);
+            setCertifications(data);
+            setIsLoading(false);
+          } catch (error) {
+            console.error(error);
+          }
+        };
+        fetchCertifications();
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+      }, [employeeId]);
 
-  if (data.results?.length === 0) return <div>Geen certificaten gevonden</div>;
+  if (isLoading) return <Loader />;
+
+  if (certifications?.length === 0) return <div>Geen certificaten gevonden</div>;
   return (
     <ul className="flex flex-col gap-2">
-      {data.results?.map((certificate) => {
+      {certifications?.map((certificate) => {
         return (
           <li
             key={certificate.id}

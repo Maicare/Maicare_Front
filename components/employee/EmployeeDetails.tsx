@@ -151,7 +151,7 @@ const EmployeeDetails: React.FC<EmployeeDetailsProps> = ({ employeeId, showAsPro
             </Panel>
           )}
         </PermitableComponent>
-        {/*{showAsProfile && (
+        {/* {showAsProfile && (
           <Panel title={"Reset Password"} containerClassName={"px-7 py-4"}>
             <ChangePasswordForm />
           </Panel>
