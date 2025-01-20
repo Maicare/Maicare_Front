@@ -494,7 +494,7 @@ const ClientMenu: FunctionComponent = () => {
             completeHref: `/clients/${clientId}/contracts`,
             icon: <InvoiceIcon width={18} height={18} />,
             children: "Contracten",
-            permission: PermissionsObjects.ViewContarct,
+            permission: PermissionsObjects.ViewContact,
           },
           {
             completeHref: `/clients/${clientId}/reports`,

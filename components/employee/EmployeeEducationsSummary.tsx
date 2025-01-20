@@ -30,7 +30,8 @@ const EmployeeEducationsSummary: FunctionComponent<Props> = ({ employeeId }) => 
       }
     };
     fetchEducation();
-  },[employeeId,readEmployeeEducations]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  },[employeeId]);
 
   if (isLoading) return <Loader />;
 
