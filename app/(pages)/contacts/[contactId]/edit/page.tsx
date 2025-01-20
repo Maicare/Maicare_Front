@@ -1,7 +1,7 @@
 "use client";
 
-import React, { FunctionComponent } from "react";
-import { useParams, useRouter } from "next/navigation";
+import React from "react";
+import { useParams } from "next/navigation";
 import ContactForm from "@/components/contacts/ContactForm";
 import Panel from "@/components/common/Panel/Panel";
 import Breadcrumb from "@/components/common/Breadcrumbs/Breadcrumb";

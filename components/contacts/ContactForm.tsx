@@ -2,19 +2,8 @@
 import { useForm, FormProvider, Resolver, useFieldArray } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import InputControl from "@/common/components/InputControl";
-import Panel from '@/components/common/Panel/Panel';
-import { EmployeeDetailsResponse, EmployeeForm as EmployeeFormType } from "@/types/employee.types";
-import { ControlledLocationSelect } from "../ControlledLocationSelect/ControlledLocationSelect";
-import ControlledCheckboxItem from "@/common/components/ControlledCheckboxItem";
-import { useEmployee } from "@/hooks/employee/use-employee";
-import { GENDER_OPTIONS } from "@/consts";
-import ControlledRadioGroup from "@/common/components/ControlledRadioGroup";
-import { ControlledRoleSelect } from "../ControlledRoleSelect/ControlledRoleSelect";
-import { FunctionComponent, useCallback, useEffect, useState } from "react";
+import { FunctionComponent, useEffect, useState } from "react";
 import Loader from '@/components/common/loader';
-import dayjs from "dayjs";
-import { employeeSchema } from "@/schemas/employee.schema";
-import { Id } from "@/common/types/types";
 import { GenericSelectionOption } from "@/types/selection-option.types";
 import { Contact as ContactType, OP_CLIENT_TYPE } from "@/types/contacts.types";
 import { ControlledSelect } from "@/common/components/ControlledSelect";
@@ -88,6 +77,7 @@ const ContactForm: FunctionComponent<PropsType> = ({ contactId }) => {
             setIsLoading(false);
         }
         if (contactId) fetchContact(contactId);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [contactId])
 
     useEffect(() => {
@@ -221,11 +211,12 @@ const ContactForm: FunctionComponent<PropsType> = ({ contactId }) => {
                     type="text"
                 />
                 <Button
-                    // isLoading={isLoading}
+                    isLoading={isSubmitting}
                     loadingText={"Opdrachtgever wordt opgeslagen..."}
                     type={"submit"}
                     formNoValidate={true}
                 >
+                    {contactId ? "Een nieuwe opdrachtgever toevoegen" : "Bijwerken"}
                     Een nieuwe opdrachtgever toevoegen
                 </Button>
             </form>

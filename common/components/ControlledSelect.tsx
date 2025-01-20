@@ -3,7 +3,7 @@ import { SelectionOption } from "@/common/components/UncontrolledCheckboxGroup";
 import { FunctionComponent } from "react";
 import { useFormContext, Controller } from 'react-hook-form';
 
-export const ControlledSelect: FunctionComponent<Omit<SelectProps, "options"> & { options: SelectionOption[] }> = ({ name, options, ...props }) => {
+export const ControlledSelect: FunctionComponent<Omit<SelectProps, "options"> & { options: SelectionOption[] }> = ({ name = "input", options, ...props }) => {
     const { control } = useFormContext();
 
     return (

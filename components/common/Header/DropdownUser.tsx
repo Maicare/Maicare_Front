@@ -22,6 +22,7 @@ const DropdownUser = () => {
       setUserRole(role);
     }
     fetchUserRole();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const trigger = useRef<Any>(null);
