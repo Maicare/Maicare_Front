@@ -29,7 +29,8 @@ const EmployeeInformation: FunctionComponent<Props> = ({ employeeId }) => {
       setIsLoading(false);
     };
     fetchEmployee();
-  },[employeeId,readOne]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  },[employeeId]);
   
   if (isLoading) return <Loader />;
   // if (isError) return <div className="text-red-600">We failed to load employee data</div>;
