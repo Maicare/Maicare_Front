@@ -6,6 +6,13 @@ export type OpClientType =
   | "particular_party"
   | "healthcare_institution";
 
+export const OP_CLIENT_TYPE = [
+  "main_provider", // hoofdaanbieder
+  "local_authority", // Gemeente
+  "particular_party", // particuliere partij
+  "healthcare_institution", // Zorginstelling
+] as const;
+
 export type ContactType = {
   name?: string;
   email?: string;
@@ -13,7 +20,7 @@ export type ContactType = {
 };
 
 export type Contact = {
-  id: Id;
+  id?: Id;
   types: OpClientType | "";
   name: string;
   address: string;
@@ -21,8 +28,10 @@ export type Contact = {
   place: string;
   land: string;
   contacts: ContactType[];
-  KVKnumber: string;
-  BTWnumber: string;
+  KVKnumber?: string;
+  BTWnumber?: string;
+  kvknumber?: string;
+  btwnumber?: string;
   phone_number: string;
   client_number: string;
 };

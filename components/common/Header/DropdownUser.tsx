@@ -22,7 +22,7 @@ const DropdownUser = () => {
       setUserRole(role);
     }
     fetchUserRole();
-  }, [getUserRole]);
+  }, []);
 
   const trigger = useRef<Any>(null);
   const dropdown = useRef<Any>(null);
