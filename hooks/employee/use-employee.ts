@@ -18,7 +18,7 @@ import { AxiosError } from "axios";
 import { useRouter } from "next/navigation";
 import { Education } from "@/types/education.types";
 import { Experience } from "@/types/experience.types";
-import { Certification } from "@/types/certification.types";
+import { Certification, CreateCertificate } from "@/types/certification.types";
 
 
 export function useEmployee({ search, position, department, out_of_service, location_id, is_archived, page: pageParam = 1, page_size = 10,autoFetch=true }: Partial<EmployeesSearchParams&{autoFetch?:boolean}>) {
@@ -62,6 +62,91 @@ export function useEmployee({ search, position, department, out_of_service, loca
             return data;
         } catch (err: any) {
             enqueueSnackbar(err?.response?.data?.message || "Employee Details fetching failed", { variant: "error" });
+            throw err;
+        } finally {
+            if (displayProgress) stopProgress();
+        }
+    }
+    const createOneCertificate = async (certificate:CreateCertificate, options?: ApiOptions) => {
+        const { displayProgress = false, displaySuccess = false } = options || {};
+        try {
+            // Display progress bar
+            if (displayProgress) startProgress();
+            const { message, success, data, error } = await useApi<Certification>(ApiRoutes.Employee.CreateOneCertificate.replace("{id}",certificate.employee_id.toString()), "POST", {},certificate);
+            if (!data)
+                throw new Error(error || message || "An unknown error occurred");
+
+            // Display success message
+            if (displaySuccess && success) {
+                enqueueSnackbar("Employee Certificate created successful!", { variant: "success" });
+            }
+            return data;
+        } catch (err: any) {
+            enqueueSnackbar(err?.response?.data?.message || "Employee Certificate creationg failed", { variant: "error" });
+            throw err;
+        } finally {
+            if (displayProgress) stopProgress();
+        }
+    }
+    const updateOneCertificate = async (certificate:Certification, options?: ApiOptions) => {
+        const { displayProgress = false, displaySuccess = false } = options || {};
+        try {
+            // Display progress bar
+            if (displayProgress) startProgress();
+            const { message, success, data, error } = await useApi<Certification>(ApiRoutes.Employee.UpdateOneCertificate.replace("{cert_id}",certificate.id?.toString()).replace("{id}",certificate.employee_id.toString()), "PUT", {},certificate);
+            if (!data)
+                throw new Error(error || message || "An unknown error occurred");
+
+            // Display success message
+            if (displaySuccess && success) {
+                enqueueSnackbar("Employee Certificate created successful!", { variant: "success" });
+            }
+            return data;
+        } catch (err: any) {
+            enqueueSnackbar(err?.response?.data?.message || "Employee Certificate creationg failed", { variant: "error" });
+            throw err;
+        } finally {
+            if (displayProgress) stopProgress();
+        }
+    }
+    const deleteOneCertificate = async (certificate:Certification, options?: ApiOptions) => {
+        const { displayProgress = false, displaySuccess = false } = options || {};
+        try {
+            // Display progress bar
+            if (displayProgress) startProgress();
+            const { message, success, data, error } = await useApi<Certification>(ApiRoutes.Employee.DeleteOneCertificate.replace("{cert_id}",certificate.id?.toString()).replace("{id}",certificate.employee_id.toString()), "DELETE");
+            if (!data)
+                throw new Error(error || message || "An unknown error occurred");
+
+            // Display success message
+            if (displaySuccess && success) {
+                enqueueSnackbar("Employee Certificate deleted successful!", { variant: "success" });
+            }
+            return data;
+        } catch (err: any) {
+            enqueueSnackbar(err?.response?.data?.message || "Employee Certificate deletion failed", { variant: "error" });
+            throw err;
+        } finally {
+            if (displayProgress) stopProgress();
+        }
+    }
+
+    const deleteOne = async (id: number, options?: ApiOptions) => {
+        const { displayProgress = false, displaySuccess = false } = options || {};
+        try {
+            // Display progress bar
+            if (displayProgress) startProgress();
+            const { message, success, data, error } = await useApi<EmployeeDetailsResponse>(ApiRoutes.Employee.DeleteOne.replace("{id}",id.toString()), "DELETE", {});//TODO: add correct type later
+            if (!data)
+                throw new Error(error || message || "An unknown error occurred");
+
+            // Display success message
+            if (displaySuccess && success) {
+                enqueueSnackbar("Employee Deleted successful!", { variant: "success" });
+            }
+            return data;
+        } catch (err: any) {
+            enqueueSnackbar(err?.response?.data?.message || "Employee Deletion failed", { variant: "error" });
             throw err;
         } finally {
             if (displayProgress) stopProgress();
@@ -186,11 +271,15 @@ export function useEmployee({ search, position, department, out_of_service, loca
         error,
         isLoading,
         page,
+        deleteOne,
         setPage,
         addEmployee,
         updateEmployee,
         readEmployeeEducations,
         readEmployeeExperiences,
-        readEmployeeCertificates
+        readEmployeeCertificates,
+        createOneCertificate,
+        updateOneCertificate,
+        deleteOneCertificate
     }
 }
