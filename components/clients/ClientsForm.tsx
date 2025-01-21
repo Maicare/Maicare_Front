@@ -14,6 +14,7 @@ import SelectControlled from "@/common/components/SelectControlled";
 import { SOURCE_OPTIONS } from "@/common/data/gender.data";
 import { ControlledLocationSelect } from "../ControlledLocationSelect/ControlledLocationSelect";
 import AddressesControlled from "../address/AddressesControlled";
+import FilesUploader from "@/common/components/FilesUploader";
 
 
 
@@ -25,7 +26,7 @@ type PropsType = {
 };
 
 export const ClientsForm: FunctionComponent<PropsType> = ({ }) => {
-    const {  } = useClient({ autoFetch: false });
+    const { createOne } = useClient({ autoFetch: false });
     const methods = useForm<CreateClientInput>({
         resolver: yupResolver(CreateClientSchema) as Resolver<CreateClientInput>,
         defaultValues: {
@@ -33,7 +34,7 @@ export const ClientsForm: FunctionComponent<PropsType> = ({ }) => {
             last_name: "",
             email: "",
             organisation: "",
-            location: "",
+            location: 0,
             legal_measure: "",
             birthplace: "",
             departement: "",
@@ -44,23 +45,24 @@ export const ClientsForm: FunctionComponent<PropsType> = ({ }) => {
             source: "",
             date_of_birth: "",
             addresses: [],
-            infix: undefined,
+            infix: "",
             added_identity_documents: undefined,
             removed_identity_documents: undefined,
             departure_reason: undefined,
             departure_report: undefined,
-        },
+            sender_id:1
+        }
     });
 
     const {
         handleSubmit,
-        formState: { isSubmitting },
+        formState: { isSubmitting,errors },
+        watch
     } = methods;
-
+    console.log({errors})
+    const adresses = watch("addresses");
     const onSubmit = async (data: CreateClientInput) => {
-        
-        // await createOne(data, { displayProgress: true, displaySuccess: true });
-        console.log({data});
+        await createOne(data, { displayProgress: true, displaySuccess: true });
     };
 
 
@@ -201,11 +203,11 @@ export const ClientsForm: FunctionComponent<PropsType> = ({ }) => {
                                     required={true}
                                 />
                                 {/* identity documents */}
-                                {/* <FilesUploader
+                                <FilesUploader
                                     label={"Identiteitsdocumenten"}
                                     name={"added_identity_documents"}
-                                    endpoint={"global_v2"}
-                                /> */}
+                                    trigger={adresses}
+                                />
 
                             </Panel>
                         </div>
