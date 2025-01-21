@@ -16,7 +16,7 @@ const CertificatesPage: FunctionComponent = () => {
   const params = useParams(); // Access the dynamic route params
   const { employeeId } = params;
   const [isLoading, setIsLoading] = useState(false);
-  const [isError, setIsError] = useState(false);
+  const [_isError, setIsError] = useState(false);
   const [certifications, setCertifications] = useState<Certification[]>([]);
   useEffect(() => {
     const fetchCertifications = async () => {

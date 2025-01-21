@@ -48,7 +48,7 @@ const EmployeeDetails: React.FC<EmployeeDetailsProps> = ({ employeeId, showAsPro
         router.push(`/employees`);
       }, 700);
     }
-  }, [isSuccess]);
+  }, [router,isSuccess]);
 
   const { open } = useModal(
     getDangerActionConfirmationModal({

@@ -76,6 +76,7 @@ const CertificationItem: FunctionComponent<CertificationItemProps> = ({ certific
                       await deleteOneCertificate(certificate);
                       setSuccess(true);
                     } catch (error) {
+                      console.log(error);
                       setSuccess(false);
                     } finally{
                       setLoading(false);
