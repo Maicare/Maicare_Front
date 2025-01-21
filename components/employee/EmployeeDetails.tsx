@@ -24,6 +24,11 @@ import EmployeeCertificationsSummary from "./EmployeeCertificationsSummary";
 import EmployeeEducationsSummary from "./EmployeeEducationsSummary";
 import EmployeeExperiencesSummary from "./EmployeeExperiencesSummary";
 import EmployeeRolesSummary from "./EmployeeRolesSummary";
+import { useEmployee } from "@/hooks/employee/use-employee";
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { getDangerActionConfirmationModal } from "../common/Modals/DangerActionConfirmation";
+import { useModal } from "../providers/ModalProvider";
 
 interface EmployeeDetailsProps {
   employeeId: number;
@@ -31,29 +36,26 @@ interface EmployeeDetailsProps {
 }
 
 const EmployeeDetails: React.FC<EmployeeDetailsProps> = ({ employeeId, showAsProfile = false }) => {
-//   const router = useRouter();
+  const router = useRouter();
   const { can,transformToPermissionName } = usePermissions();
+  const { deleteOne } = useEmployee({autoFetch:false})
+  const [isLoading,setIsLoading] = useState(false);
+  const [isSuccess,setIsSuccess] = useState(false);
 
-//   const {
-//     mutate: deleteEmployee,
-//     isLoading: isDeleting,
-//     isSuccess: isDeleted,
-//   } = useDeleteEmployee();
+  useEffect(() => {
+    if (isSuccess) {
+      setTimeout(() => {
+        router.push(`/employees`);
+      }, 700);
+    }
+  }, [router,isSuccess]);
 
-//   useEffect(() => {
-//     if (isDeleted) {
-//       setTimeout(() => {
-//         router.push(`/employees`);
-//       }, 700);
-//     }
-//   }, [isDeleted]);
-
-//   const { open } = useModal(
-//     getDangerActionConfirmationModal({
-//       msg: "Weet u zeker dat u deze medewerker wilt verwijderen?",
-//       title: "Medewerker Verwijderen",
-//     })
-//   );
+  const { open } = useModal(
+    getDangerActionConfirmationModal({
+      msg: "Weet u zeker dat u deze medewerker wilt verwijderen?",
+      title: "Medewerker Verwijderen",
+    })
+  );
 
   return (
     <div className="grid grid-cols-1 gap-9 sm:grid-cols-2">
@@ -76,16 +78,24 @@ const EmployeeDetails: React.FC<EmployeeDetailsProps> = ({ employeeId, showAsPro
                   <IconButton
                     buttonType="Danger"
                     onClick={() => {
-                    //   open({
-                    //     onConfirm: () => {
-                    //       deleteEmployee(employeeId);
-                    //     },
-                    //   });
+                      open({
+                        onConfirm: async() => {
+                          try {
+                            setIsLoading(true);
+                            await deleteOne(employeeId);
+                            setIsSuccess(true);
+                          } catch (error) {
+                            console.log(error);
+                          }finally{
+                            setIsLoading(false);
+                          }
+                        },
+                      });
                     }}
-                    // disabled={isDeleted}
-                    // isLoading={isDeleting}
+                    disabled={isSuccess}
+                    isLoading={isLoading}
                   >
-                    {true ? (//TODO: Add correct condition isDeleted
+                    {isSuccess ? (//TODO: Add correct condition isSuccess
                       <CheckIcon className="w-5 h-5" />
                     ) : (
                       <TrashIcon className="w-5 h-5" />

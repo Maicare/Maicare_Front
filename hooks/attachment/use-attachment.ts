@@ -10,7 +10,7 @@ export function useAttachment() {
     const { enqueueSnackbar } = useSnackbar();
     const { start: startProgress, stop: stopProgress } = useProgressBar();
 
-    const uploadFile = async (formData: FormData, options?: ApiOptions) => {
+    const createOne = async (formData: FormData, options?: ApiOptions) => {
         const { displayProgress = false, displaySuccess = false } = options || {};
         try {
             // Display progress bar
@@ -36,8 +36,54 @@ export function useAttachment() {
         }
     }
 
+    const readOne = async (id:string, options?: ApiOptions) => {
+        const { displayProgress = false, displaySuccess = false } = options || {};
+        try {
+            // Display progress bar
+            if (displayProgress) startProgress();
+            const { message, success, data, error } = await useApi<Attachment>(ApiRoutes.Attachment.ReadOne.replace('{id}',id), "GET");
+            if (!data)
+                throw new Error(error || message || "An unknown error occurred");
+
+            // Display success message
+            if (displaySuccess && success) {
+                enqueueSnackbar("File retrieved successful!", { variant: "success" });
+            }
+            return data;
+        } catch (err: any) {
+            enqueueSnackbar(err?.response?.data?.message || "File retrieving failed", { variant: "error" });
+            throw err;
+        } finally {
+            if (displayProgress) stopProgress();
+        }
+    }
+
+    const deleteOne = async (id:string, options?: ApiOptions) => {
+        const { displayProgress = false, displaySuccess = false } = options || {};
+        try {
+            // Display progress bar
+            if (displayProgress) startProgress();
+            const { message, success, data, error } = await useApi<Attachment>(ApiRoutes.Attachment.DeleteOne.replace('{id}',id), "DELETE");
+            if (!data)
+                throw new Error(error || message || "An unknown error occurred");
+
+            // Display success message
+            if (displaySuccess && success) {
+                enqueueSnackbar("File deleted successful!", { variant: "success" });
+            }
+            return data;
+        } catch (err: any) {
+            enqueueSnackbar(err?.response?.data?.message || "File deleting failed", { variant: "error" });
+            throw err;
+        } finally {
+            if (displayProgress) stopProgress();
+        }
+    }
+
     //TODO: Add logic to CRUD user role
     return {
-        uploadFile
+        readOne,
+        createOne,
+        deleteOne
     }
 }

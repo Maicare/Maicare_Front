@@ -12,7 +12,7 @@ export type ClientFormType = {
     last_name: string;
     email: string;
     organisation: string;
-    location: string;
+    location: Id;
     legal_measure: string;
     birthplace: string;
     departement: string;
@@ -39,7 +39,7 @@ export type CreateClientInput = {
     last_name: string;
     email: string;
     organisation: string;
-    location: string;
+    location: Id;
     legal_measure: string;
     birthplace: string;
     departement: string;
@@ -55,6 +55,7 @@ export type CreateClientInput = {
     removed_identity_documents?: string[];
     departure_reason?: string;
     departure_report?: string;
+    sender_id?:Id;
   };
   
 
@@ -63,7 +64,7 @@ export const initialClientFormValues: ClientFormType = {
     last_name: "",
     email: "",
     organisation: "",
-    location: "",
+    location: 0,
     legal_measure: "",
     birthplace: "",
     departement: "",
@@ -80,7 +81,7 @@ export const initialClientFormValues: ClientFormType = {
     source: "",
     added_identity_documents: [],
     removed_identity_documents: [],
-    addresses: []
+    addresses: [],
 };
 
 export type Client = {
@@ -110,4 +111,5 @@ export type Client = {
     departure_reason?: string;
     departure_report?: string;
     profile_picture?: string;
+    sender_id: Id;
 }

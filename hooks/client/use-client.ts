@@ -71,6 +71,7 @@ export function useClient({autoFetch=true}: {autoFetch?: boolean}) {
           departure_reason: "Relocation",
           departure_report: "Moved to another city",
           profile_picture: "https://example.com/profiles/john_doe.jpg",
+          sender_id:1
         },
         {
           id: 2,
@@ -114,6 +115,8 @@ export function useClient({autoFetch=true}: {autoFetch?: boolean}) {
           departure_reason: undefined,
           departure_report: undefined,
           profile_picture: "https://example.com/profiles/jane_smith.jpg",
+          sender_id:1
+
         },
         {
           id: 3,
@@ -150,6 +153,8 @@ export function useClient({autoFetch=true}: {autoFetch?: boolean}) {
           departure_reason: "Job Termination",
           departure_report: "Contract ended on 2023-12-31",
           profile_picture: undefined,
+          sender_id:1
+
         },
       ];
 
