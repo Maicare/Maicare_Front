@@ -1,6 +1,6 @@
 import InputControl from "@/common/components/InputControl";
 import Button from "@/components/common/Buttons/Button";
-import { useEmployee } from "@/hooks/employee/use-employee";
+import { useCertificate } from "@/hooks/certificate/use-certificate";
 import { Certification, CreateCertificate, initialValues } from "@/types/certification.types";
 import { FormProps } from "@/types/form-props";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -26,13 +26,13 @@ const CertificationForm: FunctionComponent<Props> = ({
     employeeId,
     initialData,
 }) => {
-    const { createOneCertificate, updateOneCertificate } = useEmployee({ autoFetch: false });
+    const { createOne, updateOne } = useCertificate({ autoFetch: false,employeeId:employeeId.toString()});
     const [loading, setLoading] = useState(false);
     async function onSubmit(value: CreateCertificate) {
         if (mode === "add") {
             try {
                 setLoading(true);
-                await createOneCertificate(
+                await createOne(
                     {
                         ...value,
                         employee_id: employeeId,
@@ -48,9 +48,10 @@ const CertificationForm: FunctionComponent<Props> = ({
             setLoading(true);
             try {
                 setLoading(true);
-                await updateOneCertificate(
+                await updateOne(
                     {
                         ...value,
+                        date_issued:value.date_issued.split("T")[0],
                         employee_id: employeeId,
                         id: initialData.id,
                     }
@@ -71,14 +72,14 @@ const CertificationForm: FunctionComponent<Props> = ({
 
     const {
         handleSubmit,
-        formState: { isSubmitting,errors },
+        formState: { isSubmitting },
         reset
     } = methods;
-    console.log({errors})
     useEffect(() => {
         if (employeeId && initialData) {
             reset({
                 ...initialData,
+                date_issued:initialData.date_issued.split("T")[0]
             });
         }
     }, [loading, reset, initialData, employeeId]);

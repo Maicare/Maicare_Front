@@ -1,69 +1,79 @@
 "use client";
 
 import React, { FunctionComponent, useState } from "react";
-import { fullDateFormat } from "@/utils/timeFormatting";
+import { dateFormat } from "@/utils/timeFormatting";
 import PencilSquare from "@/components/icons/PencilSquare";
 import TrashIcon from "@/components/icons/TrashIcon";
 import styles from "./styles.module.css";
 import clsx from "clsx";
 import CheckIcon from "@/components/icons/CheckIcon";
 import { useModal } from "@/components/providers/ModalProvider";
-import { Certification } from "@/types/certification.types";
+import { Education } from "@/types/education.types";
 import { getDangerActionConfirmationModal } from "@/components/common/Modals/DangerActionConfirmation";
 import DetailCell from "@/components/common/DetailCell";
 import IconButton from "@/components/common/Buttons/IconButton";
-import CertificationForm from "./CertificateForm";
-import { useCertificate } from "@/hooks/certificate/use-certificate";
+import EducationForm from "./EducationForm";
+import { useEducation } from "@/hooks/education/use-education";
 
 type Props = {
-  data: Certification[];
+  data: Education[];
 };
 
-const CertificatesList: FunctionComponent<Props> = ({ data }) => {
+const EducationsList: FunctionComponent<Props> = ({ data }) => {
   return (
     <table className={styles.table}>
       <tbody>
-        {data.map((certificate) => (
-          <CertificationItem key={certificate.id} certificate={certificate} />
+        {data.map((education) => (
+          <EducationItem key={education.id} education={education} />
         ))}
       </tbody>
     </table>
   );
 };
 
-export default CertificatesList;
+export default EducationsList;
 
-type CertificationItemProps = {
-  certificate: Certification;
+type EducationItemProps = {
+  education: Education;
 };
 
-const CertificationItem: FunctionComponent<CertificationItemProps> = ({ certificate }) => {
+const EducationItem: FunctionComponent<EducationItemProps> = ({ education }) => {
   const [isEdit, setIsEdit] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [success, setSuccess] = useState(false);
-
-  const {deleteOne,mutate} = useCertificate({autoFetch:false,employeeId:certificate.employee_id.toString()});
+    const [loading, setLoading] = useState(false);
+    const [success, setSuccess] = useState(false);
+    
+    const {deleteOne,mutate} = useEducation({autoFetch:false,employeeId:education.employee_id.toString()});
   const { open } = useModal(
     getDangerActionConfirmationModal({
-      msg: "Weet u zeker dat u dit certificaat wilt verwijderen?",
-      title: "Certificaat Verwijderen",
+      msg: "Weet u zeker dat u deze opleiding wilt verwijderen?",
+      title: "Opleiding Verwijderen",
     })
   );
-  const triggerEdit = async()=>{
-    setIsEdit((v) => !v);
+  const triggerEdit = async() => {
+    setIsEdit(v=>!v);
     await mutate();
   }
   return (
     <>
       <tr>
         <td>
-          <DetailCell label={"Titel"} value={certificate.name} />
+          <DetailCell
+            label={"Periode"}
+            value={dateFormat(education.start_date) + " - " + dateFormat(education.end_date)}
+          />
         </td>
         <td>
-          <DetailCell label={"Uitgegeven Door"} value={certificate.issued_by} />
+          <DetailCell label={"Naam Instituut"} value={education.institution_name} />
         </td>
         <td>
-          <DetailCell label={"Datum Uitgegeven"} value={fullDateFormat(certificate.date_issued)} />
+          <DetailCell
+            label={"Diploma"}
+            value={
+              <div>
+                <strong>{education.degree}</strong> | <span>{education.field_of_study}</span>
+              </div>
+            }
+          />
         </td>
         <td className="flex justify-end">
           <div className="flex items-center gap-4">
@@ -77,7 +87,7 @@ const CertificationItem: FunctionComponent<CertificationItemProps> = ({ certific
                   onConfirm: async() => {
                     try {
                       setLoading(true);
-                      await deleteOne(certificate);
+                      await deleteOne(education);
                       setSuccess(true);
                     } catch (error) {
                       console.log(error);
@@ -99,11 +109,11 @@ const CertificationItem: FunctionComponent<CertificationItemProps> = ({ certific
       {isEdit && (
         <tr>
           <td colSpan={4} className={clsx("bg-c_gray dark:bg-graydark p-8", styles.formTd)}>
-            <CertificationForm
+            <EducationForm
               mode="update"
-              initialData={certificate}
+              initialData={education}
               onSuccess={() => setIsEdit(false)}
-              employeeId={certificate.employee_id}
+              employeeId={education.employee_id}
             />
           </td>
         </tr>

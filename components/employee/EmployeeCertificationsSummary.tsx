@@ -1,44 +1,26 @@
 "use client";
 
-import React, { FunctionComponent, useEffect, useState } from "react";
-// import { useListCertificates } from "@/utils/certificates/listCertificates";
-
+import React, { FunctionComponent } from "react";
 import { useRouter } from "next/navigation";
 import Loader from "../common/loader";
 import DetailCell from "../common/DetailCell";
 import { dateFormat } from "@/utils/timeFormatting";
-import { useEmployee } from "@/hooks/employee/use-employee";
-import { Certification } from "@/types/certification.types";
+import { useCertificate } from "@/hooks/certificate/use-certificate";
 
 type Props = {
   employeeId: number;
 };
 
 const EmployeeCertificationsSummary: FunctionComponent<Props> = ({ employeeId }) => {
-  const {readEmployeeCertificates} = useEmployee({autoFetch:false});
-  const [isLoading, setIsLoading] = useState(true);
-    const [certifications, setCertifications] = useState<Certification[]>([]);
+  const {certificates,isLoading} = useCertificate({employeeId:employeeId.toString()});
   const router = useRouter();
-    useEffect(() => {
-        const fetchCertifications = async () => {
-          try {
-            const data = await readEmployeeCertificates(employeeId);
-            setCertifications(data);
-            setIsLoading(false);
-          } catch (error) {
-            console.error(error);
-          }
-        };
-        fetchCertifications();
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-      }, [employeeId]);
 
   if (isLoading) return <Loader />;
 
-  if (certifications?.length === 0) return <div>Geen certificaten gevonden</div>;
+  if (!certificates) return <div>Geen certificaten gevonden</div>;
   return (
     <ul className="flex flex-col gap-2">
-      {certifications?.map((certificate) => {
+      {certificates?.map((certificate) => {
         return (
           <li
             key={certificate.id}
