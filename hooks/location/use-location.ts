@@ -36,7 +36,6 @@ export function useLocation() {
     );
     if (created) {
       mutate([...(locations || []), created], false);
-      console.log("created");
       enqueueSnackbar("Location created successfully", {
         variant: "success",
       });
