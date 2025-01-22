@@ -1,6 +1,6 @@
 "use client";
 
-import React, { FunctionComponent, useState } from "react";
+import React, { FunctionComponent, useEffect, useState } from "react";
 import { fullDateFormat } from "@/utils/timeFormatting";
 import PencilSquare from "@/components/icons/PencilSquare";
 import TrashIcon from "@/components/icons/TrashIcon";
@@ -13,7 +13,7 @@ import { getDangerActionConfirmationModal } from "@/components/common/Modals/Dan
 import DetailCell from "@/components/common/DetailCell";
 import IconButton from "@/components/common/Buttons/IconButton";
 import CertificationForm from "./CertificateForm";
-import { useEmployee } from "@/hooks/employee/use-employee";
+import { useCertificate } from "@/hooks/certificate/use-certificate";
 
 type Props = {
   data: Certification[];
@@ -42,13 +42,17 @@ const CertificationItem: FunctionComponent<CertificationItemProps> = ({ certific
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
 
-  const {deleteOneCertificate} = useEmployee({autoFetch:false});
+  const {deleteOne,mutate} = useCertificate({autoFetch:false,employeeId:certificate.employee_id.toString()});
   const { open } = useModal(
     getDangerActionConfirmationModal({
       msg: "Weet u zeker dat u dit certificaat wilt verwijderen?",
       title: "Certificaat Verwijderen",
     })
   );
+  const triggerEdit = async()=>{
+    setIsEdit((v) => !v);
+    await mutate();
+  }
   return (
     <>
       <tr>
@@ -63,7 +67,7 @@ const CertificationItem: FunctionComponent<CertificationItemProps> = ({ certific
         </td>
         <td className="flex justify-end">
           <div className="flex items-center gap-4">
-            <IconButton onClick={() => setIsEdit((v) => !v)}>
+            <IconButton onClick={triggerEdit}>
               <PencilSquare className="w-5 h-5" />
             </IconButton>
             <IconButton
@@ -73,7 +77,7 @@ const CertificationItem: FunctionComponent<CertificationItemProps> = ({ certific
                   onConfirm: async() => {
                     try {
                       setLoading(true);
-                      await deleteOneCertificate(certificate);
+                      await deleteOne(certificate);
                       setSuccess(true);
                     } catch (error) {
                       console.log(error);
