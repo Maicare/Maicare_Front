@@ -7,7 +7,6 @@ import { FormProvider, Resolver, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import InputControl from "@/common/components/InputControl";
 import Button from "@/components/common/Buttons/Button";
-import Textarea from "@/components/common/FormFields/Textarea";
 import TextareaControlled from "@/components/common/FormFields/TextareaControlled";
 type Props = FormProps<Experience | undefined> & {
   employeeId: number;

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { FunctionComponent, useEffect, useState } from "react";
+import React, { FunctionComponent, useState } from "react";
 import { fullDateFormat } from "@/utils/timeFormatting";
 import PencilSquare from "@/components/icons/PencilSquare";
 import TrashIcon from "@/components/icons/TrashIcon";

@@ -1,6 +1,5 @@
 "use client";
 
-import Loader from "@/components/common/loader";
 import CertificationForm from "@/components/employee/certificates/CertificateForm";
 import CertificatesList from "@/components/employee/certificates/CertificatesList";
 import EmployeeBackground from "@/components/employee/EmployeeBackground";
