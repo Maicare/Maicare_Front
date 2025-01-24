@@ -105,7 +105,7 @@ export function useEmployee({ search, position, department, out_of_service, loca
     const readEmployeeExperiences = async (id: number, _options?: ApiOptions) => {
 
         try {
-            const { message, success, data, error } = await useApi<Experience[]>(ApiRoutes.Employee.ReadExperiences.replace("{id}", id.toString()), "GET", {});
+            const { message, success:_success, data, error } = await useApi<Experience[]>(ApiRoutes.Employee.ReadExperiences.replace("{id}", id.toString()), "GET", {});
             if (!data)
                 throw new Error(error || message || "An unknown error occurred");
 

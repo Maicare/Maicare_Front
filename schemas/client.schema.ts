@@ -16,7 +16,7 @@ export const CreateClientSchema = yup.object({
   last_name: yup.string().required("Last name is required"),
   email: yup.string().email("Invalid email").required("Email is required"),
   organisation: yup.string().required("Organisation is required"),
-  location: yup.number().required("Location is required"),
+  location_id: yup.number().required("Location is required"),
   legal_measure: yup.string().required("Legal measure is required"),
   birthplace: yup.string().required("Birthplace is required"),
   departement: yup.string().required("Department is required"),

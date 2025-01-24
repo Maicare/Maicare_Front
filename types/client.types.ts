@@ -39,7 +39,7 @@ export type CreateClientInput = {
     last_name: string;
     email: string;
     organisation: string;
-    location: Id;
+    location_id: Id;
     legal_measure: string;
     birthplace: string;
     departement: string;
@@ -112,4 +112,11 @@ export type Client = {
     departure_report?: string;
     profile_picture?: string;
     sender_id: Id;
+}
+export type ClientsSearchParams = {
+    search?: string;
+    status?: string;
+    location_id?: Id;
+    page: number;
+    page_size: number;
 }
