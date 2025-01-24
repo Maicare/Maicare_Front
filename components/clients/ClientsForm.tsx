@@ -15,6 +15,9 @@ import { SOURCE_OPTIONS } from "@/common/data/gender.data";
 import { ControlledLocationSelect } from "../ControlledLocationSelect/ControlledLocationSelect";
 import AddressesControlled from "../address/AddressesControlled";
 import FilesUploader from "@/common/components/FilesUploader";
+import { useRouter } from "next/navigation";
+import { useSnackbar } from "notistack";
+import { ControlledSenderSelect } from "../ControlledSenderSelect/ControlledSenderSelect";
 
 
 
@@ -27,6 +30,8 @@ type PropsType = {
 
 export const ClientsForm: FunctionComponent<PropsType> = ({ }) => {
     const { createOne } = useClient({ autoFetch: false });
+    const router = useRouter();
+    const { enqueueSnackbar } = useSnackbar();
     const methods = useForm<CreateClientInput>({
         resolver: yupResolver(CreateClientSchema) as Resolver<CreateClientInput>,
         defaultValues: {
@@ -34,7 +39,7 @@ export const ClientsForm: FunctionComponent<PropsType> = ({ }) => {
             last_name: "",
             email: "",
             organisation: "",
-            location: 0,
+            location_id: 0,
             legal_measure: "",
             birthplace: "",
             departement: "",
@@ -50,21 +55,24 @@ export const ClientsForm: FunctionComponent<PropsType> = ({ }) => {
             removed_identity_documents: undefined,
             departure_reason: undefined,
             departure_report: undefined,
-            sender_id:1
+            sender_id: 0
         }
     });
 
     const {
         handleSubmit,
-        formState: { isSubmitting,errors },
-        watch
+        formState: { isSubmitting, errors },
+        watch,
     } = methods;
-    console.log({errors})
     const adresses = watch("addresses");
     const onSubmit = async (data: CreateClientInput) => {
         await createOne(data, { displayProgress: true, displaySuccess: true });
+        router.back();
     };
 
+    if (errors && Object.values(errors).length) {
+        enqueueSnackbar(Object.values(errors)?.[0]?.message, { variant: "error" });
+    }
 
     return (
         <>
@@ -213,9 +221,16 @@ export const ClientsForm: FunctionComponent<PropsType> = ({ }) => {
                         </div>
                         <div className="flex flex-col gap-9">
                             <Panel containerClassName="p-6.5 pb-5" title={"Locatiegegevens"}>
+                                <ControlledSenderSelect
+                                    id={"sender_id"}
+                                    name={"sender_id"}
+                                    label={"Contact"}
+                                    className="w-full mb-4.5"
+                                    required={true}
+                                />
                                 <ControlledLocationSelect
-                                    id={"location"}
-                                    name={"location"}
+                                    id={"location_id"}
+                                    name={"location_id"}
                                     label={"Locatie"}
                                     className="w-full mb-4.5"
                                     required={true}
