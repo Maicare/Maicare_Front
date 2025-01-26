@@ -1,11 +1,12 @@
 import api from "@/common/api/axios";
+import ApiRoutes from "@/common/api/routes";
 import { PaginatedResponse } from "@/common/types/pagination.types";
 import { Episode } from "@/types/episode.types";
 import { PaginationParams } from "@/types/pagination.types";
 import { useState } from "react";
 import useSWR from "swr";
 
-export function useEpisode(clientId?: Number, params?: PaginationParams) {
+export function useEpisode(clientId: Number, params?: PaginationParams) {
   const [page, setPage] = useState(params?.page || 1);
   const page_size = params?.page_size || 10;
 
@@ -15,7 +16,10 @@ export function useEpisode(clientId?: Number, params?: PaginationParams) {
     error,
     mutate,
   } = useSWR<PaginatedResponse<Episode>>(
-    `client/emotionalstate_list/${clientId}?page=${page}&page_size=${page_size}`,
+    `${ApiRoutes.Client.Medical.Episodes.ReadAll.replace(
+      "{id}",
+      clientId.toString()
+    )}?page=${page}&page_size=${page_size}`,
     async (url) => {
       const response = await api.get(url);
       if (!response.data.data) {

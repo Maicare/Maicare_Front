@@ -4,8 +4,9 @@ import { useState } from "react";
 import useSWR from "swr";
 import { Diagnosis } from "@/types/diagnosis.types";
 import { PaginationParams } from "@/types/pagination.types";
+import ApiRoutes from "@/common/api/routes";
 
-export function useDiagnosis(clientId?: Number, params?: PaginationParams) {
+export function useDiagnosis(clientId: Number, params?: PaginationParams) {
   const [page, setPage] = useState(params?.page || 1);
   const page_size = params?.page_size || 10;
 
@@ -15,7 +16,10 @@ export function useDiagnosis(clientId?: Number, params?: PaginationParams) {
     error,
     mutate,
   } = useSWR<PaginatedResponse<Diagnosis>>(
-    `client/diagnosis_list/${clientId}?page=${page}&page_size=${page_size}&ordering=-date_of_diagnosis`,
+    `${ApiRoutes.Client.Medical.Diagnosis.ReadAll.replace(
+      "{id}",
+      clientId.toString()
+    )}?page=${page}&page_size=${page_size}&ordering=-date_of_diagnosis`,
     async (url) => {
       const response = await api.get(url);
       if (!response.data.data) {
