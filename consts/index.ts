@@ -31,3 +31,16 @@ export const GENDER_OPTIONS: SelectionOption[] = [
 
 // TODO: this is assumed to be 10, it should come from the backend
 export const PAGE_SIZE = 10;
+
+export const DIAGNOSIS_SEVERITY_ARRAY = ["Mild", "Moderate", "Severe"] as const;
+
+export const ALLERGY_TYPE_ARRAY = [
+  "Voedsel",
+  "Medicijn",
+  "Insect",
+  "Latex",
+  "Schimmel",
+  "Huisdier",
+  "Pollen",
+  "Overig",
+] as const;
