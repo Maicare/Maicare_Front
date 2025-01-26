@@ -1,20 +1,9 @@
 
-// import { useModal } from "@/components/providers/ModalProvider";
-// import { getDangerActionConfirmationModal } from "@/components/Modals/DangerActionConfirmation";
-// import { useDeleteEmployee } from "@/utils/employees/deleteEmployee";
-
-// import EmployeeCertificationsSummary from "@/components/EmployeeDetails/EmployeeCertificationsSummary";
-// import EmployeeEducationsSummary from "@/components/EmployeeDetails/EmployeeEducationsSummary";
-// import EmployeeExperiencesSummary from "@/components/EmployeeDetails/EmployeeExperiencesSummary";
-// import EmployeeRolesSummary from "@/components/EmployeeDetails/EmployeeRolesSummary";
-// import LinkButton from "@/components/buttons/LinkButton";
 import Link from "next/link";
 import PencilSquare from "@/components/icons/PencilSquare";
 import TrashIcon from "@/components/icons/TrashIcon";
 import CheckIcon from "@/components/icons/CheckIcon";
-// import ChangePasswordForm from "@/components/forms/ChangePasswordForm";
 import Panel from "../common/Panel/Panel";
-import usePermissions from "@/common/hooks/use-permissions";
 import { PermitableComponent } from "@/common/components/permitable-component";
 import { PermissionsObjects } from "@/common/data/permission.data";
 import IconButton from "../common/Buttons/IconButton";
@@ -37,7 +26,6 @@ interface EmployeeDetailsProps {
 
 const EmployeeDetails: React.FC<EmployeeDetailsProps> = ({ employeeId, showAsProfile = false }) => {
   const router = useRouter();
-  const { can,transformToPermissionName } = usePermissions();
   const { deleteOne } = useEmployee({autoFetch:false})
   const [isLoading,setIsLoading] = useState(false);
   const [isSuccess,setIsSuccess] = useState(false);
@@ -151,11 +139,6 @@ const EmployeeDetails: React.FC<EmployeeDetailsProps> = ({ employeeId, showAsPro
             <Panel
               title={"Rollen"}
               containerClassName="px-7 py-4"
-              sideActions={
-                can(transformToPermissionName(PermissionsObjects.ViewEmployee)) && (//consts.EMPLOYEE_PERMISSIONS_VIEW
-                  <LinkButton text={"Volledige Rollijst"} href={`/employees/${employeeId}/teams`} />
-                )
-              }
             >
               <EmployeeRolesSummary employeeId={employeeId} />
             </Panel>
