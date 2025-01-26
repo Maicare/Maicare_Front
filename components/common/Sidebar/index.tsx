@@ -586,15 +586,6 @@ const EmployeeMenu: FunctionComponent = () => {
             return pathname.startsWith(`/employees/${employeeId}/experiences`);
           },
         },
-        {
-          completeHref: `/employees/${employeeId}/teams`,
-          icon: <RoleIcon width={18} height={18} />,
-          children: "Rollen",
-          permission: PermissionsObjects.ViewEmployee,
-          getIsActive: (pathname) => {
-            return pathname.startsWith(`/employees/${employeeId}/teams`);
-          },
-        },
       ]}
       title={
         <Link href={"/employees"} className="flex items-center">
