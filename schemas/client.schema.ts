@@ -42,3 +42,12 @@ export const CreateClientSchema = yup.object({
   departure_report: yup.string().optional(),
   sender_id: yup.number().optional().default(1)
 });
+
+export const ClientTerminationform = yup.object().shape({
+  departure_report: yup.string().required("Geef alstublieft het afsluitende rapport op"),
+  departure_reason: yup.string().required("Geef alstublieft de reden van vertrek op"),
+});
+
+export const ClientUpdateStatus = yup.object().shape({
+  status: yup.string().required("Status is required"),
+});
