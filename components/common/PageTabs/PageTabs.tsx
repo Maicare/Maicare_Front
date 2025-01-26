@@ -28,7 +28,7 @@ const PageTabs: FunctionComponent<Props> = ({ tabs, title, backHref }) => {
         <span>{title}</span>
       </h3>
       <ul className="flex flex-wrap gap-3">
-        {tabs.map(({ href, label }, index) => (
+        {tabs.map(({ href, label }) => (
           <li key={href}>
             <Link
               href={href}

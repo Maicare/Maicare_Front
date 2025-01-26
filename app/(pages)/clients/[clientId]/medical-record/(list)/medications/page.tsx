@@ -2,7 +2,7 @@
 
 import React, { FunctionComponent, useMemo } from "react";
 import { ColumnDef } from "@tanstack/table-core";
-import { useModal } from "@/components/providers/ModalProvider";
+// import { useModal } from "@/components/providers/ModalProvider";
 import Link from "next/link";
 import PencilSquare from "@/components/icons/PencilSquare";
 import { fullDateFormat } from "@/utils/timeFormatting";
@@ -14,7 +14,7 @@ import StatusBadge from "@/components/common/StatusBadge/StatusBadge";
 import LinkButton from "@/components/common/Buttons/LinkButton";
 import { Loader } from "lucide-react";
 import PaginatedTable from "@/components/common/PaginatedTable/PaginatedTable";
-import { getDangerActionConfirmationModal } from "@/components/common/Modals/DangerActionConfirmation";
+// import { getDangerActionConfirmationModal } from "@/components/common/Modals/DangerActionConfirmation";
 import DetailCell from "@/components/common/DetailCell";
 import IconButton from "@/components/common/Buttons/IconButton";
 import { useParams } from "next/navigation";
@@ -23,10 +23,6 @@ const MedicationsPage: FunctionComponent = () => {
   const params = useParams();
   const clientIdParam = params?.clientId;
   const clientId = clientIdParam as string;
-
-  if (!clientId) {
-    return null;
-  }
 
   const {
     medications: data,
@@ -92,6 +88,10 @@ const MedicationsPage: FunctionComponent = () => {
     ];
   }, []);
 
+  if (!clientId) {
+    return null;
+  }
+
   return (
     <>
       <div className="flex flex-wrap items-center p-4">
@@ -147,12 +147,12 @@ const RowDetails: FunctionComponent<RowDetailsProps> = ({ data, clientId }) => {
   //   isSuccess: isDeleted,
   // } = useDeleteMedication(clientId);
 
-  const { open } = useModal(
-    getDangerActionConfirmationModal({
-      msg: "Weet je zeker dat je deze medicatie wilt verwijderen?",
-      title: "Medicatie Verwijderen",
-    })
-  );
+  // const { open } = useModal(
+  //   getDangerActionConfirmationModal({
+  //     msg: "Weet je zeker dat je deze medicatie wilt verwijderen?",
+  //     title: "Medicatie Verwijderen",
+  //   })
+  // );
 
   return (
     <div className={"grid grid-cols-3 gap-2"}>

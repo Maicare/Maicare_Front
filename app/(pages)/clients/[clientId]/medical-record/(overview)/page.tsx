@@ -1,3 +1,5 @@
+"use client";
+
 import React, { FunctionComponent } from "react";
 import Panel from "@/components/common/Panel/Panel";
 import LinkButton from "@/components/common/Buttons/LinkButton";
@@ -5,12 +7,17 @@ import AllergiesSummary from "@/components/medical-record/AllergiesSummary";
 import DiagnosisSummary from "@/components/medical-record/DiagnosisSummary";
 import EpisodesSummary from "@/components/medical-record/EpisodesSummary";
 import MedicationsSummary from "@/components/medical-record/MedicationsSummary";
+import { useParams } from "next/navigation";
 
-type Props = {
-  params: { clientId: string };
-};
+const Page: FunctionComponent = () => {
+  const params = useParams();
+  const clientIdParam = params?.clientId;
+  const clientId = clientIdParam as string;
 
-const Page: FunctionComponent<Props> = ({ params: { clientId } }) => {
+  if (!clientId) {
+    return null;
+  }
+
   return (
     <div className="grid grid-cols-1 gap-9 sm:grid-cols-2">
       <div className="flex flex-col gap-9">

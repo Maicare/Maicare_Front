@@ -2,7 +2,7 @@
 
 import React, { FunctionComponent, useMemo } from "react";
 import { ColumnDef, Row } from "@tanstack/table-core";
-import { useModal } from "@/components/providers/ModalProvider";
+// import { useModal } from "@/components/providers/ModalProvider";
 
 import Link from "next/link";
 import PencilSquare from "@/components/icons/PencilSquare";
@@ -14,17 +14,13 @@ import PaginatedTable from "@/components/common/PaginatedTable/PaginatedTable";
 import LinkButton from "@/components/common/Buttons/LinkButton";
 import DetailCell from "@/components/common/DetailCell";
 import IconButton from "@/components/common/Buttons/IconButton";
-import { getDangerActionConfirmationModal } from "@/components/common/Modals/DangerActionConfirmation";
+// import { getDangerActionConfirmationModal } from "@/components/common/Modals/DangerActionConfirmation";
 import { useParams } from "next/navigation";
 
 const AllergiesPage: FunctionComponent = () => {
   const params = useParams();
   const clientIdParam = params?.clientId;
   const clientId = clientIdParam as string;
-
-  if (!clientId) {
-    return null;
-  }
 
   const {
     allergies: data,
@@ -56,6 +52,10 @@ const AllergiesPage: FunctionComponent = () => {
       },
     ];
   }, []);
+
+  if (!clientId) {
+    return null;
+  }
 
   const renderRowDetails = ({ original }: Row<Allergy>) => {
     return <RowDetails clientId={parseInt(clientId)} data={original} />;
@@ -105,12 +105,12 @@ const RowDetails: FunctionComponent<RowDetailsProps> = ({ data, clientId }) => {
   //   isSuccess: isDeleted,
   // } = useDeleteAllergy(data.client);
 
-  const { open } = useModal(
-    getDangerActionConfirmationModal({
-      msg: "Weet je zeker dat je deze allergie wilt verwijderen?",
-      title: "Allergie Verwijderen",
-    })
-  );
+  // const { open } = useModal(
+  //   getDangerActionConfirmationModal({
+  //     msg: "Weet je zeker dat je deze allergie wilt verwijderen?",
+  //     title: "Allergie Verwijderen",
+  //   })
+  // );
 
   return (
     <div className={"grid grid-cols-3 gap-2"}>

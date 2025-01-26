@@ -1,9 +1,9 @@
 "use client";
 
 import React, { FunctionComponent, useMemo } from "react";
-import { ColumnDef, createColumnHelper, Row } from "@tanstack/table-core";
+import { ColumnDef, Row } from "@tanstack/table-core";
 import { fullDateTimeFormat } from "@/utils/timeFormatting";
-import { useModal } from "@/components/providers/ModalProvider";
+// import { useModal } from "@/components/providers/ModalProvider";
 import Link from "next/link";
 import PencilSquare from "@/components/icons/PencilSquare";
 import { Episode } from "@/types/episode.types";
@@ -13,7 +13,7 @@ import { convertIntensityToSeverity } from "@/utils/convertIntensityToSeverity";
 import LinkButton from "@/components/common/Buttons/LinkButton";
 import Loader from "@/components/common/loader";
 import PaginatedTable from "@/components/common/PaginatedTable/PaginatedTable";
-import { getDangerActionConfirmationModal } from "@/components/common/Modals/DangerActionConfirmation";
+// import { getDangerActionConfirmationModal } from "@/components/common/Modals/DangerActionConfirmation";
 import DetailCell from "@/components/common/DetailCell";
 import IconButton from "@/components/common/Buttons/IconButton";
 import { useParams } from "next/navigation";
@@ -22,10 +22,6 @@ const EpisodesPage: FunctionComponent = () => {
   const params = useParams();
   const clientIdParam = params?.clientId;
   const clientId = clientIdParam as string;
-
-  if (!clientId) {
-    return null;
-  }
 
   const {
     episodes: data,
@@ -60,6 +56,10 @@ const EpisodesPage: FunctionComponent = () => {
       },
     ];
   }, []);
+
+  if (!clientId) {
+    return null;
+  }
 
   const renderRowDetails = ({ original }: Row<Episode>) => {
     return <RowDetails data={original} clientId={parseInt(clientId)} />;
@@ -108,12 +108,12 @@ const RowDetails: FunctionComponent<RowDetailsProps> = ({ data, clientId }) => {
   //   isSuccess: isDeleted,
   // } = useDeleteEpisode(data.client);
 
-  const { open } = useModal(
-    getDangerActionConfirmationModal({
-      msg: "Weet je zeker dat je deze episode wilt verwijderen?",
-      title: "Episode Verwijderen",
-    })
-  );
+  // const { open } = useModal(
+  //   getDangerActionConfirmationModal({
+  //     msg: "Weet je zeker dat je deze episode wilt verwijderen?",
+  //     title: "Episode Verwijderen",
+  //   })
+  // );
 
   return (
     <div className={"grid grid-cols-2 gap-2"}>

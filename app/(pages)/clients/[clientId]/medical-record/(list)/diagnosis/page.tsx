@@ -1,11 +1,11 @@
 "use client";
 
-import React, { FunctionComponent, useEffect, useMemo } from "react";
-import { ColumnDef, createColumnHelper } from "@tanstack/table-core";
+import React, { FunctionComponent, useMemo } from "react";
+import { ColumnDef } from "@tanstack/table-core";
 import { fullDateFormat } from "@/utils/timeFormatting";
-import TrashIcon from "@/components/icons/TrashIcon";
-import CheckIcon from "@/components/icons/CheckIcon";
-import { useModal } from "@/components/providers/ModalProvider";
+// import TrashIcon from "@/components/icons/TrashIcon";
+// import CheckIcon from "@/components/icons/CheckIcon";
+// import { useModal } from "@/components/providers/ModalProvider";
 import Link from "next/link";
 import PencilSquare from "@/components/icons/PencilSquare";
 import { useDiagnosis } from "@/hooks/diagnosis/use-diagnosis";
@@ -14,7 +14,7 @@ import Severity from "@/components/common/Severity/Severity";
 import PaginatedTable from "@/components/common/PaginatedTable/PaginatedTable";
 import LinkButton from "@/components/common/Buttons/LinkButton";
 import Loader from "@/components/common/loader";
-import { getDangerActionConfirmationModal } from "@/components/common/Modals/DangerActionConfirmation";
+// import { getDangerActionConfirmationModal } from "@/components/common/Modals/DangerActionConfirmation";
 import DetailCell from "@/components/common/DetailCell";
 import IconButton from "@/components/common/Buttons/IconButton";
 import { useParams } from "next/navigation";
@@ -23,10 +23,6 @@ const DiagnosisPage: FunctionComponent = () => {
   const params = useParams();
   const clientIdParam = params?.clientId;
   const clientId = clientIdParam as string;
-
-  if (!clientId) {
-    return null;
-  }
 
   const {
     setPage,
@@ -67,6 +63,10 @@ const DiagnosisPage: FunctionComponent = () => {
       },
     ];
   }, []);
+
+  if (!clientId) {
+    return null;
+  }
 
   return (
     <>
@@ -114,12 +114,12 @@ const RowDetails: FunctionComponent<RowDetailsProps> = ({ data, clientId }) => {
   //   isSuccess: isDeleted,
   // } = useDeleteDiagnosis(data.client);
 
-  const { open } = useModal(
-    getDangerActionConfirmationModal({
-      msg: "Weet je zeker dat je deze diagnose wilt verwijderen?",
-      title: "Diagnose Verwijderen",
-    })
-  );
+  // const { open } = useModal(
+  //   getDangerActionConfirmationModal({
+  //     msg: "Weet je zeker dat je deze diagnose wilt verwijderen?",
+  //     title: "Diagnose Verwijderen",
+  //   })
+  // );
 
   return (
     <div className={"grid grid-cols-3 gap-2"}>
