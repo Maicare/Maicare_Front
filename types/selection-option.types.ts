@@ -5,3 +5,9 @@ export type GenericSelectionOption<L extends ReactNode, V> = {
   value: V;
 };
 
+export type ComboboxOption<TData> = GenericSelectionOption<ReactNode, TData>;
+
+export type BaseObject<IdType = number | string> = {
+  id: IdType;
+  name?: string
+};
