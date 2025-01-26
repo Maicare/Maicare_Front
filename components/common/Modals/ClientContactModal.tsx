@@ -1,8 +1,6 @@
 import React, { FunctionComponent } from "react";
 import InfoIcon from "@/components/icons/InfoIcon";
 // import CreateOpContactModal from "@/components/Modals/CreateOpContactModal";
-import { useMutation, useQueryClient } from "react-query";
-import { useModal } from "@/components/providers/ModalProvider";
 import FormModal from "./FormModal";
 import { ModalProps } from "@/common/types/modal-props.types";
 import Button from "../Buttons/Button";
@@ -20,7 +18,7 @@ import ContactSelector from "@/components/ContactSelector/ContactSelector";
 // };
 
 
-const ClientContactModal: FunctionComponent<ModalProps> = ({ open, onClose, additionalProps }) => {
+const ClientContactModal: FunctionComponent<ModalProps> = ({ open, onClose }) => {
     // const { mutate: assign, isLoading } = usePatchClientContact(
     //     additionalProps?.clientId || additionalProps?.client
     // );

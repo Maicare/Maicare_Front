@@ -1,24 +1,14 @@
-import { FunctionComponent, useCallback, useState } from "react";
+import { FunctionComponent, useState } from "react";
 import FormModal from "./FormModal";
 import CameraIcon from "@/components/svg/CameraIcon";
 import ModalActionButton from "../Buttons/ModalActionButton";
-import * as Yup from "yup";
-import { Formik, FormikConfig } from "formik";
 import ProfilePicture from "../profilePicture/profile-picture";
-import { UseMutationResult } from "react-query";
 import { ModalProps } from "@/common/types/modal.types";
 // import { usePatchClientProfilePicture } from "@/utils/clients/patchClient";
-
-type Props = ModalProps & {
-  additionalProps: {
-    id: number;
-  };
-};
 
 
 
 export const ClientProfilePictureModal: FunctionComponent<ModalProps> = ({
-  additionalProps,
   ...props
 }) => {
   // const mutation = usePatchClientProfilePicture(additionalProps.id);
@@ -30,31 +20,21 @@ export const ClientProfilePictureModal: FunctionComponent<ModalProps> = ({
   );
 };
 
-const pictureSchema: Yup.ObjectSchema<{ profile_picture: string }> = Yup.object().shape({
-  profile_picture: Yup.string().required("Geef alstublieft een profielfoto op"),
-});
-
 type UpdatePicModalFormProps = {
-  // onUpdated: () => void;
-  // mutation: UseMutationResult<any, unknown, string, unknown>;
+  onUpdated?: () => void;
+  // mutation?: UseMutationResult<any, unknown, string, unknown>;
 };
 
-type FormType = {
-  profile_picture: string;
-};
 
-const initialValues: FormType = {
-  profile_picture: "",
-};
 
 const UpdatePicModalForm: FunctionComponent<UpdatePicModalFormProps> = ({
   // onUpdated,
   // mutation,
 }) => {
   // const { mutate, isLoading } = mutation;
-  const [errorMessage, setErrorMessage] = useState("");
+  const [errorMessage] = useState("");
   const defaultImageUrl = "/images/user/user-default.png";
-  const [imagePreviewUrl, setImagePreviewUrl] = useState(defaultImageUrl);
+  const [imagePreviewUrl] = useState(defaultImageUrl);
 
   // const onSubmit: FormikConfig<FormType>["onSubmit"] = useCallback(
   //   (data, { resetForm }) => {

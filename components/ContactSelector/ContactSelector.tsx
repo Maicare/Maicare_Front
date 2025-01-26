@@ -1,4 +1,4 @@
-import React, { FunctionComponent, useMemo, useState } from "react";
+import React, { FunctionComponent, useMemo } from "react";
 import FormCombobox from "@/common/components/Combobox";
 import { useContact } from "@/hooks/contact/use-contact";
 import { Contact } from "@/types/contacts.types";
@@ -8,7 +8,7 @@ const ContactSelector: FunctionComponent<{
   name: string;
   className?: string;
 }> = ({ name, className }) => {
-  const [query, setQuery] = useState<string>("");
+  // const [query, setQuery] = useState<string>("");
 
   const { contacts } = useContact();
 
@@ -26,8 +26,8 @@ const ContactSelector: FunctionComponent<{
       className={className}
       options={options}
       displayValue={(value) => value.name || ""}
-      handleQueryChange={(e) => {
-        setQuery(e.target.value);
+      handleQueryChange={() => {
+        // setQuery(e.target.value);
       }}
       label={"Opdrachtgever"}
       placeholder={"Selecteer een opdrachtgever"}

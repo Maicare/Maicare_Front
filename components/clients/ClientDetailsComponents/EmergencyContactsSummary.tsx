@@ -3,7 +3,6 @@
 import React, { FunctionComponent } from "react";
 import { useRouter } from "next/navigation";
 import DetailCell from "../../common/DetailCell";
-import Loader from "../../common/loader";
 
 type Props = {
     clientId: number | undefined;

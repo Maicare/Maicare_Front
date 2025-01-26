@@ -1,10 +1,9 @@
 "use client";
 
-import { useRouter } from "next/navigation";
-
 import React, { FunctionComponent } from "react";
 // import { useLatestReports } from "@/utils/reports/getLatestReports";
 import { shortDateTimeFormat } from "@/utils/timeFormatting";
+import { Any } from "@/common/types/types";
 
 type ReportsListItem = {
   id: number;
@@ -17,7 +16,7 @@ type ReportsListItem = {
   author: string;
   full_name: string;
   profile_picture: string;
-  type: any;
+  type: Any;
 };
 
 
@@ -91,12 +90,7 @@ const mockReports: ReportsListItem[] = [
 
 
 
-type Props = {
-
-};
-
-
-const ClientReportsSummary: FunctionComponent<Props> = () => {
+const ClientReportsSummary: FunctionComponent = () => {
   // const { data, isLoading, isError } = useLatestReports(clientId, 5);
 
   if (!mockReports) return <div>Geen gegevens opgehaald.</div>;
@@ -119,7 +113,6 @@ type ReportsItemProps = {
 };
 
 const ReportsItem: FunctionComponent<ReportsItemProps> = ({ reports }) => {
-  const router = useRouter();
 
   return (
     <li className="grid grid-cols-3 px-4 py-2 cursor-pointer hover:bg-gray-3 dark:hover:bg-slate-700 rounded-2xl">

@@ -7,9 +7,7 @@ import { DOCUMENT_LABELS } from "@/consts";
 import bytesToSize from "@/utils/sizeConverter";
 import DetailCell from "../../common/DetailCell";
 
-type Props = {
 
-};
 
 type Document = {
   id: string;
@@ -21,7 +19,7 @@ type Document = {
 
 const mockData: Document[] = [];
 
-const ClientDocumentsSummary: FunctionComponent<Props> = () => {
+const ClientDocumentsSummary: FunctionComponent = () => {
   // const { data, isLoading, isError } = useDocumentList(clientId.toString());
 
   if (mockData.length === 0) return <div>Geen documenten gevonden</div>;

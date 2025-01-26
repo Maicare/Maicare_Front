@@ -5,7 +5,7 @@ import TextareaControlled from "../FormFields/TextareaControlled";
 import FormModal from "./FormModal";
 import { ModalProps } from "@/common/types/modal.types";
 import InputControl from "@/common/components/InputControl";
-import { useForm, FormProvider, Resolver } from "react-hook-form";
+import { useForm, FormProvider } from "react-hook-form";
 import { DepartureEntries } from "@/types/contracts.types";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { ClientTerminationform } from "@/schemas/client.schema";
@@ -23,8 +23,7 @@ const TerminationModal: FunctionComponent<ModalProps> = ({ additionalProps, ...p
 
   const {
     handleSubmit,
-    formState: { isSubmitting },
-    reset
+    formState: { isSubmitting }
   } = methods;
 
 
@@ -63,7 +62,7 @@ const TerminationModal: FunctionComponent<ModalProps> = ({ additionalProps, ...p
             <Button buttonType={"Outline"} onClick={props.onClose}>
               Annuleren
             </Button>
-            <Button type="submit">Bevestigen</Button>
+            <Button isLoading={isSubmitting} type="submit">Bevestigen</Button>
           </div>
         </form>
       </FormProvider>

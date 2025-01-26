@@ -1,12 +1,10 @@
-import React, { FunctionComponent, useEffect, useMemo } from "react";
-import { FormikProvider, useFormik } from "formik";
+import React, { FunctionComponent, useEffect } from "react";
 import { STATUS_OPTIONS } from "@/consts";
 import { useModal } from "@/components/providers/ModalProvider";
 import ControlledRadioGroup from "@/common/components/ControlledRadioGroup";
-import { DepartureEntries } from "@/types/contracts.types";
 import TerminationModal from "../../common/Modals/TerminationModal";
 import Button from "../../common/Buttons/Button";
-import { useForm, FormProvider, Resolver } from "react-hook-form";
+import { useForm, FormProvider } from "react-hook-form";
 import { Client } from "@/types/client.types";
 import { ClientUpdateStatus } from "@/schemas/client.schema";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -37,6 +35,7 @@ const UpdateClientStatus: FunctionComponent<{
     if (client) {
       reset({ status: client.status });
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [client]);
 
 

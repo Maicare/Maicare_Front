@@ -3,14 +3,6 @@
 import { Client as ClientType } from "@/types/client.types";
 import React, { FunctionComponent } from "react";
 import DetailCell from "../../common/DetailCell";
-import { mappingGender } from "@/common/data/gender.data";
-import dayjs from "dayjs";
-import { useModal } from "@/components/providers/ModalProvider";
-import { ClientProfilePictureModal } from "../../common/Modals/ProfilePictureModal";
-import ProfilePicture from "../../common/profilePicture/profile-picture";
-import IconButton from "../../common/Buttons/IconButton";
-import CameraIcon from "../../svg/CameraIcon";
-
 
 type Props = {
     client: ClientType | null;

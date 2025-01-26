@@ -9,7 +9,6 @@ import TrashIcon from "../icons/TrashIcon";
 import { useClient } from "@/hooks/client/use-client";
 import { Client as ClientType } from "@/types/client.types";
 import LinkButton from "../common/Buttons/LinkButton";
-import { Button } from "@headlessui/react";
 import { DOCUMENT_LABEL_OPTIONS, DOCUMENT_LABELS } from "@/consts";
 import ClientInformation from "./ClientDetailsComponents/ClientInformation";
 import ClientLocationDetails from "./ClientDetailsComponents/ClientLocationDetails";
@@ -36,12 +35,12 @@ const ClientDetails: FunctionComponent<PropsType> = ({ clientId }) => {
     const [clientData, setClientData] = useState<ClientType | null>(null);
 
     const TOTAL_REQUIRED_DOCUMENTS = Object.keys(DOCUMENT_LABELS).length - 1;
-    let ALREADY_UPLOADED_DOCUMENTS = [];
+    // let ALREADY_UPLOADED_DOCUMENTS = [];
 
-    let JUST_DOCUMENT_LABEL_OPTIONS = DOCUMENT_LABEL_OPTIONS.filter(
+    const JUST_DOCUMENT_LABEL_OPTIONS = DOCUMENT_LABEL_OPTIONS.filter(
         (option) => option.value !== ""
     );
-    let NOT_UPLOADED_DOCUMENTS = JUST_DOCUMENT_LABEL_OPTIONS.filter(
+    const NOT_UPLOADED_DOCUMENTS = JUST_DOCUMENT_LABEL_OPTIONS.filter(
         (option) => option.value != "other"
     );
 
@@ -53,9 +52,6 @@ const ClientDetails: FunctionComponent<PropsType> = ({ clientId }) => {
         if (clientId) fetchClient(clientId);
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [clientId]);
-
-    console.log("CLIENT", clientData)
-
 
     return (
         <div className="grid grid-cols-1 gap-9 sm:grid-cols-2">
@@ -121,7 +117,7 @@ const ClientDetails: FunctionComponent<PropsType> = ({ clientId }) => {
                         </div>
                     }
                 >
-                    <InvolvedEmployeesSummary clientId={clientData?.id} />
+                    <InvolvedEmployeesSummary />
                 </Panel>
 
                 <ClientContactSummary client={clientData} />
@@ -133,7 +129,7 @@ const ClientDetails: FunctionComponent<PropsType> = ({ clientId }) => {
                         <LinkButton text={"Bekijk Cliëntcontracten"} href={`${clientId}/contracts`} />
                     }
                 >
-                    <ClientContractsSummary client={clientData} />
+                    <ClientContractsSummary />
                 </Panel>
 
                 <Panel

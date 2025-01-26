@@ -1,8 +1,6 @@
 import React, { FunctionComponent, useMemo, useState } from "react";
 import { dateFormat } from "@/utils/timeFormatting";
 import { STATUS_RECORD } from "@/consts";
-import ExpandIcon from "@/components/icons/ExpandIcon";
-import ShrinkIcon from "@/components/icons/ShrinkIcon";
 import Button from "../../common/Buttons/Button";
 
 const mockStatusHistory = [
@@ -43,7 +41,7 @@ const ClientStatusHistory: FunctionComponent = () => {
       return mockStatusHistory ?? [];
     }
     return mockStatusHistory?.slice(0, SHOW_COUNT) ?? [];
-  }, [mockStatusHistory, expanded]);
+  }, [expanded]);
 
   return (
     <div>

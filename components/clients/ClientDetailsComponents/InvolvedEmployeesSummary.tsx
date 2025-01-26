@@ -1,15 +1,9 @@
 "use client";
 
 import React, { FunctionComponent } from "react";
-import { useRouter } from "next/navigation";
 import DetailCell from "../../common/DetailCell";
-import Loader from "../../common/loader";
 import { dateFormat } from "@/utils/timeFormatting";
 import { EMPLOYEE_ASSIGNMENT_RECORD } from "@/consts";
-
-type Props = {
-    clientId: number | undefined;
-};
 
 const fakeData = [
     {
@@ -32,9 +26,8 @@ const fakeData = [
     },
 ];
 
-const InvolvedEmployeesSummary: FunctionComponent<Props> = ({ clientId }) => {
+const InvolvedEmployeesSummary: FunctionComponent = () => {
     // const { data, isLoading } = useEmergencyContacts(clientId);
-    const router = useRouter();
     // if (isLoading) return <Loader />;
     // if (!data) return <div>Geen gegevens opgehaald.</div>;
     // if (data.results?.length === 0) return <div>Geen noodcontacten gevonden</div>;

@@ -1,9 +1,7 @@
 "use client";
 
 import React, { FunctionComponent } from "react";
-import { useRouter } from "next/navigation";
 import DetailCell from "../../common/DetailCell";
-import Loader from "../../common/loader";
 import { Client as ClientType } from "@/types/client.types";
 import Panel from "../../common/Panel/Panel";
 import PencilSquare from "../../icons/PencilSquare";

@@ -1,14 +1,9 @@
 "use client";
 
-import React, { Fragment, FunctionComponent, useMemo } from "react";
-import { Client as ClientType } from "@/types/client.types";
+import React, { FunctionComponent } from "react";
 import MonthsBetween from "@/common/components/MonthsBetween";
 import DetailCell from "../../common/DetailCell";
 import { getRate, rateString } from "@/utils/rate-utils";
-
-type Props = {
-    client: ClientType | null;
-};
 
 const mockData = [
     {
@@ -54,7 +49,7 @@ const mockData = [
     },
 ]
 
-const ClientContractsSummary: FunctionComponent<Props> = ({ client }) => {
+const ClientContractsSummary: FunctionComponent = () => {
     // const { data, isLoading, isError } = useClientContractsList(clientId, {
     //     page_size: 3,
     // });

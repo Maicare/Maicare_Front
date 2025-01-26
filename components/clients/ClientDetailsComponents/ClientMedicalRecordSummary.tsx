@@ -2,11 +2,9 @@ import React, { FunctionComponent } from "react";
 // import DiagnosisSummary from "@/components/medicalRecordOverview/DiagnosisSummary";
 // import MedicationsSummary from "@/components/medicalRecordOverview/MedicationsSummary";
 // import AllergiesSummary from "@/components/medicalRecordOverview/AllergiesSummary";
-type Props = {
 
-};
 
-const ClientMedicalRecordSummary: FunctionComponent<Props> = () => {
+const ClientMedicalRecordSummary: FunctionComponent = () => {
   return (
     <div>
       <h2 className="py-2 px-4 text-sm font-medium uppercase">ALLERGIEËN</h2>
