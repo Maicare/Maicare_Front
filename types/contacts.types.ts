@@ -13,6 +13,13 @@ export const OP_CLIENT_TYPE = [
   "healthcare_institution", // Zorginstelling
 ] as const;
 
+export const OpClientTypeRecord: Record<OpClientType, string> = {
+  main_provider: "Hoofdaanbieder",
+  local_authority: "Gemeente",
+  particular_party: "Particuliere partij",
+  healthcare_institution: "Zorginstelling",
+};
+
 export type ContactType = {
   name?: string;
   email?: string;

@@ -55,9 +55,9 @@ export type CreateClientInput = {
     removed_identity_documents?: string[];
     departure_reason?: string;
     departure_report?: string;
-    sender_id?:Id;
-  };
-  
+    sender_id?: Id;
+};
+
 
 export const initialClientFormValues: ClientFormType = {
     first_name: "",
@@ -85,7 +85,7 @@ export const initialClientFormValues: ClientFormType = {
 };
 
 export type Client = {
-    id:Id;
+    id: Id;
     first_name: string;
     last_name: string;
     email: string;
@@ -112,6 +112,8 @@ export type Client = {
     departure_report?: string;
     profile_picture?: string;
     sender_id: Id;
+    identity?: boolean;
+    status?: string;
 }
 export type ClientsSearchParams = {
     search?: string;
