@@ -1,5 +1,4 @@
-
-import Client from './routes/client';
+import Client from "./routes/client";
 import Auth from "./routes/auth";
 import Employee from "./routes/employee";
 import Role from "./routes/role";
