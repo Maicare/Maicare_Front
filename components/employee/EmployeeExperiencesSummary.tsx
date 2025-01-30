@@ -1,39 +1,25 @@
 "use client";
 
-import React, { FunctionComponent, useEffect, useState } from "react";
+import React, { FunctionComponent } from "react";
 
 import { useRouter } from "next/navigation";
 import Loader from "../common/loader";
 import DetailCell from "../common/DetailCell";
-import { useEmployee } from "@/hooks/employee/use-employee";
-import { Experience } from "@/types/experience.types";
+import { useExperience } from "@/hooks/experience/use-experience";
 
 type Props = {
   employeeId: number;
 };
 
 const EmployeeExperiencesSummary: FunctionComponent<Props> = ({ employeeId }) => {
-  const { readEmployeeExperiences } = useEmployee({ autoFetch:false });
-  const [isLoading, setIsLoading] = useState(true);
-  const [experiences, setExperiences] = useState<Experience[]>([]);
+  const { experiences,isLoading } = useExperience({ autoFetch:false,employeeId:employeeId.toString() });
   const router = useRouter();
-  useEffect(() => {
-      const fetchEducation = async () => {
-        try {
-          const data = await readEmployeeExperiences(employeeId);
-          setExperiences(data);
-          setIsLoading(false);
-        } catch (error) {
-          console.error(error);
-        }
-      };
-      fetchEducation();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [employeeId]);
+
   
   if (isLoading) return <Loader />;
 
-  if (experiences.length === 0) return <div>Geen ervaringen gevonden</div>;
+  if (!experiences || experiences.length === 0) return <div>Geen ervaringen gevonden</div>;
+  console.log({experiences})
   return (
     <ul className="flex flex-col gap-2">
       {experiences.map((experience) => {

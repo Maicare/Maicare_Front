@@ -40,7 +40,7 @@ export const CreateClientSchema = yup.object({
   removed_identity_documents: yup.array().of(yup.string()).optional(),
   departure_reason: yup.string().optional(),
   departure_report: yup.string().optional(),
-  sender_id: yup.number().optional().default(1)
+  sender_id: yup.number().required()
 });
 
 export const ClientTerminationform = yup.object().shape({

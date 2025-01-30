@@ -18,7 +18,7 @@ export function useClient({ search, status, location_id, page: pageParam = 1, pa
     const [page, setPage] = useState(pageParam);
     const { enqueueSnackbar } = useSnackbar();
     const { start: startProgress, stop: stopProgress } = useProgressBar();
-    const { data: clients, error } = useSWR<PaginatedResponse<Client> | null>(
+    const { data: clients, error,mutate } = useSWR<PaginatedResponse<Client> | null>(
       stringConstructor(ApiRoutes.Client.ReadAll, constructUrlSearchParams({search,status,location_id,page,page_size})), // Endpoint to fetch clients
         async (url) => {
             if (!autoFetch) return {
@@ -74,6 +74,28 @@ export function useClient({ search, status, location_id, page: pageParam = 1, pa
             if (displayProgress) stopProgress();
         }
     }
+    const updateClientPicture = async (id:number,attachement_id:string,options?: ApiOptions) => {
+        const { displayProgress = false, displaySuccess = false } = options || {};
+        try {
+            // Display progress bar
+            if (displayProgress) startProgress();
+            const { message, success, data, error } = await useApi<Client>(ApiRoutes.Client.UpdateProfilePicture.replace("{id}",id.toString()), "PUT", {},{attachement_id});//TODO: add correct type later
+            if (!data)
+                throw new Error(error || message || "An unknown error occurred");
+
+            // Display success message
+            if (displaySuccess && success) {
+                enqueueSnackbar("Employee Deleted successful!", { variant: "success" });
+            }
+            mutate();
+            return data;
+        } catch (err: any) {
+            enqueueSnackbar(err?.response?.data?.message || "Employee Deletion failed", { variant: "error" });
+            throw err;
+        } finally {
+            if (displayProgress) stopProgress();
+        }
+    }
 
     //TODO: Add logic to CRUD user role
     return {
@@ -83,6 +105,7 @@ export function useClient({ search, status, location_id, page: pageParam = 1, pa
         page,
         setPage,
         readOne,
-        createOne
+        createOne,
+        updateClientPicture
     }
 }

@@ -1,41 +1,26 @@
 "use client";
 
-import React, { FunctionComponent, useEffect, useState } from "react";
-// import { useListEducations } from "@/utils/educations/listEducations";
+import React, { FunctionComponent } from "react";
 
 import { useRouter } from "next/navigation";
 import { dateFormat } from "@/utils/timeFormatting";
 import DetailCell from "../common/DetailCell";
-import { Education } from "@/types/education.types";
 import Loader from "../common/loader";
-import { useEmployee } from "@/hooks/employee/use-employee";
+import { useEducation } from "@/hooks/education/use-education";
 
 type Props = {
   employeeId: number;
 };
 
 const EmployeeEducationsSummary: FunctionComponent<Props> = ({ employeeId }) => {
-  const { readEmployeeEducations } = useEmployee({autoFetch:false});
-  const [isLoading,setIsLoading] = useState(true);
-  const [educations,setEducations] = useState<Education[]>([]);
+  const { educations,isLoading } = useEducation({autoFetch:true,employeeId:employeeId.toString()});
+
   const router = useRouter();
-  useEffect(() => {
-    const fetchEducation = async () => {
-      try {
-        const data = await readEmployeeEducations(employeeId);
-        setEducations(data);
-        setIsLoading(false);
-      } catch (error) {
-        console.error(error);
-      }
-    };
-    fetchEducation();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  },[employeeId]);
+
 
   if (isLoading) return <Loader />;
 
-  if (educations.length === 0) return <div>Geen opleidingen gevonden</div>;
+  if (!educations || educations.length === 0) return <div>Geen opleidingen gevonden</div>;
 
   return (
     <ul className="flex flex-col gap-2">
