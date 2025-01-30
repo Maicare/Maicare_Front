@@ -1,4 +1,8 @@
-import React, { FunctionComponent, InputHTMLAttributes, ReactNode } from "react";
+import React, {
+  FunctionComponent,
+  InputHTMLAttributes,
+  ReactNode,
+} from "react";
 import { useFormContext, Controller } from "react-hook-form";
 import { cn } from "@/utils/cn";
 
@@ -6,21 +10,16 @@ type InputFieldType = {
   name: string; // Add name for react-hook-form integration
   label: string;
   type: string;
-  placeholder: string;
+  placeholder?: string;
   icon?: ReactNode;
   className?: string;
   id?: string;
   required?: boolean;
 };
 
-const InputControl: FunctionComponent<InputFieldType & InputHTMLAttributes<HTMLInputElement>> = ({
-  name,
-  required,
-  label,
-  className,
-  icon,
-  ...props
-}) => {
+const InputControl: FunctionComponent<
+  InputFieldType & InputHTMLAttributes<HTMLInputElement>
+> = ({ name, required, label, className, icon, ...props }) => {
   const {
     control,
     formState: { errors },
@@ -28,7 +27,10 @@ const InputControl: FunctionComponent<InputFieldType & InputHTMLAttributes<HTMLI
 
   return (
     <div className={cn("mb-4", className)}>
-      <label htmlFor={name} className="mb-2.5 block font-medium text-slate-800 dark:text-white">
+      <label
+        htmlFor={name}
+        className="mb-2.5 block font-medium text-slate-800 dark:text-white"
+      >
         {label} {required && <span className="text-meta-1">*</span>}
       </label>
       <Controller

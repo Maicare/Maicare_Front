@@ -21,6 +21,11 @@ const ApiRoutes = {
       CreateOne: prefix + "/{id}/medications",
     },
   },
+  Incident: {
+    ReadAll: prefix + "/{id}/incidents",
+    CreateOne: prefix + "/{id}/incidents",
+    ReadOne: prefix + "/{id}/incidents/{id}",
+  },
 };
 
 export default ApiRoutes;
