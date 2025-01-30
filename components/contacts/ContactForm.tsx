@@ -17,6 +17,7 @@ import { useRouter } from "next/navigation";
 type PropsType = {
     contactId?: number | null;
     onSuccess?: () => void;
+    redirect?: boolean;
 }
 
 export type OpClientType = (typeof OP_CLIENT_TYPE)[number];
@@ -29,7 +30,7 @@ const OPTIONS: GenericSelectionOption<string, OpClientType | "">[] = [
     { label: "Zorginstelling", value: "healthcare_institution" },
 ];
 
-const ContactForm: FunctionComponent<PropsType> = ({ contactId,onSuccess }) => {
+const ContactForm: FunctionComponent<PropsType> = ({ contactId,onSuccess,redirect=true }) => {
 
     const router = useRouter();
 
@@ -101,7 +102,9 @@ const ContactForm: FunctionComponent<PropsType> = ({ contactId,onSuccess }) => {
             reset(initialValues);
         }
         mutate();
-        router.replace("/contacts")
+        if (redirect) {
+            router.replace("/contacts")
+        }
 
     };
 

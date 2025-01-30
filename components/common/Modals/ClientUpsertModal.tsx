@@ -15,6 +15,7 @@ const ClientUpsertContactModal: FunctionComponent<ModalProps> = ({
           onClose();
           additionalProps?.onSuccess?.();
         }}
+        redirect={false}
       />
     </FormModal>
   );
