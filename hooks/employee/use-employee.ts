@@ -88,34 +88,30 @@ export function useEmployee({ search, position, department, out_of_service, loca
         }
     }
 
-    const readEmployeeEducations = async (id: number, _options?: ApiOptions) => {
-
+    const updateEmployeePicture = async (id:number,attachement_id:string,options?: ApiOptions) => {
+        const { displayProgress = false, displaySuccess = false } = options || {};
         try {
-            const { message, success, data, error } = await useApi<Education[]>(ApiRoutes.Employee.ReadEducations.replace("{id}", id.toString()), "GET", {});
+            // Display progress bar
+            if (displayProgress) startProgress();
+            const { message, success, data, error } = await useApi<EmployeeDetailsResponse>(ApiRoutes.Employee.UpdateImage.replace("{id}",id.toString()), "PUT", {},{attachement_id});//TODO: add correct type later
             if (!data)
                 throw new Error(error || message || "An unknown error occurred");
 
+            // Display success message
+            if (displaySuccess && success) {
+                enqueueSnackbar("Employee Deleted successful!", { variant: "success" });
+            }
+            mutate();
             return data;
         } catch (err: any) {
-            enqueueSnackbar(err?.response?.data?.message || "Employee Details fetching failed", { variant: "error" });
+            enqueueSnackbar(err?.response?.data?.message || "Employee Deletion failed", { variant: "error" });
             throw err;
+        } finally {
+            if (displayProgress) stopProgress();
         }
-
     }
-    const readEmployeeExperiences = async (id: number, _options?: ApiOptions) => {
 
-        try {
-            const { message, success:_success, data, error } = await useApi<Experience[]>(ApiRoutes.Employee.ReadExperiences.replace("{id}", id.toString()), "GET", {});
-            if (!data)
-                throw new Error(error || message || "An unknown error occurred");
 
-            return data;
-        } catch (err: any) {
-            enqueueSnackbar(err?.response?.data?.message || "Employee Details fetching failed", { variant: "error" });
-            throw err;
-        }
-
-    }
 
     const { mutate: createEmployee, error: createEmployeeError } = useMutation<EmployeeFormType>();
     const { mutate: patchEmployee, error: patchEmployeeError } = useMutation<EmployeeFormType>();
@@ -193,7 +189,6 @@ export function useEmployee({ search, position, department, out_of_service, loca
         setPage,
         addEmployee,
         updateEmployee,
-        readEmployeeEducations,
-        readEmployeeExperiences
+        updateEmployeePicture
     }
 }

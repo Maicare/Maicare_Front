@@ -14,7 +14,7 @@ import CameraIcon from "../../svg/CameraIcon";
 
 type Props = {
     client: ClientType | null;
-};
+}; 
 
 const ClientInformation: FunctionComponent<Props> = ({ client }) => {
 
@@ -26,7 +26,7 @@ const ClientInformation: FunctionComponent<Props> = ({ client }) => {
                 <div
                     onClick={() => {
                         open({
-                            id: client?.id,
+                            id: client?.id,//TODO: add refetch
                         });
                     }}
                     className="relative w-fit cursor-pointer"

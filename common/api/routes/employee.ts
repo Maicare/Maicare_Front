@@ -18,6 +18,7 @@ const ApiRoutes = {
   ReadExperiences: prefix + '/{id}/experience',
   ReadCertificates: prefix + '/{id}/certification',
   UpdateOne: prefix + '/{id}',
+  UpdateImage: prefix + '/{id}/profile_picture',
   DeleteOne: prefix + '/{id}',
 };
 

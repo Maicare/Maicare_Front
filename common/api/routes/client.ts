@@ -2,6 +2,7 @@ const prefix = "/clients";
 const ApiRoutes = {
   ReadAll: prefix,
   ReadOne: prefix + "/{id}",
+  UpdateProfilePicture: prefix + "/{id}/profile_picture",
   CreateOne: prefix,
   Medical: {
     Allergies: {

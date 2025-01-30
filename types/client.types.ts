@@ -55,7 +55,7 @@ export type CreateClientInput = {
     removed_identity_documents?: string[];
     departure_reason?: string;
     departure_report?: string;
-    sender_id?: Id;
+    sender_id: Id;
 };
 
 
