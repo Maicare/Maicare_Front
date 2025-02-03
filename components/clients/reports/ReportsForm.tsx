@@ -8,7 +8,7 @@ import Button from "@/components/common/Buttons/Button";
 import SelectControlled from "@/common/components/SelectControlled";
 import InputControl from "@/common/components/InputControl";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { DAILY_REPORT_TYPES_OPTIONS, EMOTIONAL_STATE_OPTIONS, Report } from "@/types/reports.types";
+import { CreateReport, DAILY_REPORT_TYPES_OPTIONS, EMOTIONAL_STATE_OPTIONS, Report } from "@/types/reports.types";
 import { ReportSchema } from "@/schemas/report.schema";
 import { useReport } from "@/hooks/report/use-report";
 import { Id } from "@/common/types/types";
@@ -17,7 +17,7 @@ import { useAuth } from "@/common/hooks/use-auth";
 
 
 
-const initialValues: Report = {
+const initialValues: CreateReport = {
     title: "",
     report_text: "",
     date: "",
@@ -45,7 +45,7 @@ export const ReportsForm: FunctionComponent<PropsType> = ({
     const { createOne,updateOne } = useReport({ autoFetch: false, clientId });
     const {user} = useAuth();
 
-    const methods = useForm<Report>({
+    const methods = useForm<CreateReport>({
         resolver: yupResolver(ReportSchema),
         defaultValues: report,
     });

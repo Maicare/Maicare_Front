@@ -2,7 +2,7 @@ import { FunctionComponent } from "react";
 import { redirect } from "next/navigation";
 
 const Page: FunctionComponent = (_props) => {
-  redirect("reports/new");
+  redirect("reports-record/reports");
 };
 
 export default Page;

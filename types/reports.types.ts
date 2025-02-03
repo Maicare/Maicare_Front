@@ -8,7 +8,18 @@ export type Report = {
     report_text: string,
     title: string,
     type: ReportTypes|"",
-    id?:Id
+    id?:Id,
+    employee_first_name?:string,
+    employee_last_name?:string,
+}
+export type CreateReport = {
+    date: string,
+    emotional_state: EmotionalState|"",
+    employee_id: Id,
+    report_text: string,
+    title: string,
+    type: ReportTypes|"",
+    id?:Id,
 }
 export enum ReportTypes {
     Morning = "morning_report",
@@ -61,3 +72,24 @@ export enum EmotionalState {
     Depressed = "depressed",
     Angry = "angry",
 };
+export function showEmojies(emotional_state: string) {
+    switch (emotional_state) {
+      case "excited":
+        return "😃 opgewonden";
+      case "happy":
+        return "😊 blij";
+      case "sad":
+        return "😢 verdrietig";
+      case "normal":
+        return "😐 normaal";
+      case "anxious":
+        return "😰 angstig";
+      case "depressed":
+        return "😞 depressief";
+      case "angry":
+        return "😡 boos";
+      default:
+        return "😐";
+    }
+  }
+  

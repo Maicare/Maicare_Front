@@ -5,7 +5,7 @@ import useProgressBar from "@/common/hooks/use-progress-bar";
 import { ApiOptions } from "@/common/types/api.types";
 import { PaginatedResponse } from "@/common/types/pagination.types";
 import { Id } from "@/common/types/types";
-import { Report } from "@/types/reports.types";
+import { CreateReport, Report } from "@/types/reports.types";
 import { constructUrlSearchParams } from "@/utils/construct-search-params";
 import { stringConstructor } from "@/utils/string-constructor";
 import { useSnackbar } from "notistack";
@@ -53,7 +53,7 @@ export function useReport({ autoFetch = true,clientId,page=1,page_size=10 }: { a
 
     const isLoading = !reports && !error;
 
-    const createOne = async (report:Report, options?: ApiOptions) => {
+    const createOne = async (report:CreateReport, options?: ApiOptions) => {
         const { displayProgress = false, displaySuccess = false } = options || {};
         try {
             // Display progress bar
@@ -75,7 +75,7 @@ export function useReport({ autoFetch = true,clientId,page=1,page_size=10 }: { a
             if (displayProgress) stopProgress();
         }
     }
-    const updateOne = async (report:Report, options?: ApiOptions) => {
+    const updateOne = async (report:CreateReport, options?: ApiOptions) => {
         const { displayProgress = false, displaySuccess = false } = options || {};
         try {
             // Display progress bar
