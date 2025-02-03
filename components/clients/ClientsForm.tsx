@@ -23,9 +23,6 @@ import { useModal } from "../providers/ModalProvider";
 import ClientUpsertContactModal from "../common/Modals/ClientUpsertModal";
 
 
-
-
-
 type PropsType = {
     clientId?: number;
     mode: string;

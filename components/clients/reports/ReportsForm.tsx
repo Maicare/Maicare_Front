@@ -1,0 +1,152 @@
+"use client";
+
+import React, { FunctionComponent  } from "react";
+import Link from "next/link";
+import dayjs from "dayjs";
+import { FormProvider, useForm } from "react-hook-form";
+import Button from "@/components/common/Buttons/Button";
+import SelectControlled from "@/common/components/SelectControlled";
+import InputControl from "@/common/components/InputControl";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { DAILY_REPORT_TYPES_OPTIONS, EMOTIONAL_STATE_OPTIONS, Report } from "@/types/reports.types";
+import { ReportSchema } from "@/schemas/report.schema";
+import { useReport } from "@/hooks/report/use-report";
+import { Id } from "@/common/types/types";
+import SmartTextarea from "@/common/components/SmartTextareaControl";
+import { useAuth } from "@/common/hooks/use-auth";
+
+
+
+const initialValues: Report = {
+    title: "",
+    report_text: "",
+    date: "",
+    emotional_state: "",
+    employee_id: 0,
+    type: "",
+};
+
+
+
+type PropsType = {
+    clientId: Id;
+    className?: string;
+    mode: string;
+    reportId?: Id;
+    report?: Report;
+};
+
+export const ReportsForm: FunctionComponent<PropsType> = ({
+    clientId,
+    className,
+    mode,
+    report = initialValues,
+}) => {
+    const { createOne,updateOne } = useReport({ autoFetch: false, clientId });
+    const {user} = useAuth();
+
+    const methods = useForm<Report>({
+        resolver: yupResolver(ReportSchema),
+        defaultValues: report,
+    });
+
+    const {
+        handleSubmit,
+        formState: { isSubmitting },
+    } = methods;
+    const onSubmit = async (data: Report) => {
+        try {
+            if (mode === "edit") {
+                await updateOne({...data,employee_id:user?.employee_id||0,date:data.date + ":00Z"});
+            } else {
+                await createOne({...data,employee_id:user?.employee_id||0,date:data.date + ":00Z"});
+            }
+        } catch (error) {
+            console.error({error});
+        }
+    }
+    const medicationRecords = {
+        count: 2,
+    }
+
+    return (
+        <FormProvider {...methods}>
+            <form onSubmit={handleSubmit(onSubmit)} className={className}>
+                {medicationRecords?.count > 0 && (
+                    <div className="p-6.5 bg-meta-6/20">
+                        <p>
+                            Er zijn nog medicatie records die nog niet zijn gerapporteerd. Gelieve eerst de
+                            medicatie records te rapporteren voordat u een rapport indient.{" "}
+                            <Link
+                                className="underline text-primary"
+                                href={`/clients/${clientId}/medical-record/medications`}
+                            >
+                                Klik hier om naar de medicatie records te gaan
+                            </Link>
+                        </p>
+                    </div>
+                )}
+                <div className="p-6.5">
+                    <SelectControlled
+                        label={"Type rapport"}
+                        name={"type"}
+                        required={true}
+                        options={DAILY_REPORT_TYPES_OPTIONS}
+                        className={"w-full mb-4.5"}
+                    />
+                    <SelectControlled
+                        label={"Emotionele toestand"}
+                        name={"emotional_state"}
+                        required={true}
+                        options={EMOTIONAL_STATE_OPTIONS}
+                        className={"w-full mb-4.5"}
+                    />
+                    <InputControl
+                        className={"w-full mb-4.5"}
+                        required={true}
+                        id={"title"}
+                        name={"title"}
+                        label={"Titel"}
+                        type={"text"}
+                        placeholder={"Voer de titel van de rapporten in"}
+
+                    />
+
+                    <InputControl
+                        className={"w-full mb-4.5"}
+                        required={true}
+                        id={"date"}
+                        name="date"
+                        max={dayjs().format("YYYY-MM-DDTHH:mm")}
+                        label={"Datum en tijd"}
+                        type={"datetime-local"}
+                        placeholder={"Voer de titel van de rapporten in"}
+                    />
+
+                    <SmartTextarea
+                        rows={10}
+                        id={"report_text"}
+                        name={"report_text"}
+                        modalTitle={"Rapporten verbeteren"}
+                        required={true}
+                        className={"mb-6"}
+                        label={"Rapporten"}
+                        placeholder={"Geef alstublieft rapporten"}
+                    />
+                    <Button
+                        type={"submit"}
+                          disabled={isSubmitting}
+                          isLoading={isSubmitting}
+                        formNoValidate={true}
+                        loadingText={mode === "edit" ? "Bijwerken..." : "Toevoegen..."}
+                        className="mt-6"
+                    >
+                        {mode === "edit" ? "Rapport bijwerken" : "Rapport indienen"}
+                    </Button>
+                </div>
+            </form>
+        </FormProvider>
+    );
+};
+
+export default ReportsForm;
