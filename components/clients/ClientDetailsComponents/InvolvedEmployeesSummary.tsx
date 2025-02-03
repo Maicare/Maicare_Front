@@ -3,37 +3,23 @@
 import React, { FunctionComponent } from "react";
 import DetailCell from "../../common/DetailCell";
 import { dateFormat } from "@/utils/timeFormatting";
-import { EMPLOYEE_ASSIGNMENT_RECORD } from "@/consts";
+import { useInvolvedEmployee } from "@/hooks/client-network/use-involved-employee";
+import { Loader } from "lucide-react";
 
-const fakeData = [
-    {
-        id: 1,
-        employee_name: "Alice Anderson",
-        start_date: "2023-01-15",
-        role: "program_counselor",
-    },
-    {
-        id: 2,
-        employee_name: "Bob Brown",
-        start_date: "2023-02-10",
-        role: "care_nurse",
-    },
-    {
-        id: 3,
-        employee_name: "Charlie Clark",
-        start_date: "2023-03-05",
-        role: "mentor",
-    },
-];
+type Props = {
+    clientId: number | undefined;
+};
 
-const InvolvedEmployeesSummary: FunctionComponent = () => {
-    // const { data, isLoading } = useEmergencyContacts(clientId);
-    // if (isLoading) return <Loader />;
-    // if (!data) return <div>Geen gegevens opgehaald.</div>;
-    // if (data.results?.length === 0) return <div>Geen noodcontacten gevonden</div>;
+const InvolvedEmployeesSummary: FunctionComponent<Props> = ({ clientId }) => {
+
+    const { involvedEmployees, isLoading } = useInvolvedEmployee({ clientId: clientId?.toString() })
+
+    if (isLoading) return <Loader />;
+    if (!involvedEmployees) return <div>Geen gegevens opgehaald.</div>;
+    if (involvedEmployees.results?.length === 0) return <div>Geen noodcontacten gevonden</div>;
     return (
         <ul className="flex flex-col gap-2">
-            {fakeData.map((employee) => {
+            {involvedEmployees?.results.map((employee) => {
                 return (
                     <li
                         key={employee.id}
@@ -42,7 +28,7 @@ const InvolvedEmployeesSummary: FunctionComponent = () => {
                         <DetailCell
                             ignoreIfEmpty={true}
                             label={employee.employee_name}
-                            value={EMPLOYEE_ASSIGNMENT_RECORD[employee.role as keyof typeof EMPLOYEE_ASSIGNMENT_RECORD]}
+                            value={employee.role}
                         />
                         <DetailCell label={"Startdatum"} value={dateFormat(employee.start_date)} />
                     </li>

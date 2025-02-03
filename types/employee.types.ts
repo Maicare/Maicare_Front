@@ -43,8 +43,8 @@ export type EmployeesSearchParams = {
     out_of_service?: boolean;
     location_id?: Id;
     is_archived?: boolean;
-    page: number;
-    page_size: number;
+    page?: number;
+    page_size?: number;
 };
 export type EmployeeDetailsResponse = {
     id: Id,
