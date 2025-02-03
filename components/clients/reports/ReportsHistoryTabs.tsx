@@ -5,7 +5,6 @@ import { useParams } from "next/navigation";
 import PageTabs from "@/components/common/PageTabs/PageTabs";
 import { useClient } from "@/hooks/client/use-client";
 import { Client } from "@/types/client.types";
-import Loader from "@/components/common/loader";
 
 
 const ReportsHistoryTabs: FunctionComponent = () => {
@@ -22,7 +21,7 @@ const ReportsHistoryTabs: FunctionComponent = () => {
   }, [parsedId]);
 
   if (!client) {
-    return <Loader />;
+    return null;
 
   }
 
