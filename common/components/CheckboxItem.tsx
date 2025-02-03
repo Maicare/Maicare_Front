@@ -8,7 +8,7 @@ interface Props extends InputHTMLAttributes<HTMLInputElement> {
 
 const CheckboxItem: FunctionComponent<Props> = ({ id, label, ...props }) => {
   return (
-    <label htmlFor={id} className="flex cursor-pointer pt-1">
+    <label htmlFor={id} className={"flex cursor-pointer pt-1 " + props.className}>
       <div className="relative  !pt-[2px]">
         <input type="checkbox" {...props} id={id} className="sr-only taskCheckbox" />
         <div

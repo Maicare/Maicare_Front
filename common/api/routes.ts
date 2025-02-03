@@ -6,6 +6,7 @@ import Location from "./routes/location";
 import Contact from "./routes/contact";
 import Attachment from "./routes/attachment";
 import Report from "./routes/report";
+import ClientNetwork from "./routes/clientNetwork";
 
 const ApiRoutes = {
   Auth,
@@ -16,6 +17,7 @@ const ApiRoutes = {
   Contact,
   Attachment,
   Report,
+  ClientNetwork
 };
 
 export default ApiRoutes;

@@ -51,3 +51,22 @@ export const ClientTerminationform = yup.object().shape({
 export const ClientUpdateStatus = yup.object().shape({
   status: yup.string().required("Status is required"),
 });
+
+export const ClientEmergencyContactForm = yup.object().shape({
+  first_name: yup.string().required("Geef alstublieft een voornaam op"),
+  last_name: yup.string().required("Geef alstublieft een achternaam op"),
+  email: yup.string().required("Geef alstublieft een e-mailadres op"),
+  phone_number: yup.string().required("Geef alstublieft een telefoonnummer op"),
+  relationship: yup.string().required("Geef alstublieft een relatie op"),
+  relation_status: yup.string().required("Geef alstublieft een afstand op"),
+  address: yup.string().required("Geef alstublieft een adres op"),
+  medical_reports: yup.boolean(),
+  goals_reports: yup.boolean(),
+  incidents_reports: yup.boolean(),
+});
+
+export const ClientInvolvedEmployeeForm = yup.object().shape({
+  employee_id: yup.number().required("Employee is required"),
+  role: yup.string().required("Role is required"),
+  start_date: yup.string().required("Start date is required")
+});

@@ -10,6 +10,7 @@ type Props = {
 
 const ClientLocationDetails: FunctionComponent<Props> = ({ client }) => {
 
+    console.log(client)
 
     return (
         <div className="grid grid-cols-2 gap-4">
