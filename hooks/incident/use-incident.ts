@@ -14,14 +14,9 @@ import useSWR from "swr";
 export interface UseIncidentProps {
   clientId: Id;
   params?: PaginationParams;
-  autoFetch?: boolean;
 }
 
-export function useIncident({
-  clientId,
-  params,
-  autoFetch = true,
-}: UseIncidentProps) {
+export function useIncident({ clientId, params }: UseIncidentProps) {
   const { enqueueSnackbar } = useSnackbar();
   const { start: startProgress, stop: stopProgress } = useProgressBar();
   const [page, setPage] = useState(params?.page || 1);
@@ -38,14 +33,6 @@ export function useIncident({
       clientId.toString()
     )}?page=${page}&page_size=${page_size}`,
     async (url) => {
-      if (!autoFetch)
-        return {
-          results: [],
-          count: 0,
-          page_size: 0,
-          next: null,
-          previous: null,
-        };
       const response = await api.get(url);
       if (!response.data.data) {
         return null;

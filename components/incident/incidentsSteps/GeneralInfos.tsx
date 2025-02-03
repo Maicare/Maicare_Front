@@ -7,6 +7,7 @@ import Panel from "@/components/common/Panel/Panel";
 import { MultiCheckBoxInputField } from "@/components/common/MultiCheckBoxInputField/MultiCheckBoxInputField";
 import InputControl from "@/common/components/InputControl";
 import SelectControlled from "@/common/components/SelectControlled";
+import ControlledEmployeeSelect from "@/components/ControlledEmployeeSelect/ControlledEmployeeSelect";
 
 export const GeneralInfosInitial = {
   employee_id: 0,
@@ -47,12 +48,10 @@ export default function GeneralInfos() {
   return (
     <Panel title={"1. Algemene informatie"}>
       <div className="mb-4.5 mt-4.5 flex flex-col gap-6 px-6.5">
-        <InputControl
-          className={"w-full"}
-          name={"employee_id"}
+        <ControlledEmployeeSelect
+          name="employee_id"
+          label="Voornaam betrokken medewerker(s)"
           required
-          label={"Voornaam betrokken medewerker(s)"}
-          type={"text"}
         />
         <SelectControlled
           label={"Locatie zorgorganistie"}
