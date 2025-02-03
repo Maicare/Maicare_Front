@@ -18,6 +18,9 @@ import FilesUploader from "@/common/components/FilesUploader";
 import { useRouter } from "next/navigation";
 import { useSnackbar } from "notistack";
 import { ControlledSenderSelect } from "../ControlledSenderSelect/ControlledSenderSelect";
+import LinkButton from "../common/Buttons/LinkButton";
+import { useModal } from "../providers/ModalProvider";
+import ClientUpsertContactModal from "../common/Modals/ClientUpsertModal";
 
 
 
@@ -32,6 +35,7 @@ export const ClientsForm: FunctionComponent<PropsType> = ({ }) => {
     const { createOne } = useClient({ autoFetch: false });
     const router = useRouter();
     const { enqueueSnackbar } = useSnackbar();
+    const {open} = useModal(ClientUpsertContactModal);
     const methods = useForm<CreateClientInput>({
         resolver: yupResolver(CreateClientSchema) as Resolver<CreateClientInput>,
         defaultValues: {
@@ -178,7 +182,7 @@ export const ClientsForm: FunctionComponent<PropsType> = ({ }) => {
                                         id={"filenumber"}
                                         name={"filenumber"}
                                         placeholder={"Voer BSN in"}
-                                        type={"number"}
+                                        type={"text"}
                                         className="w-full mb-4.5"
                                         required={true}
                                     />
@@ -187,7 +191,7 @@ export const ClientsForm: FunctionComponent<PropsType> = ({ }) => {
                                         id={"filenumber"}
                                         name={"filenumber"}
                                         placeholder={"Dossiernummer"}
-                                        type={"number"}
+                                        type={"text"}
                                     />
                                 </div>
                             </Panel>
@@ -219,15 +223,10 @@ export const ClientsForm: FunctionComponent<PropsType> = ({ }) => {
 
                             </Panel>
                         </div>
+                        
                         <div className="flex flex-col gap-9">
                             <Panel containerClassName="p-6.5 pb-5" title={"Locatiegegevens"}>
-                                <ControlledSenderSelect
-                                    id={"sender_id"}
-                                    name={"sender_id"}
-                                    label={"Contact"}
-                                    className="w-full mb-4.5"
-                                    required={true}
-                                />
+
                                 <ControlledLocationSelect
                                     id={"location_id"}
                                     name={"location_id"}
@@ -272,6 +271,24 @@ export const ClientsForm: FunctionComponent<PropsType> = ({ }) => {
 
                             <Panel containerClassName="p-6.5 pb-5" title={"Adresgegevens"}>
                                 <AddressesControlled className="" />
+                            </Panel>
+                            <Panel
+                                containerClassName="p-6.5 pb-5"
+                                title={"opdrachtgever"}
+                                sideActions={
+                                    <LinkButton
+                                        text={"Maak een nieuwe opdrachtgever aan"}
+                                        href="#"
+                                        onClick={() => { open({ onSuccess:()=>{} }) }}
+                                    />
+                                }>
+                                <ControlledSenderSelect
+                                    id={"sender_id"}
+                                    name={"sender_id"}
+                                    label={"Contact"}
+                                    className="w-full mb-4.5"
+                                    required={true}
+                                />
                             </Panel>
                         </div>
                         <Button

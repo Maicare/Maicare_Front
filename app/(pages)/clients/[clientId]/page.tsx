@@ -9,7 +9,6 @@ const Page: React.FC = () => {
   const clientIdParam = params?.clientId;
   const clientId = clientIdParam ? parseInt(clientIdParam as string, 10) : 0;
 
-  console.log(clientId)
 
   return (
     <>

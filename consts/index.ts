@@ -288,3 +288,37 @@ export const SUCCESSION_OPTIONS = [
   "Besproken met MT",
   "Besproken met overige betrokkenen, nl.:",
 ];
+
+export const EMERGENCY_DISTANCE_OPTIONS: SelectionOption[] = [
+  { label: "Selecteer Afstand", value: "" },
+  { label: "Primaire Relatie", value: "Primary Relationship" },
+  { label: "Secundaire Relatie", value: "Secondary Relationship" },
+];
+
+export const EMERGENCY_RELATIONSHIP_OPTIONS: SelectionOption[] = [
+  { label: "Selecteer Relatie", value: "" },
+  { label: "Vriendschap", value: "Vriendschap" },
+  { label: "Familierelatie", value: "Familierelatie" },
+  { label: "Romantische Relatie", value: "Romantische Relatie" },
+  { label: "Collega", value: "Collega" },
+  { label: "Zakelijke Relatie", value: "Zakelijke Relatie" },
+  { label: "Mentor/Mentee", value: "Mentor/Mentee" },
+  { label: "Kennismaking", value: "Kennismaking" },
+];
+
+export const EMERGENCY_DISTANCE_OPTIONS: SelectionOption[] = [
+  { label: "Selecteer Afstand", value: "" },
+  { label: "Primaire Relatie", value: "Primary Relationship" },
+  { label: "Secundaire Relatie", value: "Secondary Relationship" },
+];
+
+export const EMERGENCY_RELATIONSHIP_OPTIONS: SelectionOption[] = [
+  { label: "Selecteer Relatie", value: "" },
+  { label: "Vriendschap", value: "Vriendschap" },
+  { label: "Familierelatie", value: "Familierelatie" },
+  { label: "Romantische Relatie", value: "Romantische Relatie" },
+  { label: "Collega", value: "Collega" },
+  { label: "Zakelijke Relatie", value: "Zakelijke Relatie" },
+  { label: "Mentor/Mentee", value: "Mentor/Mentee" },
+  { label: "Kennismaking", value: "Kennismaking" },
+];

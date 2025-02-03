@@ -16,16 +16,10 @@ export function useExperience({ employeeId,autoFetch=true }: {autoFetch?:boolean
 
         ApiRoutes.Employee.ReadExperiences.replace("{id}",employeeId), // Endpoint to fetch Locations
         async (url) => {
-            if (!autoFetch) return {
-                results: [],
-                count: 0,
-                page_size: 0,
-                next: null,
-                previous: null
-            };
+            if (!autoFetch) return [];
             const response = await api.get(url);
             if (!response.data.data) {
-                return null;
+                return [];
             }
             return response.data.data; // Assuming API returns data inside a "data" field
         },

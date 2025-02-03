@@ -1,5 +1,5 @@
 import React, { ChangeEvent, InputHTMLAttributes, useCallback, useMemo } from "react";
-import { Combobox, ComboboxInput, ComboboxOption, ComboboxOptions } from "@headlessui/react";
+import { Combobox, ComboboxInput, ComboboxOption, ComboboxOptions, Label } from "@headlessui/react";
 import { useField } from "formik";
 import { cn } from "@/utils/cn";
 import { BaseObject, ComboboxOption as ComboboxOptionType } from "@/types/selection-option.types";
@@ -61,9 +61,9 @@ function FormCombobox<T extends BaseObject>({
     // }}
     // value={fieldProps.value}
     >
-      <Combobox.Label className="mb-2.5 block text-black dark:text-white" htmlFor={inputProps.id}>
+      <Label className="mb-2.5 block text-black dark:text-white" htmlFor={inputProps.id}>
         {label} {inputProps.required && <span className="text-meta-1">*</span>}
-      </Combobox.Label>
+      </Label>
       <ComboboxInput
         displayValue={getDisplayValue}
         className="w-full rounded-lg border-[1.5px] border-stroke bg-white py-2 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
