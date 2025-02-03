@@ -15,7 +15,7 @@ import useSWR from "swr";
 
 export function useReport({ autoFetch = true,clientId,page=1,page_size=10 }: { autoFetch?: boolean,clientId:Id,page?:number,page_size?:number }) {
     const { enqueueSnackbar } = useSnackbar();
-    const [reports,setReports] = useState<PaginatedResponse<Report|null>>({
+    const [reports,setReports] = useState<PaginatedResponse<Report>>({
         results: [],
         count: 0,
         page_size: 0,
@@ -23,7 +23,7 @@ export function useReport({ autoFetch = true,clientId,page=1,page_size=10 }: { a
         previous: null
     });
     const { start: startProgress, stop: stopProgress } = useProgressBar();
-    const { data, error, mutate } = useSWR<PaginatedResponse<Report | null>>(
+    const { data, error, mutate } = useSWR<PaginatedResponse<Report>>(
         stringConstructor(ApiRoutes.Report.ReadAll.replace("{id}",clientId.toString()), constructUrlSearchParams({ page, page_size })),
         async (url) => {
             if (!autoFetch) {
@@ -37,8 +37,14 @@ export function useReport({ autoFetch = true,clientId,page=1,page_size=10 }: { a
 
             }
             const response = await api.get(url);
-            if (!response.data.data) {
-                return null;
+            if (!response.data.data || response.data.data.length === 0) {
+                return {
+                    results: [],
+                    count: 0,
+                    page_size: 0,
+                    next: null,
+                    previous: null
+                };
             }
             return response.data.data;
         },
@@ -48,6 +54,14 @@ export function useReport({ autoFetch = true,clientId,page=1,page_size=10 }: { a
     useEffect(()=> {
         if(data){
             setReports(data);
+        }else{
+            setReports({
+                results: [],
+                count: 0,
+                page_size: 0,
+                next: null,
+                previous: null
+            });
         }
     },[data]);
 

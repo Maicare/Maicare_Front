@@ -22,7 +22,6 @@ const ReportsPage: FunctionComponent = () => {
     const { clientId } = useParams();
     const [page,setPage] = useState(1);
     const {reports,isLoading} = useReport({ clientId: +(clientId as string),autoFetch: true,page });
-
   const { open } = useModal(
     getDangerActionConfirmationModal({
       msg: "Weet je zeker dat je dit rapport wilt verwijderen?",
@@ -35,7 +34,6 @@ const ReportsPage: FunctionComponent = () => {
 //     isLoading: isDeleting,
 //     isSuccess: isDeleted,
 //   } = useDeleteReport(+clientId);
-
   return (
     <div>
       <div className="flex flex-wrap items-center p-4">
@@ -46,7 +44,7 @@ const ReportsPage: FunctionComponent = () => {
           Sorry, een fout heeft ons verhinderd de lijst te laden.
         </p>
       )}
-      {reports?.results.length === 0 && (
+      {(reports.results &&  reports.results.length === 0) && (
           <LargeErrorMessage
             firstLine={"Oops!"}
             secondLine={"Er zijn geen rapporten beschikbaar"}
@@ -54,9 +52,9 @@ const ReportsPage: FunctionComponent = () => {
         )}
       <div className="p-6 lg:max-w-[50%]">
         <div className="flex flex-col gap-7 ">
-          {reports?.results && (
+          {reports.results && reports.results.length > 0 && (
             <Fragment >
-              {reports?.results.map((post, key) => (
+              {reports && reports?.results.map((post, key) => (
                 <div className={clsx("relative z-1 flex gap-5.5", styles.withTrail)} key={key}>
                   <div className="h-16 w-full max-w-16 rounded-full border-[2px] border-stroke dark:border-strokedark">
                     <ProfilePicture
