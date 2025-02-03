@@ -98,7 +98,7 @@ const ClientDetails: FunctionComponent<PropsType> = ({ clientId }) => {
                     sideActions={
                         <LinkButton
                             text={"Volledige Contactenlijst"}
-                            href={`/clients/${clientId}/emergency`}
+                            href={`/clients/${clientId}/client-network/emergency`}
                         />
                     }
                 >
@@ -117,7 +117,7 @@ const ClientDetails: FunctionComponent<PropsType> = ({ clientId }) => {
                         </div>
                     }
                 >
-                    <InvolvedEmployeesSummary />
+                    <InvolvedEmployeesSummary clientId={clientData?.id} />
                 </Panel>
 
                 <ClientContactSummary client={clientData} />
