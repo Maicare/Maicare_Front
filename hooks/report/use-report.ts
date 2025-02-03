@@ -23,7 +23,7 @@ export function useReport({ autoFetch = true,clientId,page=1,page_size=10 }: { a
         previous: null
     });
     const { start: startProgress, stop: stopProgress } = useProgressBar();
-    const { data, error, mutate } = useSWR<PaginatedResponse<Report>>(
+    const { data, error, mutate,isLoading } = useSWR<PaginatedResponse<Report>>(
         stringConstructor(ApiRoutes.Report.ReadAll.replace("{id}",clientId.toString()), constructUrlSearchParams({ page, page_size })),
         async (url) => {
             if (!autoFetch) {
@@ -65,7 +65,6 @@ export function useReport({ autoFetch = true,clientId,page=1,page_size=10 }: { a
         }
     },[data]);
 
-    const isLoading = !reports && !error;
 
     const createOne = async (report:CreateReport, options?: ApiOptions) => {
         const { displayProgress = false, displaySuccess = false } = options || {};
