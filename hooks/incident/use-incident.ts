@@ -5,13 +5,23 @@ import useProgressBar from "@/common/hooks/use-progress-bar";
 import { ApiOptions } from "@/common/types/api.types";
 import { PaginatedResponse } from "@/common/types/pagination.types";
 import { Id } from "@/common/types/types";
-import { Incident } from "@/types/incident.types";
+import { CreateIncident, Incident } from "@/types/incident.types";
 import { PaginationParams } from "@/types/pagination.types";
 import { useSnackbar } from "notistack";
 import { useState } from "react";
 import useSWR from "swr";
 
-export function useIncident(clientId: Number, params?: PaginationParams) {
+export interface UseIncidentProps {
+  clientId: Id;
+  params?: PaginationParams;
+  autoFetch?: boolean;
+}
+
+export function useIncident({
+  clientId,
+  params,
+  autoFetch = true,
+}: UseIncidentProps) {
   const { enqueueSnackbar } = useSnackbar();
   const { start: startProgress, stop: stopProgress } = useProgressBar();
   const [page, setPage] = useState(params?.page || 1);
@@ -28,6 +38,14 @@ export function useIncident(clientId: Number, params?: PaginationParams) {
       clientId.toString()
     )}?page=${page}&page_size=${page_size}`,
     async (url) => {
+      if (!autoFetch)
+        return {
+          results: [],
+          count: 0,
+          page_size: 0,
+          next: null,
+          previous: null,
+        };
       const response = await api.get(url);
       if (!response.data.data) {
         return null;
@@ -38,12 +56,19 @@ export function useIncident(clientId: Number, params?: PaginationParams) {
   );
   const isLoading = !incidents && !error;
 
-  const readOne = async (id: Id, options?: ApiOptions) => {
+  const readOne = async (
+    incident_id: Id,
+    client_id: Id,
+    options?: ApiOptions
+  ) => {
     const { displayProgress = false } = options || {};
     try {
       if (displayProgress) startProgress();
       const response = await useApi<Incident>(
-        ApiRoutes.Client.Incident.ReadOne.replace("{id}", id.toString()),
+        ApiRoutes.Client.Incident.ReadOne.replace(
+          "{id}",
+          client_id.toString()
+        ).replace("{incident_id}", incident_id.toString()),
         "GET"
       );
       if (!response.data) {
@@ -61,15 +86,19 @@ export function useIncident(clientId: Number, params?: PaginationParams) {
     }
   };
 
-  const createOne = async (incident: Incident, options?: ApiOptions) => {
+  const createOne = async (
+    incident: CreateIncident,
+    client_id: Id,
+    options?: ApiOptions
+  ) => {
     const { displayProgress = false, displaySuccess = false } = options || {};
     try {
       // Display progress bar
       if (displayProgress) startProgress();
-      const { message, success, data, error } = await useApi<Incident>(
+      const { message, success, data, error } = await useApi<CreateIncident>(
         ApiRoutes.Client.Incident.CreateOne.replace(
           "{id}",
-          incident.client_id.toString()
+          client_id.toString()
         ),
         "POST",
         {},
@@ -97,16 +126,21 @@ export function useIncident(clientId: Number, params?: PaginationParams) {
     }
   };
 
-  const updateOne = async (incident: Incident, options?: ApiOptions) => {
+  const updateOne = async (
+    incident: CreateIncident,
+    incident_id: Id,
+    client_id: Id,
+    options?: ApiOptions
+  ) => {
     const { displayProgress = false, displaySuccess = false } = options || {};
     try {
       // Display progress bar
       if (displayProgress) startProgress();
-      const { message, success, data, error } = await useApi<Incident>(
-        ApiRoutes.Client.Incident.CreateOne.replace(
+      const { message, success, data, error } = await useApi<CreateIncident>(
+        ApiRoutes.Client.Incident.UpdateOne.replace(
           "{id}",
-          incident.client_id.toString()
-        ),
+          client_id.toString()
+        ).replace("{incident_id}", incident_id.toString()),
         "PUT",
         {},
         incident

@@ -9,9 +9,7 @@ import InputControl from "@/common/components/InputControl";
 import SelectControlled from "@/common/components/SelectControlled";
 
 export const GeneralInfosInitial = {
-  employee_first_name: "",
-  employee_last_name: "",
-  employee_position: "",
+  employee_id: 0,
   location_id: 0,
   reporter_involvement: "",
   runtime_incident: "",
@@ -20,9 +18,7 @@ export const GeneralInfosInitial = {
 };
 
 export const GeneralInfosShema = {
-  employee_first_name: Yup.string().required("shouldn t be empty"),
-  employee_last_name: Yup.string().required("shouldn t be empty"),
-  employee_position: Yup.string().required("shouldn t be empty"),
+  employee_id: Yup.number().required("shouldn t be empty"),
   location_id: Yup.number().required("shouldn t be empty"),
   reporter_involvement: Yup.string().required("shouldn t be empty"),
   runtime_incident: Yup.string().required("shouldn t be empty"),
@@ -46,30 +42,16 @@ export default function GeneralInfos() {
       );
       setlocationOptions(_options);
     }
-  }, [isLoading]);
+  }, [isLoading, locationLists]);
 
   return (
     <Panel title={"1. Algemene informatie"}>
       <div className="mb-4.5 mt-4.5 flex flex-col gap-6 px-6.5">
         <InputControl
           className={"w-full"}
-          name={"employee_first_name"}
+          name={"employee_id"}
           required
           label={"Voornaam betrokken medewerker(s)"}
-          type={"text"}
-        />
-        <InputControl
-          className={"w-full"}
-          name={"employee_last_name"}
-          required
-          label={"achternaam betrokken medewerker(s)"}
-          type={"text"}
-        />
-        <InputControl
-          className={"w-full"}
-          name={"employee_position"}
-          required
-          label={"functie betrokken medewerker(s)"}
           type={"text"}
         />
         <SelectControlled

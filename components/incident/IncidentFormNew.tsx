@@ -3,7 +3,7 @@
 import React, { FunctionComponent, useCallback, useEffect } from "react";
 import * as Yup from "yup";
 import { useRouter } from "next/navigation";
-import { FormProvider, Resolver, useForm } from "react-hook-form";
+import { FormProvider, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 
 import GeneralInfos, {
@@ -13,7 +13,7 @@ import GeneralInfos, {
 import IncidentInfos, {
   IncidentInfosInitial,
   IncidentInfosShema,
-} from "./incidentsSteps/IncidenetInfos";
+} from "./incidentsSteps/IncidentInfos";
 import Analysis, {
   AnalysisInitial,
   AnalysisShema,
@@ -26,7 +26,7 @@ import Succession, {
   SuccessionInitital,
   SuccessionShema,
 } from "./incidentsSteps/Succession";
-import { Incident } from "@/types/incident.types";
+import { CreateIncident, Incident } from "@/types/incident.types";
 import Button from "../common/Buttons/Button";
 import { useIncident } from "@/hooks/incident/use-incident";
 
@@ -39,18 +39,18 @@ const formSchema = Yup.object().shape({
 });
 
 type Props = {
+  incident?: Incident;
   clientId: number;
-  incidentId?: number;
   mode: string;
 };
 
 const EpisodeForm: FunctionComponent<Props> = ({
+  incident,
   clientId,
-  incidentId,
   mode,
 }) => {
   const router = useRouter();
-  const initialValues: Incident = {
+  const initialValues: CreateIncident = {
     ...SuccessionInitital,
     ...AnalysisInitial,
     ...GeneralInfosInitial,
@@ -58,19 +58,18 @@ const EpisodeForm: FunctionComponent<Props> = ({
     ...IncidentInfosInitial,
   };
 
-  // const { incidents: singleIncident, isLoading: isDataLoading } =
-  //   useIncident(clientId);
+  const { createOne, updateOne } = useIncident({
+    clientId: clientId,
+    autoFetch: false,
+  });
 
-  const { createOne, updateOne, readOne } = useIncident(clientId);
-  // const { data: singleIncident, isLoading: isFetching } = readOne(incidentId);
-  const singleIncident = null;
   const isDataLoading = false;
 
-  const methods = useForm<Incident>({
+  const methods = useForm<CreateIncident>({
     resolver: yupResolver(formSchema),
     defaultValues:
-      mode === "edit" && singleIncident
-        ? singleIncident
+      mode === "edit" && incident
+        ? incident
         : { ...initialValues, client_id: clientId },
     mode: "onBlur",
   });
@@ -78,32 +77,27 @@ const EpisodeForm: FunctionComponent<Props> = ({
   const { handleSubmit, reset } = methods;
 
   useEffect(() => {
-    if (mode === "edit" && singleIncident) {
-      reset(singleIncident);
+    if (mode === "edit" && incident) {
+      reset(incident);
     }
-  }, [mode, singleIncident, reset]);
+  }, [mode, incident, reset]);
 
   const onSubmit = useCallback(
-    async (values: Incident) => {
+    async (values: CreateIncident) => {
       const formattedValues = {
         ...values,
         incident_date: new Date(values.incident_date).toISOString(),
       };
 
       if (mode === "edit") {
-        await updateOne({
-          ...formattedValues,
-          id: incidentId,
-        });
+        await updateOne(formattedValues, Number(incident?.id), clientId);
         router.push(`/clients/${clientId}/incidents`);
       } else if (mode === "new") {
-        //incident_date "parsing time \"2025-01-12\" as \"2006-01-02T15:04:05Z07:00\": cannot parse \"\" as \"T\"
-
-        await createOne(formattedValues);
+        await createOne(formattedValues, clientId);
         router.push(`/clients/${clientId}/incidents`);
       }
     },
-    [createOne, updateOne, mode, incidentId, clientId, router]
+    [createOne, updateOne, mode, incident, clientId, router]
   );
 
   const FORMS = [

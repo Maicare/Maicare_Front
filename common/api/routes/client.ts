@@ -24,7 +24,8 @@ const ApiRoutes = {
   Incident: {
     ReadAll: prefix + "/{id}/incidents",
     CreateOne: prefix + "/{id}/incidents",
-    ReadOne: prefix + "/{id}/incidents/{id}",
+    UpdateOne: prefix + "/{id}/incidents/{incident_id}",
+    ReadOne: prefix + "/{id}/incidents/{incident_id}",
   },
 };
 

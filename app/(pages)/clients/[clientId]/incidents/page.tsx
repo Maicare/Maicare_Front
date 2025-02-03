@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 
-import React, { FunctionComponent, useMemo } from "react";
+import React, { FunctionComponent, useCallback, useMemo } from "react";
 
 import {
   EMPTY_STRING,
@@ -38,7 +38,7 @@ const IncidentsPage: FunctionComponent = () => {
     error,
     isLoading,
     isFetching,
-  } = useIncident(parseInt(clientId));
+  } = useIncident({ clientId: parseInt(clientId) });
   // const { mutate: deleteIncident } = useDeleteIncident(parseInt(clientId));
 
   interface IncidentOption {
@@ -46,13 +46,13 @@ const IncidentsPage: FunctionComponent = () => {
     label: string;
   }
 
-  const getSelectedLabels = (
-    options: IncidentOption[],
-    value: string | number
-  ): string => {
-    const option = options.find((obj) => obj.value === value);
-    return option ? option.label : EMPTY_STRING;
-  };
+  const getSelectedLabels = useCallback(
+    (options: IncidentOption[], value: string | number): string => {
+      const option = options.find((obj) => obj.value === value);
+      return option ? option.label : EMPTY_STRING;
+    },
+    []
+  );
 
   const { open } = useModal(
     getDangerActionConfirmationModal({
@@ -131,7 +131,7 @@ const IncidentsPage: FunctionComponent = () => {
         },
       },
     ];
-  }, []);
+  }, [clientId, getSelectedLabels, open]);
 
   return (
     <Panel

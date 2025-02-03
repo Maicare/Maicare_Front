@@ -2,7 +2,6 @@ import React, { FunctionComponent, InputHTMLAttributes } from "react";
 
 type CheckBoxInputFieldType = InputHTMLAttributes<HTMLInputElement> & {
   label: string;
-  error?: string;
 };
 
 const CheckBoxInputFieldThin: FunctionComponent<CheckBoxInputFieldType> = ({
@@ -10,7 +9,6 @@ const CheckBoxInputFieldThin: FunctionComponent<CheckBoxInputFieldType> = ({
   className,
   id,
   required,
-  error,
   ...props
 }) => {
   return (

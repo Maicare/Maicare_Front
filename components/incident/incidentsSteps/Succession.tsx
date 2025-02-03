@@ -4,10 +4,10 @@ import { EMPLOYEE_ABSENTEEISM_OPTIONS, SUCCESSION_OPTIONS } from "@/consts";
 import * as Yup from "yup";
 import Panel from "@/components/common/Panel/Panel";
 import { MultiCheckBoxInputField } from "@/components/common/MultiCheckBoxInputField/MultiCheckBoxInputField";
-import CheckBoxInputFieldThin from "@/components/common/CheckBoxInputThin/CheckBoxInputThin";
 import InputControl from "@/common/components/InputControl";
 import TextareaControlled from "@/components/common/FormFields/TextareaControlled";
 import SelectControlled from "@/common/components/SelectControlled";
+import ControlledCheckboxItem from "@/common/components/ControlledCheckboxItem";
 
 export const SuccessionInitital = {
   succession: [],
@@ -18,8 +18,8 @@ export const SuccessionInitital = {
   employee_absenteeism: "",
 };
 export const SuccessionShema = {
+  succession: Yup.array().required("moet dit veld invullen"),
   succession_desc: Yup.string().required("moet dit veld invullen"),
-  other_desc: Yup.string().required("moet dit veld invullen"),
   employee_absenteeism: Yup.string().required("moet dit veld invullen"),
 };
 
@@ -40,7 +40,7 @@ export default function Succession() {
             label=""
             type={"text"}
           />
-          <CheckBoxInputFieldThin
+          <ControlledCheckboxItem
             label={"overige, nL."}
             className="my-3"
             name={"other"}

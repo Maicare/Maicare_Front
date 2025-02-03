@@ -1,7 +1,7 @@
-import { useState } from "react";
-import { Download, LoaderCircle, Printer } from "lucide-react";
+// import { useState } from "react";
+// import { Download, LoaderCircle, Printer } from "lucide-react";
 // import { getQuestionnaireTemplate } from "@/utils/questionnairs/templates/getQuestionnaireTemplate";
-import IconButton from "./IconButton";
+// import IconButton from "./IconButton";
 
 export type TemplateType =
   | "risk_assessment"
@@ -19,17 +19,17 @@ export type TemplateType =
   | "force_development_analysis"
   | "stress_management_plan";
 
-type QuestionnaireDownloadButtonProps = {
-  type: TemplateType;
-  questId: number;
-};
+// type QuestionnaireDownloadButtonProps = {
+//   type: TemplateType;
+//   questId: number;
+// };
 
-export default function QuestionnaireDownloadButton({
-  type,
-  questId,
-}: QuestionnaireDownloadButtonProps) {
-  const [isPrintTemplateLoading, setIsPrintTemplateLoading] = useState(false);
-  const [pdfTemplate, setPdfTemplate] = useState<string | null>();
+export default function QuestionnaireDownloadButton() {
+  //   type,
+  //   questId,
+  // }: QuestionnaireDownloadButtonProps) {
+  // const [isPrintTemplateLoading, setIsPrintTemplateLoading] = useState(false);
+  // const [pdfTemplate, setPdfTemplate] = useState<string | null>();
 
   // const handlePrintQuestionnaire = () => {
   //   if (pdfTemplate) {
@@ -58,7 +58,7 @@ export default function QuestionnaireDownloadButton({
 
   return (
     <>
-      {!pdfTemplate && !isPrintTemplateLoading && (
+      {/* {!pdfTemplate && !isPrintTemplateLoading && (
         <IconButton
           className="bg-strokedark"
           onClick={() => {
@@ -82,7 +82,7 @@ export default function QuestionnaireDownloadButton({
         >
           <Download className="w-5 h-5" />
         </IconButton>
-      )}
+      )} */}
     </>
   );
 }

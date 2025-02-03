@@ -1,6 +1,5 @@
 import React from "react";
 import {
-  YES_NO_OPTIONS,
   RISK_OF_RECURRENCE_OPTIONS,
   SEVERITY_OF_INCIDENT_OPTIONS,
   TYPES_INCIDENT_OPTIONS,
@@ -9,19 +8,20 @@ import * as Yup from "yup";
 import Panel from "@/components/common/Panel/Panel";
 import SelectControlled from "@/common/components/SelectControlled";
 import TextareaControlled from "@/components/common/FormFields/TextareaControlled";
+import ControlledCheckboxItem from "@/common/components/ControlledCheckboxItem";
 
 export const IncidentInfosInitial = {
   incident_type: "",
-  passing_away: "",
-  self_harm: "",
-  violence: "",
-  fire_water_damage: "",
-  accident: "",
-  client_absence: "",
-  medicines: "",
-  organization: "",
-  use_prohibited_substances: "",
-  other_notifications: "",
+  passing_away: false,
+  self_harm: false,
+  violence: false,
+  fire_water_damage: false,
+  accident: false,
+  client_absence: false,
+  medicines: false,
+  organization: false,
+  use_prohibited_substances: false,
+  other_notifications: false,
   incident_explanation: "",
   incident_prevent_steps: "",
   incident_taken_measures: "",
@@ -29,18 +29,18 @@ export const IncidentInfosInitial = {
   recurrence_risk: "",
 };
 export const IncidentInfosShema = {
-  incident_type: Yup.string().required("moet dit veld invullen"),
-  passing_away: Yup.string().required("moet dit veld invullen"),
-  self_harm: Yup.string().required("moet dit veld invullen"),
-  violence: Yup.string().required("moet dit veld invullen"),
-  fire_water_damage: Yup.string().required("moet dit veld invullen"),
-  accident: Yup.string().required("moet dit veld invullen"),
-  client_absence: Yup.string().required("moet dit veld invullen"),
-  medicines: Yup.string().required("moet dit veld invullen"),
-  organization: Yup.string().required("moet dit veld invullen"),
-  use_prohibited_substances: Yup.string().required("moet dit veld invullen"),
-  other_notifications: Yup.string().required("moet dit veld invullen"),
-  recurrence_risk: Yup.string().required("moet dit veld invullen"),
+  incident_type: Yup.string().required("Moet dit veld invullen"),
+  passing_away: Yup.boolean().required("Moet dit veld invullen"),
+  self_harm: Yup.boolean().required("Moet dit veld invullen"),
+  violence: Yup.boolean().required("Moet dit veld invullen"),
+  fire_water_damage: Yup.boolean().required("Moet dit veld invullen"),
+  accident: Yup.boolean().required("Moet dit veld invullen"),
+  client_absence: Yup.boolean().required("Moet dit veld invullen"),
+  medicines: Yup.boolean().required("Moet dit veld invullen"),
+  organization: Yup.boolean().required("Moet dit veld invullen"),
+  use_prohibited_substances: Yup.boolean().required("Moet dit veld invullen"),
+  other_notifications: Yup.boolean().required("Moet dit veld invullen"),
+  recurrence_risk: Yup.string().required("Moet dit veld invullen"),
 };
 
 export default function IncidentInfos() {
@@ -55,84 +55,62 @@ export default function IncidentInfos() {
           options={TYPES_INCIDENT_OPTIONS}
         />
         <div className="grid grid-cols-2 gap-4">
-          <SelectControlled
+          <ControlledCheckboxItem
             label={"Overlijden"}
             name="passing_away"
-            id="passing_away"
             required
-            options={YES_NO_OPTIONS}
           />
-          <SelectControlled
+          <ControlledCheckboxItem
             label={"Zelfbeschadiging"}
             name="self_harm"
-            id="self_harm"
             required
-            options={YES_NO_OPTIONS}
           />
         </div>
 
         <div className="grid grid-cols-2 gap-4">
-          <SelectControlled
+          <ControlledCheckboxItem
             label={"Agressie/geweld"}
             name="violence"
-            id="violence"
             required
-            options={YES_NO_OPTIONS}
           />
-          <SelectControlled
+          <ControlledCheckboxItem
             label={"Brand- en waterschade"}
             name="fire_water_damage"
-            id="fire_water_damage"
             required
-            options={YES_NO_OPTIONS}
           />
         </div>
         <div className="grid grid-cols-2 gap-4">
-          <SelectControlled
+          <ControlledCheckboxItem
             label={"Ongevallen"}
             name="accident"
-            id="accident"
             required
-            options={YES_NO_OPTIONS}
           />
-          <SelectControlled
+          <ControlledCheckboxItem
             label={"Afwezigheid client"}
             name="client_absence"
-            id="client_absence"
             required
-            options={YES_NO_OPTIONS}
           />
         </div>
         <div className="grid grid-cols-2 gap-4">
-          <SelectControlled
+          <ControlledCheckboxItem
             label={"Medicijnen"}
             name="medicines"
-            id="medicines"
             required
-            options={YES_NO_OPTIONS}
           />
-          <SelectControlled
+          <ControlledCheckboxItem
             label={"Organisatie"}
             name="organization"
-            id="organization"
             required
-            options={YES_NO_OPTIONS}
           />
-          <SelectControlled
-            className="my-4"
+          <ControlledCheckboxItem
             label={"Gebruik verboden middelen"}
             name="use_prohibited_substances"
-            id="use_prohibited_substances"
             required
-            options={YES_NO_OPTIONS}
           />
-          <SelectControlled
-            className="my-4"
+          <ControlledCheckboxItem
             label={"Overige meldingen"}
             name="other_notifications"
-            id="other_notifications"
             required
-            options={YES_NO_OPTIONS}
           />
         </div>
       </div>
