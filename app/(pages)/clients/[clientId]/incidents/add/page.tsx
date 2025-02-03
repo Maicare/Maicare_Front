@@ -8,12 +8,12 @@ import { useParams } from "next/navigation";
 const NewIncidentsPage: FunctionComponent = () => {
   const params = useParams();
   const clientIdParam = params?.clientId;
-  const clientId = clientIdParam as string;
+  const clientId = parseInt(clientIdParam as string);
   return (
     <>
       <Breadcrumb pageName="New Incident" />
       <div className="grid grid-cols-1 gap-9">
-        <IncidentForm mode={"new"} clientId={parseInt(clientId)} />
+        <IncidentForm mode={"new"} clientId={clientId} />
       </div>
     </>
   );

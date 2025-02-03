@@ -9,8 +9,6 @@ import {
   TYPES_INCIDENT_OPTIONS,
 } from "@/consts";
 
-// import QuestionnaireDownloadButton from "@/components/QuestionnaireDownloadButton";
-
 import { fullDateFormat } from "@/utils/timeFormatting";
 import { useModal } from "@/components/providers/ModalProvider";
 import { getDangerActionConfirmationModal } from "@/components/common/Modals/DangerActionConfirmation";
@@ -29,7 +27,7 @@ import { useParams } from "next/navigation";
 const IncidentsPage: FunctionComponent = () => {
   const params = useParams();
   const clientIdParam = params?.clientId;
-  const clientId = clientIdParam as string;
+  const clientId = parseInt(clientIdParam as string);
 
   const {
     incidents: data,
@@ -38,7 +36,7 @@ const IncidentsPage: FunctionComponent = () => {
     error,
     isLoading,
     isFetching,
-  } = useIncident({ clientId: parseInt(clientId) });
+  } = useIncident({ clientId: clientId });
   // const { mutate: deleteIncident } = useDeleteIncident(parseInt(clientId));
 
   interface IncidentOption {
@@ -110,10 +108,6 @@ const IncidentsPage: FunctionComponent = () => {
                   <PencilSquare className="w-5 h-5" />
                 </IconButton>
               </Link>
-              {/*<QuestionnaireDownloadButton
-                type="incident_report"
-                questId={+info.row.id}
-              />*/}
               <IconButton
                 className="bg-red-600"
                 onClick={() =>

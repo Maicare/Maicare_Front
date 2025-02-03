@@ -1,6 +1,11 @@
 "use client";
 
-import React, { FunctionComponent, useCallback, useEffect } from "react";
+import React, {
+  FunctionComponent,
+  useCallback,
+  useEffect,
+  useState,
+} from "react";
 import * as Yup from "yup";
 import { useRouter } from "next/navigation";
 import { FormProvider, useForm } from "react-hook-form";
@@ -49,6 +54,7 @@ const EpisodeForm: FunctionComponent<Props> = ({
   clientId,
   mode,
 }) => {
+  const [isDataLoading, setIsDataLoading] = useState(false);
   const router = useRouter();
   const initialValues: CreateIncident = {
     ...SuccessionInitital,
@@ -62,8 +68,6 @@ const EpisodeForm: FunctionComponent<Props> = ({
     clientId: clientId,
     autoFetch: false,
   });
-
-  const isDataLoading = false;
 
   const methods = useForm<CreateIncident>({
     resolver: yupResolver(formSchema),
@@ -89,11 +93,15 @@ const EpisodeForm: FunctionComponent<Props> = ({
         incident_date: new Date(values.incident_date).toISOString(),
       };
 
-      if (mode === "edit") {
-        await updateOne(formattedValues, Number(incident?.id), clientId);
+      if (mode === "edit" && incident) {
+        setIsDataLoading(true);
+        await updateOne(formattedValues, incident.id, clientId);
+        setIsDataLoading(false);
         router.push(`/clients/${clientId}/incidents`);
       } else if (mode === "new") {
+        setIsDataLoading(true);
         await createOne(formattedValues, clientId);
+        setIsDataLoading(false);
         router.push(`/clients/${clientId}/incidents`);
       }
     },
@@ -107,9 +115,6 @@ const EpisodeForm: FunctionComponent<Props> = ({
     { name: "ClientConsequences", component: ClientConsequences },
     { name: "Succession", component: Succession },
   ];
-
-  if (mode == "edit" && isDataLoading)
-    return <div className="mt-5">Loading...</div>;
 
   return (
     <FormProvider {...methods}>
