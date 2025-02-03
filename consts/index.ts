@@ -95,6 +95,200 @@ export const STATUS_RECORD = {
   "Out Of Care": "Uit Zorg",
 };
 
+export const EMPTY_STRING = "";
+
+export const SEVERITY_OF_INCIDENT_OPTIONS = [
+  { label: "Selecter status", value: "" },
+  {
+    label: "Bijna incident: Geen gevolgen voor de cliënt / medewerker",
+    value: "near_incident",
+  },
+  {
+    label:
+      "Minder ernstig: beinvloedt de cliënt / medewerker en/of vervolgprocessen",
+    value: "less_serious",
+  },
+  {
+    label:
+      "Ernstig: tijdelijke gevolgen voor de cliënt / medewerker Zeer ernstig: blijvende gevolgen voor de client / medewerker",
+    value: "serious",
+  },
+  {
+    label:
+      "Fataal: Overlijden van de client / medewerker als gevolg van het incident",
+    value: "fatal",
+  },
+];
+
+export const TYPES_INCIDENT_OPTIONS = [
+  { label: "Selecter status", value: "" },
+  { label: "gevaarlijke situatie (bijna incident)", value: "yes" },
+  { label: "incident", value: "no" },
+  { label: "calamiteit", value: "nxo" },
+];
+
+export const ORGANIZATIONAL_OPTIONS = [
+  "Budget/management prioriteiten",
+  "Cultuur / werkplek",
+  "Formatie / bezetting",
+  "Kennis / deskundigheid niet aanwezig",
+  "Logistiek",
+  "Onderbewetting / Onvoldoende ingewerkt / begeleid",
+  "Overdracht",
+  "Overleg",
+  "Planning",
+  "Protocol / afspraak niet aanwezig of onduidelijk",
+  "Taken, bevoegdheden en verantwoordelijkheden",
+];
+
+export const TECHNICAL_OPTIONS = [
+  "Accomodatie / terrein",
+  "Alarmering",
+  "Apparatuur",
+  "Bediening / onjuist gebruik",
+  "Gebouw-gebonden",
+  "Handleidingen",
+  "Hulpmiddelen",
+  "ICT",
+  "Instructie",
+  "Materiaal defect",
+  "Onderhoud",
+  "Onduidelijke instructie",
+  "Stolen / sleutels",
+];
+export const MESE_WORKER_OPTIONS = [
+  "Afgeleid",
+  "Conditie",
+  "Deskundigheid",
+  "Ervaring",
+  "Fysieke belasting",
+  "Bekwaamheid / bevoegdheid",
+  "Ingewerkt zijn",
+  "Oplettendheid / vergissen",
+  "Protocol / instructie niet nageleefd",
+  "Teamsfeer",
+  "Veiligheidsbewustzijn",
+  "Werkdruk",
+  "Zorgvuldigheid",
+  "Invalmedewerker niet goed op de hoogte",
+  "Persoonlijke omstandigheden medewerker",
+];
+
+export const CLIENT_OPTIONS = [
+  "Alcohol en drugs",
+  "Conditie / fysieke toestand",
+  "Culturele achtergrond",
+  "Gedrag van cliënt",
+  "Groepssamenstelling",
+  "Juridische status",
+  "Medicatie",
+  "Onbekende risici?s",
+  "Psychische toestand cliënt",
+  " Therapietrouw / motivatie",
+  "Familie van de cliënt",
+  "Waarden en normen",
+  "Ziektebeeld",
+  "Taalproblematiek",
+  "De wijwe waarop de zorg uitgevoerd moet worden is niet haalbaar",
+  "Niet opvolgen huisregels",
+];
+
+export const CONSULTATION_NEEDED_OPTIONS = [
+  { label: "Selecteer Type", value: "" },
+  { label: "Nee", value: "no" },
+  { label: "Nog niet duidelijk", value: "not_clear" },
+  { label: "Ziekenhuisopname", value: "hospitalization" },
+  { label: "Consult huisarts", value: "consult_gp" },
+];
+
+export const PSYCHOLOGICAL_DAMAGE_OPTIONS = [
+  { label: "Selecteer Type", value: "" },
+  { label: "Geen", value: "no" },
+  { label: "Nog niet merkbaar", value: "not_noticeable_yet" },
+  { label: "Sufheid", value: "drowsiness" },
+  { label: "Onrust", value: "unrest" },
+  { label: "anders, nl.", value: "other" },
+];
+
+export const INJURY_OPTIONS = [
+  { label: "Selecteer Type", value: "" },
+  { label: "Geen letsel", value: "no_injuries" },
+  { label: "Nog niet merkbaar", value: "not_noticeable_yet" },
+  { label: "Blauwe plek / zwelling", value: "bruising_swelling" },
+  { label: "Huidletsel", value: "skin_injury" },
+  { label: "Botbreuk", value: "broken_bones" },
+  { label: "Benauwdheid", value: "shortness_of_breath" },
+  { label: "Overleden", value: "death" },
+  { label: "anders, nl.", value: "other" },
+];
+
+export const INFORM_WHO_OPTIONS = [
+  "Met maatregel: jeugdbeschermer",
+  "Met maatregel: jeugdreclasseerder",
+  "Met maatregel: voogd",
+  "Met maatregel: gezaghebbende ouders",
+  "Met maatregel: ouders",
+  "Met maatregel: mentor",
+  "Met maatregel: PGB vertegenwoordiger",
+  "Met maatregel: niemad (ZIN / 18+).",
+];
+
+export const REPORTER_INVOLVEMENT_OPTIONS = [
+  { label: "Selecter status", value: "" },
+  { label: "Direct betrokken", value: "directly_involved" },
+  { label: "Getuige", value: "witness" },
+  { label: "Achteraf aangetroffen", value: "found_afterwards" },
+  { label: "Gealarmeerd", value: "alarmed" },
+];
+
+export const YES_NO_OPTIONS = [
+  { label: "Selecter status", value: "" },
+  { label: "Nee", value: "yes" },
+  { label: "Ja", value: "no" },
+];
+
+export const RISK_OF_RECURRENCE_OPTIONS = [
+  { label: "Selecter status", value: "" },
+  {
+    label:
+      "Zeer laag: het zal niet vaker dan 1 x per 5 jaar gebeuren Laag: het zal mogelijk binnen enkele maanden weer gebeuren",
+    value: "very_low",
+  },
+  {
+    label: "Middel: het zal mogelijk binnen enkele weken weer gebeuren",
+    value: "means",
+  },
+  {
+    label: "Hoog: het zal waarschijnlijk binnen enkele dagen weer gebeuren",
+    value: "high",
+  },
+  {
+    label: "Zeer hoog: het zal waarschijnlijk binnen 24 uur weer gebeuren",
+    value: "very_high",
+  },
+];
+
+export const EMPLOYEE_ABSENTEEISM_OPTIONS = [
+  { label: "Selecteer Bron", value: "" },
+  { label: "Geen ziekteverzuim", value: "BRP" },
+  { label: "Ziekteverzuim ‹ 3 dagen", value: "ID" },
+  { label: "Ziekteverzuim minder dan een half jaar", value: "passport" },
+  { label: "Ziekteverzuim minder dan een jaar", value: "policy_card" },
+  {
+    label: "Langdurig ziekteverzuim › meer dan een jaar",
+    value: "government_agency_letter",
+  },
+];
+
+export const SUCCESSION_OPTIONS = [
+  "Besproken met betrokken medewerker(s)",
+  "Besproken in teamvergadering",
+  "Besproken met betrokken client",
+  "Terugkoppeling gedaan naar melder",
+  "Besproken met MT",
+  "Besproken met overige betrokkenen, nl.:",
+];
+
 export const EMERGENCY_DISTANCE_OPTIONS: SelectionOption[] = [
   { label: "Selecteer Afstand", value: "" },
   { label: "Primaire Relatie", value: "Primary Relationship" },
@@ -109,5 +303,5 @@ export const EMERGENCY_RELATIONSHIP_OPTIONS: SelectionOption[] = [
   { label: "Collega", value: "Collega" },
   { label: "Zakelijke Relatie", value: "Zakelijke Relatie" },
   { label: "Mentor/Mentee", value: "Mentor/Mentee" },
-  { label: "Kennismaking", value: "Kennismaking" }
-]
+  { label: "Kennismaking", value: "Kennismaking" },
+];

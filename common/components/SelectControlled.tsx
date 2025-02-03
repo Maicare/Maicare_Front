@@ -28,7 +28,10 @@ const SelectControlled: FunctionComponent<SelectProps> = ({
 
   return (
     <div className={cn("mb-4", className)}>
-      <label htmlFor={id || name} className="mb-2.5 block text-slate-800 dark:text-white">
+      <label
+        htmlFor={id || name}
+        className="mb-2.5 block text-slate-800 dark:text-white"
+      >
         {label} {required && <span className="text-meta-1">*</span>}
       </label>
       <Controller
