@@ -14,11 +14,11 @@ import { useReport } from "@/hooks/report/use-report";
 import { Id } from "@/common/types/types";
 import SmartTextarea from "@/common/components/SmartTextareaControl";
 import { useAuth } from "@/common/hooks/use-auth";
+import { useRouter } from "next/navigation";
 
 
 
 const initialValues: CreateReport = {
-    title: "",
     report_text: "",
     date: "",
     emotional_state: "",
@@ -44,7 +44,7 @@ export const ReportsForm: FunctionComponent<PropsType> = ({
 }) => {
     const { createOne,updateOne } = useReport({ autoFetch: false, clientId });
     const {user} = useAuth();
-
+    const router = useRouter();
     const methods = useForm<CreateReport>({
         resolver: yupResolver(ReportSchema),
         defaultValues: report,
@@ -61,6 +61,7 @@ export const ReportsForm: FunctionComponent<PropsType> = ({
             } else {
                 await createOne({...data,employee_id:user?.employee_id||0,date:data.date + ":00Z"});
             }
+            router.push(`/clients/${clientId}/reports`);
         } catch (error) {
             console.error({error});
         }
@@ -100,16 +101,6 @@ export const ReportsForm: FunctionComponent<PropsType> = ({
                         required={true}
                         options={EMOTIONAL_STATE_OPTIONS}
                         className={"w-full mb-4.5"}
-                    />
-                    <InputControl
-                        className={"w-full mb-4.5"}
-                        required={true}
-                        id={"title"}
-                        name={"title"}
-                        label={"Titel"}
-                        type={"text"}
-                        placeholder={"Voer de titel van de rapporten in"}
-
                     />
 
                     <InputControl

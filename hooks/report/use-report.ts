@@ -8,6 +8,7 @@ import { Id } from "@/common/types/types";
 import { CreateReport, Report } from "@/types/reports.types";
 import { constructUrlSearchParams } from "@/utils/construct-search-params";
 import { stringConstructor } from "@/utils/string-constructor";
+import { usePathname } from "next/navigation";
 import { useSnackbar } from "notistack";
 import { useEffect, useState } from "react";
 import useSWR from "swr";
@@ -48,7 +49,7 @@ export function useReport({ autoFetch = true,clientId,page=1,page_size=10 }: { a
             }
             return response.data.data;
         },
-        { shouldRetryOnError: false }
+        { shouldRetryOnError: false, revalidateOnFocus: true }
     );
 
     useEffect(()=> {
@@ -64,6 +65,11 @@ export function useReport({ autoFetch = true,clientId,page=1,page_size=10 }: { a
             });
         }
     },[data]);
+    const pathname = usePathname();
+
+useEffect(() => {
+    mutate();  // Forces SWR to re-fetch data
+}, [pathname]);  // Runs when the route changes
 
 
     const createOne = async (report:CreateReport, options?: ApiOptions) => {
