@@ -6,7 +6,6 @@ export type Report = {
     emotional_state: EmotionalState|"",
     employee_id: Id,
     report_text: string,
-    title: string,
     type: ReportTypes|"",
     id?:Id,
     employee_first_name?:string,
@@ -17,7 +16,6 @@ export type CreateReport = {
     emotional_state: EmotionalState|"",
     employee_id: Id,
     report_text: string,
-    title: string,
     type: ReportTypes|"",
     id?:Id,
 }

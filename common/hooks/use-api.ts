@@ -17,7 +17,7 @@ export const useApi = async <T>(
     };
 
     // Add body to the request if applicable
-    if (["POST", "PUT", "PATCH"].includes(method.toUpperCase()) && body) {
+    if (["POST", "PUT", "PATCH","DELETE"].includes(method.toUpperCase()) && body) {
       finalConfig.data = body;
     }
 

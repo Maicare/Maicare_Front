@@ -5,6 +5,7 @@ import useProgressBar from "@/common/hooks/use-progress-bar";
 import { ApiOptions } from "@/common/types/api.types";
 import { PaginatedResponse } from "@/common/types/pagination.types";
 import { Id } from "@/common/types/types";
+import { CreateDocument, Document } from "@/types/Document.types";
 import { CreateReport, Report } from "@/types/reports.types";
 import { constructUrlSearchParams } from "@/utils/construct-search-params";
 import { stringConstructor } from "@/utils/string-constructor";
@@ -14,9 +15,9 @@ import { useEffect, useState } from "react";
 import useSWR from "swr";
 
 
-export function useReport({ autoFetch = true,clientId,page=1,page_size=10 }: { autoFetch?: boolean,clientId:Id,page?:number,page_size?:number }) {
+export function useDocument({ autoFetch = true, clientId, page = 1, page_size = 10 }: { autoFetch?: boolean, clientId: Id, page?: number, page_size?: number }) {
     const { enqueueSnackbar } = useSnackbar();
-    const [reports,setReports] = useState<PaginatedResponse<Report>>({
+    const [documents, setDocuments] = useState<PaginatedResponse<Document>>({
         results: [],
         count: 0,
         page_size: 0,
@@ -24,8 +25,8 @@ export function useReport({ autoFetch = true,clientId,page=1,page_size=10 }: { a
         previous: null
     });
     const { start: startProgress, stop: stopProgress } = useProgressBar();
-    const { data, error, mutate,isLoading } = useSWR<PaginatedResponse<Report>>(
-        stringConstructor(ApiRoutes.Report.ReadAll.replace("{id}",clientId.toString()), constructUrlSearchParams({ page, page_size })),
+    const { data, error, mutate, isLoading } = useSWR<PaginatedResponse<Document>>(
+        stringConstructor(ApiRoutes.Client.Document.ReadAll.replace("{id}", clientId.toString()), constructUrlSearchParams({ page, page_size })),
         async (url) => {
             if (!autoFetch) {
                 return {
@@ -52,11 +53,11 @@ export function useReport({ autoFetch = true,clientId,page=1,page_size=10 }: { a
         { shouldRetryOnError: false, revalidateOnFocus: true }
     );
 
-    useEffect(()=> {
-        if(data){
-            setReports(data);
-        }else{
-            setReports({
+    useEffect(() => {
+        if (data) {
+            setDocuments(data);
+        } else {
+            setDocuments({
                 results: [],
                 count: 0,
                 page_size: 0,
@@ -64,112 +65,88 @@ export function useReport({ autoFetch = true,clientId,page=1,page_size=10 }: { a
                 previous: null
             });
         }
-    },[data]);
+    }, [data]);
     const pathname = usePathname();
 
-useEffect(() => {
-    mutate();  // Forces SWR to re-fetch data
-}, [pathname]);  // Runs when the route changes
+    useEffect(() => {
+        mutate();  // Forces SWR to re-fetch data
+    }, [pathname]);  // Runs when the route changes
 
 
-    const createOne = async (report:CreateReport, options?: ApiOptions) => {
+    const createOne = async (document: CreateDocument, options?: ApiOptions) => {
         const { displayProgress = false, displaySuccess = false } = options || {};
         try {
             // Display progress bar
             if (displayProgress) startProgress();
-            const { message, success, data, error } = await useApi<Report>(ApiRoutes.Report.CreateOne.replace("{id}",clientId.toString()), "POST", {},report);
+            const { message, success, data, error } = await useApi<Document>(ApiRoutes.Client.Document.CreateOne.replace("{id}", clientId.toString()), "POST", {}, document);
             if (!data)
                 throw new Error(error || message || "An unknown error occurred");
 
             // Display success message
             if (displaySuccess && success) {
-                enqueueSnackbar("Report created successful!", { variant: "success" });
+                enqueueSnackbar("Document created successful!", { variant: "success" });
             }
             mutate();
             return data;
         } catch (err: any) {
-            enqueueSnackbar(err?.response?.data?.message || "Report creationg failed", { variant: "error" });
+            enqueueSnackbar(err?.response?.data?.message || "Document creationg failed", { variant: "error" });
             throw err;
         } finally {
             if (displayProgress) stopProgress();
         }
     }
-    const updateOne = async (report:CreateReport, options?: ApiOptions) => {
+    const deleteOne = async (document: Document, options?: ApiOptions) => {
         const { displayProgress = false, displaySuccess = false } = options || {};
         try {
             // Display progress bar
             if (displayProgress) startProgress();
-            const { message, success, data, error } = await useApi<Report>(ApiRoutes.Report.UpdateOne.replace("{id}",clientId.toString()).replace("{report_id}",report.id!.toString()), "PUT", {},report);
+            const { message, success, data, error } = await useApi<Document>(ApiRoutes.Client.Document.DeleteOne.replace("{id}", clientId.toString()).replace("{doc_id}", document.id.toString()), "DELETE", {}, {attachement_id:document.attachment_uuid});
             if (!data)
                 throw new Error(error || message || "An unknown error occurred");
 
             // Display success message
             if (displaySuccess && success) {
-                enqueueSnackbar("Report updated successful!", { variant: "success" });
+                enqueueSnackbar("Document Deleted successful!", { variant: "success" });
             }
             mutate()
             return data;
         } catch (err: any) {
-            enqueueSnackbar(err?.response?.data?.message || "Report update failed", { variant: "error" });
+            enqueueSnackbar(err?.response?.data?.message || "Document Deleted failed", { variant: "error" });
             throw err;
         } finally {
             if (displayProgress) stopProgress();
         }
     }
-    const readOne = async (report:Id, options?: ApiOptions) => {
+    const readMissingDocs = async (document: Id, options?: ApiOptions) => {
         const { displayProgress = false, displaySuccess = false } = options || {};
         try {
             // Display progress bar
             if (displayProgress) startProgress();
-            const { message, success, data, error } = await useApi<Report>(ApiRoutes.Report.ReadOne.replace("{id}",clientId.toString()).replace("{report_id}",report.toString()), "GET");
+            const { message, success, data, error } = await useApi<{missing_docs:string[]}>(ApiRoutes.Client.Document.MissingDocs.replace("{id}", clientId.toString()).replace("{report_id}", document!.toString()), "GET");
             if (!data)
                 throw new Error(error || message || "An unknown error occurred");
 
             // Display success message
             if (displaySuccess && success) {
-                enqueueSnackbar("Report retrieved successful!", { variant: "success" });
+                enqueueSnackbar("Missing Documents Retrieving successful!", { variant: "success" });
             }
-            mutate();
             return data;
         } catch (err: any) {
-            enqueueSnackbar(err?.response?.data?.message || "Report retrieve failed", { variant: "error" });
+            enqueueSnackbar(err?.response?.data?.message || "Missing Documents Retrieving failed", { variant: "error" });
             throw err;
         } finally {
             if (displayProgress) stopProgress();
         }
     }
 
-    const enhanceReport = async(report:string,options?: ApiOptions) => {
-        const { displayProgress = false, displaySuccess = false } = options || {};
-        try {
-            // Display progress bar
-            if (displayProgress) startProgress();
-            const { message, success, data, error } = await useApi<{corrected_text:string,initial_text:string}>(ApiRoutes.Report.Enhance, "POST", {},{initial_text:report});
-            if (!data)
-                throw new Error(error || message || "An unknown error occurred");
 
-            // Display success message
-            if (displaySuccess && success) {
-                enqueueSnackbar("Report enhanced successful!", { variant: "success" });
-            }
-            return data;
-        } catch (err: any) {
-            enqueueSnackbar(err?.response?.data?.message || "Report enhance failed", { variant: "error" });
-            throw err;
-        } finally {
-            if (displayProgress) stopProgress();
-        }
-    }
-    
-    
     return {
-        reports,
+        documents,
         error,
         isLoading,
         mutate,
         createOne,
-        updateOne,
-        readOne,
-        enhanceReport
+        deleteOne,
+        readMissingDocs
     }
 }

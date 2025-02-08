@@ -30,11 +30,6 @@ const ReportsPage: FunctionComponent = () => {
     })
   );
 
-  //   const {
-  //     mutate: deleteReport,
-  //     isLoading: isDeleting,
-  //     isSuccess: isDeleted,
-  //   } = useDeleteReport(+clientId);
   if (isLoading) {
     return <Loader />;
   }

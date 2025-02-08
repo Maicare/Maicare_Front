@@ -1,30 +1,46 @@
+"use client";
 import dayjs from "dayjs";
 import { getAge } from "@/utils/get-age";
 import ProfilePicture from "../profilePicture/profile-picture";
+import { useClient } from "@/hooks/client/use-client";
+import { useEffect, useState } from "react";
+import { Client } from "@/types/client.types";
+import { useSnackbar } from "notistack";
 
 interface ClientSidebarBriefingProps {
   clientId: number;
 }
 
-const ClientSidebarBriefing: React.FC<ClientSidebarBriefingProps> = ({ clientId:_clientId }) => {
-    const data = {
-        profile_picture: "https://via.placeholder.com/150",
-        first_name: "John",
-        last_name: "Doe",
-        date_of_birth: "1990-01-01",
-        filenumber: "123456"
+const ClientSidebarBriefing: React.FC<ClientSidebarBriefingProps> = ({ clientId:clientId }) => {
+    const {readOne} = useClient({autoFetch:false});
+    const [client,setClient] = useState<Client|null>(null);
+    const {enqueueSnackbar} = useSnackbar();
+    useEffect(() => {
+      const fetchClient = async () => {
+        try {
+          const data = await readOne(clientId);
+          setClient(data);
+        } catch (_error) {
+          enqueueSnackbar("Er is iets misgelopen bij het ophalen van de client", {variant: "error"});
+        }
+      };
+      fetchClient();
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [clientId]);
+    if (!client) {
+      return null;
     }
   return (
     <div className="w-full flex flex-col font-bold items-center">
-      <ProfilePicture profilePicture={data?.profile_picture} />
-      <p className="pt-5 text-white">{data?.first_name + " " + data?.last_name}</p>
+      <ProfilePicture profilePicture={client?.profile_picture} />
+      <p className="pt-5 text-white">{client?.first_name + " " + client?.last_name}</p>
       <p>
-        {data?.date_of_birth
-          ? dayjs(data?.date_of_birth).format("DD MMM, YYYY") +
-            ` (${getAge(data?.date_of_birth)} jaar oud)`
+        {client?.date_of_birth
+          ? dayjs(client?.date_of_birth).format("DD MMM, YYYY") +
+            ` (${getAge(client?.date_of_birth)} jaar oud)`
           : null}
       </p>
-      <p>{"Dossiernummer : " + data?.filenumber}</p>
+      <p>{"Dossiernummer : " + client?.filenumber}</p>
     </div>
   );
 };

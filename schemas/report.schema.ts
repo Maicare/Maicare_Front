@@ -2,7 +2,6 @@ import { CreateReport, EmotionalState, ReportTypes } from "@/types/reports.types
 import { wordCount } from "@/utils/words-splitter";
 import * as Yup from "yup";
 export const ReportSchema: Yup.ObjectSchema<CreateReport> = Yup.object().shape({
-    title: Yup.string().required("Gelieve"),
     report_text: Yup.string().required("Geef alstublieft een rapport").test("minWords", "Voer meer dan 50 woorden in om het rapport in te dienen.",wordCount),
     date: Yup.string().required("Geef alstublieft een datum"),
     id: Yup.number().optional(),
