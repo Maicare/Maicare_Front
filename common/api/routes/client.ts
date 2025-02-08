@@ -28,6 +28,13 @@ const ApiRoutes = {
     UpdateOne: prefix + "/{id}/incidents/{incident_id}",
     ReadOne: prefix + "/{id}/incidents/{incident_id}",
   },
+  Document: {
+    ReadAll: prefix + "/{id}/documents",
+    CreateOne: prefix + "/{id}/documents",
+    MissingDocs: prefix + "/{id}/missing_documents",
+    DeleteOne: prefix + "/{id}/documents/{doc_id}",
+    ReadOne: prefix + "/{id}/documents/{doc_id}",
+  },
 };
 
 export default ApiRoutes;
