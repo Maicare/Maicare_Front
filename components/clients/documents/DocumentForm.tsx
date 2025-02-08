@@ -40,13 +40,17 @@ export const DocumentForm: FunctionComponent<PropsType> = ({ clientId }) => {
     }
   }
 
-  const handleFileChange = (e: any) => {
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setError("");
-    if (!checkFileExtension(e.target.files[0].name)) {
+    if (e.target.files?.[0]?.name === undefined || e.target.files?.[0] === undefined) {
       setError("Please provide a document file");
       return;
     }
-    setFile(e.target.files[0]);
+    if (!checkFileExtension(e.target.files?.[0].name)) {
+      setError("Please provide a document file");
+      return;
+    }
+    setFile(e.target.files?.[0]);
   };
 
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {

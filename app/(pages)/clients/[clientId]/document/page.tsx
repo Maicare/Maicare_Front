@@ -15,7 +15,6 @@ import { useParams } from "next/navigation";
 import { Document } from "@/types/Document.types";
 import Loader from "@/components/common/loader";
 import ConfirmationModal from "@/common/components/ConfirmationModal";
-import { set } from "nprogress";
 
 
 
@@ -48,6 +47,7 @@ const DocumentsPage: FunctionComponent = () => {
       setMissingDocs(data.missing_docs);
     }
     fetchMissingDocs();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [clientId,documents]);
 
   const columnDef = useMemo<ColumnDef<Document>[]>(() => {
@@ -92,7 +92,7 @@ const DocumentsPage: FunctionComponent = () => {
       {
         accessorKey: "file",
         header: () => "",
-        cell: (info: any) => {
+        cell: (info: Any) => {
           const row = info.row.original; // Access full row data
 
           const handleDownload = async () => {
@@ -151,8 +151,8 @@ const DocumentsPage: FunctionComponent = () => {
 
   const TOTAL_REQUIRED_DOCUMENTS = Object.keys(DOCUMENT_LABELS).length - 1;
 
-  let ALREADY_UPLOADED_DOCUMENTS: string[] = Object.keys(DOCUMENT_LABELS).filter((doc) => !missingDocs.includes(doc) && doc !== "other");
-  let NOT_UPLOADED_DOCUMENTS: { label: string, value: string }[] = missingDocs.map((doc) => {
+  const ALREADY_UPLOADED_DOCUMENTS: string[] = Object.keys(DOCUMENT_LABELS).filter((doc) => !missingDocs.includes(doc) && doc !== "other");
+  const NOT_UPLOADED_DOCUMENTS: { label: string, value: string }[] = missingDocs.map((doc) => {
     return { label: DOCUMENT_LABELS[doc as keyof { registration_form: string; intake_form: string; consent_form: string; risk_assessment: string; self_reliance_matrix: string; force_inventory: string; care_plan: string; signaling_plan: string; cooperation_agreement: string; other: string; }], value: doc }
   });
 

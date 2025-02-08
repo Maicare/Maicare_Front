@@ -1,6 +1,6 @@
 import React, { FunctionComponent } from "react";
 
-const DiagnosticDetailsPage: FunctionComponent = (props) => {
+const DiagnosticDetailsPage: FunctionComponent = (_props) => {
   return <div>[document details page]</div>;
 };
 

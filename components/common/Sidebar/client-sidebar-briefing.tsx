@@ -20,11 +20,12 @@ const ClientSidebarBriefing: React.FC<ClientSidebarBriefingProps> = ({ clientId:
         try {
           const data = await readOne(clientId);
           setClient(data);
-        } catch (error) {
+        } catch (_error) {
           enqueueSnackbar("Er is iets misgelopen bij het ophalen van de client", {variant: "error"});
         }
       };
       fetchClient();
+      // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [clientId]);
     if (!client) {
       return null;
