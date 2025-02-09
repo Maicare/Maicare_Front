@@ -7,6 +7,10 @@ import Breadcrumb from "@/components/common/Breadcrumbs/Breadcrumb";
 import { useIncident } from "@/hooks/incident/use-incident";
 import { Incident } from "@/types/incident.types";
 import Loader from "@/components/common/loader";
+import withAuth, { AUTH_MODE } from "@/common/hocs/with-auth";
+import withPermissions from "@/common/hocs/with-permissions";
+import Routes from "@/common/routes";
+import { PermissionsObjects } from "@/common/data/permission.data";
 
 const UpdateEpisodePage = () => {
   const params = useParams();
@@ -44,4 +48,10 @@ const UpdateEpisodePage = () => {
   );
 };
 
-export default UpdateEpisodePage;
+export default withAuth(
+  withPermissions(UpdateEpisodePage, {
+    redirectUrl: Routes.Common.NotFound,
+    requiredPermissions: PermissionsObjects.ViewEmployee, // TODO: Add correct permisssion
+  }),
+  { mode: AUTH_MODE.LOGGED_IN, redirectUrl: Routes.Auth.Login }
+);

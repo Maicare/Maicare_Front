@@ -8,6 +8,10 @@ import DiagnosisSummary from "@/components/medical-record/DiagnosisSummary";
 import EpisodesSummary from "@/components/medical-record/EpisodesSummary";
 import MedicationsSummary from "@/components/medical-record/MedicationsSummary";
 import { useParams } from "next/navigation";
+import withAuth, { AUTH_MODE } from "@/common/hocs/with-auth";
+import withPermissions from "@/common/hocs/with-permissions";
+import Routes from "@/common/routes";
+import { PermissionsObjects } from "@/common/data/permission.data";
 
 const Page: FunctionComponent = () => {
   const params = useParams();
@@ -76,4 +80,10 @@ const Page: FunctionComponent = () => {
   );
 };
 
-export default Page;
+export default withAuth(
+  withPermissions(Page, {
+    redirectUrl: Routes.Common.NotFound,
+    requiredPermissions: PermissionsObjects.ViewEmployee, // TODO: Add correct permisssion
+  }),
+  { mode: AUTH_MODE.LOGGED_IN, redirectUrl: Routes.Auth.Login }
+);
