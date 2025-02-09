@@ -45,6 +45,7 @@ export type Incident = {
   soft_delete: boolean;
   updated_at: string;
   created_at: string;
+  is_confirmed : boolean;
 };
 
 export type CreateIncident = {
