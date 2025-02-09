@@ -1,7 +1,7 @@
 "use client";
 
 import React, { FunctionComponent, useMemo } from "react";
-import { ColumnDef } from "@tanstack/table-core";
+import { ColumnDef, Row } from "@tanstack/table-core";
 // import { useModal } from "@/components/providers/ModalProvider";
 import Link from "next/link";
 import PencilSquare from "@/components/icons/PencilSquare";
@@ -120,7 +120,7 @@ const MedicationsPage: FunctionComponent = () => {
             <RowDetails clientId={parseInt(clientId)} data={original} />
           )}
           rowClassName={(row) => {
-            return row.original.is_critical ? styles.critical : "";
+            return (row as Row<Medication>).original.is_critical ? styles.critical : "";
           }}
         />
       )}

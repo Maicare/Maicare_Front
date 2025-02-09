@@ -3,7 +3,7 @@ import { ModalProps } from "@/common/types/modal-props.types";
 import WarningModal from "@/components/common/Modals/WarningModal";
 
 type ConfigProps = {
-  msg: string;
+  msg: string|React.FC;
   title: string;
 };
 
@@ -12,7 +12,7 @@ type WarningActionConfirmationProps = ConfigProps & ModalProps;
 export default function WarningActionConfirmation({
   open,
   onClose,
-  msg,
+  msg:Msg,
   title,
   additionalProps,
 }: WarningActionConfirmationProps) {
@@ -24,7 +24,12 @@ export default function WarningActionConfirmation({
       onCancel={additionalProps?.onCancel}
       onConfirm={additionalProps?.onConfirm}
     >
-      <p>{msg}</p>
+      {
+        typeof Msg === "string" && <p>{Msg}</p> 
+      }
+      {
+        typeof Msg === "function" && <Msg />
+      }
     </WarningModal>
   );
 }

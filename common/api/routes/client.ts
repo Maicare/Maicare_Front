@@ -26,7 +26,9 @@ const ApiRoutes = {
     ReadAll: prefix + "/{id}/incidents",
     CreateOne: prefix + "/{id}/incidents",
     UpdateOne: prefix + "/{id}/incidents/{incident_id}",
+    ConfirmOne: prefix + "/{id}/incidents/{incident_id}/confirm",
     ReadOne: prefix + "/{id}/incidents/{incident_id}",
+    GeneratePdf:prefix + "/{id}/incidents/{incident_id}/file"
   },
   Document: {
     ReadAll: prefix + "/{id}/documents",
