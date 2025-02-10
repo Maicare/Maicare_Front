@@ -9,7 +9,7 @@ import TrashIcon from "../icons/TrashIcon";
 import { useClient } from "@/hooks/client/use-client";
 import { Client as ClientType } from "@/types/client.types";
 import LinkButton from "../common/Buttons/LinkButton";
-import {  DOCUMENT_LABELS } from "@/consts";
+import {  DOCUMENT_LABEL_OPTIONS, DOCUMENT_LABELS } from "@/consts";
 import ClientInformation from "./ClientDetailsComponents/ClientInformation";
 import ClientLocationDetails from "./ClientDetailsComponents/ClientLocationDetails";
 import EmergencyContactsSummary from "./ClientDetailsComponents/EmergencyContactsSummary";
