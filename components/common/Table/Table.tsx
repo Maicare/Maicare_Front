@@ -145,8 +145,8 @@ function Table<T>({
                     });
                   }}
                   className={cn(
-                    "px-2 py-2 border-t cursor-pointer border-stroke hover:bg-gray-3 dark:hover:bg-slate-700 rounded-2xl",
-                    rowClassName?.(row)
+                    "px-2 py-2 border-t cursor-pointer border-stroke hover:bg-gray-3 dark:hover:bg-slate-700 rounded-2xl ",
+                    rowClassName?.(row),
                   )}
                 >
                   {row.getVisibleCells().map((cell) => {
