@@ -6,7 +6,6 @@ import { ApiOptions } from "@/common/types/api.types";
 import { PaginatedResponse } from "@/common/types/pagination.types";
 import { Id } from "@/common/types/types";
 import { CreateDocument, Document } from "@/types/Document.types";
-import { CreateReport, Report } from "@/types/reports.types";
 import { constructUrlSearchParams } from "@/utils/construct-search-params";
 import { stringConstructor } from "@/utils/string-constructor";
 import { usePathname } from "next/navigation";
