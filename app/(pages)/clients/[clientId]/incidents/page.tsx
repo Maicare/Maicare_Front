@@ -143,7 +143,7 @@ const IncidentsPage: FunctionComponent = () => {
         accessorKey: "action",
         header: "Actions",
         cell: (info) => {
-          setIncident(info.row.original);
+          const incident = info.row.original;
           return (
             <div className="flex gap-3">
               <Link href={`/clients/${clientId}/incidents/${info.row.id}/edit`}>
@@ -153,12 +153,13 @@ const IncidentsPage: FunctionComponent = () => {
               </Link>
               <IconButton
                 className="bg-red-600"
-                onClick={() =>
+                onClick={() =>{
+                  setIncident(incident);
                   open({
                     // onConfirm: () => {
                     //   deleteIncident(parseInt(info.row.id));
                     // },
-                  })
+                  })}
                 }
               >
                 <DeleteIcon className="w-5 h-5" />
@@ -208,7 +209,7 @@ const IncidentsPage: FunctionComponent = () => {
           page={page ?? 1}
           isFetching={isFetching}
           onPageChange={(page) => setPage(page)}
-          rowClassName={(row) => (!(row as Row<Incident>).original.is_confirmed ? "bg-red-100" : "")}
+          rowClassName={(row) => (!(row as Row<Incident>).original.is_confirmed ? "bg-red-100 hover:!bg-red-200" : "")}
 
         />
       )}
