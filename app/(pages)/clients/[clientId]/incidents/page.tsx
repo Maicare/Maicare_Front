@@ -144,7 +144,6 @@ const IncidentsPage: FunctionComponent = () => {
         header: "Actions",
         cell: (info) => {
           const incident = info.row.original;
-          setIncident(incident);
           return (
             <div className="flex gap-3">
               <Link href={`/clients/${clientId}/incidents/${info.row.id}/edit`}>
@@ -154,12 +153,13 @@ const IncidentsPage: FunctionComponent = () => {
               </Link>
               <IconButton
                 className="bg-red-600"
-                onClick={() =>
+                onClick={() =>{
+                  setIncident(incident);
                   open({
                     // onConfirm: () => {
                     //   deleteIncident(parseInt(info.row.id));
                     // },
-                  })
+                  })}
                 }
               >
                 <DeleteIcon className="w-5 h-5" />

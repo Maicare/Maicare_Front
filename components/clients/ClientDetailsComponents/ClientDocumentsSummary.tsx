@@ -6,26 +6,21 @@ import "dayjs/locale/en";
 import { DOCUMENT_LABELS } from "@/consts";
 import bytesToSize from "@/utils/sizeConverter";
 import DetailCell from "../../common/DetailCell";
+import { useDocument } from "@/hooks/document/use-document";
+import { getUniqueConcurrencesObjects } from "@/utils/concurrences";
 
 
-
-type Document = {
-  id: string;
-  original_filename: string;
-  file_size: number;
-  label: string;
-  uploaded_at: string;
+type Props = {
+  clientId: number;
 };
 
-const mockData: Document[] = [];
+const ClientDocumentsSummary: FunctionComponent<Props> = ({clientId}) => {
+  const {documents} = useDocument({autoFetch: true,clientId});
 
-const ClientDocumentsSummary: FunctionComponent = () => {
-  // const { data, isLoading, isError } = useDocumentList(clientId.toString());
-
-  if (mockData.length === 0) return <div>Geen documenten gevonden</div>;
+  if (documents.results.length === 0) return <div>Geen documenten gevonden</div>;
   return (
     <ul className="flex flex-col gap-2">
-      {mockData.map((document) => {
+      {getUniqueConcurrencesObjects(documents.results,"label").map((document) => {
         return (
           <li
             key={document.id}
@@ -34,13 +29,13 @@ const ClientDocumentsSummary: FunctionComponent = () => {
             <DetailCell
               className="flex items-center"
               ignoreIfEmpty={true}
-              label={document.original_filename}
+              label={document.name}
               value=""
             />
             <DetailCell
               className="flex items-center"
               ignoreIfEmpty={true}
-              label={bytesToSize(document.file_size)}
+              label={bytesToSize(document.size)}
               value=""
             />
             <DetailCell
@@ -56,7 +51,7 @@ const ClientDocumentsSummary: FunctionComponent = () => {
             <DetailCell
               className="flex items-center"
               ignoreIfEmpty={true}
-              label={dayjs(document.uploaded_at).format("DD MMM, YYYY")}
+              label={dayjs(document.created_at).format("DD MMM, YYYY")}
               value=""
             />
           </li>
