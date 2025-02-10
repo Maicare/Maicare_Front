@@ -305,3 +305,22 @@ export const EMERGENCY_RELATIONSHIP_OPTIONS: SelectionOption[] = [
   { label: "Mentor/Mentee", value: "Mentor/Mentee" },
   { label: "Kennismaking", value: "Kennismaking" },
 ];
+
+export const DIAGNOSIS_SEVERITY_OPTIONS: SelectionOption[] = [
+  { label: "Selecteer Ernst", value: "" },
+  { label: "Mild", value: "Mild" },
+  { label: "Matig", value: "Moderate" },
+  { label: "Ernstig", value: "Severe" },
+];
+
+export const ALLERGY_TYPE_OPTIONS: SelectionOption[] = [
+  { label: "Selecteer Allergietype", value: "" },
+  { label: "Voedsel", value: "Voedsel" },
+  { label: "Medicijn", value: "Medicijn" },
+  { label: "Insect", value: "Insect" },
+  { label: "Latex", value: "Latex" },
+  { label: "Schimmel", value: "Schimmel" },
+  { label: "Huisdier", value: "Huisdier" },
+  { label: "Pollen", value: "Pollen" },
+  { label: "Overig", value: "Overig" },
+];

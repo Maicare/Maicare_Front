@@ -5,7 +5,6 @@ import Panel from "@/components/common/Panel/Panel";
 import LinkButton from "@/components/common/Buttons/LinkButton";
 import AllergiesSummary from "@/components/medical-record/AllergiesSummary";
 import DiagnosisSummary from "@/components/medical-record/DiagnosisSummary";
-import EpisodesSummary from "@/components/medical-record/EpisodesSummary";
 import MedicationsSummary from "@/components/medical-record/MedicationsSummary";
 import { useParams } from "next/navigation";
 
@@ -59,7 +58,7 @@ const Page: FunctionComponent = () => {
         >
           <AllergiesSummary clientId={parseInt(clientId)} />
         </Panel>
-        <Panel
+        {/* <Panel
           title={"Episodes"}
           containerClassName="px-7 py-4"
           sideActions={
@@ -70,7 +69,7 @@ const Page: FunctionComponent = () => {
           }
         >
           <EpisodesSummary clientId={parseInt(clientId)} />
-        </Panel>
+        </Panel> */}
       </div>
     </div>
   );
