@@ -1,11 +1,11 @@
+"use client";
 import { FunctionComponent } from "react";
-import { redirect } from "next/navigation";
+import { redirect, useParams } from "next/navigation";
 
-type Props = {
-  params: { clientId: string };
-};
+const AllergiesPage: FunctionComponent = () => {
+  const params = useParams();
+  const clientId = params?.clientId?.toString();
 
-const AllergiesPage: FunctionComponent<Props> = ({ params: { clientId } }) => {
   redirect(`/clients/${clientId}/medical-record/allergies`);
 };
 

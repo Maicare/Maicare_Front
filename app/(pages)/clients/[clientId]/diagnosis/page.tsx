@@ -1,7 +1,7 @@
 import { FunctionComponent } from "react";
 import { redirect } from "next/navigation";
 
-const Page: FunctionComponent = (props) => {
+const Page: FunctionComponent = () => {
   redirect("medical-record/diagnosis");
 };
 
