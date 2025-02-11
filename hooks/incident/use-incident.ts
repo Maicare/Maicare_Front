@@ -14,9 +14,10 @@ import useSWR from "swr";
 export interface UseIncidentProps {
   clientId: Id;
   params?: PaginationParams;
+  autoFetch?: boolean;
 }
 
-export function useIncident({ clientId, params }: UseIncidentProps) {
+export function useIncident({ clientId, params,autoFetch=false }: UseIncidentProps) {
   const { enqueueSnackbar } = useSnackbar();
   const { start: startProgress, stop: stopProgress } = useProgressBar();
   const [page, setPage] = useState(params?.page || 1);
@@ -33,6 +34,9 @@ export function useIncident({ clientId, params }: UseIncidentProps) {
       clientId.toString()
     )}?page=${page}&page_size=${page_size}`,
     async (url) => {
+      if (!autoFetch) {
+        return null;
+      }
       const response = await api.get(url);
       if (!response.data.data) {
         return null;
@@ -153,6 +157,77 @@ export function useIncident({ clientId, params }: UseIncidentProps) {
       if (displayProgress) stopProgress();
     }
   };
+  const confirmOne = async (
+    incident_id: Id,
+    options?: ApiOptions
+  ) => {
+    const { displayProgress = false, displaySuccess = false } = options || {};
+    try {
+      // Display progress bar
+      if (displayProgress) startProgress();
+      const { message, success, data, error } = await useApi<{
+        file_url: string,
+        incident_id: Id
+      }>(
+        ApiRoutes.Client.Incident.ConfirmOne.replace(
+          "{id}",
+          clientId.toString()
+        ).replace("{incident_id}", incident_id.toString()),
+        "PUT",
+      );
+      if (!data)
+        throw new Error(error || message || "An unknown error occurred");
+
+      // Display success message
+      if (displaySuccess && success) {
+        enqueueSnackbar("Client Incident confirmed successful!", {
+          variant: "success",
+        });
+      }
+      mutate();
+      return data;
+    } catch (err: any) {
+      enqueueSnackbar(
+        err?.response?.data?.message || "Client Incident confirmation failed",
+        { variant: "error" }
+      );
+      throw err;
+    } finally {
+      if (displayProgress) stopProgress();
+    }
+  };
+
+  const generatePdf = async (
+    incident_id: Id,
+    options?: ApiOptions
+  ) => {
+    const { displayProgress = false } = options || {};
+    try {
+      if (displayProgress) startProgress();
+      const response = await useApi<{
+        file_url: string,
+        incident_id: Id
+      }>(
+        ApiRoutes.Client.Incident.GeneratePdf.replace(
+          "{id}",
+          clientId.toString()
+        ).replace("{incident_id}", incident_id.toString()),
+        "GET"
+      );
+      if (!response.data) {
+        throw new Error("Generating Failed!");
+      }
+      return response.data;
+    } catch (err: any) {
+      enqueueSnackbar(
+        err?.response?.data?.message || "Failed to generate Pdf!",
+        { variant: "error" }
+      );
+      throw err;
+    } finally {
+      if (displayProgress) stopProgress();
+    }
+  };
 
   return {
     incidents,
@@ -165,5 +240,7 @@ export function useIncident({ clientId, params }: UseIncidentProps) {
     createOne,
     updateOne,
     readOne,
+    generatePdf,
+    confirmOne
   };
 }

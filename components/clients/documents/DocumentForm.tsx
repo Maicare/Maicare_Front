@@ -18,13 +18,6 @@ export const DocumentForm: FunctionComponent<PropsType> = ({ clientId }) => {
   const { createOne: createOneAttachment } = useAttachment();
   const router = useRouter();
 
-  // const {
-  //   pagination,
-  //   isFetching,
-  //   isLoading: isListLoading,
-  //   isError,
-  //   documents,
-  // } = useDocumentList(clientId);
 
   const [error, setError] = useState("");
   const [file, setFile] = useState<File|null>(null);

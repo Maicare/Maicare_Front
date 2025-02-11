@@ -66,6 +66,7 @@ const EpisodeForm: FunctionComponent<Props> = ({
 
   const { createOne, updateOne } = useIncident({
     clientId: clientId,
+    autoFetch: false,
   });
 
   const methods = useForm<CreateIncident>({

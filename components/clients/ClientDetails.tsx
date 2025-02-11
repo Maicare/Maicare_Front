@@ -9,7 +9,7 @@ import TrashIcon from "../icons/TrashIcon";
 import { useClient } from "@/hooks/client/use-client";
 import { Client as ClientType } from "@/types/client.types";
 import LinkButton from "../common/Buttons/LinkButton";
-import { DOCUMENT_LABEL_OPTIONS, DOCUMENT_LABELS } from "@/consts";
+import {  DOCUMENT_LABEL_OPTIONS, DOCUMENT_LABELS } from "@/consts";
 import ClientInformation from "./ClientDetailsComponents/ClientInformation";
 import ClientLocationDetails from "./ClientDetailsComponents/ClientLocationDetails";
 import EmergencyContactsSummary from "./ClientDetailsComponents/EmergencyContactsSummary";
@@ -24,25 +24,30 @@ import ClientIdentityDetails from "./ClientDetailsComponents/ClientIdentityDetai
 import ClientAddressDetails from "./ClientDetailsComponents/ClientAddressDetails";
 import ClientMedicalRecordSummary from "./ClientDetailsComponents/ClientMedicalRecordSummary";
 import ClientReportsSummary from "./ClientDetailsComponents/ClientReportsSummary";
+import { useDocument } from "@/hooks/document/use-document";
+import Loader from "../common/loader";
 
 type PropsType = {
-    clientId?: number;
+    clientId: number;
 }
 
 const ClientDetails: FunctionComponent<PropsType> = ({ clientId }) => {
 
     const { readOne } = useClient({});
+    const { readMissingDocs } = useDocument({ autoFetch: false, clientId: clientId });
+    const [missingDocs, setMissingDocs] = useState<string[]>([]);
     const [clientData, setClientData] = useState<ClientType | null>(null);
 
-    const TOTAL_REQUIRED_DOCUMENTS = Object.keys(DOCUMENT_LABELS).length - 1;
-    // let ALREADY_UPLOADED_DOCUMENTS = [];
 
-    const JUST_DOCUMENT_LABEL_OPTIONS = DOCUMENT_LABEL_OPTIONS.filter(
-        (option) => option.value !== ""
-    );
-    const NOT_UPLOADED_DOCUMENTS = JUST_DOCUMENT_LABEL_OPTIONS.filter(
-        (option) => option.value != "other"
-    );
+
+    useEffect(() => {
+        const fetchMissingDocs = async () => {
+            const data = await readMissingDocs(clientId);
+            setMissingDocs(data.missing_docs);
+        }
+        fetchMissingDocs();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [clientId]);
 
     useEffect(() => {
         const fetchClient = async (id: number) => {
@@ -52,6 +57,15 @@ const ClientDetails: FunctionComponent<PropsType> = ({ clientId }) => {
         if (clientId) fetchClient(clientId);
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [clientId]);
+
+    if (!missingDocs) return <Loader />;
+
+    const TOTAL_REQUIRED_DOCUMENTS = Object.keys(DOCUMENT_LABELS).length - 1;
+
+    const ALREADY_UPLOADED_DOCUMENTS: string[] = Object.keys(DOCUMENT_LABELS).filter((doc) => !missingDocs.includes(doc) && doc !== "other");
+    const NOT_UPLOADED_DOCUMENTS: { label: string, value: string }[] = missingDocs.map((doc) => {
+        return { label: DOCUMENT_LABELS[doc as keyof { registration_form: string; intake_form: string; consent_form: string; risk_assessment: string; self_reliance_matrix: string; force_inventory: string; care_plan: string; signaling_plan: string; cooperation_agreement: string; other: string; }], value: doc }
+    });
 
     return (
         <div className="grid grid-cols-1 gap-9 sm:grid-cols-2">
@@ -133,7 +147,7 @@ const ClientDetails: FunctionComponent<PropsType> = ({ clientId }) => {
                 </Panel>
 
                 <Panel
-                    title={`Documenten (0/${TOTAL_REQUIRED_DOCUMENTS})`}
+                    title={`Documenten (${ALREADY_UPLOADED_DOCUMENTS.length}/${TOTAL_REQUIRED_DOCUMENTS})`}
                     containerClassName="px-7 py-4"
                     sideActions={
                         <LinkButton
@@ -143,7 +157,7 @@ const ClientDetails: FunctionComponent<PropsType> = ({ clientId }) => {
                                     : "Volledige Documenten"
                             }
                             href={`${clientId}/document`}
-                            className={NOT_UPLOADED_DOCUMENTS.length ? "bg-red-600" : ""}
+                            className={NOT_UPLOADED_DOCUMENTS.length ? "bg-red-600" : "bg-green-500"}
                         />
                     }
                 >
@@ -157,7 +171,7 @@ const ClientDetails: FunctionComponent<PropsType> = ({ clientId }) => {
                             </ul>
                         </div>
                     )}
-                    <ClientDocumentsSummary />
+                    <ClientDocumentsSummary clientId={clientId} />
                 </Panel>
             </div>
 

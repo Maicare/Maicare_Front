@@ -11,6 +11,7 @@ import { PaginatedResponse } from "@/common/types/pagination.types";
 type Props<TData> = Omit<TableProps<TData>, "data"> &
   Omit<PaginationProps, "totalPages" | "onClick"> & {
     data: PaginatedResponse<TData>;
+    rowClassName?: (row: TData) => string;
     sideActions?: React.ReactNode;
     onPageChange: (page: number) => void;
     isFetching?: boolean;

@@ -17,7 +17,7 @@ const UpdateEpisodePage = () => {
   const clientId = parseInt(params.clientId as string);
   const incidentId = parseInt(params.incidentId as string);
   const [incident, setIncident] = useState<Incident>();
-  const { readOne } = useIncident({ clientId: clientId });
+  const { readOne } = useIncident({ autoFetch:false,clientId: clientId });
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
