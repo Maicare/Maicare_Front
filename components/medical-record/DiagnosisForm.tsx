@@ -11,6 +11,7 @@ import Button from "../common/Buttons/Button";
 import { useDiagnosis } from "@/hooks/diagnosis/use-diagnosis";
 import { DiagnosisFormSchema } from "@/schemas/client.schema";
 import { yupResolver } from "@hookform/resolvers/yup";
+import Loader from "../common/loader";
 
 
 
@@ -66,6 +67,7 @@ const DiagnosisForm: FunctionComponent<PropsType> = ({ diagnosisId, clientId }) 
       createOne(data);
   };
 
+  if (diagnosisId && loading) return <Loader />;
 
   return (
     <FormProvider {...methods}>

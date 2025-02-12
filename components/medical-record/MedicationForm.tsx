@@ -1,7 +1,7 @@
 "use client";
 
 import React, { FunctionComponent, useEffect, useState } from "react";
-import { FormProvider, Resolver, useForm } from "react-hook-form";
+import { FormProvider, useForm } from "react-hook-form";
 import InputControl from "@/common/components/InputControl";
 import TextareaControlled from "../common/FormFields/TextareaControlled";
 import Button from "../common/Buttons/Button";
