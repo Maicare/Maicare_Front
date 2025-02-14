@@ -28,7 +28,7 @@ const ApiRoutes = {
     UpdateOne: prefix + "/{id}/incidents/{incident_id}",
     ConfirmOne: prefix + "/{id}/incidents/{incident_id}/confirm",
     ReadOne: prefix + "/{id}/incidents/{incident_id}",
-    GeneratePdf:prefix + "/{id}/incidents/{incident_id}/file"
+    GeneratePdf: prefix + "/{id}/incidents/{incident_id}/file",
   },
   Document: {
     ReadAll: prefix + "/{id}/documents",
@@ -36,6 +36,9 @@ const ApiRoutes = {
     MissingDocs: prefix + "/{id}/missing_documents",
     DeleteOne: prefix + "/{id}/documents/{doc_id}",
     ReadOne: prefix + "/{id}/documents/{doc_id}",
+  },
+  RelatedEmails: {
+    ReadAll: prefix + "/{id}/related_emails",
   },
 };
 
