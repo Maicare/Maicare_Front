@@ -34,6 +34,7 @@ import Succession, {
 import { CreateIncident, Incident } from "@/types/incident.types";
 import Button from "../common/Buttons/Button";
 import { useIncident } from "@/hooks/incident/use-incident";
+import Report from "./incidentsSteps/Report";
 
 const formSchema = Yup.object().shape({
   ...GeneralInfosShema,
@@ -55,6 +56,8 @@ const EpisodeForm: FunctionComponent<Props> = ({
   mode,
 }) => {
   const [isDataLoading, setIsDataLoading] = useState(false);
+  const [selectedEmails, setSelectedEmails] = useState<string[]>([]);
+
   const router = useRouter();
   const initialValues: CreateIncident = {
     ...SuccessionInitital,
@@ -83,6 +86,9 @@ const EpisodeForm: FunctionComponent<Props> = ({
   useEffect(() => {
     if (mode === "edit" && incident) {
       reset(incident);
+      if (incident.emails) {
+        setSelectedEmails(incident.emails);
+      }
     }
   }, [mode, incident, reset]);
 
@@ -91,6 +97,7 @@ const EpisodeForm: FunctionComponent<Props> = ({
       const formattedValues = {
         ...values,
         incident_date: new Date(values.incident_date).toISOString(),
+        emails: selectedEmails,
       };
 
       if (mode === "edit" && incident) {
@@ -105,7 +112,7 @@ const EpisodeForm: FunctionComponent<Props> = ({
         router.push(`/clients/${clientId}/incidents`);
       }
     },
-    [createOne, updateOne, mode, incident, clientId, router]
+    [createOne, updateOne, mode, incident, clientId, selectedEmails, router]
   );
 
   const FORMS = [
@@ -123,6 +130,12 @@ const EpisodeForm: FunctionComponent<Props> = ({
           {FORMS.map(({ name, component: Component }) => (
             <Component key={name} />
           ))}
+          <Report
+            clientId={clientId}
+            incident={incident}
+            selectedEmails={selectedEmails}
+            setSelectedEmails={setSelectedEmails}
+          />
         </div>
 
         <Button

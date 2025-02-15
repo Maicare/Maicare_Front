@@ -41,6 +41,9 @@ const ApiRoutes = {
     DeleteOne: prefix + "/{id}/documents/{doc_id}",
     ReadOne: prefix + "/{id}/documents/{doc_id}",
   },
+  RelatedEmails: {
+    ReadAll: prefix + "/{id}/related_emails",
+  },
 };
 
 export default ApiRoutes;

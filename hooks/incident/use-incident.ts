@@ -17,7 +17,11 @@ export interface UseIncidentProps {
   autoFetch?: boolean;
 }
 
-export function useIncident({ clientId, params,autoFetch=false }: UseIncidentProps) {
+export function useIncident({
+  clientId,
+  params,
+  autoFetch = false,
+}: UseIncidentProps) {
   const { enqueueSnackbar } = useSnackbar();
   const { start: startProgress, stop: stopProgress } = useProgressBar();
   const [page, setPage] = useState(params?.page || 1);
@@ -157,23 +161,21 @@ export function useIncident({ clientId, params,autoFetch=false }: UseIncidentPro
       if (displayProgress) stopProgress();
     }
   };
-  const confirmOne = async (
-    incident_id: Id,
-    options?: ApiOptions
-  ) => {
+
+  const confirmOne = async (incident_id: Id, options?: ApiOptions) => {
     const { displayProgress = false, displaySuccess = false } = options || {};
     try {
       // Display progress bar
       if (displayProgress) startProgress();
       const { message, success, data, error } = await useApi<{
-        file_url: string,
-        incident_id: Id
+        file_url: string;
+        incident_id: Id;
       }>(
         ApiRoutes.Client.Incident.ConfirmOne.replace(
           "{id}",
           clientId.toString()
         ).replace("{incident_id}", incident_id.toString()),
-        "PUT",
+        "PUT"
       );
       if (!data)
         throw new Error(error || message || "An unknown error occurred");
@@ -197,16 +199,13 @@ export function useIncident({ clientId, params,autoFetch=false }: UseIncidentPro
     }
   };
 
-  const generatePdf = async (
-    incident_id: Id,
-    options?: ApiOptions
-  ) => {
+  const generatePdf = async (incident_id: Id, options?: ApiOptions) => {
     const { displayProgress = false } = options || {};
     try {
       if (displayProgress) startProgress();
       const response = await useApi<{
-        file_url: string,
-        incident_id: Id
+        file_url: string;
+        incident_id: Id;
       }>(
         ApiRoutes.Client.Incident.GeneratePdf.replace(
           "{id}",
@@ -229,6 +228,28 @@ export function useIncident({ clientId, params,autoFetch=false }: UseIncidentPro
     }
   };
 
+  const readRelatedEmails = async (client_id: Id) => {
+    try {
+      const response = await useApi<{ email: string }[]>(
+        ApiRoutes.Client.RelatedEmails.ReadAll.replace(
+          "{id}",
+          client_id.toString()
+        ),
+        "GET"
+      );
+      if (!response.data) {
+        throw new Error("Emails not found");
+      }
+      return response.data;
+    } catch (err: any) {
+      enqueueSnackbar(
+        err?.response?.data?.message || "Failed to fetch Emails",
+        { variant: "error" }
+      );
+      throw err;
+    }
+  };
+
   return {
     incidents,
     error,
@@ -241,6 +262,7 @@ export function useIncident({ clientId, params,autoFetch=false }: UseIncidentPro
     updateOne,
     readOne,
     generatePdf,
-    confirmOne
+    confirmOne,
+    readRelatedEmails,
   };
 }
