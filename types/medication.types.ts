@@ -17,3 +17,17 @@ export type Medication = {
   administered_by: number | null;
   is_critical: boolean;
 };
+
+export type MedicationForm = {
+  all_administered?: boolean;
+  id?: Id;
+  name: string;
+  dosage: string;
+  start_date: string;
+  end_date: string;
+  self_administered: boolean;
+  slots: DateTimes;
+  notes: string;
+  administered_by: number | null | undefined;
+  is_critical: boolean;
+};

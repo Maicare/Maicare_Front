@@ -15,3 +15,13 @@ export type Diagnosis = {
   description: string;
   date_of_diagnosis?: string;
 };
+
+export type DiagnosisForm = {
+  id: Id;
+  title: string;
+  description: string;
+  diagnosis_code: string;
+  severity: string;
+  status: string;
+  notes: string;
+};
