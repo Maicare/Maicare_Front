@@ -1,26 +1,25 @@
 "use client";
 
-import React, { FunctionComponent,  useState } from "react";
+import React, { FunctionComponent, useState } from "react";
 import { useRouter } from "next/navigation";
-import {  DOCUMENT_LABEL_OPTIONS } from "@/consts";
+import { DOCUMENT_LABEL_OPTIONS } from "@/consts";
 import Button from "@/components/common/Buttons/Button";
 import Select from "@/common/components/Select";
 import { useDocument } from "@/hooks/document/use-document";
 import { useAttachment } from "@/hooks/attachment/use-attachment";
-import { Any } from "@/common/types/types";
 
 type PropsType = {
   clientId: string;
 };
 
 export const DocumentForm: FunctionComponent<PropsType> = ({ clientId }) => {
-  const { createOne,documents } = useDocument({ autoFetch: true, clientId: parseInt(clientId) });
+  const { createOne, documents } = useDocument({ autoFetch: true, clientId: parseInt(clientId) });
   const { createOne: createOneAttachment } = useAttachment();
   const router = useRouter();
 
 
   const [error, setError] = useState("");
-  const [file, setFile] = useState<File|null>(null);
+  const [file, setFile] = useState<File | null>(null);
   const [label, setLabel] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
@@ -57,11 +56,12 @@ export const DocumentForm: FunctionComponent<PropsType> = ({ clientId }) => {
     formData.append('file', file);
     try {
       const attachment = await createOneAttachment(formData, { displaySuccess: true });
-      await createOne({attachmentID:attachment.file_id,label}, { displayProgress: true, displaySuccess: true });
+      await createOne({ attachmentID: attachment.file_id, label }, { displayProgress: true, displaySuccess: true });
       router.back();
-    } catch (error: Any) {
-      setError(`Error: ${error.message}`);
-    }finally{
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : "Unexpected error";
+      setError(`Error: ${message}`);
+    } finally {
       setIsLoading(false);
     }
   };

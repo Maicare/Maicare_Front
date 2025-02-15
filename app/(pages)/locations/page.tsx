@@ -211,7 +211,7 @@ const LocationsList = () => {
 export default withAuth(
   withPermissions(Page, {
     redirectUrl: Routes.Common.NotFound,
-    requiredPermissions: PermissionsObjects.ViewEmployee,
+    requiredPermissions: PermissionsObjects.ViewLocation,
   }),
   { mode: AUTH_MODE.LOGGED_IN, redirectUrl: Routes.Auth.Login }
 );

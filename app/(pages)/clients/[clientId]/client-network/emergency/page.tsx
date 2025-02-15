@@ -13,13 +13,17 @@ import Link from "next/link";
 import React, { FunctionComponent } from "react";
 import { useParams } from "next/navigation";
 import { Any } from "@/common/types/types";
+import withAuth, { AUTH_MODE } from "@/common/hocs/with-auth";
+import withPermissions from "@/common/hocs/with-permissions";
+import Routes from "@/common/routes";
+import { PermissionsObjects } from "@/common/data/permission.data";
 
 const EmergencyContactPage: FunctionComponent = () => {
-
   const params = useParams();
   const clientId = params?.clientId?.toString();
 
-  const { emergencyContacts, isLoading, page, setPage, isFetching, deleteOne } = useEmergencyContact({ clientId })
+  const { emergencyContacts, isLoading, page, setPage, isFetching, deleteOne } =
+    useEmergencyContact({ clientId });
 
   const { open } = useModal(
     getDangerActionConfirmationModal({
@@ -32,32 +36,38 @@ const EmergencyContactPage: FunctionComponent = () => {
     {
       accessorKey: "first_name",
       header: () => "Voornaam",
-      cell: (info: { getValue: () => Any }) => info.getValue() || "Niet Beschikbaar",
+      cell: (info: { getValue: () => Any }) =>
+        info.getValue() || "Niet Beschikbaar",
     },
     {
       accessorKey: "last_name",
       header: () => "Achternaam",
-      cell: (info: { getValue: () => Any }) => info.getValue() || "Niet Beschikbaar",
+      cell: (info: { getValue: () => Any }) =>
+        info.getValue() || "Niet Beschikbaar",
     },
     {
       accessorKey: "email",
       header: () => "E-mailadres",
-      cell: (info: { getValue: () => Any }) => info.getValue() || "Niet Beschikbaar",
+      cell: (info: { getValue: () => Any }) =>
+        info.getValue() || "Niet Beschikbaar",
     },
     {
       accessorKey: "phone_number",
       header: () => "Telefoonnummer",
-      cell: (info: { getValue: () => Any }) => info.getValue() || "Niet Beschikbaar",
+      cell: (info: { getValue: () => Any }) =>
+        info.getValue() || "Niet Beschikbaar",
     },
     {
       accessorKey: "relationship",
       header: () => "Relatie",
-      cell: (info: { getValue: () => Any }) => info.getValue() || "Niet Beschikbaar",
+      cell: (info: { getValue: () => Any }) =>
+        info.getValue() || "Niet Beschikbaar",
     },
     {
       accessorKey: "relation_status",
       header: () => "Afstand",
-      cell: (info: { getValue: () => Any }) => info.getValue() || "Niet Beschikbaar",
+      cell: (info: { getValue: () => Any }) =>
+        info.getValue() || "Niet Beschikbaar",
     },
     {
       accessorKey: "is_verified",
@@ -72,20 +82,20 @@ const EmergencyContactPage: FunctionComponent = () => {
     {
       accessorKey: "address",
       header: () => "Adres",
-      cell: (info: { getValue: () => Any }) => info.getValue() || "Niet Beschikbaar",
+      cell: (info: { getValue: () => Any }) =>
+        info.getValue() || "Niet Beschikbaar",
     },
     {
       accessorKey: "id",
       header: () => "",
       cell: (info: { getValue: () => Any }) => (
         <div className="flex justify-center gap-4">
-
           <IconButton
             buttonType="Danger"
             onClick={() => {
               open({
                 onConfirm: () => {
-                  deleteOne(info.getValue())
+                  deleteOne(info.getValue());
                 },
               });
             }}
@@ -93,13 +103,15 @@ const EmergencyContactPage: FunctionComponent = () => {
             <TrashIcon className="w-5 h-5" />
           </IconButton>
 
-
-          <Link href={`/clients/${clientId}/emergency/${info.getValue() as number}/edit`}>
+          <Link
+            href={`/clients/${clientId}/emergency/${
+              info.getValue() as number
+            }/edit`}
+          >
             <IconButton>
               <PencilSquare className="w-5 h-5" />
             </IconButton>
           </Link>
-
         </div>
       ),
     },
@@ -118,7 +130,7 @@ const EmergencyContactPage: FunctionComponent = () => {
       >
         <div className="p-4 sm:p-6 xl:p-7.5">Loading...</div>
       </Panel>
-    )
+    );
 
   return (
     <Panel
@@ -131,13 +143,15 @@ const EmergencyContactPage: FunctionComponent = () => {
       }
     >
       {/* {isLoading && <div className="p-4 sm:p-6 xl:p-7.5">Loading...</div>} */}
-      {emergencyContacts && <PaginatedTable
-        data={emergencyContacts}
-        onPageChange={(page) => setPage(page)}
-        columns={columnDef}
-        page={page ?? 1}
-        isFetching={isFetching}
-      />}
+      {emergencyContacts && (
+        <PaginatedTable
+          data={emergencyContacts}
+          onPageChange={(page) => setPage(page)}
+          columns={columnDef}
+          page={page ?? 1}
+          isFetching={isFetching}
+        />
+      )}
       {!emergencyContacts && (
         <p role="alert" className="text-red-600">
           Er is een fout opgetreden.
@@ -147,4 +161,10 @@ const EmergencyContactPage: FunctionComponent = () => {
   );
 };
 
-export default EmergencyContactPage;
+export default withAuth(
+  withPermissions(EmergencyContactPage, {
+    redirectUrl: Routes.Common.NotFound,
+    requiredPermissions: PermissionsObjects.ViewEmployee, // TODO: Add correct permisssion
+  }),
+  { mode: AUTH_MODE.LOGGED_IN, redirectUrl: Routes.Auth.Login }
+);

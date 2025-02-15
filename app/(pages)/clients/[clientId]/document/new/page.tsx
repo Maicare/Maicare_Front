@@ -1,12 +1,15 @@
 "use client";
+import { PermissionsObjects } from "@/common/data/permission.data";
+import withAuth, { AUTH_MODE } from "@/common/hocs/with-auth";
+import withPermissions from "@/common/hocs/with-permissions";
+import Routes from "@/common/routes";
 import DocumentForm from "@/components/clients/documents/DocumentForm";
 import Breadcrumb from "@/components/common/Breadcrumbs/Breadcrumb";
 import { useParams } from "next/navigation";
 import React, { FunctionComponent } from "react";
 
-
 const NewDocument: FunctionComponent = () => {
-  const {clientId} = useParams();
+  const { clientId } = useParams();
 
   if (!clientId || typeof clientId !== "string") {
     return null;
@@ -32,4 +35,10 @@ const NewDocument: FunctionComponent = () => {
   );
 };
 
-export default NewDocument;
+export default withAuth(
+  withPermissions(NewDocument, {
+    redirectUrl: Routes.Common.NotFound,
+    requiredPermissions: PermissionsObjects.ViewEmployee, // TODO: Add correct permisssion
+  }),
+  { mode: AUTH_MODE.LOGGED_IN, redirectUrl: Routes.Auth.Login }
+);
