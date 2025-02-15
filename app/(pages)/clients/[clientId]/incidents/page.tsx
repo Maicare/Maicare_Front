@@ -22,8 +22,13 @@ import IconButton from "@/components/common/Buttons/IconButton";
 import { Incident } from "@/types/incident.types";
 import { useIncident } from "@/hooks/incident/use-incident";
 import { useParams } from "next/navigation";
+import withAuth, { AUTH_MODE } from "@/common/hocs/with-auth";
+import withPermissions from "@/common/hocs/with-permissions";
+import Routes from "@/common/routes";
+import { PermissionsObjects } from "@/common/data/permission.data";
 import { getWarningActionConfirmationModal } from "@/components/common/Modals/WarningActionConfirmation";
 import Loader from "@/components/common/loader";
+
 
 const IncidentsPage: FunctionComponent = () => {
   const params = useParams();
@@ -223,4 +228,10 @@ const IncidentsPage: FunctionComponent = () => {
   );
 };
 
-export default IncidentsPage;
+export default withAuth(
+  withPermissions(IncidentsPage, {
+    redirectUrl: Routes.Common.NotFound,
+    requiredPermissions: PermissionsObjects.ViewEmployee, // TODO: Add correct permisssion
+  }),
+  { mode: AUTH_MODE.LOGGED_IN, redirectUrl: Routes.Auth.Login }
+);

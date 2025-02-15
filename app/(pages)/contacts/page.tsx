@@ -29,7 +29,7 @@ const Page: FunctionComponent = () => {
 export default withAuth(
   withPermissions(Page, {
     redirectUrl: Routes.Common.NotFound,
-    requiredPermissions: PermissionsObjects.ViewEmployee,
+    requiredPermissions: PermissionsObjects.ViewEmployee, // TODO: Add correct permisssion
   }),
   { mode: AUTH_MODE.LOGGED_IN, redirectUrl: Routes.Auth.Login }
 );

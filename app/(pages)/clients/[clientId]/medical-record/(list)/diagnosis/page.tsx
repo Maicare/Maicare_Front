@@ -18,6 +18,10 @@ import Loader from "@/components/common/loader";
 import DetailCell from "@/components/common/DetailCell";
 import IconButton from "@/components/common/Buttons/IconButton";
 import { useParams } from "next/navigation";
+import withAuth, { AUTH_MODE } from "@/common/hocs/with-auth";
+import withPermissions from "@/common/hocs/with-permissions";
+import Routes from "@/common/routes";
+import { PermissionsObjects } from "@/common/data/permission.data";
 
 const DiagnosisPage: FunctionComponent = () => {
   const params = useParams();
@@ -100,7 +104,13 @@ const DiagnosisPage: FunctionComponent = () => {
   );
 };
 
-export default DiagnosisPage;
+export default withAuth(
+  withPermissions(DiagnosisPage, {
+    redirectUrl: Routes.Common.NotFound,
+    requiredPermissions: PermissionsObjects.ViewEmployee, // TODO: Add correct permisssion
+  }),
+  { mode: AUTH_MODE.LOGGED_IN, redirectUrl: Routes.Auth.Login }
+);
 
 type RowDetailsProps = {
   data: Diagnosis;
