@@ -37,6 +37,10 @@ const ApiRoutes = {
     DeleteOne: prefix + "/{id}/documents/{doc_id}",
     ReadOne: prefix + "/{id}/documents/{doc_id}",
   },
+  Assessment: {
+    ReadAll: prefix + "/{id}/maturity_matrix_assessment",
+    CreateOne: prefix + '/{id}/maturity_matrix_assessment',
+  }
 };
 
 export default ApiRoutes;
