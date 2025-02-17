@@ -3,6 +3,7 @@ export type Incident = {
   employee_id: number;
   employee_first_name: string;
   employee_last_name: string;
+  emails: string[];
   client_id: number;
   location_id: number;
   reporter_involvement: string;
@@ -45,13 +46,14 @@ export type Incident = {
   soft_delete: boolean;
   updated_at: string;
   created_at: string;
-  is_confirmed : boolean;
+  is_confirmed: boolean;
 };
 
 export type CreateIncident = {
   employee_id: number;
   client_id?: number;
   location_id: number;
+  emails?: string[];
   reporter_involvement: string;
   inform_who?: string[];
   incident_date: string;

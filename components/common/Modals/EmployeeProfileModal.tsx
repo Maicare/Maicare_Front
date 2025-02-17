@@ -7,8 +7,6 @@ import { ModalProps } from "@/common/types/modal.types";
 import { useSnackbar } from "notistack";
 import { useAttachment } from "@/hooks/attachment/use-attachment";
 import { useEmployee } from "@/hooks/employee/use-employee";
-import { Any } from "@/common/types/types";
-
 
 
 export const EmployeeProfilePictureModal: FunctionComponent<ModalProps> = ({
@@ -40,7 +38,7 @@ const UpdatePicModalForm: FunctionComponent<UpdatePicModalFormProps> = ({
 }) => {
     const { createOne } = useAttachment();
     const { updateEmployeePicture } = useEmployee({ autoFetch: false });
-    const [imagePreviewUrl, setImagePreviewUrl] = useState(employeeImage||"/images/user/user-default.png");
+    const [imagePreviewUrl, setImagePreviewUrl] = useState(employeeImage || "/images/user/user-default.png");
     const [file, setFile] = useState<File | null>(null);
     const { enqueueSnackbar } = useSnackbar();
     const onFileChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -88,8 +86,9 @@ const UpdatePicModalForm: FunctionComponent<UpdatePicModalFormProps> = ({
             const attachment = await createOne(formData, { displaySuccess: true });
             await updateEmployeePicture(employeeId, attachment.file_id, { displayProgress: true, displaySuccess: true });
             onUpdated?.();
-        } catch (error: Any) {
-            enqueueSnackbar(`Error: ${error.message}`, { variant: "error" });
+        } catch (error: unknown) {
+            const message = error instanceof Error ? error.message : "Unexpected error";
+            enqueueSnackbar(`Error: ${message}`, { variant: "error" });
         }
 
     }
@@ -104,17 +103,17 @@ const UpdatePicModalForm: FunctionComponent<UpdatePicModalFormProps> = ({
                     htmlFor="profile_picture"
                     className=""
                 >
-                <div className="absolute bottom-0 right-0 flex h-8.5 w-8.5 cursor-pointer items-center justify-center rounded-full bg-primary text-white hover:bg-opacity-90 sm:bottom-2 sm:right-2">
-                    <CameraIcon />
-                    <input
-                        type="file"
-                        name="profile_picture"
-                        id="profile_picture"
-                        accept="image/jpeg,image/png,image/gif"
-                        className="sr-only"
-                        onChange={onFileChange}
-                    />
-                </div>
+                    <div className="absolute bottom-0 right-0 flex h-8.5 w-8.5 cursor-pointer items-center justify-center rounded-full bg-primary text-white hover:bg-opacity-90 sm:bottom-2 sm:right-2">
+                        <CameraIcon />
+                        <input
+                            type="file"
+                            name="profile_picture"
+                            id="profile_picture"
+                            accept="image/jpeg,image/png,image/gif"
+                            className="sr-only"
+                            onChange={onFileChange}
+                        />
+                    </div>
                 </label>
             </div>
 

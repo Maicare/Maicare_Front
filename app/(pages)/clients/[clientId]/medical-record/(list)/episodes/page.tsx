@@ -17,6 +17,10 @@ import PaginatedTable from "@/components/common/PaginatedTable/PaginatedTable";
 import DetailCell from "@/components/common/DetailCell";
 import IconButton from "@/components/common/Buttons/IconButton";
 import { useParams } from "next/navigation";
+import withAuth, { AUTH_MODE } from "@/common/hocs/with-auth";
+import withPermissions from "@/common/hocs/with-permissions";
+import Routes from "@/common/routes";
+import { PermissionsObjects } from "@/common/data/permission.data";
 
 const EpisodesPage: FunctionComponent = () => {
   const params = useParams();
@@ -94,7 +98,13 @@ const EpisodesPage: FunctionComponent = () => {
   );
 };
 
-export default EpisodesPage;
+export default withAuth(
+  withPermissions(EpisodesPage, {
+    redirectUrl: Routes.Common.NotFound,
+    requiredPermissions: PermissionsObjects.ViewEmployee, // TODO: Add correct permisssion
+  }),
+  { mode: AUTH_MODE.LOGGED_IN, redirectUrl: Routes.Auth.Login }
+);
 
 type RowDetailsProps = {
   data: Episode;

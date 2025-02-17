@@ -16,6 +16,10 @@ import DetailCell from "@/components/common/DetailCell";
 import IconButton from "@/components/common/Buttons/IconButton";
 // import { getDangerActionConfirmationModal } from "@/components/common/Modals/DangerActionConfirmation";
 import { useParams } from "next/navigation";
+import withAuth, { AUTH_MODE } from "@/common/hocs/with-auth";
+import withPermissions from "@/common/hocs/with-permissions";
+import Routes from "@/common/routes";
+import { PermissionsObjects } from "@/common/data/permission.data";
 
 const AllergiesPage: FunctionComponent = () => {
   const params = useParams();
@@ -91,7 +95,13 @@ const AllergiesPage: FunctionComponent = () => {
   );
 };
 
-export default AllergiesPage;
+export default withAuth(
+  withPermissions(AllergiesPage, {
+    redirectUrl: Routes.Common.NotFound,
+    requiredPermissions: PermissionsObjects.ViewEmployee, // TODO: Add correct permisssion
+  }),
+  { mode: AUTH_MODE.LOGGED_IN, redirectUrl: Routes.Auth.Login }
+);
 
 type RowDetailsProps = {
   data: Allergy;

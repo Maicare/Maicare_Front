@@ -5,9 +5,12 @@ import Panel from "@/components/common/Panel/Panel";
 import LinkButton from "@/components/common/Buttons/LinkButton";
 import AllergiesSummary from "@/components/medical-record/AllergiesSummary";
 import DiagnosisSummary from "@/components/medical-record/DiagnosisSummary";
-import EpisodesSummary from "@/components/medical-record/EpisodesSummary";
 import MedicationsSummary from "@/components/medical-record/MedicationsSummary";
 import { useParams } from "next/navigation";
+import withAuth, { AUTH_MODE } from "@/common/hocs/with-auth";
+import withPermissions from "@/common/hocs/with-permissions";
+import Routes from "@/common/routes";
+import { PermissionsObjects } from "@/common/data/permission.data";
 
 const Page: FunctionComponent = () => {
   const params = useParams();
@@ -59,7 +62,7 @@ const Page: FunctionComponent = () => {
         >
           <AllergiesSummary clientId={parseInt(clientId)} />
         </Panel>
-        <Panel
+        {/* <Panel
           title={"Episodes"}
           containerClassName="px-7 py-4"
           sideActions={
@@ -70,10 +73,16 @@ const Page: FunctionComponent = () => {
           }
         >
           <EpisodesSummary clientId={parseInt(clientId)} />
-        </Panel>
+        </Panel> */}
       </div>
     </div>
   );
 };
 
-export default Page;
+export default withAuth(
+  withPermissions(Page, {
+    redirectUrl: Routes.Common.NotFound,
+    requiredPermissions: PermissionsObjects.ViewEmployee, // TODO: Add correct permisssion
+  }),
+  { mode: AUTH_MODE.LOGGED_IN, redirectUrl: Routes.Auth.Login }
+);

@@ -1,3 +1,4 @@
+import { ALLERGY_TYPE_ARRAY, DIAGNOSIS_SEVERITY_ARRAY } from "@/consts";
 import * as yup from "yup";
 
 
@@ -70,3 +71,28 @@ export const ClientInvolvedEmployeeForm = yup.object().shape({
   role: yup.string().required("Role is required"),
   start_date: yup.string().required("Start date is required")
 });
+
+export const DiagnosisFormSchema = yup.object().shape({
+  id: yup.number(),
+  title: yup.string().required("Geef alstublieft een samenvatting van de diagnose"),
+  description: yup.string().required("Geef alstublieft de conditie van de patiënt"),
+  diagnosis_code: yup.string()
+    .max(10, "Diagnosecode mag niet langer zijn dan 10 tekens")
+    .required("Geef alstublieft de diagnosecode"),
+  severity: yup.string()
+    .oneOf(DIAGNOSIS_SEVERITY_ARRAY, "Selecteer een geldige ernst")
+    .required("Geef alstublieft de ernst van de diagnose"),
+  status: yup.string().required("Geef alstublieft de status van de diagnose"),
+  notes: yup.string().required("Geef alstublieft opmerkingen voor de diagnose")
+})
+
+export const AllergyFormSchema = yup.object().shape({
+  allergy_id: yup.string()
+    .oneOf(ALLERGY_TYPE_ARRAY, "Selecteer een geldig allergietype")
+    .required("Geef alstublieft een allergietype op"),
+  severity: yup.string()
+    .oneOf(DIAGNOSIS_SEVERITY_ARRAY, "Selecteer een geldige ernst")
+    .required("Geef alstublieft de ernst van de allergie op"),
+  reaction: yup.string().required("Geef alstublieft de reactie op de allergie op"),
+  notes: yup.string().required("Geef alstublieft notities voor de allergie op"),
+})
