@@ -8,10 +8,13 @@ const ApiRoutes = {
     Allergies: {
       ReadAll: prefix + "/{id}/allergies",
       CreateOne: prefix + "/{id}/allergies",
+      readOne: prefix + "/{id}/allergies/{allergy_id}",
+      getAllergyTypes: prefix + "/allergy_types",
     },
     Diagnosis: {
       ReadAll: prefix + "/{id}/diagnosis",
       CreateOne: prefix + "/{id}/diagnosis",
+      readOne: prefix + "/{id}/diagnosis/{diagnosis_id}",
     },
     Episodes: {
       ReadAll: prefix + "/{id}/episodes",
@@ -20,6 +23,7 @@ const ApiRoutes = {
     Medications: {
       ReadAll: prefix + "/{id}/medications",
       CreateOne: prefix + "/{id}/medications",
+      readOne: prefix + "/{id}/diagnosis/{medication_id}",
     },
   },
   Incident: {
@@ -28,7 +32,7 @@ const ApiRoutes = {
     UpdateOne: prefix + "/{id}/incidents/{incident_id}",
     ConfirmOne: prefix + "/{id}/incidents/{incident_id}/confirm",
     ReadOne: prefix + "/{id}/incidents/{incident_id}",
-    GeneratePdf:prefix + "/{id}/incidents/{incident_id}/file"
+    GeneratePdf: prefix + "/{id}/incidents/{incident_id}/file"
   },
   Document: {
     ReadAll: prefix + "/{id}/documents",
@@ -40,7 +44,10 @@ const ApiRoutes = {
   Assessment: {
     ReadAll: prefix + "/{id}/maturity_matrix_assessment",
     CreateOne: prefix + '/{id}/maturity_matrix_assessment',
-  }
+  },
+  RelatedEmails: {
+    ReadAll: prefix + "/{id}/related_emails",
+  },
 };
 
 export default ApiRoutes;

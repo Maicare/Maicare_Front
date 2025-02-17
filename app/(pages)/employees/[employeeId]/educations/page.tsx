@@ -1,5 +1,9 @@
 "use client";
 
+import { PermissionsObjects } from "@/common/data/permission.data";
+import withAuth, { AUTH_MODE } from "@/common/hocs/with-auth";
+import withPermissions from "@/common/hocs/with-permissions";
+import Routes from "@/common/routes";
 import Loader from "@/components/common/loader";
 import EducationForm from "@/components/employee/educations/EducationForm";
 import EducationsList from "@/components/employee/educations/EducationsList";
@@ -8,19 +12,20 @@ import { useEducation } from "@/hooks/education/use-education";
 import { useParams } from "next/navigation";
 import React, { FunctionComponent } from "react";
 
-
-
 const EducationsPage: FunctionComponent = () => {
   const params = useParams();
   const { employeeId } = params;
-  const { educations,isLoading,mutate } = useEducation({ autoFetch: true,employeeId:employeeId as string });
+  const { educations, isLoading, mutate } = useEducation({
+    autoFetch: true,
+    employeeId: employeeId as string,
+  });
 
   if (!employeeId) {
     return null;
   }
 
   if (isLoading) {
-    return <Loader />
+    return <Loader />;
   }
   if (!educations) {
     return null;
@@ -36,9 +41,15 @@ const EducationsPage: FunctionComponent = () => {
       ListComponent={EducationsList}
       FormComponent={EducationForm}
       isLoading={isLoading}
-      mutate={()=>mutate()}
+      mutate={() => mutate()}
     />
   );
 };
 
-export default EducationsPage;
+export default withAuth(
+  withPermissions(EducationsPage, {
+    redirectUrl: Routes.Common.Home,
+    requiredPermissions: PermissionsObjects.ViewEmployee, // TODO: Add correct permisssion
+  }),
+  { mode: AUTH_MODE.LOGGED_IN, redirectUrl: Routes.Auth.Login }
+);

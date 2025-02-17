@@ -1,12 +1,15 @@
 "use client";
 
+import { PermissionsObjects } from "@/common/data/permission.data";
+import withAuth, { AUTH_MODE } from "@/common/hocs/with-auth";
+import withPermissions from "@/common/hocs/with-permissions";
+import Routes from "@/common/routes";
 import InvolvedEmployeeForm from "@/components/client-network/InvolvedEmployeeForm";
 import Breadcrumb from "@/components/common/Breadcrumbs/Breadcrumb";
 import { useParams } from "next/navigation";
 import React, { FunctionComponent } from "react";
 
 const UpdateInvolved: FunctionComponent = () => {
-
   const params = useParams();
   const clientId = params?.clientId?.toString();
   const involvedId = params?.involvedId?.toString();
@@ -23,10 +26,7 @@ const UpdateInvolved: FunctionComponent = () => {
                 Bijwerken betrokken medewerkers
               </h3>
             </div>
-            <InvolvedEmployeeForm
-              involvedId={involvedId}
-              clientId={clientId}
-            />
+            <InvolvedEmployeeForm involvedId={involvedId} clientId={clientId} />
           </div>
         </div>
       </div>
@@ -34,4 +34,10 @@ const UpdateInvolved: FunctionComponent = () => {
   );
 };
 
-export default UpdateInvolved;
+export default withAuth(
+  withPermissions(UpdateInvolved, {
+    redirectUrl: Routes.Common.NotFound,
+    requiredPermissions: PermissionsObjects.ViewEmployee, // TODO: Add correct permisssion
+  }),
+  { mode: AUTH_MODE.LOGGED_IN, redirectUrl: Routes.Auth.Login }
+);

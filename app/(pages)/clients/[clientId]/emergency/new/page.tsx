@@ -1,12 +1,15 @@
 "use client";
 
+import { PermissionsObjects } from "@/common/data/permission.data";
+import withAuth, { AUTH_MODE } from "@/common/hocs/with-auth";
+import withPermissions from "@/common/hocs/with-permissions";
+import Routes from "@/common/routes";
 import EmergencyContactForm from "@/components/client-network/EmergencyContactForm";
 import Breadcrumb from "@/components/common/Breadcrumbs/Breadcrumb";
 import { useParams } from "next/navigation";
 import React, { FunctionComponent } from "react";
 
 const NewEmergencyContact: FunctionComponent = () => {
-
   const params = useParams();
   const clientId = params?.clientId?.toString();
 
@@ -30,4 +33,10 @@ const NewEmergencyContact: FunctionComponent = () => {
   );
 };
 
-export default NewEmergencyContact;
+export default withAuth(
+  withPermissions(NewEmergencyContact, {
+    redirectUrl: Routes.Common.NotFound,
+    requiredPermissions: PermissionsObjects.ViewEmployee, // TODO: Add correct permisssion
+  }),
+  { mode: AUTH_MODE.LOGGED_IN, redirectUrl: Routes.Auth.Login }
+);

@@ -9,7 +9,16 @@ export type Allergy = {
   id?: Id;
   allergy_type: AllergyType;
   severity: DiagnosisSeverity;
+  allergy_type_id?: string;
   reaction: string;
   notes: string;
   client: number;
+};
+
+export type AllergyForm = {
+  id?: Id;
+  allergy_id: string;
+  severity: string;
+  reaction: string;
+  notes: string;
 };

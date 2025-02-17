@@ -1,5 +1,9 @@
 "use client";
 
+import { PermissionsObjects } from "@/common/data/permission.data";
+import withAuth, { AUTH_MODE } from "@/common/hocs/with-auth";
+import withPermissions from "@/common/hocs/with-permissions";
+import Routes from "@/common/routes";
 import { Any } from "@/common/types/types";
 import IconButton from "@/components/common/Buttons/IconButton";
 import LinkButton from "@/components/common/Buttons/LinkButton";
@@ -15,13 +19,12 @@ import Link from "next/link";
 import { useParams } from "next/navigation";
 import React, { FunctionComponent, useMemo } from "react";
 
-
 const InvolvedEmployeesPage: FunctionComponent = () => {
-
   const params = useParams();
   const clientId = params?.clientId?.toString();
 
-  const { involvedEmployees, isLoading, setPage, isFetching, page, deleteOne } = useInvolvedEmployee({ clientId: clientId });
+  const { involvedEmployees, isLoading, setPage, isFetching, page, deleteOne } =
+    useInvolvedEmployee({ clientId: clientId });
 
   const { open } = useModal(
     getDangerActionConfirmationModal({
@@ -35,17 +38,20 @@ const InvolvedEmployeesPage: FunctionComponent = () => {
       {
         accessorKey: "employee_name",
         header: () => "Medewerker",
-        cell: (info: { getValue: () => Any }) => info.getValue() || "Niet Beschikbaar",
+        cell: (info: { getValue: () => Any }) =>
+          info.getValue() || "Niet Beschikbaar",
       },
       {
         accessorKey: "role",
         header: () => "Relatie",
-        cell: (info: { getValue: () => Any }) => info.getValue() || "Niet Beschikbaar",
+        cell: (info: { getValue: () => Any }) =>
+          info.getValue() || "Niet Beschikbaar",
       },
       {
         accessorKey: "start_date",
         header: () => "Startdatum",
-        cell: (info: { getValue: () => Any }) => dayjs(info.getValue()).format("DD MMM, YYYY") || "Niet Beschikbaar",
+        cell: (info: { getValue: () => Any }) =>
+          dayjs(info.getValue()).format("DD MMM, YYYY") || "Niet Beschikbaar",
       },
       {
         accessorKey: "id",
@@ -57,17 +63,23 @@ const InvolvedEmployeesPage: FunctionComponent = () => {
               onClick={() => {
                 open({
                   onConfirm: () => {
-                    deleteOne(info.getValue())
+                    deleteOne(info.getValue());
                   },
                 });
               }}
               disabled={false}
               isLoading={false}
             >
-              {false ? <CheckIcon className="w-5 h-5" /> : <TrashIcon className="w-5 h-5" />}
+              {false ? (
+                <CheckIcon className="w-5 h-5" />
+              ) : (
+                <TrashIcon className="w-5 h-5" />
+              )}
             </IconButton>
             <Link
-              href={`/clients/${clientId}/involved-employees/${info.getValue() as number}/edit`}
+              href={`/clients/${clientId}/involved-employees/${
+                info.getValue() as number
+              }/edit`}
             >
               <IconButton>
                 <PencilSquare className="w-5 h-5" />
@@ -93,7 +105,7 @@ const InvolvedEmployeesPage: FunctionComponent = () => {
       >
         <div className="p-4 sm:p-6 xl:p-7.5">Loading...</div>
       </Panel>
-    )
+    );
   return (
     <Panel
       title={"Betrokken Medewerkerslijst"}
@@ -105,7 +117,7 @@ const InvolvedEmployeesPage: FunctionComponent = () => {
       }
     >
       {/* {isLoading && <div className="p-4 sm:p-6 xl:p-7.5">Loading...</div>} */}
-      {involvedEmployees &&
+      {involvedEmployees && (
         <PaginatedTable
           data={involvedEmployees}
           onPageChange={(page) => setPage(page)}
@@ -113,7 +125,7 @@ const InvolvedEmployeesPage: FunctionComponent = () => {
           page={page ?? 1}
           isFetching={isFetching}
         />
-      }
+      )}
       {/* {isError && (
         <p role="alert" className="text-red-600">
           Er is een fout opgetreden.
@@ -123,4 +135,10 @@ const InvolvedEmployeesPage: FunctionComponent = () => {
   );
 };
 
-export default InvolvedEmployeesPage;
+export default withAuth(
+  withPermissions(InvolvedEmployeesPage, {
+    redirectUrl: Routes.Common.NotFound,
+    requiredPermissions: PermissionsObjects.ViewEmployee, // TODO: Add correct permisssion
+  }),
+  { mode: AUTH_MODE.LOGGED_IN, redirectUrl: Routes.Auth.Login }
+);
