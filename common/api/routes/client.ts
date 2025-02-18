@@ -4,6 +4,9 @@ const ApiRoutes = {
   ReadOne: prefix + "/{id}",
   UpdateProfilePicture: prefix + "/{id}/profile_picture",
   CreateOne: prefix,
+  Appointment: {
+    ReadAll: prefix + "/{id}/appointment_cards",
+  },
   Medical: {
     Allergies: {
       ReadAll: prefix + "/{id}/allergies",

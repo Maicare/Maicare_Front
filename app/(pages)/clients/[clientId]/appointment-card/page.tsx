@@ -10,44 +10,45 @@ import withAuth, { AUTH_MODE } from "@/common/hocs/with-auth";
 import withPermissions from "@/common/hocs/with-permissions";
 import Routes from "@/common/routes";
 import { PermissionsObjects } from "@/common/data/permission.data";
+import { useAppointment } from "@/hooks/client/use-appointment";
+import Link from "next/link";
 
-const appointment = {
-  general: [
-    { content: "Algemene informatie over de afspraak." },
-    { content: "Datum: 2023-10-01" },
-  ],
-  important_contacts: [
-    { content: "Contactpersoon: Jan de Vries" },
-    { content: "Telefoon: 0612345678" },
-  ],
-  household: [{ content: "Huishoudensamenstelling: 4 personen" }],
-  organization_agreements: [{ content: "Overeenkomst met Zorgorganisatie X." }],
-  probation_service_agreements: [
-    { content: "Reclasseringsafspraak voor cliënt." },
-  ],
-  appointments_regarding_treatment: [
-    { content: "Behandelafspraak met Psycholoog Y." },
-  ],
-  school_stage: [{ content: "Leerjaar 3 van basisschool." }],
-  travel: [{ content: "Reisafspraak naar zorginstelling Z." }],
-  leave: [{ content: "Verlof opgenomen van 2023-10-15 tot 2023-10-20." }],
+const defaultAppointment = {
+  general_information: [] as string[],
+  household_info: [] as string[],
+  important_contacts: [] as string[],
+  leave: [] as string[],
+  organization_agreements: [] as string[],
+  school_internship: [] as string[],
+  travel: [] as string[],
+  smoking_rules: [] as string[],
+  treatment_agreements: [] as string[],
+  work: [] as string[],
+  youth_officer_agreements: [] as string[],
 };
 
 const EmergencyContactPage: FunctionComponent = () => {
   const params = useParams();
   const clientId = params?.clientId?.toString();
 
+  if (!clientId) return <></>;
+
+  const { appointments } = useAppointment(clientId);
+  const appointmentData = appointments || defaultAppointment;
+
+  console.log("APPPPP", appointmentData);
+
   const renderSection = useCallback(
-    (title: string, items: { content: string }[]) => (
+    (title: string, items: string[]) => (
       <div className="mb-6">
         <h2 className="text-lg font-semibold mb-2">{title}</h2>
         <div className="overflow-x-auto">
           <table className="w-full border border-gray-300">
             <tbody>
-              {items?.length > 0 ? (
+              {items.length > 0 ? (
                 items.map((item, index) => (
                   <tr key={index} className="border-b border-gray-300">
-                    <td className="p-2">{item.content}</td>
+                    <td className="p-2">{item}</td>
                   </tr>
                 ))
               ) : (
@@ -69,34 +70,26 @@ const EmergencyContactPage: FunctionComponent = () => {
       header={
         <div className="flex w-full justify-end gap-2">
           <QuestionnaireDownloadButton />
-          <IconButton>
-            <PencilSquare className="w-5 h-5" />
-          </IconButton>
+          <Link href={`/clients/${clientId}/appointment-card/edit`}>
+            <IconButton>
+              <PencilSquare className="w-5 h-5" />
+            </IconButton>
+          </Link>
         </div>
       }
     >
-      <div className="p-6  gap-6">
-        {renderSection("Algemeen", appointment?.general)}
-        {renderSection(
-          "Belangrijke contacten",
-          appointment?.important_contacts
-        )}
-        {renderSection("Huishouden", appointment?.household)}
-        {renderSection(
-          "Organisatie afspraken",
-          appointment?.organization_agreements
-        )}
-        {renderSection(
-          "Reclassering afspraken",
-          appointment?.probation_service_agreements
-        )}
-        {renderSection(
-          "Afspraken met betrekking tot behandeling",
-          appointment?.appointments_regarding_treatment
-        )}
-        {renderSection("Schoolfase", appointment?.school_stage)}
-        {renderSection("Reizen", appointment?.travel)}
-        {renderSection("Verlof", appointment?.leave)}
+      <div className="p-6 gap-6">
+        {renderSection("Algemeen", appointmentData.general_information)}
+        {renderSection("Belangrijke contacten", appointmentData.important_contacts)}
+        {renderSection("Huishouden", appointmentData.household_info)}
+        {renderSection("Organisatie afspraken", appointmentData.organization_agreements)}
+        {renderSection("Afspraken met betrekking tot behandeling", appointmentData.treatment_agreements)}
+        {renderSection("Schoolstage", appointmentData.school_internship)}
+        {renderSection("Reizen", appointmentData.travel)}
+        {renderSection("Verlof", appointmentData.leave)}
+        {renderSection("Rookbeleid", appointmentData.smoking_rules)}
+        {renderSection("Werk", appointmentData.work)}
+        {renderSection("Jeugdambtenaar Afspraken", appointmentData.youth_officer_agreements)}
       </div>
     </Panel>
   );
@@ -105,7 +98,7 @@ const EmergencyContactPage: FunctionComponent = () => {
 export default withAuth(
   withPermissions(EmergencyContactPage, {
     redirectUrl: Routes.Common.NotFound,
-    requiredPermissions: PermissionsObjects.ViewEmployee, // TODO: Add correct permisssion
+    requiredPermissions: PermissionsObjects.ViewEmployee, // TODO: Add correct permission
   }),
   { mode: AUTH_MODE.LOGGED_IN, redirectUrl: Routes.Auth.Login }
 );
