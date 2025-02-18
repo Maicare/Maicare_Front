@@ -31,9 +31,8 @@ const EmergencyContactPage: FunctionComponent = () => {
   const params = useParams();
   const clientId = params?.clientId?.toString();
 
-  if (!clientId) return <></>;
 
-  const { appointments } = useAppointment(clientId);
+  const { appointments } = useAppointment(clientId || '0');
   const appointmentData = appointments || defaultAppointment;
 
   console.log("APPPPP", appointmentData);
@@ -63,6 +62,8 @@ const EmergencyContactPage: FunctionComponent = () => {
     ),
     []
   );
+
+  if (!clientId) return <></>;
 
   return (
     <Panel

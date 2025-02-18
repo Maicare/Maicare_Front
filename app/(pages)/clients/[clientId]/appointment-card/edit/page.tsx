@@ -3,7 +3,7 @@
 import React, { useEffect, useMemo } from "react";
 import { useForm, FormProvider, useFieldArray } from "react-hook-form";
 import { Plus, TrashIcon } from "lucide-react";
-import { useParams, useRouter } from "next/navigation";
+import { useParams } from "next/navigation";
 import Panel from "@/components/common/Panel/Panel";
 import IconButton from "@/components/common/Buttons/IconButton";
 import InputControl from "@/common/components/InputControl";
@@ -38,8 +38,8 @@ const translationMap: Record<string, string> = {
 
 interface FieldArraySectionProps {
   name: string;
-  control: any;
-  register: any;
+  control: Any;
+  register: Any;
   title: string;
 }
 
@@ -102,7 +102,6 @@ const FieldArraySection: React.FC<FieldArraySectionProps> = ({
 export default function AppointmentCardEditPage() {
   const params = useParams();
   const clientId = params?.clientId?.toString() || "0";
-  const router = useRouter();
 
   const { appointments, createAppointment, updateAppointment } = useAppointment(clientId);
   // Exclude unwanted keys
@@ -120,7 +119,8 @@ export default function AppointmentCardEditPage() {
         acc[key] = value;
       }
       return acc;
-    }, {} as Record<string, any>);
+    }, {} as Record<string, Any>);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [appointmentData]);
 
   console.log("DEFAULT", formDefaultValues);
@@ -133,6 +133,7 @@ export default function AppointmentCardEditPage() {
   // Reset the form when default values change
   useEffect(() => {
     reset(formDefaultValues);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [formDefaultValues]);
 
   const onSubmit = (data: Any) => {
@@ -142,7 +143,7 @@ export default function AppointmentCardEditPage() {
       const typedKey = key as keyof typeof appointmentData;
       const value = data[typedKey];
       if (Array.isArray(value)) {
-        acc[typedKey] = value.map((item: any) => item.content || "");
+        acc[typedKey] = value.map((item: Any) => item.content || "");
       } else {
         acc[typedKey] = value;
       }
