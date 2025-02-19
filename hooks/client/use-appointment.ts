@@ -96,6 +96,31 @@ export function useAppointment(clientId: string, params?: PaginationParams) {
         }
     }
 
+    const downloadPDF = async (options?: ApiOptions) => {
+        const { displayProgress = false, displaySuccess = false } = options || {};
+        try {
+            if (displayProgress) startProgress();
+            const { message, success, data, error } = await useApi<AppointmentType>(ApiRoutes.Client.Appointment.Download.replace(
+                "{id}",
+                clientId
+            ), "POST", {});
+            if (!data)
+                throw new Error(error || message || "An unknown error occurred");
+
+            // Display success message
+            if (displaySuccess && success) {
+                enqueueSnackbar("Appointment created successful!", { variant: "success" });
+            }
+            mutate()
+            return data;
+        } catch (err: any) {
+            enqueueSnackbar(err?.response?.data?.message || "Appointment creationg failed", { variant: "error" });
+            throw err;
+        } finally {
+            if (displayProgress) stopProgress();
+        }
+    }
+
     return {
         appointments,
         error,
@@ -105,6 +130,7 @@ export function useAppointment(clientId: string, params?: PaginationParams) {
         setPage,
         mutate,
         createAppointment,
-        updateAppointment
+        updateAppointment,
+        downloadPDF
     };
 }

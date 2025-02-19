@@ -6,6 +6,7 @@ const ApiRoutes = {
   CreateOne: prefix,
   Appointment: {
     ReadAll: prefix + "/{id}/appointment_cards",
+    Download: prefix + "/{id}/appointment_cards/generate_document",
   },
   Medical: {
     Allergies: {

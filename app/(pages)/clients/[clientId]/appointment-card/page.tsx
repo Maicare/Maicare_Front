@@ -3,7 +3,6 @@
 import React, { FunctionComponent, useCallback } from "react";
 import PencilSquare from "@/components/icons/PencilSquare";
 import IconButton from "@/components/common/Buttons/IconButton";
-import QuestionnaireDownloadButton from "@/common/components/QuestionnaireDownloadButton";
 import Panel from "@/components/common/Panel/Panel";
 import { useParams } from "next/navigation";
 import withAuth, { AUTH_MODE } from "@/common/hocs/with-auth";
@@ -12,6 +11,7 @@ import Routes from "@/common/routes";
 import { PermissionsObjects } from "@/common/data/permission.data";
 import { useAppointment } from "@/hooks/client/use-appointment";
 import Link from "next/link";
+import { Download } from "lucide-react";
 
 const defaultAppointment = {
   general_information: [] as string[],
@@ -32,8 +32,19 @@ const EmergencyContactPage: FunctionComponent = () => {
   const clientId = params?.clientId?.toString();
 
 
-  const { appointments } = useAppointment(clientId || '0');
+  const { appointments, downloadPDF } = useAppointment(clientId || '0');
   const appointmentData = appointments || defaultAppointment;
+
+  const handleDownload = async () => {
+    const url = await downloadPDF();
+    console.log("Download URL", url);
+    const link = document.createElement("a");
+    link.href = url.toString();
+    link.download = `appointment_${clientId}.pdf`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
 
   console.log("APPPPP", appointmentData);
 
@@ -70,7 +81,14 @@ const EmergencyContactPage: FunctionComponent = () => {
       title={`Afsprakenkaart Chrystal voor cliënt ${clientId}`}
       header={
         <div className="flex w-full justify-end gap-2">
-          <QuestionnaireDownloadButton />
+          <IconButton
+            className="bg-strokedark"
+            onClick={() => {
+              handleDownload();
+            }}
+          >
+            <Download className="w-5 h-5" />
+          </IconButton>
           <Link href={`/clients/${clientId}/appointment-card/edit`}>
             <IconButton>
               <PencilSquare className="w-5 h-5" />
