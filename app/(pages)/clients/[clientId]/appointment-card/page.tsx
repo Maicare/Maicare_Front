@@ -46,8 +46,6 @@ const EmergencyContactPage: FunctionComponent = () => {
     document.body.removeChild(link);
   };
 
-  console.log("APPPPP", appointmentData);
-
   const renderSection = useCallback(
     (title: string, items: string[]) => (
       <div className="mb-6">

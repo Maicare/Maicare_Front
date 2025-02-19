@@ -123,8 +123,6 @@ export default function AppointmentCardEditPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [appointmentData]);
 
-  console.log("DEFAULT", formDefaultValues);
-
   const methods = useForm({
     defaultValues: formDefaultValues,
   });
