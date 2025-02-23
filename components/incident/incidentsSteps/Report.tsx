@@ -122,7 +122,7 @@ export default function Report({
               onChange={(e) => setQuery(e.target.value)}
               onKeyDown={handleKeyDown}
               className="flex-grow p-2 outline-none"
-              placeholder="Typ e-mailadres..."
+              placeholder="Typ e-mailadres of naam..."
             />
           </div>
           {suggestions.length > 0 && (
