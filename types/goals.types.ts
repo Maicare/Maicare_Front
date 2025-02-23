@@ -1,3 +1,4 @@
+import { Id } from "@/common/types/types";
 
 export enum GoalDomaines {
     Finance = "Financiën",
@@ -27,7 +28,7 @@ export enum GoalStatus {
     Completed = "Afgerond",
     Cancelled = "Geannuleerd",
 };
-export const DESCRIPTIONS:Record<string,Record<string,string[]>> = {
+export const DESCRIPTIONS: Record<string, Record<string, string[]>> = {
     AcuteIssues: {
         Finance: [
             "groeiende complexe schulden",
@@ -103,4 +104,30 @@ export const DESCRIPTIONS:Record<string,Record<string,string[]>> = {
             "geen gevaar voor zichzelf/ anderen"
         ],
     }
+};
+
+export type Goal = {
+    client_maturity_matrix_assessment_id: Id,
+    completion_date: string,
+    created_at: string,
+    description: string,
+    id: Id,
+    start_date: string,
+    status: string,
+    target_date: string,
+    target_level: number
+};
+
+export type GoalObjective = {
+    id: Id,
+    status: string,
+    completion_date: string,
+    created_at: string,
+    due_date: string,
+    objective_description: string,
+    updated_at: string
+};
+
+export type GoalWithObjectives = Goal & {
+    objectives: GoalObjective[]
 };
