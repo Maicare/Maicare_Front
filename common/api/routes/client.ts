@@ -48,6 +48,11 @@ const ApiRoutes = {
   Assessment: {
     ReadAll: prefix + "/{id}/maturity_matrix_assessment",
     CreateOne: prefix + '/{id}/maturity_matrix_assessment',
+    ReadOne: prefix + '/{id}/maturity_matrix_assessment/{mma_id}',
+  },
+  Goal: {
+    ReadAll: prefix + "/{id}/maturity_matrix_assessment/{assessment_id}/goals",
+    ReadOne: prefix + "/{id}/maturity_matrix_assessment/{assessment_id}/goals/{goal_id}",
   },
   RelatedEmails: {
     ReadAll: prefix + "/{id}/related_emails",

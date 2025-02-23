@@ -4,23 +4,19 @@ import LinkButton from '@/components/common/Buttons/LinkButton';
 import PaginatedTable from '@/components/common/PaginatedTable/PaginatedTable';
 import Panel from '@/components/common/Panel/Panel';
 import { useAssessment } from '@/hooks/assessment/use-assessment';
-import {  AssessmentResponse } from '@/types/assessment.types';
+import { AssessmentResponse } from '@/types/assessment.types';
 import { LEVEL_OPTIONS } from '@/types/maturity-matrix.types';
 import { fullDateFormat } from '@/utils/timeFormatting';
 import { ColumnDef } from '@tanstack/table-core';
 import { CheckCircleIcon, XCircleIcon } from 'lucide-react';
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import React, { useMemo, useState } from 'react'
 
 const GoalPage = () => {
   const { clientId } = useParams();
   const [page, setPage] = useState<number>(1);
   const { assessments, isLoading, error } = useAssessment({ autoFetch: true, clientId: parseInt(clientId as string), page, page_size: 10 });
-
-  const _onSubmit = async() => {
-      console.log("submitted")
-    };
-
+  const router = useRouter();
   const columnDef = useMemo<ColumnDef<AssessmentResponse>[]>(() => {
     return [
       {
@@ -65,7 +61,9 @@ const GoalPage = () => {
     ];
   }, []);
 
-  
+  const handleRowClick = (assessment: AssessmentResponse) => {
+    router.push(`goals/${assessment.id}`);
+  };
   return (
     <>
       {/* <ConfirmationModal
@@ -90,13 +88,14 @@ const GoalPage = () => {
         }
       >
         {assessments && assessments.results && (
-            <PaginatedTable
-              data={assessments}
-              columns={columnDef}
-              page={page ?? 1}
-              isFetching={isLoading}
-              onPageChange={(page) => setPage(page)}
-            />
+          <PaginatedTable
+            onRowClick={handleRowClick}
+            data={assessments}
+            columns={columnDef}
+            page={page ?? 1}
+            isFetching={isLoading}
+            onPageChange={(page) => setPage(page)}
+          />
         )}
         {error && (
           <p role="alert" className="text-red-600">
