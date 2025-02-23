@@ -6,12 +6,11 @@ import PageTabs from "@/components/common/PageTabs/PageTabs";
 import { useClient } from "@/hooks/client/use-client";
 import { Client } from "@/types/client.types";
 
-
 const ReportsHistoryTabs: FunctionComponent = () => {
   const { clientId } = useParams();
 
   const parsedId = typeof clientId === "string" && parseInt(clientId);
-  const { readOne } = useClient({ autoFetch: false, });
+  const { readOne } = useClient({ autoFetch: false });
   const [client, setClient] = useState<Client | null>(null);
   useEffect(() => {
     if (parsedId) {
@@ -22,7 +21,6 @@ const ReportsHistoryTabs: FunctionComponent = () => {
 
   if (!client) {
     return null;
-
   }
 
   return (
@@ -37,20 +35,11 @@ const ReportsHistoryTabs: FunctionComponent = () => {
           href: `/clients/${clientId}/reports-record/automatic-reports`,
           label: "Automatische rapporten",
         },
-        {
-          label: "Metingen",
-          href: `/clients/${clientId}/reports-record/measurements`,
-        },
-        {
-          label: "Feedback",
-          href: `/clients/${clientId}/reports-record/feedback`,
-        },
-        {
-          label: "Observaties",
-          href: `/clients/${clientId}/reports-record/observations`,
-        },
       ]}
-      title={`Rapportagegeschiedenis` + (client ? ` voor ${client.first_name} ${client.last_name}` : "")}
+      title={
+        `Rapportagegeschiedenis` +
+        (client ? ` voor ${client.first_name} ${client.last_name}` : "")
+      }
     />
   );
 };

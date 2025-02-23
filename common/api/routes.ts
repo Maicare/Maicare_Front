@@ -8,6 +8,7 @@ import Attachment from "./routes/attachment";
 import Report from "./routes/report";
 import ClientNetwork from "./routes/clientNetwork";
 import MaturityMatrix from "./routes/maturity-matrix";
+import AutomaticReport from "./routes/automatic-report";
 
 const ApiRoutes = {
   Auth,
@@ -19,7 +20,8 @@ const ApiRoutes = {
   Attachment,
   Report,
   ClientNetwork,
-  MaturityMatrix
+  MaturityMatrix,
+  AutomaticReport,
 };
 
 export default ApiRoutes;
