@@ -5,6 +5,7 @@ import Panel from "@/components/common/Panel/Panel";
 import { useGoal } from "@/hooks/goal/use-goal";
 import { Goal } from "@/types/goals.types";
 import { LEVEL_OPTIONS } from "@/types/maturity-matrix.types";
+import { cn, getTailwindClasses } from "@/utils/cn";
 import { fullDateFormat } from "@/utils/timeFormatting";
 import { ColumnDef } from "@tanstack/table-core";
 import { useRouter } from "next/navigation";
@@ -13,13 +14,13 @@ import { useMemo, useState } from "react";
 
 const AssessmentGoals = ({ assessmentId, clientId }: { assessmentId: string, clientId: string }) => {
     const [page, setPage] = useState<number>(1);
-    const { goals,isLoading,error } = useGoal({ autoFetch: true, clientId: parseInt(clientId), assessmentId: parseInt(assessmentId), page, page_size: 10 });
+    const { goals, isLoading, error } = useGoal({ autoFetch: true, clientId: parseInt(clientId), assessmentId: parseInt(assessmentId), page, page_size: 10 });
     const columnDef = useMemo<ColumnDef<Goal>[]>(() => {
         return [
             {
                 accessorKey: "description",
                 header: () => "Description",
-                cell: (info) => (info.getValue() as string ?? "").split(' ').slice(0,5).join(' ')+" ..." || "",
+                cell: (info) => (info.getValue() as string ?? "").split(' ').slice(0, 5).join(' ') + " ..." || "",
             },
             {
                 accessorKey: "start_date",
@@ -29,7 +30,13 @@ const AssessmentGoals = ({ assessmentId, clientId }: { assessmentId: string, cli
             {
                 accessorKey: "target_level",
                 header: () => "Target Level",
-                cell: (info: Any) => LEVEL_OPTIONS.find(it => it.value === info.getValue().toString())?.label || "Niet Beschikbaar",
+                cell: (info: Any) => {
+                    const level = info.getValue() as number;
+                    const classes = getTailwindClasses(level);
+                    return (
+                        <span className={cn(classes)}>{LEVEL_OPTIONS.find(it => it.value === info.getValue().toString())?.label || "Niet Beschikbaar"}</span>
+                    )
+                },
             },
             {
                 accessorKey: "completion_date",
