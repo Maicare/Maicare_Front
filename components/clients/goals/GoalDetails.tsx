@@ -5,7 +5,7 @@ import PencilSquare from "@/components/icons/PencilSquare";
 import { useGoal } from "@/hooks/goal/use-goal";
 import { GoalWithObjectives } from "@/types/goals.types";
 import { LEVEL_OPTIONS } from "@/types/maturity-matrix.types";
-import { cn } from "@/utils/cn";
+import { cn, getTailwindClasses } from "@/utils/cn";
 import { dateFormat } from "@/utils/timeFormatting";
 import { TrashIcon } from "lucide-react";
 import Link from "next/link";
@@ -51,7 +51,7 @@ const GoalDetails = ({ assessmentId, clientId, goalId }: { assessmentId: string,
                     <div className="w-full">
                         <p className="">Target Level</p>
                         <div className="border-2 border-gray-300 rounded-md p-2 text-graydark">
-                            {LEVEL_OPTIONS.find(it => it.value === goal.target_level.toString())?.label || "Niet Beschikbaar"}
+                            <span className={cn(getTailwindClasses(goal.target_level))}>{LEVEL_OPTIONS.find(it => it.value === goal.target_level.toString())?.label || "Niet Beschikbaar"}</span>
                         </div>
                     </div>
                     <div className="w-full">

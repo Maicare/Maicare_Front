@@ -5,6 +5,7 @@ import PencilSquare from "@/components/icons/PencilSquare"
 import { useAssessment } from "@/hooks/assessment/use-assessment"
 import { AssessmentResponse } from "@/types/assessment.types"
 import { LEVEL_OPTIONS } from "@/types/maturity-matrix.types"
+import { cn, getTailwindClasses } from "@/utils/cn"
 import { dateFormat } from "@/utils/timeFormatting"
 import { TrashIcon } from "lucide-react"
 import Link from "next/link"
@@ -55,13 +56,13 @@ const AssessmentDetails = ({ assessmentId, clientId }: { assessmentId: string, c
                 <div className="w-full">
                     <p className="">Initial Level</p>
                     <div className="border-2 border-gray-300 rounded-md p-2 text-graydark">
-                        {LEVEL_OPTIONS.find(it => it.value === assessment.initial_level.toString())?.label || "Niet Beschikbaar"}
+                        <span className={cn(getTailwindClasses(assessment.initial_level))}>{LEVEL_OPTIONS.find(it => it.value === assessment.initial_level.toString())?.label || "Niet Beschikbaar"}</span>
                     </div>
                 </div>
                 <div className="w-full">
                     <p className="">Current Level</p>
                     <div className="border-2 border-gray-300 rounded-md p-2 text-graydark">
-                        {LEVEL_OPTIONS.find(it => it.value === assessment.current_level.toString())?.label || "Niet Beschikbaar"}
+                        <span className={cn(getTailwindClasses(assessment.current_level))}>{LEVEL_OPTIONS.find(it => it.value === assessment.current_level.toString())?.label || "Niet Beschikbaar"}</span>
                     </div>
                 </div>
                 <div className="w-full">

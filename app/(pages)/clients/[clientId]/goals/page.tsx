@@ -6,6 +6,7 @@ import Panel from '@/components/common/Panel/Panel';
 import { useAssessment } from '@/hooks/assessment/use-assessment';
 import { AssessmentResponse } from '@/types/assessment.types';
 import { LEVEL_OPTIONS } from '@/types/maturity-matrix.types';
+import { cn, getTailwindClasses } from '@/utils/cn';
 import { fullDateFormat } from '@/utils/timeFormatting';
 import { ColumnDef } from '@tanstack/table-core';
 import { CheckCircleIcon, XCircleIcon } from 'lucide-react';
@@ -17,6 +18,7 @@ const GoalPage = () => {
   const [page, setPage] = useState<number>(1);
   const { assessments, isLoading, error } = useAssessment({ autoFetch: true, clientId: parseInt(clientId as string), page, page_size: 10 });
   const router = useRouter();
+  
   const columnDef = useMemo<ColumnDef<AssessmentResponse>[]>(() => {
     return [
       {
@@ -32,12 +34,24 @@ const GoalPage = () => {
       {
         accessorKey: "current_level",
         header: () => "Current Level",
-        cell: (info: Any) => LEVEL_OPTIONS.find(it => it.value === info.getValue().toString())?.label || "Niet Beschikbaar",
+        cell: (info: Any) =>{ 
+          const level = info.getValue() as number;
+          const classes = getTailwindClasses(level);
+          return (
+          <span className={cn(classes)}>{LEVEL_OPTIONS.find(it => it.value === info.getValue().toString())?.label || "Niet Beschikbaar"}</span>
+        )
+        },
       },
       {
         accessorKey: "initial_level",
         header: () => "Initial Level",
-        cell: (info: Any) => LEVEL_OPTIONS.find(it => it.value === info.getValue().toString())?.label || "Niet Beschikbaar",
+        cell: (info: Any) =>{ 
+          const level = info.getValue() as number;
+          const classes = getTailwindClasses(level);
+          return (
+          <span className={cn(classes)}>{LEVEL_OPTIONS.find(it => it.value === info.getValue().toString())?.label || "Niet Beschikbaar"}</span>
+        )
+        },
       },
       {
         accessorKey: "end_date",
