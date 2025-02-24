@@ -96,3 +96,18 @@ export const AllergyFormSchema = yup.object().shape({
   reaction: yup.string().required("Geef alstublieft de reactie op de allergie op"),
   notes: yup.string().required("Geef alstublieft notities voor de allergie op"),
 })
+
+export const IntakeFormSchema = yup.object().shape({
+  first_name: yup.string().required("Voornaam is verplicht"),
+  last_name: yup.string().required("Achternaam is verplicht"),
+  date_of_birth: yup.string().required("Geboortedatum is verplicht"),
+  phonenumber: yup.string().required("Telefoonnummer is verplicht"),
+  gender: yup.string().required("Geslacht is verplicht"),
+  place_of_birth: yup.string().required("Geboorteplaats is verplicht"),
+  representative_first_name: yup.string().required("voornaam is verplicht"),
+  representative_last_name: yup.string().required("achternaam is verplicht"),
+  representative_email: yup.string().email("Ongeldig e-mailadres").required("e-mail is verplicht"),
+  representative_address: yup.string().required("adres is verplicht"),
+  representative_phone_number: yup.string().required("telefoonnummer is verplicht"),
+  representative_relationship: yup.string().required("relatie is verplicht"),
+})
