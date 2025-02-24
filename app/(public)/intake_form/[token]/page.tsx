@@ -19,7 +19,7 @@ const IntakeForm = () => {
   const params = useParams();
   const token = params?.token?.toString();
 
-  const { sendIntakeForm, generateToken } = useIntake(token || "holder")
+  const { sendIntakeForm } = useIntake(token || "holder")
 
   const initialValues: IntakeFormType = {
     first_name: "",
