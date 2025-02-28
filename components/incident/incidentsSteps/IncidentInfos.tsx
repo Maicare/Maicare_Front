@@ -48,7 +48,7 @@ export default function IncidentInfos() {
     <Panel title={"2. Infromatie over het incident"}>
       <div className="mb-4.5 mt-4.5 flex flex-col gap-6 px-6.5">
         <SelectControlled
-          label={"Type incident"}
+          label={"Typ incident"}
           name="incident_type"
           id="incident_type"
           required

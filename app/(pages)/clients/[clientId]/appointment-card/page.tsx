@@ -12,6 +12,7 @@ import { PermissionsObjects } from "@/common/data/permission.data";
 import { useAppointment } from "@/hooks/client/use-appointment";
 import Link from "next/link";
 import { Download } from "lucide-react";
+import LargeErrorMessage from "@/components/common/Alerts/LargeErrorMessage";
 
 const defaultAppointment = {
   general_information: [] as string[],
@@ -31,9 +32,13 @@ const EmergencyContactPage: FunctionComponent = () => {
   const params = useParams();
   const clientId = params?.clientId?.toString();
 
-
-  const { appointments, downloadPDF } = useAppointment(clientId || '0');
+  const { appointments, downloadPDF } = useAppointment(clientId || "0");
   const appointmentData = appointments || defaultAppointment;
+
+  // Check if all sections are empty
+  const allSectionsEmpty = Object.values(appointmentData).every(
+    (items) => items.length === 0
+  );
 
   const handleDownload = async () => {
     const url = await downloadPDF();
@@ -73,6 +78,39 @@ const EmergencyContactPage: FunctionComponent = () => {
   );
 
   if (!clientId) return <></>;
+
+  // If all data arrays are empty, only show the error message:
+  if (allSectionsEmpty) {
+    return (
+      <Panel
+        title={`Afsprakenkaart Chrystal voor cliënt ${clientId}`}
+        header={
+          <div className="flex w-full justify-end gap-2">
+            <IconButton
+              className="bg-strokedark"
+              onClick={() => {
+                handleDownload();
+              }}
+            >
+              <Download className="w-5 h-5" />
+            </IconButton>
+            <Link href={`/clients/${clientId}/appointment-card/edit`}>
+              <IconButton>
+                <PencilSquare className="w-5 h-5" />
+              </IconButton>
+            </Link>
+          </div>
+        }
+      >
+        <LargeErrorMessage
+          firstLine={"ontbrekende afspraakinformatie."}
+          secondLine={
+            "Het lijkt erop dat er geen afspraakgegevens zijn. Vul de afspraakkaart in om deze te bekijken."
+          }
+        />
+      </Panel>
+    );
+  }
 
   return (
     <Panel
