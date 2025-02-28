@@ -9,7 +9,7 @@ import Loader from "@/components/common/loader";
 import Panel from "@/components/common/Panel/Panel";
 import Table from "@/components/common/Table/Table";
 import { useRouter } from "next/navigation";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { ColumnDef } from "@tanstack/table-core";
 import ProfilePicture from "@/components/common/profilePicture/profile-picture";
 import { getAge } from "@/utils/get-age";
@@ -17,21 +17,26 @@ import { mappingGender } from "@/common/data/gender.data";
 import Pagination from "@/components/common/Pagination/Pagination";
 import LargeErrorMessage from "@/components/common/Alerts/LargeErrorMessage";
 import { useClient } from "@/hooks/client/use-client";
-import { Client } from "@/types/client.types";
+import { Client, ClientsSearchParams } from "@/types/client.types";
 import styles from "./styles.module.css";
-// export const STATUS_RECORD:Record<string,string> = {
-//     "On Waiting List": "Wachtlijst",
-//     "In Care": "In Zorg",
-//     "Out Of Care": "Uit Zorg",
-//   };
+import { useDebounce } from "@/hooks/common/useDebounce";
+import ClientFilters from "@/components/clients/ClientFilters";
+
 const PAGE_SIZE = 10;
 
 const ClientsPage = () => {
   const router = useRouter();
 
-  const { clients, error, isLoading, page, setPage } = useClient({
-    autoFetch: true,
+  const [filters, setFilters] = useState<ClientsSearchParams>({
+    page: 1,
+    page_size: PAGE_SIZE,
   });
+
+  const deboucedFilters = useDebounce(filters, 500);
+
+  console.log("FFF", filters)
+
+  const { clients, error, isLoading, page, setPage } = useClient(deboucedFilters);
 
   const handleRowClick = (client: Client) => {
     router.push(`/clients/${client.id}`);
@@ -115,6 +120,11 @@ const ClientsPage = () => {
         title={"Clients List"}
         header={
           <div className="flex grow justify-between flex-wrap gap-4">
+            <ClientFilters
+              onFiltersChange={(values) => {
+                setFilters((vs) => ({ ...vs, ...values }));
+              }}
+            />
             <PermitableComponent permission={PermissionsObjects.CreateEmployee}>
               <LinkButton
                 text={"Nieuwe Medewerker Toevoegen"}

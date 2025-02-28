@@ -1,5 +1,4 @@
 import React, { FunctionComponent, InputHTMLAttributes, ReactNode } from "react";
-import clsx from "clsx";
 
 type InputUncontrolType = InputHTMLAttributes<HTMLInputElement> & {
   label?: string | ReactNode;
@@ -43,7 +42,7 @@ const InputUncontrol: FunctionComponent<InputUncontrolType> = ({
           data-is-price={!!(isPrice || unit)}
           required={required}
           aria-label={(typeof label === "string" && label) || props.placeholder}
-          className={"w-full rounded-lg border-[1.5px] border-stroke bg-white py-2 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"}
+          className={"w-full rounded-lg border-[1.5px] border-stroke bg-white py-4 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"}
         />
       </div>
       {error && (

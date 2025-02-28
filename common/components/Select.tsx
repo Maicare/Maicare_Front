@@ -3,7 +3,7 @@ import ChevronDown from "@/components/icons/ChevronDown";
 import { SelectionOption } from "./UncontrolledCheckboxGroup";
 
 export type SelectProps = SelectHTMLAttributes<HTMLSelectElement> & {
-  label: string;
+  label?: string;
   options: SelectionOption[];
   error?: any;
 };
@@ -19,9 +19,9 @@ const Select: FunctionComponent<SelectProps> = ({
 }) => {
   return (
     <div className={className}>
-      <label className="mb-2.5 block text-slate-800  dark:text-white font-medium" htmlFor={id}>
+      {label && <label className="mb-2.5 block text-slate-800  dark:text-white font-medium" htmlFor={id}>
         {label} {required && <span className="text-meta-1">*</span>}
-      </label>
+      </label>}
       <div className="relative z-20 bg-transparent dark:bg-form-input">
         <select
           id={id}
