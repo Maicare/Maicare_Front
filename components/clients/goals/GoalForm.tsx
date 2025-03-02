@@ -9,7 +9,6 @@ import { CreateAssessment } from "@/types/assessment.types";
 import { FormProvider, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { AssessmentSchema } from "@/schemas/assessment.schema";
-import Link from "next/link";
 import InputControl from "@/common/components/InputControl";
 import dayjs from "dayjs";
 import { useDomain } from "@/hooks/domain/use-domain";
@@ -19,6 +18,7 @@ import { fullDateFormat } from "@/utils/timeFormatting";
 import Panel from "@/components/common/Panel/Panel";
 import IconButton from "@/components/common/Buttons/IconButton";
 import { X } from "lucide-react";
+import { ZRM_MATRIX } from "@/types/goals.types";
 
 type PropsType = {
   clientId: string;
@@ -41,8 +41,10 @@ export const GoalForm: FunctionComponent<PropsType> = ({ clientId }) => {
     handleSubmit,
     formState: { isSubmitting, isValid, },
     getValues,
+    watch
     // reset
   } = methods;
+  const {maturity_matrix_id,initial_level} = watch();
   const onSubmit = async (_data: CreateAssessment) => {
     try {
       const data = formData.map(i=>({
@@ -81,20 +83,17 @@ export const GoalForm: FunctionComponent<PropsType> = ({ clientId }) => {
           options={LEVEL_OPTIONS}
           className={"w-full mb-4.5"}
         />
-        {true && (
+        {maturity_matrix_id  ? (
           <div className="p-6.5 bg-meta-6/20">
-            <p>
-              Er zijn nog medicatie records die nog niet zijn gerapporteerd. Gelieve eerst de
-              medicatie records te rapporteren voordat u een rapport indient.{" "}
-              <Link
-                className="underline text-primary"
-                href={`/clients/${clientId}/medical-record/medications`}
-              >
-                Klik hier om naar de medicatie records te gaan
-              </Link>
-            </p>
+            <ul>
+              {ZRM_MATRIX.levels[parseInt(`${initial_level}`)+1 as keyof typeof ZRM_MATRIX.levels]?.domains[parseInt(`${maturity_matrix_id}`) as keyof typeof ZRM_MATRIX.levels].map((item, index) => (
+                <li key={index}>
+                  {item}
+                </li>
+              ))}
+            </ul>
           </div>
-        )}
+        ) : null}
         <div className="flex gap-4 mt-4">
           <InputControl
             className={"w-full mb-4.5"}

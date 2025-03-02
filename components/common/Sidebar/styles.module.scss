@@ -1,3 +1,4 @@
+
 .active {
   @apply bg-graydark dark:bg-meta-4;
 }
@@ -8,6 +9,8 @@
 
 .clientBg {
   @apply bg-black_client dark:bg-black_client;
+  background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)),
+    url('background.jpg') center/cover no-repeat;
   .active {
     @apply bg-graydark_client dark:bg-graydark_client;
   }
@@ -18,10 +21,18 @@
 
 .employeeBg {
   @apply bg-black_employee dark:bg-black_employee;
+  background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)),
+    url('background-2.jpg') center/cover no-repeat;
   .active {
     @apply bg-graydark_employee dark:bg-graydark_employee;
   }
   .element {
     @apply hover:bg-graydark_employee dark:hover:bg-graydark_employee;
   }
+}
+
+.default{
+  @apply bg-slate-800 dark:bg-boxdark;
+  background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)),
+    url('background-3.jpg') center/cover no-repeat;
 }

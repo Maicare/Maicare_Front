@@ -24,7 +24,7 @@ import { cn } from "@/utils/cn";
 import ChevronDown from "@/components/icons/ChevronDown";
 import styles from "./styles.module.scss";
 import GearIcon from "@/components/icons/GearIcon";
-import { Calendar, Goal } from "lucide-react";
+import { ArrowLeft, Calendar, Goal } from "lucide-react";
 import BellAlertIcon from "@/components/svg/BellAlertIcon";
 import { Permission } from "@/common/types/permission.types";
 import { PermitableComponent } from "@/common/components/permitable-component";
@@ -32,6 +32,7 @@ import { PermissionsObjects } from "@/common/data/permission.data";
 import usePermissions from "@/common/hooks/use-permissions";
 import ClientSidebarBriefing from "./client-sidebar-briefing";
 import { Any } from "@/common/types/types";
+import IconButton from "../Buttons/IconButton";
 
 interface SidebarProps {
   sidebarOpen: boolean;
@@ -43,23 +44,23 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
   const trigger = useRef<Any>(null);
   const sidebar = useRef<Any>(null);
 
-  const storedSidebarExpanded:"true"|"false" = "true";
+  const storedSidebarExpanded: "true" | "false" = "true";
 
   const [sidebarExpanded, _setSidebaanded] = useState(
     storedSidebarExpanded === null ? false : storedSidebarExpanded === "true"
   );
 
-  // close on click outside
-  useEffect(() => {
-    const clickHandler = ({ target }: MouseEvent) => {
-      if (!sidebar.current || !trigger.current) return;
-      if (!sidebarOpen || sidebar.current.contains(target) || trigger.current.contains(target))
-        return;
-      setSidebarOpen(false);
-    };
-    document.addEventListener("click", clickHandler);
-    return () => document.removeEventListener("click", clickHandler);
-  });
+  // // close on click outside
+  // useEffect(() => {
+  //   const clickHandler = ({ target }: MouseEvent) => {
+  //     if (!sidebar.current || !trigger.current) return;
+  //     if (!sidebarOpen || sidebar.current.contains(target) || trigger.current.contains(target))
+  //       return;
+  //     setSidebarOpen(false);
+  //   };
+  //   document.addEventListener("click", clickHandler);
+  //   return () => document.removeEventListener("click", clickHandler);
+  // });
 
   // close if the esc key is pressed
   useEffect(() => {
@@ -96,7 +97,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
     } else if (pathname.startsWith("/employees/") && !pathname.startsWith("/employees/new")) {
       return styles.employeeBg;
     } else {
-      return "bg-slate-800 dark:bg-boxdark";
+      return styles.default;
     }
   }, [pathname]);
 
@@ -104,14 +105,16 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
     <aside
       ref={sidebar}
       className={cn(
-        `absolute left-0 top-0 z-99 flex h-screen w-72.5 flex-col overflow-y-hidden duration-300 ease-linear lg:static lg:translate-x-0 ${
-          sidebarOpen ? "translate-x-0" : "-translate-x-full"
+        `overflow-x-hidden absolute left-0 top-0 z-99 flex h-screen w-72.5 flex-col overflow-y-hidden duration-300 ease-linear  -translate-x-full ${sidebarOpen ? "translate-x-0 lg:static lg:translate-x-0" : "-translate-x-full"
         }`,
         classNames
       )}
     >
+      <IconButton onClick={() => setSidebarOpen(false)} className="absolute rounded-full bg-transparent border-2 border-white -right-4 top-1/2 -translate-y-1/2">
+        <ArrowLeft className="w-5 h-5 text-white animate-ping hover:animate-none" />
+      </IconButton>
       {/* <!-- SIDEBAR HEADER --> */}
-      <div className="flex items-center justify-between gap-2 px-6 py-5.5 lg:py-6.5">
+      <div className="flex items-center justify-between gap-2 px-6 py-5.5 lg:py-6.5 relative">
         <Link href="/" className="px-4 flex items-center">
           <Image width={56} height={56} src={"/images/logo/logo.png"} alt="Logo" />
           <p className="pl-2 text-[24px] text-white">
@@ -162,13 +165,13 @@ type SidebarDropdownProps = {
 
 type SidebarLinkProps =
   | {
-      isDropdown?: false;
-      completeHref: string;
-      children: React.ReactNode;
-      icon: React.ReactNode;
-      getIsActive?: (pathname: string, completeHref: string) => boolean;
-      permission?: Permission;
-    }
+    isDropdown?: false;
+    completeHref: string;
+    children: React.ReactNode;
+    icon: React.ReactNode;
+    getIsActive?: (pathname: string, completeHref: string) => boolean;
+    permission?: Permission;
+  }
   | SidebarDropdownProps;
 
 const SidebarLink: FunctionComponent<SidebarLinkProps> = ({
@@ -181,13 +184,13 @@ const SidebarLink: FunctionComponent<SidebarLinkProps> = ({
 
   return (
     <Link
-      href={completeHref||""}//TODO: add href
+      href={completeHref || ""}//TODO: add href
       className={clsx(
         "group relative flex items-center gap-2.5 rounded-lg py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out",
         {
           [styles.active]: getIsActive
             ? getIsActive(pathname, completeHref)
-            : pathname.startsWith(completeHref||""),//TODO: add href
+            : pathname.startsWith(completeHref || ""),//TODO: add href
         },
         styles.element
       )}
@@ -200,7 +203,7 @@ const SidebarLink: FunctionComponent<SidebarLinkProps> = ({
 
 const SidebarDropdown: FunctionComponent<SidebarDropdownProps> = ({
   completeHref,
-  getIsActive:_getIsActive,
+  getIsActive: _getIsActive,
   icon,
   children,
   subItems,
@@ -209,9 +212,9 @@ const SidebarDropdown: FunctionComponent<SidebarDropdownProps> = ({
   const inferOpen = useMemo(() => {
     return subItems.some((item) => {
       if (item.getIsActive) {
-        return item.getIsActive(pathname, completeHref||"");//TODO: add href
+        return item.getIsActive(pathname, completeHref || "");//TODO: add href
       } else {
-        return pathname.startsWith(item.completeHref||"");//TODO: add href
+        return pathname.startsWith(item.completeHref || "");//TODO: add href
       }
     });
   }, [subItems, pathname, completeHref]);
@@ -241,13 +244,13 @@ const SidebarDropdown: FunctionComponent<SidebarDropdownProps> = ({
           {subItems.map((item) => (
             <li key={item.completeHref}>
               <Link
-                href={item.completeHref||""}//TODO: add href
+                href={item.completeHref || ""}//TODO: add href
                 className={cn(
                   "group relative flex items-center gap-2.5 rounded-md px-4 font-medium text-bodydark2 duration-300 ease-in-out hover:text-white",
                   {
                     "text-white":
                       item.getIsActive?.(pathname, item.completeHref) ??
-                      pathname.startsWith(item.completeHref||""),//TODO: add href
+                      pathname.startsWith(item.completeHref || ""),//TODO: add href
                   }
                 )}
               >
@@ -300,7 +303,7 @@ const SidebarMenu: FunctionComponent<SidebarMenuProps> = ({ items, title }) => {
 };
 
 const GlobalMenu: FunctionComponent = () => {
-  const {can,transformToPermissionName} = usePermissions();
+  const { can, transformToPermissionName } = usePermissions();
   return (
     <SidebarMenu
       items={[

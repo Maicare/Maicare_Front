@@ -5,7 +5,7 @@ import useProgressBar from "@/common/hooks/use-progress-bar";
 import { ApiOptions } from "@/common/types/api.types";
 import { PaginatedResponse } from "@/common/types/pagination.types";
 import { Id } from "@/common/types/types";
-import { Goal, GoalWithObjectives } from "@/types/goals.types";
+import { CreateGoal, CreateObjective, Goal, GoalWithObjectives } from "@/types/goals.types";
 import { CreateReport, Report } from "@/types/reports.types";
 import { constructUrlSearchParams } from "@/utils/construct-search-params";
 import { stringConstructor } from "@/utils/string-constructor";
@@ -73,23 +73,29 @@ export function useGoal({ autoFetch = true,clientId,assessmentId,page=1,page_siz
     }, [pathname]);  // Runs when the route changes
 
 
-    const createOne = async (report:CreateReport, options?: ApiOptions) => {
+    const createOne = async (goal:CreateGoal, options?: ApiOptions) => {
         const { displayProgress = false, displaySuccess = false } = options || {};
         try {
+            const transformed_data = {
+                ...goal,
+                target_level: parseInt(goal.target_level as unknown as string),
+                start_date: goal.start_date + "T15:04:05Z",
+                target_date: goal.target_date + "T15:04:05Z",
+            };
             // Display progress bar
             if (displayProgress) startProgress();
-            const { message, success, data, error } = await useApi<Report>(ApiRoutes.Report.CreateOne.replace("{id}",clientId.toString()), "POST", {},report);
+            const { message, success, data, error } = await useApi<Goal>(ApiRoutes.Client.Goal.CreateOne.replace("{id}",clientId.toString()).replace("{assessment_id}",assessmentId.toString()), "POST", {},transformed_data);
             if (!data)
                 throw new Error(error || message || "An unknown error occurred");
 
             // Display success message
             if (displaySuccess && success) {
-                enqueueSnackbar("Report created successful!", { variant: "success" });
+                enqueueSnackbar("Goal created successful!", { variant: "success" });
             }
             mutate();
             return data;
         } catch (err: any) {
-            enqueueSnackbar(err?.response?.data?.message || "Report creationg failed", { variant: "error" });
+            enqueueSnackbar(err?.response?.data?.message || "Goal creation failed", { variant: "error" });
             throw err;
         } finally {
             if (displayProgress) stopProgress();
@@ -139,6 +145,55 @@ export function useGoal({ autoFetch = true,clientId,assessmentId,page=1,page_siz
         }
     }
 
+    const generateObjective = async (goalId:Id, options?: ApiOptions) => {
+        const { displayProgress = false, displaySuccess = false } = options || {};
+        try {
+            // Display progress bar
+            if (displayProgress) startProgress();
+            const { message, success, data, error } = await useApi<{goalId:Id,objectives:CreateObjective[]}>(ApiRoutes.Client.Goal.GenerateObjectives.replace("{id}",clientId.toString()).replace("{assessment_id}",assessmentId.toString()).replace("{goal_id}",goalId.toString()), "POST");
+            if (!data)
+                throw new Error(error || message || "An unknown error occurred");
+            // Display success message
+            if (displaySuccess && success) {
+                enqueueSnackbar("Objective generated successful!", { variant: "success" });
+            }
+            return data.objectives;
+        } catch (err: any) {
+            enqueueSnackbar(err?.response?.data?.message || "Objective generation failed", { variant: "error" });
+            throw err;
+        } finally {
+            if (displayProgress) stopProgress();
+        }
+    }
+
+    const createObjective = async (goalId:Id, objective:CreateObjective[], options?: ApiOptions) => {
+        const { displayProgress = false, displaySuccess = false } = options || {};
+        try {
+            const transformed_data = objective.map((obj) => {
+                return {
+                    ...obj,
+                    due_date: obj.due_date + "T15:04:05Z",
+                };
+            });
+            // Display progress bar
+            if (displayProgress) startProgress();
+            const { message, success, data, error } = await useApi<CreateObjective[]>(ApiRoutes.Client.Goal.CreateObjective.replace("{id}",clientId.toString()).replace("{assessment_id}",assessmentId.toString()).replace("{goal_id}",goalId.toString()), "POST", {},transformed_data);
+            if (!data)
+                throw new Error(error || message || "An unknown error occurred");
+            // Display success message
+            if (displaySuccess && success) {
+                enqueueSnackbar("Objective created successful!", { variant: "success" });
+            }
+            mutate();
+            return data;
+        } catch (err: any) {
+            enqueueSnackbar(err?.response?.data?.message || "Objective creation failed", { variant: "error" });
+            throw err;
+        } finally {
+            if (displayProgress) stopProgress();
+        }
+    }
+
     
     return {
         goals,
@@ -147,6 +202,8 @@ export function useGoal({ autoFetch = true,clientId,assessmentId,page=1,page_siz
         mutate,
         createOne,
         updateOne,
-        readOne
+        readOne,
+        generateObjective,
+        createObjective
     }
 }

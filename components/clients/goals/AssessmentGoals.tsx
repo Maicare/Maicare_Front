@@ -80,7 +80,8 @@ const AssessmentGoals = ({ assessmentId, clientId }: { assessmentId: string, cli
             sideActions={
                 <LinkButton
                     text={"Nieuw Doelen"}
-                    href={`/clients/${clientId}/goals/new`}
+                    href={`/clients/${clientId}/goals/${assessmentId}/new`}
+                    className="bg-c_blue text-white"
                 />
             }
         >
