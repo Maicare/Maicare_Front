@@ -69,13 +69,13 @@ const ClientsPage = () => {
         cell: (info) =>
           info.getValue()
             ? getAge(info.getValue() as string)
-            : "Niet gespecificeerd",
+            : <span className='bg-red-100 text-red-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-sm dark:bg-red-900 dark:text-red-300'>Niet Beschikbaar</span>,
       },
       {
         accessorKey: "gender",
         header: () => "Geslacht",
         cell: (info) =>
-          mappingGender[info.getValue() as string] || "Niet gespecificeerd",
+          mappingGender[info.getValue() as string] || <span className='bg-red-100 text-red-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-sm dark:bg-red-900 dark:text-red-300'>Niet Beschikbaar</span>,
       },
       {
         accessorKey: "status",
@@ -113,7 +113,6 @@ const ClientsPage = () => {
   ) : (
     <></>
   );
-
   return (
     <div>
       <Panel

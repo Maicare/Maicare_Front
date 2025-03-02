@@ -92,7 +92,13 @@ const GoalDetails = ({ assessmentId, clientId, goalId }: { assessmentId: string,
                     </div>
                 </div>
             </Panel>
-            <Panel title={"Objectives"} className="mt-4 px-7 py-4">
+            <Panel title={"Objectives"} className="mt-4 px-7 py-4" sideActions={
+                <Link href={`/clients/${clientId}/goals/${assessmentId}/objectives/${goalId}/objective/upsert`}>
+                    <IconButton>
+                        Add Objective
+                    </IconButton>
+                </Link>
+            }>
                 <div className="grid grid-cols-1 gap-4">
                     {goal.objectives.map((objective, index) => (
                         <Panel
@@ -146,7 +152,7 @@ const GoalDetails = ({ assessmentId, clientId, goalId }: { assessmentId: string,
                         </Panel>
                     ))}
                 </div>
-            </Panel>
+            </Panel >
         </>
     );
 }

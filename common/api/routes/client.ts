@@ -53,6 +53,9 @@ const ApiRoutes = {
   Goal: {
     ReadAll: prefix + "/{id}/maturity_matrix_assessment/{assessment_id}/goals",
     ReadOne: prefix + "/{id}/maturity_matrix_assessment/{assessment_id}/goals/{goal_id}",
+    CreateOne: prefix + "/{id}/maturity_matrix_assessment/{assessment_id}/goals",
+    CreateObjective: prefix + "/{id}/maturity_matrix_assessment/{assessment_id}/goals/{goal_id}/objectives",
+    GenerateObjectives: prefix + "/{id}/maturity_matrix_assessment/{assessment_id}/goals/{goal_id}/objectives/generate",
   },
   RelatedEmails: {
     ReadAll: prefix + "/{id}/related_emails",
