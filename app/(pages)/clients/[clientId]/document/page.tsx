@@ -67,26 +67,23 @@ const DocumentsPage: FunctionComponent = () => {
             <FileIcon />
           </div>
         ),
-        className: "w-[70px]",
       },
       {
         accessorKey: "original_filename",
         header: () => "Bestandsnaam",
         cell: (info: Any) => info.getValue() || "Niet Beschikbaar",
-        className: "w-[30%]",
       },
       {
         accessorKey: "size",
         header: () => "Bestandsgrootte",
         cell: (info: Any) =>
           bytesToSize(parseInt(info.getValue())) || "Niet Beschikbaar",
-        className: "w-[150px]",
       },
       {
         accessorKey: "label",
         header: () => "Label",
         cell: (info: Any) => (
-          <span className="text-sm  p-1 px-2 text-yellow-700 bg-yellow-400 transition font-bold rounded-full">
+          <div className="inline-block whitespace-nowrap text-sm p-1 px-2 text-yellow-700 bg-yellow-400 transition font-bold rounded-full">
             {DOCUMENT_LABELS[
               info.getValue() as keyof {
                 registration_form: string;
@@ -101,9 +98,9 @@ const DocumentsPage: FunctionComponent = () => {
                 other: string;
               }
             ] || "-"}
-          </span>
+          </div>
         ),
-        className: "w-[250px]",
+        className: "min-w-fit", // Tailwind v3 class; or use style={{ minWidth: "fit-content" }}
       },
       {
         accessorKey: "created_at",
@@ -180,18 +177,18 @@ const DocumentsPage: FunctionComponent = () => {
       return {
         label:
           DOCUMENT_LABELS[
-            doc as keyof {
-              registration_form: string;
-              intake_form: string;
-              consent_form: string;
-              risk_assessment: string;
-              self_reliance_matrix: string;
-              force_inventory: string;
-              care_plan: string;
-              signaling_plan: string;
-              cooperation_agreement: string;
-              other: string;
-            }
+          doc as keyof {
+            registration_form: string;
+            intake_form: string;
+            consent_form: string;
+            risk_assessment: string;
+            self_reliance_matrix: string;
+            force_inventory: string;
+            care_plan: string;
+            signaling_plan: string;
+            cooperation_agreement: string;
+            other: string;
+          }
           ],
         value: doc,
       };

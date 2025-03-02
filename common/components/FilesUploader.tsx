@@ -11,16 +11,17 @@ import Button from "@/components/common/Buttons/Button";
 import SelectThin from "./SelectThin";
 import { useAttachment } from "@/hooks/attachment/use-attachment";
 import { Any } from "../types/types";
+import { useIntake } from "@/hooks/intake/use-intake";
 
 type Props = {
   name: string;
   label: string;
-  trigger:Any;
+  trigger: Any;
   placeholder?: string;
   required?: boolean;
   tagOptions?: SelectionOption[];
   tagLabel?: string;
-
+  intakeForm?: boolean
 };
 
 const FilesUploader: FunctionComponent<Props> = ({
@@ -29,17 +30,18 @@ const FilesUploader: FunctionComponent<Props> = ({
   tagOptions,
   tagLabel,
   trigger,
+  intakeForm,
   ...props
 }) => {
-  const { register, setValue,watch } = useFormContext();
+  const { register, setValue, watch } = useFormContext();
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   const [uploadedFiles, setUploadedFiles] = useState<string[]>([]);
-    console.log(uploadedFiles)
-    const files = watch(name);
-    console.log({files})
+  console.log(uploadedFiles)
+  const files = watch(name);
+  console.log({ files })
   useEffect(() => {
     setValue(name, uploadedFiles); // Update React Hook Form value
-  }, [uploadedFiles,trigger]);
+  }, [uploadedFiles, trigger]);
 
   const selectFiles = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files;
@@ -79,6 +81,7 @@ const FilesUploader: FunctionComponent<Props> = ({
         {selectedFiles.map((file, index) => (
           <FileUploader
             key={index}
+            intakeForm={intakeForm}
             file={file}
             onUploaded={(id) => {
               setUploadedFiles((prev) => [...prev, id]);
@@ -104,28 +107,37 @@ const FileUploader: FunctionComponent<{
   onRemove: (id?: string) => void;
   tagOptions?: SelectionOption[];
   tagLabel?: string;
-}> = ({ file, onRemove, onUploaded, tagOptions, tagLabel }) => {
-//   const { mutate: upload, isLoading: isUploading, isSuccess, isError } = useUploadFile(endpoint);
-    const {createOne} = useAttachment();
+  intakeForm?: boolean
+}> = ({ file, onRemove, onUploaded, tagOptions, tagLabel, intakeForm }) => {
+  //   const { mutate: upload, isLoading: isUploading, isSuccess, isError } = useUploadFile(endpoint);
+  const { createOne } = useAttachment();
+  const { uploadFileForIntake } = useIntake();
   const [fileId, setFileId] = useState<string | null>(null);
   const [url, setUrl] = useState<string | null>(null);
-  const [isUploading,setIsUploading] = useState(false);
-  const [error,setError] = useState('');
-  const uploadFile = useCallback(async() => {
+  const [isUploading, setIsUploading] = useState(false);
+  const [error, setError] = useState('');
+  const uploadFile = useCallback(async () => {
     setError("");
     setIsUploading(true);
-    const formData:FormData=new FormData();
-    formData.append('file',file);
+    const formData: FormData = new FormData();
+    formData.append('file', file);
     try {
-        const attachment = await createOne(formData,{displaySuccess:true});
+      if (intakeForm) {
+        const attachment = await uploadFileForIntake(formData, { displaySuccess: true });
         setUrl(attachment.file_url);
         setFileId(attachment.file_id);
         onUploaded(attachment.file_id);
+      } else {
+        const attachment = await createOne(formData, { displaySuccess: true });
+        setUrl(attachment.file_url);
+        setFileId(attachment.file_id);
+        onUploaded(attachment.file_id);
+      }
     } catch (error) {
-        console.log(error);
-        setError(String(error) || "Upload failed");
-    }finally {
-        setIsUploading(false);
+      console.log(error);
+      setError(String(error) || "Upload failed");
+    } finally {
+      setIsUploading(false);
     }
 
   }, [file]);

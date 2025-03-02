@@ -53,8 +53,9 @@ function PaginatedTable<TData>({
           {sideActions}
         </div>
       )}
-      <Table data={data.results} {...tableProps} />
-
+      <div className="overflow-x-auto">
+        <Table data={data.results} {...tableProps} />
+      </div>
       {data.results?.length == 0 && (
         <LargeErrorMessage
           firstLine={"Oops!"}

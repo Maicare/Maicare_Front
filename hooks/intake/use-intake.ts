@@ -12,8 +12,9 @@ import { useApi } from "@/common/hooks/use-api";
 import { useRouter } from "next/navigation";
 import { Appointment as AppointmentType } from "@/types/appointment.types";
 import { IntakeFormType } from "@/types/intake.types";
+import { Attachment } from "@/types/attachment.types";
 
-export function useIntake(token: string) {
+export function useIntake() {
 
     const router = useRouter();
 
@@ -26,7 +27,7 @@ export function useIntake(token: string) {
         const { displayProgress = false } = options || {};
         try {
             if (displayProgress) startProgress();
-            const { message, success, data, error } = await useApi<AppointmentType>(`${ApiRoutes.IntakeForm.CreateOne}?token=${token}`, "POST", {}, intakeData);
+            const { message, success, data, error } = await useApi<AppointmentType>(`${ApiRoutes.IntakeForm.CreateOne}`, "POST", {}, intakeData);
             if (!data)
                 throw new Error(error || message || "An unknown error occurred");
 
@@ -41,21 +42,26 @@ export function useIntake(token: string) {
         }
     }
 
-    const generateToken = async (options?: ApiOptions) => {
+    const uploadFileForIntake = async (formData: FormData, options?: ApiOptions) => {
         const { displayProgress = false, displaySuccess = false } = options || {};
         try {
+            // Display progress bar
             if (displayProgress) startProgress();
-            const { message, success, data, error } = await useApi<AppointmentType>(`${ApiRoutes.IntakeForm.GenerateToken}`, "POST", {}, {});
+            const { message, success, data, error } = await useApi<Attachment>(ApiRoutes.IntakeForm.upload, "POST", {
+                headers: {
+                    "Content-Type": "multipart/form-data", // Ensure multipart encoding
+                }
+            }, formData);
             if (!data)
                 throw new Error(error || message || "An unknown error occurred");
 
             // Display success message
             if (displaySuccess && success) {
-                enqueueSnackbar("Intake Form submitted successfully!", { variant: "success" });
+                enqueueSnackbar("File uploaded successful!", { variant: "success" });
             }
             return data;
         } catch (err: any) {
-            enqueueSnackbar(err?.response?.data?.message || "Intake Form submitted failed", { variant: "error" });
+            enqueueSnackbar(err?.response?.data?.message || "File upload failed", { variant: "error" });
             throw err;
         } finally {
             if (displayProgress) stopProgress();
@@ -64,6 +70,6 @@ export function useIntake(token: string) {
 
     return {
         sendIntakeForm,
-        generateToken
+        uploadFileForIntake
     };
 }

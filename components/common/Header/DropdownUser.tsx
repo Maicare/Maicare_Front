@@ -23,7 +23,7 @@ const DropdownUser = () => {
     }
     fetchUserRole();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  },[]);
+  }, []);
 
   const trigger = useRef<Any>(null);
   const dropdown = useRef<Any>(null);
@@ -109,7 +109,7 @@ const DropdownUser = () => {
           {can(transformToPermissionName(PermissionsObjects.ViewProfile)) && (
             <li>
               <Link
-                href="/profile"
+                href={`/employees/${user?.user_id}`}
                 className="flex items-center gap-3.5 text-sm font-medium duration-300 ease-in-out hover:text-primary lg:text-base"
               >
                 <svg

@@ -1,7 +1,7 @@
 const prefix = "/intake_form";
 const ApiRoutes = {
     CreateOne: prefix,
-    GenerateToken: prefix + '/token'
+    upload: prefix + '/upload'
 };
 
 export default ApiRoutes;
