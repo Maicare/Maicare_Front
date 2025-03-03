@@ -3,6 +3,8 @@ const ApiRoutes = {
   ReadAll: prefix,
   ReadOne: prefix + "/{id}",
   UpdateProfilePicture: prefix + "/{id}/profile_picture",
+  Status: prefix + "/{id}/status",
+  StatusHistory: prefix + "/{id}/status_history",
   CreateOne: prefix,
   Appointment: {
     ReadAll: prefix + "/{id}/appointment_cards",

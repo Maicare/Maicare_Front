@@ -12,10 +12,12 @@ import useSWR from "swr";
 import {
   Client,
   ClientsSearchParams,
+  ClientStatusHistoryItem,
   CreateClientInput,
 } from "@/types/client.types";
 import { constructUrlSearchParams } from "@/utils/construct-search-params";
 import { stringConstructor } from "@/utils/string-constructor";
+import { DepartureEntries } from "@/types/contracts.types";
 
 export function useClient({
   search,
@@ -106,6 +108,32 @@ export function useClient({
       if (displayProgress) stopProgress();
     }
   };
+
+  const updateStatus = async (id: string, data: DepartureEntries, options?: ApiOptions) => {
+    const { displayProgress = false, displaySuccess = false } = options || {};
+    try {
+      if (displayProgress) startProgress();
+      const response = await useApi<Client>(
+        ApiRoutes.Client.Status.replace("{id}", id),
+        "PUT",
+        {},
+        data
+      );
+      if (!response.data) {
+        throw new Error("Status update failed");
+      }
+      if (displaySuccess && response.success) {
+        enqueueSnackbar("Status update successful!", { variant: "success" });
+      }
+      return response.data;
+    } catch (err: any) {
+      enqueueSnackbar("Failed to update Status ", { variant: "error" });
+      throw err;
+    } finally {
+      if (displayProgress) stopProgress();
+    }
+  };
+
   const updateClientPicture = async (
     id: number,
     attachement_id: string,
@@ -160,6 +188,24 @@ export function useClient({
     }
   };
 
+  const getStatusHistory = async (id: string, options?: ApiOptions) => {
+    const { displayProgress = false, displaySuccess = false } = options || {};
+    try {
+      if (displayProgress) startProgress();
+      const response = await useApi<ClientStatusHistoryItem[]>(
+        ApiRoutes.Client.StatusHistory.replace("{id}", id),
+        "GET",
+        {}
+      );
+      return response.data;
+    } catch (err: any) {
+      enqueueSnackbar("Failed to get Status history ", { variant: "error" });
+      throw err;
+    } finally {
+      if (displayProgress) stopProgress();
+    }
+  };
+
   //TODO: Add logic to CRUD user role
   return {
     clients,
@@ -171,5 +217,7 @@ export function useClient({
     createOne,
     updateClientPicture,
     readClientRelatedEmails,
+    updateStatus,
+    getStatusHistory
   };
 }

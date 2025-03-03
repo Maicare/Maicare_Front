@@ -47,8 +47,10 @@ export type AttachmentItem = {
 };
 
 export type DepartureEntries = {
-    departure_reason: string;
-    departure_report: string;
+    status: string;
+    schedueled: boolean;
+    schedueled_for: string;
+    reason: string;
 };
 
 
