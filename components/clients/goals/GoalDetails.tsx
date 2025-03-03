@@ -93,10 +93,8 @@ const GoalDetails = ({ assessmentId, clientId, goalId }: { assessmentId: string,
                 </div>
             </Panel>
             <Panel title={"Objectives"} className="mt-4 px-7 py-4" sideActions={
-                <Link href={`/clients/${clientId}/goals/${assessmentId}/objectives/${goalId}/objective/upsert`}>
-                    <IconButton>
+                <Link href={`/clients/${clientId}/goals/${assessmentId}/objectives/${goalId}/upsert`}>
                         Add Objective
-                    </IconButton>
                 </Link>
             }>
                 <div className="grid grid-cols-1 gap-4">
