@@ -17,7 +17,6 @@ import InvolvedEmployeesSummary from "./ClientDetailsComponents/InvolvedEmployee
 import ClientContactSummary from "./ClientDetailsComponents/ClientContactSummary";
 import ClientContractsSummary from "./ClientDetailsComponents/ClientContractsSummary";
 import ClientDocumentsSummary from "./ClientDetailsComponents/ClientDocumentsSummary";
-import UpdateClientStatus from "./ClientDetailsComponents/UpdateClientStatus";
 import ClientStatusHistory from "./ClientDetailsComponents/ClientStatusHistory";
 import ClientDeparture from "./ClientDetailsComponents/ClientDeparture";
 import ClientIdentityDetails from "./ClientDetailsComponents/ClientIdentityDetails";
@@ -26,17 +25,23 @@ import ClientMedicalRecordSummary from "./ClientDetailsComponents/ClientMedicalR
 import ClientReportsSummary from "./ClientDetailsComponents/ClientReportsSummary";
 import { useDocument } from "@/hooks/document/use-document";
 import Loader from "../common/loader";
+import { useModal } from "@/components/providers/ModalProvider";
+import TerminationModal from "../common/Modals/TerminationModal";
+
 
 type PropsType = {
   clientId: number;
 };
 
 const ClientDetails: FunctionComponent<PropsType> = ({ clientId }) => {
+
   const { readOne } = useClient({});
   const { readMissingDocs } = useDocument({
     autoFetch: false,
     clientId: clientId,
   });
+  const { open: openTerminationModal } = useModal(TerminationModal);
+
   const [missingDocs, setMissingDocs] = useState<string[]>([]);
   const [clientData, setClientData] = useState<ClientType | null>(null);
 
@@ -70,18 +75,18 @@ const ClientDetails: FunctionComponent<PropsType> = ({ clientId }) => {
       return {
         label:
           DOCUMENT_LABELS[
-            doc as keyof {
-              registration_form: string;
-              intake_form: string;
-              consent_form: string;
-              risk_assessment: string;
-              self_reliance_matrix: string;
-              force_inventory: string;
-              care_plan: string;
-              signaling_plan: string;
-              cooperation_agreement: string;
-              other: string;
-            }
+          doc as keyof {
+            registration_form: string;
+            intake_form: string;
+            consent_form: string;
+            risk_assessment: string;
+            self_reliance_matrix: string;
+            force_inventory: string;
+            care_plan: string;
+            signaling_plan: string;
+            cooperation_agreement: string;
+            other: string;
+          }
           ],
         value: doc,
       };
@@ -106,7 +111,7 @@ const ClientDetails: FunctionComponent<PropsType> = ({ clientId }) => {
               {/* <QuestionnaireDownloadButton type="client_details" questId={+clientId} /> */}
               <IconButton
                 buttonType="Danger"
-                onClick={() => {}}
+                onClick={() => { }}
                 disabled={false}
                 isLoading={false}
               >
@@ -201,9 +206,23 @@ const ClientDetails: FunctionComponent<PropsType> = ({ clientId }) => {
       </div>
 
       <div className="flex flex-col gap-9">
-        <Panel title={"Cliëntstatus"} containerClassName="py-4">
-          <div className="px-4 mt-7">
-            <UpdateClientStatus client={clientData} />
+        <Panel title={"Cliëntstatus"} containerClassName="py-4" sideActions={
+
+          <IconButton onClick={() => {
+            openTerminationModal({
+              status: clientData?.status,
+              onStatusUpdate: (newStatus: string) =>
+                setClientData({ ...clientData!, status: newStatus })
+            })
+          }}>
+            <PencilSquare className="w-5 h-5" />
+          </IconButton>
+        }>
+          <div className="px-4 py-4 flex justify-between items-center">
+            <p className="text-lg font-semibold mb-2">Huidige status:</p>
+            <div className="inline-block bg-blue-600 text-white text-sm px-4 py-2 rounded-full shadow-lg">
+              {clientData?.status || "Onbekend"}
+            </div>
           </div>
           <ClientStatusHistory />
         </Panel>

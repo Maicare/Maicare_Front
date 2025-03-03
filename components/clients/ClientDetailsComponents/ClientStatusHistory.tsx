@@ -1,62 +1,57 @@
-import React, { FunctionComponent, useMemo, useState } from "react";
+import React, { FunctionComponent, useEffect, useMemo, useState } from "react";
 import { dateFormat } from "@/utils/timeFormatting";
 import { STATUS_RECORD } from "@/consts";
 import Button from "../../common/Buttons/Button";
-
-const mockStatusHistory = [
-  {
-    id: 1,
-    status: "In Care",
-    start_date: "2023-01-01",
-  },
-  {
-    id: 2,
-    status: "On Waiting List",
-    start_date: "2023-02-15",
-  },
-  {
-    id: 3,
-    status: "Out Of Care",
-    start_date: "2023-03-10",
-  },
-  {
-    id: 4,
-    status: "In Care",
-    start_date: "2023-04-20",
-  },
-  {
-    id: 5,
-    status: "On Waiting List",
-    start_date: "2023-05-05",
-  },
-];
+import { useClient } from "@/hooks/client/use-client";
+import { useParams } from "next/navigation";
+import Loader from "@/components/common/loader";
+import { ClientStatusHistoryItem } from "@/types/client.types";
 
 const SHOW_COUNT = 3;
 
 const ClientStatusHistory: FunctionComponent = () => {
-  const [expanded, setExpanded] = useState(false);
+  const params = useParams();
+  const clientId = params?.clientId ? params?.clientId.toString() : "0";
+  const { getStatusHistory } = useClient({});
 
-  const show = useMemo(() => {
-    if (expanded) {
-      return mockStatusHistory ?? [];
-    }
-    return mockStatusHistory?.slice(0, SHOW_COUNT) ?? [];
-  }, [expanded]);
+  const [expanded, setExpanded] = useState(false);
+  const [history, setHistory] = useState<ClientStatusHistoryItem[]>([]);
+
+
+  useEffect(() => {
+    const fetchHistory = async () => {
+      const data = await getStatusHistory(clientId);
+      setHistory(data ? data : []);
+    };
+    fetchHistory();
+  }, [clientId, getStatusHistory]);
+
+
+  const displayedHistory = useMemo(() => {
+    return expanded ? history : history.slice(0, SHOW_COUNT);
+  }, [expanded, history]);
+
+  if (!history) return <Loader />;
 
   return (
     <div>
-      {show.map((status) => (
-        <div key={status.id} className="flex justify-between py-3 px-7 border-b border-stroke">
-          <p className="text-sm">{STATUS_RECORD[status.status as keyof typeof STATUS_RECORD]}</p>
+      {displayedHistory.map((status) => (
+        <div
+          key={status.id}
+          className="flex justify-between py-3 px-7 border-b border-stroke"
+        >
           <p className="text-sm">
-            <strong>{dateFormat(status.start_date)}</strong>
+            {STATUS_RECORD[status.new_status as keyof typeof STATUS_RECORD]}
+          </p>
+          <p className="text-sm">
+            <strong>{dateFormat(status.changed_at)}</strong>
           </p>
         </div>
       ))}
-      {mockStatusHistory?.length > SHOW_COUNT && (
+      {history.length > SHOW_COUNT && (
         <Button
           buttonType={"Outline"}
-          className="p-0 flex items-center h-10 top-0 w-full rounded-none border-none"
+          className="p-0 flex items-center h-10 w-full rounded-none border-none"
           onClick={() => setExpanded((prev) => !prev)}
         >
           <span className="mr-4">{expanded ? "Zie minder" : "Zie meer"}</span>
