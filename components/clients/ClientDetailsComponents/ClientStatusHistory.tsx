@@ -35,7 +35,7 @@ const ClientStatusHistory: FunctionComponent = () => {
 
   return (
     <div>
-      {displayedHistory.map((status: any) => (
+      {displayedHistory.map((status) => (
         <div
           key={status.id}
           className="flex justify-between py-3 px-7 border-b border-stroke"
