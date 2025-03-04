@@ -9,19 +9,19 @@ export const ControlledRoleSelect: FunctionComponent<
 > = ({ name = "location_id", ...props }) => {
   const { control } = useFormContext();
 
-    const { roles,isLoading } = useRole({autoFetch: true});
-    if(isLoading) return null;
-    if (!roles) return <Loader />;
-    const options = roles.map((role) => ({
-        value: role.id + "",
-        label: role.name,
-    }));
-    const actualOptions = [
-        {
-            value: "",
-            label: "Selecteer een rol",
-        },
-    ].concat(options);
+  const { roles, isLoading } = useRole({ autoFetch: true });
+  if (isLoading) return null;
+  if (!roles) return <Loader />;
+  const options = roles.map((role) => ({
+    value: role.id + "",
+    label: role.name,
+  }));
+  const actualOptions = [
+    {
+      value: "",
+      label: "Selecteer een rol",
+    },
+  ].concat(options);
 
   return (
     <Controller
