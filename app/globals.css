@@ -38,7 +38,23 @@
     @apply h-[calc(100vh_-_8.125rem)] lg:h-[calc(100vh_-_5.625rem)];
   }
 }
+.arrow-animation {
+  animation: arrowLeft 2s infinite;
+}
 
+@keyframes arrowLeft {
+  0% {
+    transform: translateX(0);
+  }
+
+  50% {
+    transform: translateX(10px);
+  }
+
+  100% {
+    transform: translateX(0);
+  }
+}
 /* third-party libraries CSS */
 
 .tableCheckbox:checked ~ div span {
