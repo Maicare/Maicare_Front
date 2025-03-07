@@ -122,3 +122,13 @@ export type ClientsSearchParams = {
     page: number;
     page_size: number;
 }
+
+export type ClientStatusHistoryItem = {
+    changed_at: string;
+    changed_by: string | null;
+    client_id: number;
+    id: number;
+    new_status: string;
+    old_status: string;
+    reason: string;
+}

@@ -15,10 +15,12 @@ export function useRole({ autoFetch = true }: { autoFetch?: boolean }) {
     const { data: roles, error, mutate } = useSWR<Role[] | null>(
         ApiRoutes.Role.ReadAll, // Endpoint to fetch Roles
         async (url) => {
-            if (!autoFetch) {
-                return [];
-
-            }
+            // in the Header component we have autoFetch set to false so it will always be set to false on all pages and that blocks this hook from sending the request.
+            // This is why we have to remove the autoFetch check here.
+            // Temporary solution.
+            // if (!autoFetch) {
+            //     return [];
+            // }
             const response = await api.get(url);
             if (!response.data.data) {
                 return null;
@@ -79,7 +81,7 @@ export function useRole({ autoFetch = true }: { autoFetch?: boolean }) {
         error,
         isLoading,
         mutate,
-        getUserRole, 
+        getUserRole,
         updateOneRole,
     }
 }
