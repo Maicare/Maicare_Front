@@ -9,7 +9,6 @@ import { ModalProps } from "@/common/types/modal.types";
 import InputControl from "@/common/components/InputControl";
 import { useForm, FormProvider, useWatch } from "react-hook-form";
 import { DepartureEntries } from "@/types/contracts.types";
-import { yupResolver } from "@hookform/resolvers/yup";
 // import { ClientTerminationform } from "@/schemas/client.schema";
 import { STATUS_OPTIONS } from "@/consts";
 import SelectControlled from "@/common/components/SelectControlled";
