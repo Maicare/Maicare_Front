@@ -5,7 +5,7 @@ import { cn } from "@/utils/cn";
 import { CheckCircle, GraduationCap, PlusCircle, XCircle } from "lucide-react";
 import { useState } from "react";
 
-const page = () => {
+const Page = () => {
     const [adding, setAdding] = useState(false);
 
     return (
@@ -67,4 +67,4 @@ const page = () => {
     )
 }
 
-export default page
+export default Page

@@ -5,7 +5,7 @@ import { cn } from "@/utils/cn";
 import { Briefcase, CheckCircle, PlusCircle, XCircle } from "lucide-react";
 import { useState } from "react";
 
-const page = () => {
+const Page = () => {
     const [adding, setAdding] = useState(false);
     return (
         <div className="w-full flex flex-col gap-4">
@@ -66,4 +66,4 @@ const page = () => {
     )
 }
 
-export default page
+export default Page

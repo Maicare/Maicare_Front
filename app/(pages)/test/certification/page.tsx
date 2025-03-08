@@ -4,7 +4,7 @@ import { cn } from "@/utils/cn";
 import { CheckCircle, Edit, PlusCircle, Trash, XCircle } from "lucide-react";
 import { useState } from "react";
 
-const page = () => {
+const Page = () => {
     const [adding, setAdding] = useState(false);
 
     return (
@@ -218,4 +218,4 @@ const page = () => {
     )
 }
 
-export default page
+export default Page
