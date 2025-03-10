@@ -33,6 +33,7 @@ import usePermissions from "@/common/hooks/use-permissions";
 import ClientSidebarBriefing from "./client-sidebar-briefing";
 import { Any } from "@/common/types/types";
 import IconButton from "../Buttons/IconButton";
+import { useLocalSidebar } from "@/common/hooks/use-local-sidebar";
 
 interface SidebarProps {
   sidebarOpen: boolean;
@@ -44,12 +45,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
   const trigger = useRef<Any>(null);
   const sidebar = useRef<Any>(null);
 
-  const storedSidebarExpanded: "true" | "false" = "true";
-
-  const [sidebarExpanded, _setSidebaanded] = useState(
-    storedSidebarExpanded === null ? false : storedSidebarExpanded === "true"
-  );
-
+  const [sidebarExpanded] = useLocalSidebar("sidebar-expanded",sidebarOpen);
   // // close on click outside
   // useEffect(() => {
   //   const clickHandler = ({ target }: MouseEvent) => {
@@ -75,10 +71,13 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
   useEffect(() => {
     localStorage.setItem("sidebar-expanded", sidebarExpanded.toString());
     if (sidebarExpanded) {
+      setSidebarOpen(true);
       document.querySelector("body")?.classList.add("sidebar-expanded");
     } else {
+      setSidebarOpen(false);
       document.querySelector("body")?.classList.remove("sidebar-expanded");
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sidebarExpanded]);
 
   const Sidebar = useMemo(() => {
@@ -110,7 +109,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
         classNames
       )}
     >
-      <IconButton onClick={() => setSidebarOpen(false)} className="absolute rounded-full bg-transparent border-2 border-white -right-4 top-1/2 -translate-y-1/2">
+      <IconButton onClick={() => {setSidebarOpen(false);localStorage.setItem("sidebar-expanded","false")}} className="absolute rounded-full bg-transparent border-2 border-white -right-4 top-1/2 -translate-y-1/2">
         <ArrowLeft className="w-5 h-5 text-white animate-ping hover:animate-none" />
       </IconButton>
       {/* <!-- SIDEBAR HEADER --> */}
@@ -124,7 +123,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
 
         <button
           ref={trigger}
-          onClick={() => setSidebarOpen(!sidebarOpen)}
+          onClick={() => {setSidebarOpen(!sidebarOpen);localStorage.setItem("sidebar-expanded", sidebarOpen ? "true" : "false")}}
           aria-controls="sidebar"
           aria-expanded={sidebarOpen}
           className="block lg:hidden"
