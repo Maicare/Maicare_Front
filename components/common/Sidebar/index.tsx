@@ -77,6 +77,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
       setSidebarOpen(false);
       document.querySelector("body")?.classList.remove("sidebar-expanded");
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sidebarExpanded]);
 
   const Sidebar = useMemo(() => {

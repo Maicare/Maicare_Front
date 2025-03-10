@@ -19,13 +19,22 @@ import { Archive, ArrowBigLeft, ArrowBigRight,  Outdent, PlusCircle, Users, Work
 
 
 export default function Page() {
-  const { employees } = useEmployee({ page: 1, page_size: 10 });
-  if (!employees || !employees.results) {
-    return <div>Loading...</div>
-
+  const { employees,setPage,page } = useEmployee({ page: 1, page_size: 10 });
+  const handlePrevious = () => {
+    if (page <= 1) {
+      setPage(1);
+      return;
+    }
+    setPage(page-1);
+  }
+  const handleNext = () => {
+    if (employees?.next) {
+      setPage(page+1);
+      return;
+    }
   }
   return (
-    <div className="container mx-auto py-10">
+    <div className="container mx-auto">
       <div className="flex justify-between items-center mb-5">
         <h1 className="text-xl font-semibold">Employees</h1>
         <p>Dashboard / <span className="font-medium text-indigo-500 hover:cursor-pointer">Employees</span></p>
@@ -120,15 +129,15 @@ export default function Page() {
           <PlusCircle size={15} className={"animate-bounce transition-all ease-in-out"} />
         </button>
       </div>
-      <DataTable columns={columns} data={employees.results} onRowClick={(row) => console.log({ row })} />
+      <DataTable columns={columns} data={employees?.results??[]} onRowClick={(row) => console.log({ row })} />
       <div className="flex px-2 py-3 bg-white rounded-md mt-5 justify-between border-2 border-muted">
-        <button className={cn("flex items-center justify-center gap-2 bg-indigo-100 text-indigo-500 hover:text-white hover:bg-indigo-500 rounded-md p-2 px-4 text-sm transition-all ease-in-out")} >
-          <ArrowBigLeft size={15} className={"arrow-animation transition-all ease-in-out"} />
+        <button disabled={page === 1} onClick={handlePrevious} className={cn("flex items-center justify-center gap-2 bg-indigo-100 text-indigo-500 hover:text-white hover:bg-indigo-500 rounded-md p-2 px-4 text-sm transition-all ease-in-out",page===1 && "bg-gray-100 text-gray-500 hover:bg-gray-100 hover:text-gray-500")} >
+          <ArrowBigLeft size={15} className={cn("transition-all ease-in-out",page > 1 && "arrow-animation ")} />
           <span className="transition-all ease-in-out">Previous</span>
         </button>
-        <button className={cn("flex items-center justify-center gap-2 bg-indigo-100 text-indigo-500 hover:text-white hover:bg-indigo-500 rounded-md p-2 px-4 text-sm transition-all ease-in-out")} >
+        <button disabled={employees?.next ? false : true} onClick={handleNext} className={cn("flex items-center justify-center gap-2 bg-indigo-100 text-indigo-500 hover:text-white hover:bg-indigo-500 rounded-md p-2 px-4 text-sm transition-all ease-in-out",employees?.next ? "" : "bg-gray-100 text-gray-500 hover:bg-gray-100 hover:text-gray-500")} >
           <span className="transition-all ease-in-out">Next</span>
-          <ArrowBigRight size={15} className={"arrow-animation transition-all ease-in-out"} />
+          <ArrowBigRight size={15} className={cn("transition-all ease-in-out",employees?.next ? "arrow-animation" : "")} />
         </button>
       </div>
     </div>

@@ -2,7 +2,6 @@
 
 import FemaleSvg from "@/common/components/female-svg"
 import MaleSvg from "@/common/components/male-svg"
-import NonBinarySvg from "@/common/components/non-binary-svg"
 import { mappingGender } from "@/common/data/gender.data"
 import ProfilePicture from "@/components/common/profilePicture/profile-picture"
 import { Button } from "@/components/ui/button"
@@ -10,7 +9,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel,
 import { EmployeeList } from "@/types/employee.types"
 import { getAge } from "@/utils/get-age"
 import { ColumnDef } from "@tanstack/react-table"
-import { CheckCircle,  MoreHorizontal, XCircle } from "lucide-react"
+import { Archive, CheckCircle,  Edit2,  Eye,  MoreHorizontal, NonBinary, Trash, XCircle } from "lucide-react"
 
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
@@ -77,10 +76,10 @@ export const columns: ColumnDef<EmployeeList>[] = [
             } else {
                 return (
                     <div className="flex items-center gap-1">
-                        <NonBinarySvg className="h-5 w-5 text-green-500 hover:animate-shake-once cursor-pointer" />
-                        <span className="text-green-500 text-base font-medium">
+                        <NonBinary  className="h-5 w-5 text-green-300 hover:animate-shake-once cursor-pointer" />
+                        <span className="text-green-300 text-base font-medium">
                             {
-                                mappingGender[(info.getValue() as string).toLowerCase()]
+                                mappingGender[(info.getValue() as string).toLowerCase()] || "Non-binair"
                             }
                         </span>
                     </div>
@@ -116,7 +115,7 @@ export const columns: ColumnDef<EmployeeList>[] = [
         id: "actions",
         header: () => "Actions",
         cell: ({ row }) => {
-            const employee = row.original
+            const _employee = row.original
 
             return (
                 <DropdownMenu>
@@ -129,16 +128,36 @@ export const columns: ColumnDef<EmployeeList>[] = [
                     <DropdownMenuContent align="end" className="bg-white">
                         <DropdownMenuLabel>Actions</DropdownMenuLabel>
                         <DropdownMenuItem
-                            onClick={() => navigator.clipboard.writeText(employee.id.toString())}
-                            className="hover:bg-gray-100 cursor-pointer"
+                            onClick={() => {}}
+                            className="hover:bg-indigo-100 hover:text-indigo-500 transition-colors ease-in-out cursor-pointer flex items-center gap-2"
                         >
-                            Copy employee Number
+                            <Eye className="h-4 w-4 " />
+                            <span className="text-sm font-medium" >View</span>
                         </DropdownMenuItem>
                         <DropdownMenuSeparator />
                         <DropdownMenuItem
-                            className="hover:bg-gray-100 cursor-pointer"
-
-                        >View employee</DropdownMenuItem>
+                            onClick={() => {}}
+                            className="hover:bg-orange-100 hover:text-orange-500 transition-colors ease-in-out cursor-pointer flex items-center gap-2"
+                        >
+                            <Edit2 className="h-4 w-4 " />
+                            <span className="text-sm font-medium" >Edit</span>
+                        </DropdownMenuItem>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem
+                            onClick={() => {}}
+                            className="bg-red-100 hover:bg-red-200 hover:text-red-500 transition-colors ease-in-out cursor-pointer flex items-center gap-2"
+                        >
+                            <Trash className="h-4 w-4 " />
+                            <span className="text-sm font-medium" >Delete</span>
+                        </DropdownMenuItem>
+                        <DropdownMenuItem
+                            onClick={() => {}}
+                            className="bg-red-100 hover:bg-red-200 hover:text-red-500 transition-colors ease-in-out cursor-pointer flex items-center gap-2"
+                        >
+                            <Archive className="h-4 w-4 " />
+                            <span className="text-sm font-medium" >Archive</span>
+                        </DropdownMenuItem>
+                        
                     </DropdownMenuContent>
                 </DropdownMenu>
             )
