@@ -64,4 +64,8 @@ export type IntakeFormType = {
     truth_declaration: boolean;
     uses_medication: boolean;
     attachement_ids?: string[]; // Optional fields
+    created_at?: string;
+    urgency_score?: number;
+    id?: string;
+    time_since_submission?: string;
 };

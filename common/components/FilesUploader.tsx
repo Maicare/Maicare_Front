@@ -111,7 +111,7 @@ const FileUploader: FunctionComponent<{
 }> = ({ file, onRemove, onUploaded, tagOptions, tagLabel, intakeForm }) => {
   //   const { mutate: upload, isLoading: isUploading, isSuccess, isError } = useUploadFile(endpoint);
   const { createOne } = useAttachment();
-  const { uploadFileForIntake } = useIntake();
+  const { uploadFileForIntake } = useIntake({});
   const [fileId, setFileId] = useState<string | null>(null);
   const [url, setUrl] = useState<string | null>(null);
   const [isUploading, setIsUploading] = useState(false);
