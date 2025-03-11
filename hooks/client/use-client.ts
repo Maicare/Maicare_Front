@@ -109,6 +109,34 @@ export function useClient({
     }
   };
 
+  const updateOne = async (id: Id, data: CreateClientInput, options?: ApiOptions) => {
+    const { displayProgress = false, displaySuccess = false } = options || {};
+    try {
+      if (displayProgress) startProgress();
+      const response = await useApi<Client>(
+        ApiRoutes.Client.ReadOne.replace("{id}", id.toString()),
+        "PUT",
+        {},
+        data
+      );
+      if (!response.data) {
+        throw new Error("Failed to update client");
+      }
+      if (displaySuccess && response.success) {
+        enqueueSnackbar("Client updated successful!", { variant: "success" });
+      }
+      return response.data;
+    } catch (err: any) {
+      enqueueSnackbar(
+        err?.response?.data?.message || "Failed to update client",
+        { variant: "error" }
+      );
+      throw err;
+    } finally {
+      if (displayProgress) stopProgress();
+    }
+  };
+
   const updateStatus = async (id: string, data: DepartureEntries, options?: ApiOptions) => {
     const { displayProgress = false, displaySuccess = false } = options || {};
     try {
@@ -218,6 +246,7 @@ export function useClient({
     updateClientPicture,
     readClientRelatedEmails,
     updateStatus,
-    getStatusHistory
+    getStatusHistory,
+    updateOne
   };
 }
