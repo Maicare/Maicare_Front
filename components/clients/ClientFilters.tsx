@@ -1,6 +1,6 @@
 import React, { FunctionComponent, useState } from "react";
 import InputUncontrol from "@/common/components/InputUncontrol";
-import UncontrolledCheckboxGroup, { SelectionOption } from "@/common/components/UncontrolledCheckboxGroup";
+import  { SelectionOption } from "@/common/components/UncontrolledCheckboxGroup";
 import { Id } from "@/common/types/types";
 import { ClientsSearchParams } from "@/types/client.types";
 import { LocationSelect } from "../employee/LocationSelect";
@@ -12,7 +12,7 @@ type Props = {
 };
 
 const ClientFilters: FunctionComponent<Props> = ({ onFiltersChange }) => {
-  const [selected, setSelected] = useState<SelectionOption["value"][]>([]);
+  const [_selected, _setSelected] = useState<SelectionOption["value"][]>([]);
   const [search, setSearch] = useState("");
   const [location, setLocation] = useState<Id>();
 

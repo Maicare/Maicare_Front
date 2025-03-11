@@ -603,6 +603,7 @@ module.exports = {
       },
       animation: {
         linspin: "linspin 1568.2353ms linear infinite",
+        shake: "shake 0.5s ease-in-out",
         easespin: "easespin 5332ms cubic-bezier(0.4, 0, 0.2, 1) infinite both",
         "left-spin":
           "left-spin 1333ms cubic-bezier(0.4, 0, 0.2, 1) infinite both",
