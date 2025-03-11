@@ -24,7 +24,7 @@ import { cn } from "@/utils/cn";
 import ChevronDown from "@/components/icons/ChevronDown";
 import styles from "./styles.module.scss";
 import GearIcon from "@/components/icons/GearIcon";
-import { ArrowLeft, Calendar, Goal } from "lucide-react";
+import { ArrowLeft, Calendar, Clipboard, Goal } from "lucide-react";
 import BellAlertIcon from "@/components/svg/BellAlertIcon";
 import { Permission } from "@/common/types/permission.types";
 import { PermitableComponent } from "@/common/components/permitable-component";
@@ -45,7 +45,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
   const trigger = useRef<Any>(null);
   const sidebar = useRef<Any>(null);
 
-  const [sidebarExpanded] = useLocalSidebar("sidebar-expanded",sidebarOpen);
+  const [sidebarExpanded] = useLocalSidebar("sidebar-expanded", sidebarOpen);
   // // close on click outside
   // useEffect(() => {
   //   const clickHandler = ({ target }: MouseEvent) => {
@@ -109,7 +109,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
         classNames
       )}
     >
-      <IconButton onClick={() => {setSidebarOpen(false);localStorage.setItem("sidebar-expanded","false")}} className="absolute rounded-full bg-transparent border-2 border-white -right-4 top-1/2 -translate-y-1/2">
+      <IconButton onClick={() => { setSidebarOpen(false); localStorage.setItem("sidebar-expanded", "false") }} className="absolute rounded-full bg-transparent border-2 border-white -right-4 top-1/2 -translate-y-1/2">
         <ArrowLeft className="w-5 h-5 text-white animate-ping hover:animate-none" />
       </IconButton>
       {/* <!-- SIDEBAR HEADER --> */}
@@ -123,7 +123,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
 
         <button
           ref={trigger}
-          onClick={() => {setSidebarOpen(!sidebarOpen);localStorage.setItem("sidebar-expanded", sidebarOpen ? "true" : "false")}}
+          onClick={() => { setSidebarOpen(!sidebarOpen); localStorage.setItem("sidebar-expanded", sidebarOpen ? "true" : "false") }}
           aria-controls="sidebar"
           aria-expanded={sidebarOpen}
           className="block lg:hidden"
@@ -382,6 +382,12 @@ const GlobalMenu: FunctionComponent = () => {
           completeHref: "/locations",
           icon: <BuildingIcon className={"w-4.5 h-5"} />,
           children: "Locaties",
+          permission: PermissionsObjects.ViewLocation,
+        },
+        {
+          completeHref: "/intake",
+          icon: <Clipboard className={"w-4.5 h-5"} />,
+          children: "Intake",
           permission: PermissionsObjects.ViewLocation,
         },
         {

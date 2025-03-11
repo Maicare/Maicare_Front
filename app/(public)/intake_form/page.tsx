@@ -60,7 +60,7 @@ const SIGNED_BY_OPTIONS = [
 
 const IntakeForm = () => {
 
-  const { sendIntakeForm } = useIntake();
+  const { sendIntakeForm } = useIntake({});
 
   const initialValues: IntakeFormType = {
     addiction_issues: true,
