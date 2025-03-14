@@ -4,13 +4,15 @@ import withAuth, { AUTH_MODE } from "@/common/hocs/with-auth";
 import withPermissions from "@/common/hocs/with-permissions";
 import Routes from "@/common/routes";
 import React, { useState } from 'react';
-import { Calendar, AlertTriangle, PhoneCall, Mail, UserPlus } from 'lucide-react';
+import { Calendar, AlertTriangle, PhoneCall, Mail, UserPlus, ChevronDown } from 'lucide-react';
 import { useIntake } from "@/hooks/intake/use-intake";
 import Loader from "@/components/common/loader";
 import { useRouter } from "next/navigation";
 import Button from "@/components/common/Buttons/Button";
+import LargeErrorMessage from "@/components/common/Alerts/LargeErrorMessage";
+import InputUncontrol from "@/common/components/InputUncontrol";
 
-interface Client {
+interface Intake {
     id: number;
     first_name: string;
     last_name: string;
@@ -28,20 +30,26 @@ interface Client {
 
 const ClientsPage = () => {
     const router = useRouter();
-    const [sortBy, setSortBy] = useState('waiting_time');
-    const [filterUrgent, setFilterUrgent] = useState(false);
+    const [sortBy, setSortBy] = useState('urgency_score');
+    const [search, setSearch] = useState('');
     const [moveLoading, setMoveLoading] = useState(false);
+    const [currentPage, setCurrentPage] = useState(1);
 
-    const { intakes, isLoading, moveToWaitingList } = useIntake({})
+    const { intakes, isLoading, moveToWaitingList } = useIntake({
+        autoFetch: true,
+        sort_by: sortBy,
+        search,
+        page: currentPage
+    });
 
     // Define mapping for risk flags to display label
     const riskMapping = [
-        { key: 'risk_aggression', label: 'Aggression' },
-        { key: 'risk_suicidality', label: 'Suicidality' },
-        { key: 'risk_running_away', label: 'Running Away' },
-        { key: 'risk_self_harm', label: 'Self Harm' },
-        { key: 'risk_weapon_possession', label: 'Weapon Possession' },
-        { key: 'risk_drug_dealing', label: 'Drug Dealing' }
+        { key: 'risk_aggression', label: 'Agressie' },
+        { key: 'risk_suicidality', label: 'Suïcidaliteit' },
+        { key: 'risk_running_away', label: 'Weglopen' },
+        { key: 'risk_self_harm', label: 'Zelfbeschadiging' },
+        { key: 'risk_weapon_possession', label: 'Wapenbezit' },
+        { key: 'risk_drug_dealing', label: 'Drugshandel' }
     ];
 
     const getUrgencyColor = (score: number): string => {
@@ -50,24 +58,10 @@ const ClientsPage = () => {
         return 'bg-green-100 text-green-800';
     };
 
-    const sortedClients = [...(intakes?.results || [])].sort((a, b) => {
-        if (sortBy === 'waiting_time') {
-            return new Date(a.created_at ?? '').getTime() - new Date(b.created_at ?? '').getTime();
-        }
-        if (sortBy === 'urgency') {
-            return (b.urgency_score ?? 0) - (a.urgency_score ?? 0);
-        }
-        return 0;
-    });
-
-    const filteredClients = filterUrgent
-        ? sortedClients.filter(client => (client.urgency_score ?? 0) >= 7)
-        : sortedClients;
-
     const acceptClient = async (clientId: string) => {
         try {
             setMoveLoading(true);
-            await moveToWaitingList(clientId)
+            await moveToWaitingList(clientId);
             setMoveLoading(false);
         } catch (error) {
             setMoveLoading(false);
@@ -75,50 +69,58 @@ const ClientsPage = () => {
         }
     };
 
-    if (isLoading) {
-        return <Loader />;
-    }
-
     return (
         <div className="p-6 max-w-6xl mx-auto">
             <div className="mb-6">
-                <h1 className="text-2xl font-bold mb-2">Waitlist Management</h1>
-                <p className="text-gray-600">
-                    {filteredClients.length} clients currently on waitlist
-                </p>
+                <h1 className="text-2xl font-bold mb-2">Intakebeheer</h1>
+                {!isLoading && <p className="text-gray-600">
+                    {intakes?.count} cliënten op de wachtlijst
+                </p>}
             </div>
 
-            <div className="flex flex-wrap gap-4 mb-6">
+            <div className="flex flex-wrap gap-4 mb-6 flex justify-between items-center">
                 <div className="flex items-center">
-                    <label htmlFor="sortBy" className="mr-2 font-medium">Sort by:</label>
+                    <InputUncontrol
+                        placeholder="Zoek cliënten ..."
+                        type="search"
+                        className="min-w-60"
+                        onChange={(e) => {
+                            setSearch(e.target.value);
+                        }}
+                    />
+                </div>
+
+                <div className="relative z-20 flex justify-between items-center">
+                    <label htmlFor="sortBy" className="mr-2 font-medium whitespace-nowrap">Sorteer op:</label>
                     <select
                         id="sortBy"
-                        className="border rounded p-2"
+                        className="relative z-20 w-full appearance-none rounded-lg border border-stroke bg-white py-4 px-5 pr-12 outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                         value={sortBy}
                         onChange={(e) => setSortBy(e.target.value)}
                     >
-                        <option value="waiting_time">Waiting Time</option>
-                        <option value="urgency">Urgency Score</option>
+                        <option value="created_at">Wachttijd</option>
+                        <option value="urgency_score">Urgentiescore</option>
                     </select>
-                </div>
-
-                <div className="flex items-center">
-                    <input
-                        type="checkbox"
-                        id="filterUrgent"
-                        checked={filterUrgent}
-                        onChange={(e) => setFilterUrgent(e.target.checked)}
-                        className="mr-2"
-                    />
-                    <label htmlFor="filterUrgent" className="font-medium">Show urgent cases only</label>
+                    <span className="absolute top-1/2 right-4 z-30 -translate-y-1/2 pointer-events-none">
+                        <ChevronDown />
+                    </span>
                 </div>
             </div>
 
             <div className="rounded-lg overflow-hidden">
-                {/* Add items-stretch to force all grid items to have equal height */}
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 items-stretch">
-                    {filteredClients.map(client => (
-                        // Make each card a flex container that grows to fill the grid cell
+                    {isLoading && (
+                        <div className="col-span-full flex justify-center items-center">
+                            <Loader />
+                        </div>
+                    )}
+                    {!isLoading && (!intakes || intakes.results.length === 0) ? <LargeErrorMessage
+                        firstLine={"Oeps!"}
+                        secondLine={
+                            "Het lijkt erop dat er geen inlaten zijn die voldoen aan uw zoekcriteria."
+                        }
+                    /> : ''}
+                    {intakes && intakes.results.length > 0 && intakes.results.map(client => (
                         <div key={client.id} className="bg-white shadow-md flex flex-col border rounded-lg overflow-hidden shadow-sm">
                             <div className="p-4 border-b">
                                 <div className="flex justify-between items-start">
@@ -131,21 +133,17 @@ const ClientsPage = () => {
                                 </div>
                                 <div className="mt-2 flex items-center text-sm text-gray-600">
                                     <Calendar className="w-4 h-4 mr-1" />
-                                    <span>{client.time_since_submission?.split(" ")[0]} days since submition</span>
+                                    <span>{client.time_since_submission?.split(" ")[0]} dagen sinds inzending</span>
                                 </div>
                             </div>
 
-                            {/*
-                              Updated risk factors section: iterates over riskMapping
-                              and displays only risks that are true as "High Alert"
-                            */}
                             <div className="p-4 bg-gray-50 flex-1">
-                                <h4 className="font-medium mb-2">Risk Factors:</h4>
+                                <h4 className="font-medium mb-2">Risicofactoren:</h4>
                                 <div className="space-y-1">
-                                    {riskMapping.filter(risk => client[risk.key as keyof Client]).map(risk => (
+                                    {riskMapping.filter(risk => client[risk.key as keyof Intake]).map(risk => (
                                         <div key={risk.key} className="flex items-center text-sm">
                                             <AlertTriangle className="w-4 h-4 mr-1 text-red-500" />
-                                            <span> <strong>{risk.label}</strong></span>
+                                            <span><strong>{risk.label}</strong></span>
                                         </div>
                                     ))}
                                 </div>
@@ -168,23 +166,41 @@ const ClientsPage = () => {
                                 <div className="flex justify-between">
                                     <Button
                                         className="px-3 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 flex items-center text-sm"
-                                        onClick={() => acceptClient(client.id ?? "0")}
+                                        onClick={() => acceptClient(client.id?.toString() ?? "0")}
                                         isLoading={moveLoading}
                                     >
                                         <UserPlus className="w-4 h-4 mr-1" />
-                                        Move to waiting list
+                                        Verplaats naar wachtlijst
                                     </Button>
                                     <Button
                                         className="px-3 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300 text-sm"
                                         onClick={() => router.push(`/intake/${client.id}`)}
                                     >
-                                        View Details
+                                        Bekijk details
                                     </Button>
                                 </div>
                             </div>
                         </div>
                     ))}
                 </div>
+            </div>
+
+            <div className="flex justify-between items-center mt-6">
+                <Button
+                    className="px-4 py-2"
+                    disabled={currentPage === 1}
+                    onClick={() => setCurrentPage(prev => prev - 1)}
+                >
+                    Vorige
+                </Button>
+                <span>Pagina {currentPage}</span>
+                <Button
+                    className="px-4 py-2"
+                    disabled={!intakes || !intakes.next}
+                    onClick={() => setCurrentPage(prev => prev + 1)}
+                >
+                    Volgende
+                </Button>
             </div>
         </div>
     );
@@ -193,7 +209,7 @@ const ClientsPage = () => {
 export default withAuth(
     withPermissions(ClientsPage, {
         redirectUrl: Routes.Common.NotFound,
-        requiredPermissions: PermissionsObjects.ViewEmployee, // TODO: Add correct permission
+        requiredPermissions: PermissionsObjects.ViewEmployee, // TODO: Voeg de correcte permissie toe
     }),
     { mode: AUTH_MODE.LOGGED_IN, redirectUrl: Routes.Auth.Login }
 );
