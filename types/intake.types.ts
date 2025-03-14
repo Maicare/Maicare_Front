@@ -69,3 +69,10 @@ export type IntakeFormType = {
     id?: string;
     time_since_submission?: string;
 };
+
+export type IntakeSearchParams = {
+    search?: string;
+    sort_by?: string;
+    page: number;
+    page_size: number;
+}

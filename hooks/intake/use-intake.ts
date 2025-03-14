@@ -11,20 +11,18 @@ import useProgressBar from "@/common/hooks/use-progress-bar";
 import { useApi } from "@/common/hooks/use-api";
 import { useRouter } from "next/navigation";
 import { Appointment as AppointmentType } from "@/types/appointment.types";
-import { IntakeFormType } from "@/types/intake.types";
+import { IntakeFormType, IntakeSearchParams } from "@/types/intake.types";
 import { Attachment } from "@/types/attachment.types";
 import { constructUrlSearchParams } from "@/utils/construct-search-params";
 import { stringConstructor } from "@/utils/string-constructor";
-import { ClientsSearchParams } from "@/types/client.types";
 
 export function useIntake({
     search,
-    status,
-    location_id,
+    sort_by,
     page = 1,
-    page_size = 20,
+    page_size = 12,
     autoFetch = true,
-}: Partial<ClientsSearchParams & { autoFetch?: boolean }>) {
+}: Partial<IntakeSearchParams & { autoFetch?: boolean }>) {
 
     const router = useRouter();
 
@@ -39,7 +37,7 @@ export function useIntake({
     } = useSWR<PaginatedResponse<IntakeFormType> | null>(
         stringConstructor(
             ApiRoutes.IntakeForm.CreateOne,
-            constructUrlSearchParams({ search, status, location_id, page, page_size })
+            constructUrlSearchParams({ search, sort_by, page, page_size })
         ), // Endpoint to fetch clients
         async (url) => {
             if (!autoFetch)
