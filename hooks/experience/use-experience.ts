@@ -43,7 +43,6 @@ export function useExperience({ employeeId,autoFetch=true }: {autoFetch?:boolean
             return data;
         } catch (err: any) {
             enqueueSnackbar(err?.response?.data?.message || "Employee Experience creationg failed", { variant: "error" });
-            throw err;
         } finally {
             if (displayProgress) stopProgress();
         }

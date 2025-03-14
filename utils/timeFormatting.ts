@@ -53,3 +53,16 @@ export const MONTH_YEAR_FORMAT = "MMMM YYYY";
 export function monthYearFormat(date: string | Date) {
   return dayjs(date).format(MONTH_YEAR_FORMAT);
 }
+
+export const formatDateToDutch = (dateString: string): string => {
+  const date = new Date(dateString);
+  const months = [
+    "januari", "februari", "maart", "april", "mei", "juni",
+    "juli", "augustus", "september", "oktober", "november", "december"
+  ];
+  
+  const month = months[date.getUTCMonth()]; // Get month in Dutch
+  const year = date.getUTCFullYear(); // Get year
+  
+  return `${month} ${year}`;
+};

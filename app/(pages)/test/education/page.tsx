@@ -1,12 +1,76 @@
 "use client";
 
 import EducationItem from "@/components/employee/educations/EducationItem";
-import { cn } from "@/utils/cn";
-import { CheckCircle, GraduationCap, PlusCircle, XCircle } from "lucide-react";
+import { GraduationCap, PlusCircle } from "lucide-react";
 import { useState } from "react";
+import UpsertEducationForm from "./_components/UpsertEducationForm";
+import { CreateEducation } from "@/schemas/education.schema";
+import { useEducation } from "@/hooks/education/use-education";
+import { useModal } from "@/components/providers/ModalProvider";
+import { getDangerActionConfirmationModal } from "@/components/common/Modals/DangerActionConfirmation";
+import Loader from "@/components/common/loader";
+import LargeErrorMessage from "@/components/common/Alerts/LargeErrorMessage";
+import { Education } from "@/types/education.types";
+import PrimaryButton from "@/common/components/PrimaryButton";
 
 const Page = () => {
     const [adding, setAdding] = useState(false);
+    const [editing, setEditing] = useState(false);
+    const [education, setEducation] = useState<CreateEducation & { id: number } | null>(null);
+    const employee_id = 1;
+
+    const { isLoading, educations, mutate, deleteOne } = useEducation({ autoFetch: true, employeeId: employee_id.toString() });
+
+    const { open } = useModal(
+        getDangerActionConfirmationModal({
+            msg: "Weet u zeker dat u deze ervaring wilt verwijderen?",
+            title: "Ervaring Verwijderen",
+        })
+    );
+
+    const handleAdd = () => {
+        setAdding(true);
+        mutate();
+        window.scrollTo({
+            top: 0,
+            behavior: "smooth", // Optional: Adds smooth scrolling
+        });
+    }
+    const cancelAdd = () => {
+        setAdding(false);
+        mutate();
+    }
+    const handleEdit = (education: Education) => {
+        const transformed: CreateEducation & { id: number } = {
+            ...education,
+            start_date: new Date(education.start_date),
+            end_date: new Date(education.end_date),
+            id: education.id
+        }
+        setEducation(transformed);
+        setEditing(true);
+        mutate();
+        window.scrollTo({
+            top: 0,
+            behavior: "smooth", // Optional: Adds smooth scrolling
+        });
+    }
+    const cancelEdit = () => {
+        setEditing(false);
+        mutate();
+    }
+
+    const handleDelete = async (education: Education) => {
+        open({
+            onConfirm: async () => {
+                try {
+                    await deleteOne(education, { displayProgress: true, displaySuccess: true });
+                } catch (error) {
+                    console.log(error);
+                }
+            },
+        });
+    }
 
     return (
         <div className="w-full flex flex-col gap-4">
@@ -14,54 +78,41 @@ const Page = () => {
                 <h1 className='flex items-center gap-2 m-0 p-0 font-extrabold text-lg text-slate-600'>
                     <GraduationCap size={24} className='text-indigo-400' />  Education
                 </h1>
-                <button disabled={adding} className={cn("flex items-center justify-center gap-2 bg-indigo-400 text-white rounded-md p-2 px-4 text-sm", adding && "bg-slate-400")} onClick={() => setAdding(true)}>
-                    <span>Add</span>
-                    <PlusCircle size={15} className={!adding ? "animate-bounce" : ""} />
-                </button>
+                <PrimaryButton
+                    text="Add"
+                    onClick={handleAdd}
+                    disabled={adding}
+                    icon={PlusCircle}
+                    animation="animate-bounce"
+                    className="bg-indigo-400 text-white"
+                />
             </div>
-            {adding &&
-                <form className="w-full bg-white p-4 rounded-md shadow-md flex flex-col gap-4">
-                    <div className="grid grid-cols-2 gap-4">
-                        <div className="flex flex-col gap-1">
-                            <label className="text-sm text-slate-700 font-semibold" htmlFor="degree">Degree</label>
-                            <input id="degree" type="text" placeholder="Degree" className="border border-slate-200 rounded-md p-2" />
-                        </div>
-                        <div className="flex flex-col gap-1">
-                            <label className="text-sm text-slate-700 font-semibold" htmlFor="school">School</label>
-                            <input id="school" type="text" placeholder="School" className="border border-slate-200 rounded-md p-2" />
-                        </div>
-                        <div className="flex flex-col gap-1">
-                            <label className="text-sm text-slate-700 font-semibold" htmlFor="field">Field</label>
-                            <input id="field" type="text" placeholder="Ex: Web Development" className="border border-slate-200 rounded-md p-2" />
-                        </div>
-                        <div className="flex flex-col gap-1">
-                            <label className="text-sm text-slate-700 font-semibold" htmlFor="start-date">Start Date</label>
-                            <input id="start-date" type="date" placeholder="Start Date" className="border border-slate-200 rounded-md p-2" />
-                        </div>
-                        <div className="flex flex-col gap-1">
-                            <label className="text-sm text-slate-700 font-semibold" htmlFor="end-date">End Date</label>
-                            <input id="end-date" type="date" placeholder="End Date" className="border border-slate-200 rounded-md p-2" />
-                        </div>
-                    </div>
-                    <div className="flex items-center justify-between">
-                        <button className='flex items-center justify-center gap-2 bg-indigo-100 text-indigo-500 hover:bg-indigo-500 transition-all ease-linear duration-300 hover:text-white rounded-md px-4 py-3 text-sm'>
-                            <span>Save</span>
-                            <CheckCircle size={15} className='animate-bounce' />
-                        </button>
-                        <button type="button" onClick={() => setAdding(false)} className='flex items-center justify-center gap-2 bg-red-100 text-red-500 hover:bg-red-500 transition-all ease-linear duration-300 hover:text-white rounded-md px-4 py-3 text-sm'>
-                            <span>Cancel</span>
-                            <XCircle size={15} className='animate-bounce' />
-                        </button>
-                    </div>
-                </form>
+            {adding ?
+                <UpsertEducationForm employeeId={employee_id} onCancel={cancelAdd} mode="add" onSuccess={cancelAdd} />
+                : editing ?
+                    <UpsertEducationForm employeeId={employee_id} onCancel={cancelEdit} mode="update" onSuccess={cancelEdit} defaultValues={education || undefined} />
+                    : null
             }
             <div className="w-full bg-white p-4 rounded-md shadow-md">
-                <div className="mt-4 w-full h-max border-l-4 border-dashed border-slate-200 pl-6 p-2 flex flex-col gap-6">
-                    <EducationItem first={true} />
-                    <EducationItem />
-                    <EducationItem />
-                    <EducationItem />
-                </div>
+                {
+                    isLoading ?
+                        <Loader />
+                        : educations?.length === 0 ?
+                            <LargeErrorMessage
+                                firstLine={"Oops!"}
+                                secondLine={
+                                    "Het lijkt erop dat er geen medewerkers zijn die aan uw zoekcriteria voldoen."
+                                }
+                            />
+                            :
+                            <div className="mt-4 w-full h-max border-l-4 border-dashed border-slate-200 pl-6 p-2 flex flex-col gap-6">
+                                {
+                                    educations?.map((item, index) => (
+                                        <EducationItem key={index} first={index === 0} education={item} onEdit={() => handleEdit(item)} onDelete={() => handleDelete(item)} />
+                                    ))
+                                }
+                            </div>
+                }
             </div>
         </div>
     )
