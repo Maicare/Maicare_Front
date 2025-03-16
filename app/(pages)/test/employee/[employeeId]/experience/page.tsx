@@ -1,25 +1,27 @@
 "use client";
 
-import EducationItem from "@/components/employee/educations/EducationItem";
-import { GraduationCap, PlusCircle } from "lucide-react";
+import PrimaryButton from "@/common/components/PrimaryButton";
+import ExperienceItem from "@/components/employee/experiences/ExperienceItem";
+import { Briefcase, PlusCircle } from "lucide-react";
 import { useState } from "react";
-import UpsertEducationForm from "./_components/UpsertEducationForm";
-import { CreateEducation } from "@/schemas/education.schema";
-import { useEducation } from "@/hooks/education/use-education";
+import UpsertExperienceForm from "./_components/UpsertExperienceForm";
+import { CreateExperience } from "@/schemas/experience.schema";
+import { useExperience } from "@/hooks/experience/use-experience";
+import { Experience } from "@/types/experience.types";
 import { useModal } from "@/components/providers/ModalProvider";
 import { getDangerActionConfirmationModal } from "@/components/common/Modals/DangerActionConfirmation";
 import Loader from "@/components/common/loader";
 import LargeErrorMessage from "@/components/common/Alerts/LargeErrorMessage";
-import { Education } from "@/types/education.types";
-import PrimaryButton from "@/common/components/PrimaryButton";
+import { useParams } from "next/navigation";
 
 const Page = () => {
     const [adding, setAdding] = useState(false);
     const [editing, setEditing] = useState(false);
-    const [education, setEducation] = useState<CreateEducation & { id: number } | null>(null);
-    const employee_id = 1;
+    const [experience, setExperience] = useState<CreateExperience & { id: number } | null>(null);
+    const {employeeId} = useParams();
 
-    const { isLoading, educations, mutate, deleteOne } = useEducation({ autoFetch: true, employeeId: employee_id.toString() });
+
+    const { isLoading, experiences, mutate, deleteOne } = useExperience({ autoFetch: true, employeeId: employeeId as string });
 
     const { open } = useModal(
         getDangerActionConfirmationModal({
@@ -40,14 +42,14 @@ const Page = () => {
         setAdding(false);
         mutate();
     }
-    const handleEdit = (education: Education) => {
-        const transformed: CreateEducation & { id: number } = {
-            ...education,
-            start_date: new Date(education.start_date),
-            end_date: new Date(education.end_date),
-            id: education.id
+    const handleEdit = (experience: Experience) => {
+        const transformed: CreateExperience & { id: number } = {
+            ...experience,
+            start_date: new Date(experience.start_date),
+            end_date: new Date(experience.end_date),
+            id: experience.id
         }
-        setEducation(transformed);
+        setExperience(transformed);
         setEditing(true);
         mutate();
         window.scrollTo({
@@ -60,11 +62,11 @@ const Page = () => {
         mutate();
     }
 
-    const handleDelete = async (education: Education) => {
+    const handleDelete = async (experience: Experience) => {
         open({
             onConfirm: async () => {
                 try {
-                    await deleteOne(education, { displayProgress: true, displaySuccess: true });
+                    await deleteOne(experience, { displayProgress: true, displaySuccess: true });
                 } catch (error) {
                     console.log(error);
                 }
@@ -76,7 +78,7 @@ const Page = () => {
         <div className="w-full flex flex-col gap-4">
             <div className="flex items-center justify-between">
                 <h1 className='flex items-center gap-2 m-0 p-0 font-extrabold text-lg text-slate-600'>
-                    <GraduationCap size={24} className='text-indigo-400' />  Education
+                    <Briefcase size={24} className='text-indigo-400' />  Experience
                 </h1>
                 <PrimaryButton
                     text="Add"
@@ -88,16 +90,16 @@ const Page = () => {
                 />
             </div>
             {adding ?
-                <UpsertEducationForm employeeId={employee_id} onCancel={cancelAdd} mode="add" onSuccess={cancelAdd} />
+                <UpsertExperienceForm employeeId={parseInt(employeeId as string)} onCancel={cancelAdd} mode="add" onSuccess={cancelAdd} />
                 : editing ?
-                    <UpsertEducationForm employeeId={employee_id} onCancel={cancelEdit} mode="update" onSuccess={cancelEdit} defaultValues={education || undefined} />
+                    <UpsertExperienceForm employeeId={parseInt(employeeId as string)} onCancel={cancelEdit} mode="update" onSuccess={cancelEdit} defaultValues={experience || undefined} />
                     : null
             }
             <div className="w-full bg-white p-4 rounded-md shadow-md">
                 {
                     isLoading ?
                         <Loader />
-                        : educations?.length === 0 ?
+                        : experiences?.length === 0 ?
                             <LargeErrorMessage
                                 firstLine={"Oops!"}
                                 secondLine={
@@ -107,8 +109,8 @@ const Page = () => {
                             :
                             <div className="mt-4 w-full h-max border-l-4 border-dashed border-slate-200 pl-6 p-2 flex flex-col gap-6">
                                 {
-                                    educations?.map((item, index) => (
-                                        <EducationItem key={index} first={index === 0} education={item} onEdit={() => handleEdit(item)} onDelete={() => handleDelete(item)} />
+                                    experiences?.map((item, index) => (
+                                        <ExperienceItem key={index} first={index === 0} experience={item} onEdit={() => handleEdit(item)} onDelete={() => handleDelete(item)} />
                                     ))
                                 }
                             </div>

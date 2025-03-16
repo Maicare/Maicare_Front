@@ -13,7 +13,7 @@ import { ControlledRoleSelect } from "../ControlledRoleSelect/ControlledRoleSele
 import { FunctionComponent, useEffect, useState } from "react";
 import Loader from '@/components/common/loader';
 import dayjs from "dayjs";
-import { employeeSchema } from "@/schemas/employee.schema";
+import { employeeOldSchema } from "@/schemas/employee.schema";
 import { Id } from "@/common/types/types";
 
 type PropsType = {
@@ -57,7 +57,7 @@ const EmployeeForm: FunctionComponent<PropsType> = ({ employeeId }) => {
 
 
     const methods = useForm<EmployeeFormType>({
-        resolver: yupResolver(employeeSchema) as Resolver<EmployeeFormType>,
+        resolver: yupResolver(employeeOldSchema) as Resolver<EmployeeFormType>,
         defaultValues: employee ?? initialValues,
     });
 

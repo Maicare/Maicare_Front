@@ -1,6 +1,6 @@
 import { ReactNode, useState } from 'react';
 
-const CopyTooltip = ({ text, children }: { text: string, children: ReactNode }) => {
+const CopyTooltip = ({ text="", children }: { text?: string, children: ReactNode }) => {
     const [isVisible, setIsVisible] = useState(false);
     const [isCopied, setIsCopied] = useState(false);
     const handleCopyClick = async () => {

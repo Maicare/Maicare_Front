@@ -1,25 +1,26 @@
 "use client";
 
 import PrimaryButton from "@/common/components/PrimaryButton";
-import ExperienceItem from "@/components/employee/experiences/ExperienceItem";
-import { Briefcase, PlusCircle } from "lucide-react";
+import { PlusCircle } from "lucide-react";
 import { useState } from "react";
-import UpsertExperienceForm from "./_components/UpsertExperienceForm";
-import { CreateExperience } from "@/schemas/experience.schema";
-import { useExperience } from "@/hooks/experience/use-experience";
-import { Experience } from "@/types/experience.types";
+import UpsertCertificationForm from "./_components/UpsertCertificationForm";
+import { CreateCertificate } from "@/schemas/certification.schema";
+import { useCertificate } from "@/hooks/certificate/use-certificate";
 import { useModal } from "@/components/providers/ModalProvider";
 import { getDangerActionConfirmationModal } from "@/components/common/Modals/DangerActionConfirmation";
+import { Certification } from "@/types/certification.types";
+import CertificationItem from "./_components/CertificationItem";
 import Loader from "@/components/common/loader";
 import LargeErrorMessage from "@/components/common/Alerts/LargeErrorMessage";
+import { useParams } from "next/navigation";
 
 const Page = () => {
     const [adding, setAdding] = useState(false);
     const [editing, setEditing] = useState(false);
-    const [experience, setExperience] = useState<CreateExperience & { id: number } | null>(null);
-    const employee_id = 1;
+    const [certification, setCertification] = useState<CreateCertificate & { id: number } | null>(null);
+    const {employeeId} = useParams();
 
-    const { isLoading, experiences, mutate, deleteOne } = useExperience({ autoFetch: true, employeeId: employee_id.toString() });
+    const { isLoading, certificates, mutate, deleteOne } = useCertificate({ autoFetch: true, employeeId: employeeId as string });
 
     const { open } = useModal(
         getDangerActionConfirmationModal({
@@ -40,14 +41,13 @@ const Page = () => {
         setAdding(false);
         mutate();
     }
-    const handleEdit = (experience: Experience) => {
-        const transformed: CreateExperience & { id: number } = {
-            ...experience,
-            start_date: new Date(experience.start_date),
-            end_date: new Date(experience.end_date),
-            id: experience.id
+    const handleEdit = (certification: Certification) => {
+        const transformed: CreateCertificate & { id: number } = {
+            ...certification,
+            date_issued: new Date(certification.date_issued),
+            id: certification.id
         }
-        setExperience(transformed);
+        setCertification(transformed);
         setEditing(true);
         mutate();
         window.scrollTo({
@@ -60,24 +60,21 @@ const Page = () => {
         mutate();
     }
 
-    const handleDelete = async (experience: Experience) => {
+    const handleDelete = async (certificate: Certification) => {
         open({
             onConfirm: async () => {
                 try {
-                    await deleteOne(experience, { displayProgress: true, displaySuccess: true });
+                    await deleteOne(certificate, { displayProgress: true, displaySuccess: true });
                 } catch (error) {
                     console.log(error);
                 }
             },
         });
     }
-
     return (
         <div className="w-full flex flex-col gap-4">
             <div className="flex items-center justify-between">
-                <h1 className='flex items-center gap-2 m-0 p-0 font-extrabold text-lg text-slate-600'>
-                    <Briefcase size={24} className='text-indigo-400' />  Experience
-                </h1>
+                <h1 className="text-xl font-semibold">Certification</h1>
                 <PrimaryButton
                     text="Add"
                     onClick={handleAdd}
@@ -88,16 +85,16 @@ const Page = () => {
                 />
             </div>
             {adding ?
-                <UpsertExperienceForm employeeId={employee_id} onCancel={cancelAdd} mode="add" onSuccess={cancelAdd} />
+                <UpsertCertificationForm employeeId={parseInt(employeeId as string)} onCancel={cancelAdd} mode="add" onSuccess={cancelAdd} />
                 : editing ?
-                    <UpsertExperienceForm employeeId={employee_id} onCancel={cancelEdit} mode="update" onSuccess={cancelEdit} defaultValues={experience || undefined} />
+                    <UpsertCertificationForm employeeId={parseInt(employeeId as string)} onCancel={cancelEdit} mode="update" onSuccess={cancelEdit} defaultValues={certification || undefined} />
                     : null
             }
-            <div className="w-full bg-white p-4 rounded-md shadow-md">
+            <div className="grid grid-cols-4 gap-4">
                 {
                     isLoading ?
                         <Loader />
-                        : experiences?.length === 0 ?
+                        : certificates?.length === 0 ?
                             <LargeErrorMessage
                                 firstLine={"Oops!"}
                                 secondLine={
@@ -105,13 +102,10 @@ const Page = () => {
                                 }
                             />
                             :
-                            <div className="mt-4 w-full h-max border-l-4 border-dashed border-slate-200 pl-6 p-2 flex flex-col gap-6">
-                                {
-                                    experiences?.map((item, index) => (
-                                        <ExperienceItem key={index} first={index === 0} experience={item} onEdit={() => handleEdit(item)} onDelete={() => handleDelete(item)} />
-                                    ))
-                                }
-                            </div>
+
+                            certificates?.map((item, index) => (
+                                <CertificationItem key={index} certification={item} onEdit={() => handleEdit(item)} onDelete={() => handleDelete(item)} />
+                            ))
                 }
             </div>
         </div>
