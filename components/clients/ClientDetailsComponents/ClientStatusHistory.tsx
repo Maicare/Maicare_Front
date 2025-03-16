@@ -24,7 +24,8 @@ const ClientStatusHistory: FunctionComponent = () => {
       setHistory(data ? data : []);
     };
     fetchHistory();
-  }, [clientId, getStatusHistory]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [clientId]);
 
 
   const displayedHistory = useMemo(() => {

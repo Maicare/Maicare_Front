@@ -1,6 +1,6 @@
 "use client";
 
-import React, { FunctionComponent } from "react";
+import React, { FunctionComponent, useEffect } from "react";
 import Panel from "../common/Panel/Panel";
 import InputControl from "@/common/components/InputControl";
 import { useClient } from "@/hooks/client/use-client";
@@ -21,18 +21,19 @@ import { ControlledSenderSelect } from "../ControlledSenderSelect/ControlledSend
 import LinkButton from "../common/Buttons/LinkButton";
 import { useModal } from "../providers/ModalProvider";
 import ClientUpsertContactModal from "../common/Modals/ClientUpsertModal";
+import dayjs from "dayjs";
 
 
 type PropsType = {
-    clientId?: number;
+    clientId?: string;
     mode: string;
 };
 
-export const ClientsForm: FunctionComponent<PropsType> = ({ }) => {
-    const { createOne } = useClient({ autoFetch: false });
+export const ClientsForm: FunctionComponent<PropsType> = ({ clientId }) => {
+    const { createOne, readOne, updateOne } = useClient({ autoFetch: false });
     const router = useRouter();
     const { enqueueSnackbar } = useSnackbar();
-    const {open} = useModal(ClientUpsertContactModal);
+    const { open } = useModal(ClientUpsertContactModal);
     const methods = useForm<CreateClientInput>({
         resolver: yupResolver(CreateClientSchema) as Resolver<CreateClientInput>,
         defaultValues: {
@@ -64,10 +65,38 @@ export const ClientsForm: FunctionComponent<PropsType> = ({ }) => {
         handleSubmit,
         formState: { isSubmitting, errors },
         watch,
+        reset
     } = methods;
     const adresses = watch("addresses");
+
+    useEffect(() => {
+        if (clientId) {
+            const fetchClients = async () => {
+                const response = await readOne(parseInt(clientId));
+                reset({
+                    ...response,
+                    date_of_birth: dayjs(response.date_of_birth).format("YYYY-MM-DD")
+                })
+                console.log("TESTER", response)
+            }
+
+            fetchClients();
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [clientId])
+
+
     const onSubmit = async (data: CreateClientInput) => {
-        await createOne(data, { displayProgress: true, displaySuccess: true });
+        const formattedData = {
+            ...data,
+            date_of_birth: data.date_of_birth
+                ? dayjs(data.date_of_birth, "YYYY-MM-DD").toISOString()
+                : "",
+        };
+        if (clientId)
+            await updateOne(parseInt(clientId), formattedData, { displayProgress: true, displaySuccess: true });
+        else
+            await createOne(data, { displayProgress: true, displaySuccess: true });
         router.back();
     };
 
@@ -220,7 +249,7 @@ export const ClientsForm: FunctionComponent<PropsType> = ({ }) => {
 
                             </Panel>
                         </div>
-                        
+
                         <div className="flex flex-col gap-9">
                             <Panel containerClassName="p-6.5 pb-5" title={"Locatiegegevens"}>
 
@@ -276,7 +305,7 @@ export const ClientsForm: FunctionComponent<PropsType> = ({ }) => {
                                     <LinkButton
                                         text={"Maak een nieuwe opdrachtgever aan"}
                                         href="#"
-                                        onClick={() => { open({ onSuccess:()=>{} }) }}
+                                        onClick={() => { open({ onSuccess: () => { } }) }}
                                     />
                                 }>
                                 <ControlledSenderSelect
