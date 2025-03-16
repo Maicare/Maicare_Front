@@ -21,6 +21,7 @@ import { AxiosError } from "axios";
 import { useRouter } from "next/navigation";
 import { Education } from "@/types/education.types";
 import { Experience } from "@/types/experience.types";
+import { CreateEmployee, CreateEmployeeRequestBody, UpdateEmployeeRequestBody } from "@/schemas/employee.schema";
 
 export function useEmployee({
   search,
@@ -97,6 +98,70 @@ export function useEmployee({
     } catch (err: any) {
       enqueueSnackbar(
         err?.response?.data?.message || "Employee Details fetching failed",
+        { variant: "error" }
+      );
+      throw err;
+    } finally {
+      if (displayProgress) stopProgress();
+    }
+  };
+  const createOne = async (employee: CreateEmployeeRequestBody, options?: ApiOptions) => {
+    const { displayProgress = false, displaySuccess = false } = options || {};
+    try {
+      // Display progress bar
+      if (displayProgress) startProgress();
+      const { message, success, data, error } =
+        await useApi<EmployeeDetailsResponse>(
+          ApiRoutes.Employee.CreateOne,
+          "POST",
+          {},
+          employee
+        );
+      if (!data)
+        throw new Error(error || message || "An unknown error occurred");
+
+      // Display success message
+      if (displaySuccess && success) {
+        enqueueSnackbar("Employee Created successful!", {
+          variant: "success",
+        });
+      }
+      return data;
+    } catch (err: any) {
+      enqueueSnackbar(
+        err?.response?.data?.message || "Employee Creation failed",
+        { variant: "error" }
+      );
+      throw err;
+    } finally {
+      if (displayProgress) stopProgress();
+    }
+  };
+  const updateOne = async (employee: UpdateEmployeeRequestBody, options?: ApiOptions) => {
+    const { displayProgress = false, displaySuccess = false } = options || {};
+    try {
+      // Display progress bar
+      if (displayProgress) startProgress();
+      const { message, success, data, error } =
+        await useApi<EmployeeDetailsResponse>(
+          ApiRoutes.Employee.UpdateOne.replace("{id}",employee.id.toString()),
+          "PUT",
+          {},
+          employee
+        );
+      if (!data)
+        throw new Error(error || message || "An unknown error occurred");
+
+      // Display success message
+      if (displaySuccess && success) {
+        enqueueSnackbar("Employee Updated successful!", {
+          variant: "success",
+        });
+      }
+      return data;
+    } catch (err: any) {
+      enqueueSnackbar(
+        err?.response?.data?.message || "Employee Update failed",
         { variant: "error" }
       );
       throw err;
@@ -271,5 +336,7 @@ export function useEmployee({
     updateEmployee,
     updateEmployeePicture,
     readEmployeesEmails,
+    createOne,
+    updateOne
   };
 }

@@ -9,6 +9,7 @@ export type Experience = {
     end_date: string;
     job_title: string;
     start_date: string;
+    created_at?:string;
 }
 
 export type CreateExperience = {

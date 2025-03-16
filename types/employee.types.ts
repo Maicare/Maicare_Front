@@ -66,6 +66,7 @@ export type EmployeeDetailsResponse = {
     is_subcontractor: boolean,
     gender: string,//TODO: Change to enum
     location_id: Id,
+    role_id: Id,
     has_borrowed: boolean,
     out_of_service: boolean,
     is_archived: boolean,
