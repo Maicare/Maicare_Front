@@ -79,3 +79,10 @@ export type ContractItem = Pick<
 };
 
 export type ContractsListDto = PaginatedResponse<ContractItem>;
+
+export type ContractFilterFormType = {
+    sender: number | null;
+    client: number | null;
+    care_type: string;
+    status: ContractStatus | "";
+};

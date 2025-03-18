@@ -1,4 +1,6 @@
+import { BadgeType } from "@/common/types/badge-type.types";
 import { SelectionOption } from "@/common/types/selection-option.types";
+import { ContractStatus } from "@/types/contracts.types";
 
 export const BUTTON_CLASS_NAMES = {
   Primary: "bg-primary text-white",
@@ -323,4 +325,39 @@ export const ALLERGY_TYPE_OPTIONS: SelectionOption[] = [
   { label: "Huisdier", value: "Huisdier" },
   { label: "Pollen", value: "Pollen" },
   { label: "Overig", value: "Overig" },
+];
+
+export const careTypeDict = {
+  ambulante: "Ambulante",
+  accommodation: "Accommodatie",
+};
+
+export const CONTRACT_VIEW = "contract.view";
+export const CONTRACT_EDIT = "contract.edit";
+export const CONTRACT_DELETE = "contract.delete";
+export const CONTRACT_CREATE = "contract.create";
+
+export const CONTRACT_STATUS_TRANSLATION_DICT: Record<ContractStatus, string> = {
+  draft: "Concept",
+  approved: "Goedgekeurd",
+  terminated: "Beëindigd",
+};
+
+export const CONTRACT_STATUS_VARIANT_DICT: Record<ContractStatus, BadgeType> = {
+  draft: "Outline",
+  approved: "Success",
+  terminated: "Dark",
+};
+
+export const CARE_TYPE_OPTIONS: SelectionOption[] = [
+  { label: "Selecteer Zorgtype", value: "" },
+  { label: "Ambulante", value: "ambulante" },
+  { label: "Accommodatie", value: "accommodation" },
+];
+
+export const CONTRACT_STATUS_OPTIONS: SelectionOption[] = [
+  { label: "Selecteer Status", value: "" },
+  { label: "Concept", value: "draft" },
+  { label: "Goedgekeurd", value: "approved" },
+  { label: "Beëindigd", value: "terminated" },
 ];
