@@ -20,8 +20,6 @@ const ClientInformation: FunctionComponent<Props> = ({ client }) => {
 
     const { open } = useModal(ClientProfilePictureModal);
 
-    console.log("PIIIIC", client?.profile_picture);
-
     return (
         <div className="grid grid-cols-2 gap-4">
             <div className="col-span-2">
