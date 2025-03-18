@@ -14,11 +14,13 @@ import CameraIcon from "../../svg/CameraIcon";
 
 type Props = {
     client: ClientType | null;
-}; 
+};
 
 const ClientInformation: FunctionComponent<Props> = ({ client }) => {
 
     const { open } = useModal(ClientProfilePictureModal);
+
+    console.log("PIIIIC", client?.profile_picture);
 
     return (
         <div className="grid grid-cols-2 gap-4">

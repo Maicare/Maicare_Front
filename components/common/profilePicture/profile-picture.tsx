@@ -20,7 +20,7 @@ const ProfilePicture: FunctionComponent<Props> = ({
     <Image
       width={width}
       height={height}
-      src={`${process.env.NEXT_PUBLIC_BACKEND_URL}${profilePicture}`||"/images/profile-placeholder.png"}
+      src={`${profilePicture}` || "/images/profile-placeholder.png"}
       className={cn("object-cover object-center rounded-full", className)}
       style={{ width: `${width}px`, height: `${height}px` }}
       alt={"Profile picture"}
