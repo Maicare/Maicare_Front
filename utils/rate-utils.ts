@@ -26,8 +26,20 @@ export function rateString(item: ContractResDto | ContractItem | any) {
   return tarifDict[priceFrequency];
 }
 
+const rateDict: Record<RateType, string> = {
+  daily: "Dagelijks",
+  hourly: "Per uur",
+  minute: "Per minuut",
+  weekly: "Per week",
+  monthly: "Per maand",
+};
+
 export function getRate(item: ContractResDto | ContractItem | any) {
   const rate = item.price;
 
   return rate ? formatPrice(rate) : "No rate set";
+}
+
+export function rateType(item: ContractResDto | ContractItem) {
+  return rateDict[item.price_frequency];
 }

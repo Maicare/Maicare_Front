@@ -14,7 +14,7 @@ import CameraIcon from "../../svg/CameraIcon";
 
 type Props = {
     client: ClientType | null;
-}; 
+};
 
 const ClientInformation: FunctionComponent<Props> = ({ client }) => {
 

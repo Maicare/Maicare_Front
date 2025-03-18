@@ -10,6 +10,7 @@ import ClientNetwork from "./routes/clientNetwork";
 import MaturityMatrix from "./routes/maturity-matrix";
 import AutomaticReport from "./routes/automatic-report";
 import IntakeForm from "./routes/intake-form"
+import Contract from "./routes/contract";
 
 const ApiRoutes = {
   Auth,
@@ -23,7 +24,8 @@ const ApiRoutes = {
   ClientNetwork,
   MaturityMatrix,
   AutomaticReport,
-  IntakeForm
+  IntakeForm,
+  Contract
 };
 
 export default ApiRoutes;
