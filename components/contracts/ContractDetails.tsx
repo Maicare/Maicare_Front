@@ -154,7 +154,7 @@ function ClientData(props: { clientData: ClientDetailsResDto; contractData: Cont
             Contract goedkeuren
           </Button>
         )} */}
-        {props.contractData.status === "approved" && (
+        {/* {props.contractData.status === "approved" && (
           <Button
             isLoading={false}
             disabled={false}
@@ -175,7 +175,7 @@ function ClientData(props: { clientData: ClientDetailsResDto; contractData: Cont
           >
             Contract beëindigen
           </Button>
-        )}
+        )} */}
         {props.contractData.status === "terminated" && (
           <div className="flex flex-col gap-4 w-full bg-c_gray rounded-lg p-4">
             <div>

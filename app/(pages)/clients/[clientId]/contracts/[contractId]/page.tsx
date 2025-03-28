@@ -64,12 +64,12 @@ const Page: FunctionComponent = () => {
       <Panel
         title={"Contract #" + contractId}
         sideActions={
-          contract?.status === "draft" && (
-            <LinkButton
-              href={`/clients/${clientId}/contracts/${contractId}/edit`}
-              text={"Bewerk contract"}
-            />
-          )
+
+          <LinkButton
+            href={`/clients/${clientId}/contracts/${contractId}/edit`}
+            text={"Bewerk contract"}
+          />
+
         }
       >
         <ContractDetails contractData={contract} clientId={clientId} />
