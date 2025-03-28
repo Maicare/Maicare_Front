@@ -1,4 +1,5 @@
 import { ContractItem, ContractResDto, RateType } from "@/types/contracts.types";
+import dayjs, { OpUnitType, QUnitType } from "dayjs";
 
 
 export const NL_EURO = new Intl.NumberFormat("nl-NL", {
@@ -42,4 +43,23 @@ export function getRate(item: ContractResDto | ContractItem | any) {
 
 export function rateType(item: ContractResDto | ContractItem) {
   return rateDict[item.price_frequency];
+}
+
+export const unitDict: Record<RateType, QUnitType | OpUnitType> = {
+  daily: "day",
+  hourly: "hour",
+  minute: "minute",
+  weekly: "week",
+  monthly: "month",
+};
+
+export function getRateUnit(item: ContractResDto | ContractItem): QUnitType | OpUnitType {
+  return unitDict[item.price_frequency];
+}
+
+export function calculateTotalRate(item: ContractResDto) {
+  const from = dayjs(item.start_date);
+  const to = dayjs(item.end_date);
+  const duration = to.diff(from, getRateUnit(item));
+  return item.price ? formatPrice(item.price * duration) : "No rate set";
 }

@@ -30,18 +30,18 @@ const OPTIONS: GenericSelectionOption<string, OpClientType | "">[] = [
     { label: "Zorginstelling", value: "healthcare_institution" },
 ];
 
-const ContactForm: FunctionComponent<PropsType> = ({ contactId,onSuccess,redirect=true }) => {
+const ContactForm: FunctionComponent<PropsType> = ({ contactId, onSuccess, redirect = true }) => {
 
     const router = useRouter();
 
-    const { addContact, readOne, updateContact,mutate } = useContact();
+    const { addContact, readOne, updateContact, mutate } = useContact();
 
 
     const [contact, setContact] = useState<ContactType | null>(null);
     const [isLoading, setIsLoading] = useState(true);
 
     const initialValues: ContactType = {
-        types: "",
+        types: "main_provider",
         name: "",
         contacts: [
             {
