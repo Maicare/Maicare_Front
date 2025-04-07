@@ -361,3 +361,5 @@ export const CONTRACT_STATUS_OPTIONS: SelectionOption[] = [
   { label: "Goedgekeurd", value: "approved" },
   { label: "Beëindigd", value: "terminated" },
 ];
+
+export const NOTIFICATIONS_VIEW = "notifications.view";
