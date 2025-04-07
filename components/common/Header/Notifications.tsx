@@ -2,6 +2,7 @@ import React, { FunctionComponent, useEffect, useState } from "react";
 import Link from "next/link";
 import { shortDateTimeFormat } from "@/utils/timeFormatting";
 import { Button } from "@/components/ui/button";
+import { Any } from "@/common/types/types";
 
 const NotificationTypes = [
   "calendar",
@@ -18,7 +19,7 @@ const NotificationTypes = [
 type NotificationType = (typeof NotificationTypes)[number];
 
 export type NotificationItem = {
-  metadata: any;
+  metadata: Any;
   content: string;
   title: string;
   event: NotificationType;
@@ -32,7 +33,7 @@ type Props = {
 };
 
 // Add this helper function above your Notifications component
-const transformNotification = (raw: any): NotificationItem => {
+const transformNotification = (raw: Any): NotificationItem => {
   if (raw.type === "employee_assigned") {
     return {
       id: raw.id || Math.floor(Math.random() * 100000), // Fallback: generate an ID if needed

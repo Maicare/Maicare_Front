@@ -4,6 +4,7 @@ import BellIcon from "@/components/icons/BellIcon";
 import { NOTIFICATIONS_VIEW } from "@/consts";
 import Ping from "@/common/components/Ping";
 import Notifications, { NotificationItem } from "./Notifications";
+import { Any } from "@/common/types/types";
 
 const fakeNotifications = {
     results: [
@@ -39,8 +40,8 @@ const fakeNotifications = {
 
 const DropdownNotification = () => {
     const [dropdownOpen, setDropdownOpen] = useState(false);
-    const trigger = useRef<any>(null);
-    const dropdown = useRef<any>(null);
+    const trigger = useRef<Any>(null);
+    const dropdown = useRef<Any>(null);
 
     useEffect(() => {
         const clickHandler = ({ target }: MouseEvent) => {

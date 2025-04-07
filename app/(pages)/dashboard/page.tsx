@@ -181,36 +181,36 @@ const DashboardPage = () => {
     },
   ], []);
 
-  const dischargeManagementColumns = useMemo<ColumnDef<any>[]>(() => [
+  const dischargeManagementColumns = useMemo<ColumnDef<Any>[]>(() => [
     {
       id: "clientName",
       header: () => <span className="whitespace-nowrap">Client Name</span>,
-      accessorFn: (row: any) => `${row.first_name} ${row.last_name}`,
-      cell: (info: any) => <span className="whitespace-nowrap">{info.getValue()}</span>,
+      accessorFn: (row: Any) => `${row.first_name} ${row.last_name}`,
+      cell: (info: Any) => <span className="whitespace-nowrap">{info.getValue()}</span>,
     },
     {
       id: "entry_date",
       header: () => <span className="whitespace-nowrap">Entry Date</span>,
       accessorKey: "entry_date",
-      cell: (info: any) => <span className="whitespace-nowrap">{info.getValue()}</span>,
+      cell: (info: Any) => <span className="whitespace-nowrap">{info.getValue()}</span>,
     },
     {
       id: "discharge_date",
       header: () => <span className="whitespace-nowrap">Discharge Date</span>,
       accessorKey: "discharge_date",
-      cell: (info: any) => <span className="whitespace-nowrap">{info.getValue()}</span>,
+      cell: (info: Any) => <span className="whitespace-nowrap">{info.getValue()}</span>,
     },
     {
       id: "days_spent",
       header: () => <span className="whitespace-nowrap">Days Spent</span>,
       accessorKey: "days_spent",
-      cell: (info: any) => <span className="whitespace-nowrap">{info.getValue()}</span>,
+      cell: (info: Any) => <span className="whitespace-nowrap">{info.getValue()}</span>,
     },
     {
       id: "reason",
       header: () => <span className="whitespace-nowrap">Reason</span>,
       accessorKey: "reason",
-      cell: (info: any) => <span className="whitespace-nowrap">{info.getValue()}</span>,
+      cell: (info: Any) => <span className="whitespace-nowrap">{info.getValue()}</span>,
     },
   ], []);
 
@@ -218,11 +218,11 @@ const DashboardPage = () => {
     // Navigation logic here...
   };
 
-  const handleCareTrajectoryRowClick = (trajectory: any) => {
+  const handleCareTrajectoryRowClick = (trajectory: Any) => {
     // Navigation logic here...
   };
 
-  const handleDischargeRowClick = (row: any) => {
+  const handleDischargeRowClick = (row: Any) => {
     console.log("Discharge row clicked:", row);
   };
 
