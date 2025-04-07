@@ -1,4 +1,5 @@
 import { Id } from "@/common/types/types";
+import { AttachmentItem } from "./contracts.types";
 
 export type AddressType = {
     belongs_to?: string;
@@ -132,3 +133,39 @@ export type ClientStatusHistoryItem = {
     old_status: string;
     reason: string;
 }
+
+export type NewClientsRequest = {
+    first_name: string;
+    last_name: string;
+    email: string;
+    organisation: string;
+    location: number;
+    legal_measure: string;
+    addresses: AddressType[];
+    birthplace: string;
+    departement: string;
+    gender: string;
+    filenumber: number;
+    phone_number: string;
+    bsn: string;
+    source: string;
+    date_of_birth: string;
+    city: string;
+    Zipcode: string;
+    infix: string;
+    streetname: string;
+    street_number: string;
+    identity_attachment_ids: string[];
+    departure_reason?: string;
+    departure_report?: string;
+};
+
+export type ClientDetailsResDto = NewClientsRequest & {
+    id: number;
+    profile_picture: string;
+    identity: boolean;
+    sender: number;
+    status: "On Waiting List" | "In Care" | "Out Of Care";
+    attachments: AttachmentItem[];
+    gps_position: string[];
+};

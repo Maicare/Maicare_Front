@@ -15,11 +15,13 @@ type InputFieldType = {
   className?: string;
   id?: string;
   required?: boolean;
+  unit?: string;
+  isPrice?: boolean;
 };
 
 const InputControl: FunctionComponent<
   InputFieldType & InputHTMLAttributes<HTMLInputElement>
-> = ({ name, required, label, className, icon, ...props }) => {
+> = ({ name, unit, required, label, className, isPrice, icon, ...props }) => {
   const {
     control,
     formState: { errors },
@@ -38,6 +40,16 @@ const InputControl: FunctionComponent<
         control={control}
         render={({ field }) => (
           <div className="relative">
+            {isPrice && (
+              <span className="absolute top-1/2 right-4 z-30 -translate-y-1/2 pointer-events-none">
+                <span className="text-graydark font-bold text-xl dark:text-white">€</span>
+              </span>
+            )}
+            {unit && (
+              <span className="absolute top-1/2 right-4 z-30 -translate-y-1/2 pointer-events-none">
+                <span className="text-graydark/70 font-bold text-lg dark:text-white">{unit}</span>
+              </span>
+            )}
             <input
               {...field}
               id={name}
