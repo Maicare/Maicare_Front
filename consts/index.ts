@@ -378,6 +378,8 @@ export const CONTRACT_STATUS_OPTIONS: SelectionOption[] = [
   { label: "gestopt", value: "stopped" },
 ];
 
+export const NOTIFICATIONS_VIEW = "notifications.view";
+
 export const AGREEMENT_FILES_TAGS: SelectionOption[] = [
   { value: "", label: "Selecteer Overeenkomst..." },
   { value: "client_agreement", label: "Client Overeenkomst" },
