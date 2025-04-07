@@ -57,7 +57,11 @@ export type DepartureEntries = {
 export type ContractResDto = Omit<NewContractReqDto, "attachment_ids" | "type_id"> & {
     id: number;
     type: number;
+    type_id: number;
     attachments: AttachmentItem[];
+    attachment_ids?: string[];
+    departure_reason?: string;
+    departure_report?: string;
 } & Partial<DepartureEntries>;
 
 
@@ -81,8 +85,57 @@ export type ContractItem = Pick<
 export type ContractsListDto = PaginatedResponse<ContractItem>;
 
 export type ContractFilterFormType = {
-    sender: number | null;
-    client: number | null;
-    care_type: string;
-    status: ContractStatus | "";
+    search: string,
+    status: string,
+    care_type: string,
+    financing_act: string,
+    financing_option: string,
+    location_id?: string,
+    page_size?: number,
+};
+
+export type ContractTypeItem = {
+    id?: number;
+    value?: number;
+    name?: string;
+    label?: string;
+};
+
+export type ContractTypesResDto = ContractTypeItem[];
+
+export type ContractTypeCreateReqDto = {
+    name: string;
+};
+
+export type ContractFormType = {
+    // start_date: string;
+    // end_date: string;
+    // care_type: string;
+    // price_frequency: RateType | "";
+    // price: string;
+    // attachment_ids: string[];
+    // reminder_period: string;
+    // tax: string;
+    // care_name: string;
+    // type_id: string;
+    // financing_act: FinancingLawType | "";
+    // financing_option: FinancingOptionType | "";
+    // hours_type: HoursTermType | "";
+    // hours: string;
+    // sender_id?: number;
+    start_date: string;
+    end_date: string;
+    care_type: "ambulante" | "accommodation" | "";
+    price_frequency: RateType | "";
+    price: string;
+    attachment_ids: string[];
+    reminder_period: string;
+    tax: string;
+    care_name: string;
+    type_id: string;
+    financing_act: FinancingLawType | "";
+    financing_option: FinancingOptionType | "";
+    hours_type: HoursTermType | "";
+    hours: string;
+    sender_id?: number;
 };

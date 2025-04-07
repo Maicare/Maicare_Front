@@ -10,7 +10,7 @@ export function constructUrlSearchParams(params: Record<string, Any>): string {
   const queryParts: string[] = ["?"];
 
   Object.entries(params).forEach(([key, value]) => {
-    if (value === undefined || value === null) {
+    if (value === undefined || value === null || !value) {
       // Skip undefined or null values
       return;
     }
