@@ -6,6 +6,7 @@ import useProgressBar from "@/common/hooks/use-progress-bar";
 import { ApiOptions } from "@/common/types/api.types";
 import { PaginatedResponse } from "@/common/types/pagination.types";
 import {
+  EmployeeCount,
   EmployeeDetailsResponse,
   EmployeeList,
   EmployeesSearchParams,
@@ -98,6 +99,37 @@ export function useEmployee({
     } catch (err: any) {
       enqueueSnackbar(
         err?.response?.data?.message || "Employee Details fetching failed",
+        { variant: "error" }
+      );
+      throw err;
+    } finally {
+      if (displayProgress) stopProgress();
+    }
+  };
+  const readCount = async (options?: ApiOptions) => {
+    const { displayProgress = false, displaySuccess = false } = options || {};
+    try {
+      // Display progress bar
+      if (displayProgress) startProgress();
+      const { message, success, data, error } =
+        await useApi<EmployeeCount>(
+          ApiRoutes.Employee.ReadCount,
+          "GET",
+          {}
+        );
+      if (!data)
+        throw new Error(error || message || "An unknown error occurred");
+
+      // Display success message
+      if (displaySuccess && success) {
+        enqueueSnackbar("Employee Counts fetched successful!", {
+          variant: "success",
+        });
+      }
+      return data;
+    } catch (err: any) {
+      enqueueSnackbar(
+        err?.response?.data?.message || "Employee Counts fetching failed",
         { variant: "error" }
       );
       throw err;
@@ -327,6 +359,7 @@ export function useEmployee({
   return {
     employees,
     readOne,
+    readCount,
     error,
     isLoading,
     page,

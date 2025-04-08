@@ -31,7 +31,7 @@ type Props = {
 
 const UpsertEmployeeForm = ({mode,onSuccess,defaultValues,onCancel}:Props) => {
     const { createOne, updateOne } = useEmployee({ autoFetch: false });
-    const {locations} = useLocation();
+    const {locations} = useLocation({autoFetch:true});
     const {roles} = useRole({autoFetch:true});
     const [loading, setLoading] = useState(false);
     // 1. Define your form.

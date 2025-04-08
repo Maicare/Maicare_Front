@@ -1,3 +1,4 @@
+"use client";
 import React, { useCallback, useEffect, useState, FunctionComponent } from "react";
 import { useFormContext } from "react-hook-form";
 import XMarkIcon from "@/components/icons/XMarkIcon";
@@ -8,7 +9,6 @@ import Link from "next/link";
 import DownloadIcon from "@/components/icons/DownloadIcon";
 import { SelectionOption } from "../types/selection-option.types";
 import Button from "@/components/common/Buttons/Button";
-import SelectThin from "./SelectThin";
 import { useAttachment } from "@/hooks/attachment/use-attachment";
 import { Any } from "../types/types";
 import { useIntake } from "@/hooks/intake/use-intake";
@@ -16,12 +16,13 @@ import { useIntake } from "@/hooks/intake/use-intake";
 type Props = {
   name: string;
   label: string;
-  trigger: Any;
+  trigger?: Any;
   placeholder?: string;
   required?: boolean;
   tagOptions?: SelectionOption[];
   tagLabel?: string;
-  intakeForm?: boolean
+  intakeForm?: boolean;
+  uploaded?:string[];
 };
 
 const FilesUploader: FunctionComponent<Props> = ({
@@ -31,17 +32,15 @@ const FilesUploader: FunctionComponent<Props> = ({
   tagLabel,
   trigger,
   intakeForm,
+  uploaded,
   ...props
 }) => {
-  const { register, setValue, watch } = useFormContext();
+  const {  setValue } = useFormContext();
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
-  const [uploadedFiles, setUploadedFiles] = useState<string[]>([]);
-  console.log(uploadedFiles)
-  const files = watch(name);
-  console.log({ files })
+  const [uploadedFiles, setUploadedFiles] = useState<string[]>(uploaded||[]);
   useEffect(() => {
     setValue(name, uploadedFiles); // Update React Hook Form value
-  }, [uploadedFiles, trigger]);
+  }, [uploadedFiles]);
 
   const selectFiles = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files;
@@ -61,7 +60,6 @@ const FilesUploader: FunctionComponent<Props> = ({
           className="relative block w-full appearance-none rounded-sm border border-dashed border-stroke bg-white py-4 px-4 dark:border-strokedark dark:bg-boxdark sm:py-14"
         >
           <input
-            {...register(name)}
             onChange={selectFiles}
             type="file"
             multiple
@@ -111,7 +109,7 @@ const FileUploader: FunctionComponent<{
 }> = ({ file, onRemove, onUploaded, tagOptions, tagLabel, intakeForm }) => {
   //   const { mutate: upload, isLoading: isUploading, isSuccess, isError } = useUploadFile(endpoint);
   const { createOne } = useAttachment();
-  const { uploadFileForIntake } = useIntake({});
+  const { uploadFileForIntake } = useIntake({ autoFetch: false });
   const [fileId, setFileId] = useState<string | null>(null);
   const [url, setUrl] = useState<string | null>(null);
   const [isUploading, setIsUploading] = useState(false);
@@ -141,14 +139,12 @@ const FileUploader: FunctionComponent<{
     }
 
   }, [file]);
-
   useEffect(() => {
-    uploadFile();
-  }, [uploadFile]);
-
+    uploadFile()
+  }, [file])
   return (
     <div className="mt-4.5">
-      <div className="border border-stroke bg-white py-3 px-4 dark:border-strokedark dark:bg-boxdark">
+      <div className="border border-stroke bg-white p-2 rounded-md dark:border-strokedark dark:bg-boxdark">
         <div className="flex items-center">
           <div className="w-[80%] truncate overflow-hidden whitespace-nowrap">{file.name}</div>
           {isUploading && (
@@ -166,13 +162,14 @@ const FileUploader: FunctionComponent<{
           {error && (
             <div className="ml-auto flex items-center">
               <span className="text-danger">{error}</span>
-              <Button className="py-2 px-5 mx-3" onClick={uploadFile}>
+              <Button className="py-2 px-5 mx-3" onClick={uploadFile} type="button">
                 Retry
               </Button>
             </div>
           )}
           {!isUploading && (
             <button
+              type="button"
               onClick={() => {
                 onRemove?.(fileId || undefined);
               }}
@@ -182,17 +179,6 @@ const FileUploader: FunctionComponent<{
           )}
         </div>
       </div>
-      {/* {tagOptions && !isUploading && url && (
-        <SelectThin
-          onChange={(e) => {
-            fileUpdate({ tag: e.target.value });
-          }}
-          options={tagOptions}
-          id={`${fileId}_tag`}
-          label={tagLabel}
-          value={fileData?.tag}
-        />
-      )} */}
     </div>
   );
 };

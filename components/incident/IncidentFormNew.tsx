@@ -102,17 +102,18 @@ const EpisodeForm: FunctionComponent<Props> = ({
 
       if (mode === "edit" && incident) {
         setIsDataLoading(true);
-        await updateOne(formattedValues, incident.id, clientId);
+        await updateOne({...formattedValues}, incident.id, clientId);
         setIsDataLoading(false);
         router.push(`/clients/${clientId}/incidents`);
       } else if (mode === "new") {
         setIsDataLoading(true);
-        await createOne(formattedValues, clientId);
+        alert("commented for now");
+        // await createOne({...formattedValues,employee_id: values.employee_id.toString() || "1",location_id:values.location_id.toString()||"1",additional_appointments:values.additional_appointments || "",cause_explanation:values.cause_explanation||"",}, clientId);
         setIsDataLoading(false);
         router.push(`/clients/${clientId}/incidents`);
       }
     },
-    [createOne, updateOne, mode, incident, clientId, selectedEmails, router]
+    [ updateOne, mode, incident, clientId, selectedEmails, router]
   );
 
   const FORMS = [

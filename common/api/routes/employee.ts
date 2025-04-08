@@ -13,6 +13,7 @@ const ApiRoutes = {
   DeleteOneExperience: prefix + "/{id}/experience/{exp_id}",
   ReadAll: prefix,
   ReadOne: prefix + "/{id}",
+  ReadCount: prefix + "/counts",
   ReadEducations: prefix + "/{id}/education",
   ReadExperiences: prefix + "/{id}/experience",
   ReadCertificates: prefix + "/{id}/certification",

@@ -4,7 +4,7 @@ import { useLocation } from "@/hooks/location/use-location";
 import { FunctionComponent, useMemo } from "react";
 
 export const LocationSelect: FunctionComponent<Omit<SelectProps, "options">> = (props) => {
-  const { locations } = useLocation();
+  const { locations } = useLocation({autoFetch:true});
   const locationOptions = useMemo<SelectionOption[]>(() => {
     if (locations) {
       const options = locations.map((location) => ({

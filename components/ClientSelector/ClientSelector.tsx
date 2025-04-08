@@ -1,6 +1,6 @@
 import React, { FunctionComponent, useMemo, useState } from "react";
 import { useClient } from "@/hooks/client/use-client";
-import { Client, ClientsSearchParams } from "@/types/client.types";
+import { Client } from "@/types/client.types";
 import { Any } from "@/common/types/types";
 import FormCombobox from "@/common/components/Combobox";
 

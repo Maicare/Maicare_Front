@@ -18,6 +18,7 @@ import {
 import { constructUrlSearchParams } from "@/utils/construct-search-params";
 import { stringConstructor } from "@/utils/string-constructor";
 import { DepartureEntries } from "@/types/contracts.types";
+import { UpdateClientRequestBody } from "@/schemas/clientNew.schema";
 
 export function useClient({
   search,
@@ -62,7 +63,7 @@ export function useClient({
     const { displayProgress = false } = options || {};
     try {
       if (displayProgress) startProgress();
-      const response = await useApi<Client>(
+      const response = await useApi<Client&{identity_attachment_ids:string[]}>(
         ApiRoutes.Client.ReadOne.replace("{id}", id.toString()),
         "GET"
       );

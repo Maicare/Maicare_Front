@@ -27,7 +27,7 @@ export const GeneralInfosShema = {
 };
 
 export default function GeneralInfos() {
-  const { locations: locationLists, isLoading } = useLocation();
+  const { locations: locationLists, isLoading } = useLocation({autoFetch:true});
   const [locationOptions, setlocationOptions] = useState<
     { label: string; value: string }[]
   >([]);

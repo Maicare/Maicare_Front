@@ -22,12 +22,14 @@ interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
   data: TData[],
   onRowClick?: (row:Row<TData>) => void;
+  className?:string;
 }
 
 export function DataTable<TData, TValue>({
   columns,
   data,
-  onRowClick
+  onRowClick,
+  className
 }: DataTableProps<TData, TValue>) {
   const table = useReactTable({
     data,
@@ -36,7 +38,7 @@ export function DataTable<TData, TValue>({
   })
 
   return (
-    <div className="rounded-md border-2 border-muted bg-white">
+    <div className={cn("rounded-md border-2 border-muted bg-white",className)}>
       <Table>
         <TableHeader>
           {table.getHeaderGroups().map((headerGroup) => (
@@ -62,7 +64,7 @@ export function DataTable<TData, TValue>({
               <TableRow
                 key={row.id}
                 data-state={row.getIsSelected() && "selected"}
-                className={cn("hover:bg-slate-100 transition-colors",onRowClick !== undefined && "cursor-pointer")}
+                className={cn("hover:bg-slate-100 transition-colors dark:hover:bg-[#555555] dark:hover:text-white",onRowClick !== undefined && "cursor-pointer")}
                 onClick={()=>onRowClick?.(row)}
               >
                 {row.getVisibleCells().map((cell) => (

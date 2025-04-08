@@ -34,8 +34,6 @@ const ClientsPage = () => {
 
   const deboucedFilters = useDebounce(filters, 500);
 
-  console.log("FFF", filters)
-
   const { clients, error, isLoading, page, setPage } = useClient(deboucedFilters);
 
   const handleRowClick = (client: Client) => {

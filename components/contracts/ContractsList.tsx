@@ -1,18 +1,16 @@
-import React, { FunctionComponent, useMemo, useState } from "react";
+import React, { FunctionComponent, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { useModal } from "@/components/providers/ModalProvider";
 import { ColumnDef } from "@tanstack/react-table";
 import { fullDateFormat } from "@/utils/timeFormatting";
 import {
   careTypeDict,
-  CONTRACT_DELETE,
-  CONTRACT_EDIT,
   CONTRACT_STATUS_TRANSLATION_DICT,
   CONTRACT_STATUS_VARIANT_DICT,
 } from "@/consts";
 import MonthsBetween from "@/common/components/MonthsBetween";
 import StatusBadge from "../common/StatusBadge/StatusBadge";
-import { ContractFilterFormType, ContractItem, ContractsListDto } from "@/types/contracts.types";
+import {  ContractItem } from "@/types/contracts.types";
 import PaginatedTable from "../common/PaginatedTable/PaginatedTable";
 import Loader from "../common/loader";
 import DropdownDefault from "@/common/components/DropdownDefault";
@@ -121,7 +119,7 @@ const ContractsList: FunctionComponent = () => {
         ),
       },
     ];
-  }, []);
+  }, [open,router]);
 
   return (
     <>

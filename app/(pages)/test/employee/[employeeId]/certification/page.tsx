@@ -1,7 +1,7 @@
 "use client";
 
 import PrimaryButton from "@/common/components/PrimaryButton";
-import { PlusCircle } from "lucide-react";
+import {  BookMarked, PlusCircle } from "lucide-react";
 import { useState } from "react";
 import UpsertCertificationForm from "./_components/UpsertCertificationForm";
 import { CreateCertificate } from "@/schemas/certification.schema";
@@ -74,7 +74,9 @@ const Page = () => {
     return (
         <div className="w-full flex flex-col gap-4">
             <div className="flex items-center justify-between">
-                <h1 className="text-xl font-semibold">Certification</h1>
+                <h1 className='flex items-center gap-2 m-0 p-0 font-extrabold text-lg text-slate-600'>
+                    <BookMarked size={24} className='text-indigo-400' />  Certification
+                </h1>
                 <PrimaryButton
                     text="Add"
                     onClick={handleAdd}
@@ -95,12 +97,15 @@ const Page = () => {
                     isLoading ?
                         <Loader />
                         : certificates?.length === 0 ?
-                            <LargeErrorMessage
+                            <div className="col-span-4 w-full flex items-center justify-center">
+                                <LargeErrorMessage
                                 firstLine={"Oops!"}
                                 secondLine={
                                     "Het lijkt erop dat er geen medewerkers zijn die aan uw zoekcriteria voldoen."
                                 }
+                                className="w-full"
                             />
+                            </div>
                             :
 
                             certificates?.map((item, index) => (

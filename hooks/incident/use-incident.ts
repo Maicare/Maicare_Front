@@ -5,6 +5,8 @@ import useProgressBar from "@/common/hooks/use-progress-bar";
 import { ApiOptions } from "@/common/types/api.types";
 import { PaginatedResponse } from "@/common/types/pagination.types";
 import { Id } from "@/common/types/types";
+import { CreateIncidentNew } from "@/schemas/incident.schema";
+
 import { CreateIncident, Incident } from "@/types/incident.types";
 import { PaginationParams } from "@/types/pagination.types";
 import { useSnackbar } from "notistack";
@@ -82,7 +84,7 @@ export function useIncident({
   };
 
   const createOne = async (
-    incident: CreateIncident,
+    incident: CreateIncidentNew,
     client_id: Id,
     options?: ApiOptions
   ) => {
@@ -90,14 +92,14 @@ export function useIncident({
     try {
       // Display progress bar
       if (displayProgress) startProgress();
-      const { message, success, data, error } = await useApi<CreateIncident>(
+      const { message, success, data, error } = await useApi<CreateIncidentNew&{id:Id}>(
         ApiRoutes.Client.Incident.CreateOne.replace(
           "{id}",
           client_id.toString()
         ),
         "POST",
         {},
-        incident
+        {...incident,employee_id: parseInt(incident.employee_id),location_id: parseInt(incident.location_id)}
       );
       if (!data)
         throw new Error(error || message || "An unknown error occurred");
@@ -131,7 +133,7 @@ export function useIncident({
     try {
       // Display progress bar
       if (displayProgress) startProgress();
-      const { message, success, data, error } = await useApi<CreateIncident>(
+      const { message, success, data, error } = await useApi<CreateIncident&{id:Id}>(
         ApiRoutes.Client.Incident.UpdateOne.replace(
           "{id}",
           client_id.toString()

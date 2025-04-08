@@ -92,3 +92,10 @@ export type EmployeeForm = {
     role_id: string | number;
     out_of_service: boolean;
 };
+
+export type EmployeeCount = {
+    total_archived: number,
+    total_employees: number,
+    total_out_of_service: number,
+    total_subcontractors: number
+}

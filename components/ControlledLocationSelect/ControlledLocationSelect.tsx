@@ -7,7 +7,7 @@ import { useFormContext, Controller } from 'react-hook-form';
 export const ControlledLocationSelect: FunctionComponent<Omit<SelectProps, "options">> = ({ name = "location_id", ...props }) => {
     const { control } = useFormContext();
 
-    const { locations } = useLocation();
+    const { locations } = useLocation({autoFetch:true});
 
     const locationOptions = useMemo<SelectionOption[]>(() => {
         if (locations) {

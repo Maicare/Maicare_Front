@@ -1,13 +1,15 @@
 import React, { FunctionComponent } from "react";
 import Image from "next/image";
+import { cn } from "@/utils/cn";
 
 type Props = {
   firstLine: string;
   secondLine: string;
+  className?: string;
 };
-const LargeErrorMessage: FunctionComponent<Props> = ({ firstLine, secondLine }) => {
+const LargeErrorMessage: FunctionComponent<Props> = ({ firstLine, secondLine,className }) => {
   return (
-    <div className="rounded-sm bg-white px-5 py-5 dark:border-strokedark dark:bg-boxdark sm:py-5">
+    <div className={cn("rounded-sm bg-white px-5 py-5 dark:border-strokedark dark:bg-boxdark sm:py-5", className)}>
       <div className="mx-auto max-w-[410px]">
         <Image
           src={"/images/illustration/illustration-01.svg"}

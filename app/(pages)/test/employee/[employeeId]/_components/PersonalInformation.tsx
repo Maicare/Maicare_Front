@@ -15,7 +15,7 @@ type Props = {
 }
 
 const PersonalInformation = ({ email, first_name, last_name, location_id, private_phone_number, isParentLoading }: Props) => {
-    const { readOne } = useLocation();
+    const { readOne } = useLocation({autoFetch:false});
     const [location, setLocation] = useState<Location | null>(null);
     const [isLoading, setIsLoading] = useState(true);
     useEffect(() => {
@@ -36,7 +36,7 @@ const PersonalInformation = ({ email, first_name, last_name, location_id, privat
             <PersonalInformationSkeleton />
         )
     }
-
+    console.log({location})
     return (
         <div className="w-[32%] h-[287px] rounded-sm shadow-md p-4 bg-white">
             <h1 className='flex items-center gap-2 m-0 p-0 font-extrabold text-lg text-slate-600'><InfoIcon size={18} className='text-indigo-400' /> Personal Information</h1>

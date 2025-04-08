@@ -49,7 +49,7 @@ const LocationFormModal: FunctionComponent<ModalProps> = ({
   open,
   additionalProps,
 }) => {
-  const { getLocation, modifyLocation, addLocation } = useLocation();
+  const { getLocation, modifyLocation, addLocation } = useLocation({autoFetch:false});
   const isEditMode = additionalProps?.mode === "edit" && additionalProps?.id;
 
   const { data: initialData, isLoading: isFetching } = isEditMode
@@ -142,7 +142,7 @@ const Page: FunctionComponent = () => {
 };
 
 const LocationsList = () => {
-  const { locations, isLoading, deleteLocation } = useLocation();
+  const { locations, isLoading, deleteLocation } = useLocation({autoFetch:true});
 
   const { open } = useModal(
     getDangerActionConfirmationModal({

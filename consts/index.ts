@@ -31,6 +31,25 @@ export const GENDER_OPTIONS: SelectionOption[] = [
   },
 ];
 
+export const SOURCE_OPTIONS = [
+  { label: "BRP", value: "BRP" },
+  { label: "ID", value: "ID" },
+  { label: "Paspoort", value: "passport" },
+  { label: "Poliskaart", value: "policy_card" },
+  { label: "Brief Overheidsinstantie", value: "government_agency_letter" },
+];
+
+export const LEGAL_MEASURE = [
+  {
+      value: "Jeugdreclassering",
+      label: "Jeugdreclassering",
+  },
+  {
+      value: "Jeugdbescherming",
+      label: "Jeugdbescherming",
+  }
+];
+
 // TODO: this is assumed to be 10, it should come from the backend
 export const PAGE_SIZE = 10;
 
@@ -106,18 +125,15 @@ export const SEVERITY_OF_INCIDENT_OPTIONS = [
     value: "near_incident",
   },
   {
-    label:
-      "Minder ernstig: beinvloedt de cliënt / medewerker en/of vervolgprocessen",
+    label: "Minder ernstig: beinvloedt de cliënt / medewerker en/of vervolgprocessen",
     value: "less_serious",
   },
   {
-    label:
-      "Ernstig: tijdelijke gevolgen voor de cliënt / medewerker Zeer ernstig: blijvende gevolgen voor de client / medewerker",
+    label: "Ernstig: tijdelijke gevolgen voor de cliënt / medewerker Zeer ernstig: blijvende gevolgen voor de client / medewerker",
     value: "serious",
   },
   {
-    label:
-      "Fataal: Overlijden van de client / medewerker als gevolg van het incident",
+    label: "Fataal: Overlijden van de client / medewerker als gevolg van het incident",
     value: "fatal",
   },
 ];
@@ -233,6 +249,19 @@ export const INFORM_WHO_OPTIONS = [
   "Met maatregel: mentor",
   "Met maatregel: PGB vertegenwoordiger",
   "Met maatregel: niemad (ZIN / 18+).",
+];
+
+export const INCIDENT_TYPE_NOTIFICATIONS : {label:string,value:"passing_away"|"self_harm"|"violence"|"fire_water_damage"|"client_absence"|"accident"|"medicines"|"organization"|"use_prohibited_substances"|"other_notifications"}[] = [
+  { label: "Overlijden", value: "passing_away" },
+  { label: "Zelfbeschadiging", value: "self_harm" },
+  { label: "Agressie/geweld", value: "violence" },
+  { label: "Brand- en waterschade", value: "fire_water_damage" },
+  { label: "Ongevallen", value: "accident" },
+  { label: "Afwezigheid client", value: "client_absence" },
+  { label: "Medicijnen", value: "medicines" },
+  { label: "Organisatie", value: "organization" },
+  { label: "Gebruik verboden middelen", value: "use_prohibited_substances" },
+  { label: "Overige meldingen", value: "other_notifications" },
 ];
 
 export const REPORTER_INVOLVEMENT_OPTIONS = [

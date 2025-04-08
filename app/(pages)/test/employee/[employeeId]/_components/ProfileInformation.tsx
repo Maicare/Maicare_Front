@@ -37,10 +37,10 @@ const ProfileInformation = ({date_of_birth,first_name,gender,last_name,profile_p
             <div className="p-4 h-31 flex justify-between w-full bg-white">
                 <div className="flex flex-col items-start relative w-[30%]">
                     <div className="rounded-full border-2 border-white absolute -top-8 left-0">
-                        <Image src={profile_picture ?? "/images/avatar-1.jpg"} width={50} height={50} className="rounded-full" alt="profile" />
+                        <Image src={profile_picture || "/images/avatar-1.jpg"} width={50} height={50} className="rounded-full" alt="profile" />
                     </div>
                     <div className="mt-10">
-                        <p className="text-sm font-bold">{first_name + " " + last_name}</p>
+                        <p className="text-sm font-medium">{first_name + " " + last_name}</p>
                         <span className='text-xs font-medium text-slate-400'>{role?.name}</span>
                     </div>
                 </div>
@@ -48,11 +48,11 @@ const ProfileInformation = ({date_of_birth,first_name,gender,last_name,profile_p
                     <div className="flex">
                         <div className="w-[50%]">
                             <p className="text-xs text-slate-400">Geboortedatum</p>
-                            <p className="text-sm font-bold">{dateFormat(date_of_birth ?? "")}</p>
+                            <p className="text-sm font-medium">{dateFormat(date_of_birth ?? "")}</p>
                         </div>
                         <div className="w-[50%]">
                             <p className="text-xs text-slate-400">Geslacht</p>
-                            <p className="text-sm font-bold">{gender}</p>
+                            <p className="text-sm font-medium">{gender}</p>
                         </div>
                     </div>
                     <button className='flex items-center justify-center gap-2 bg-indigo-400 text-white rounded-md py-2 text-sm w-[50%]'>

@@ -8,7 +8,7 @@ import { CreateLocationReqDto, Location } from "@/types/location.types";
 import {  useSnackbar } from "notistack";
 import useSWR from "swr";
 
-export function useLocation() {
+export function useLocation({autoFetch=true}:{autoFetch?:boolean}) {
   const { enqueueSnackbar } = useSnackbar();
   const { start: startProgress, stop: stopProgress } = useProgressBar();
   const {
@@ -18,6 +18,9 @@ export function useLocation() {
   } = useSWR<Location[] | null>(
     ApiRoutes.Location.ReadAll, // Endpoint to fetch Locations
     async (url) => {
+      if (!autoFetch) {
+        return null;
+      }
       const response = await api.get(url);
       if (!response.data.data) {
         return null;
