@@ -1,6 +1,6 @@
 import { BadgeType } from "@/common/types/badge-type.types";
 import { SelectionOption } from "@/common/types/selection-option.types";
-import { ContractStatus } from "@/types/contracts.types";
+import { CareType, ContractStatus, NewContractReqDto, RateType } from "@/types/contracts.types";
 
 export const BUTTON_CLASS_NAMES = {
   Primary: "bg-primary text-white",
@@ -384,9 +384,92 @@ export const CARE_TYPE_OPTIONS: SelectionOption[] = [
   { label: "Accommodatie", value: "accommodation" },
 ];
 
+export const FINANCING_ACT_TYPES: SelectionOption[] = [
+  { label: "selecteer financieringsact", value: "" },
+  { label: "WMO", value: "WMO" },
+  { label: "ZVW", value: "ZVW" },
+  { label: "WLZ", value: "WLZ" },
+  { label: "JW", value: "JW" },
+  { label: "WPG", value: "WPG" },
+];
+
+export const FINANCING_OPTIONS: SelectionOption[] = [
+  { label: "selecteer financieringsoptie", value: "" },
+  { label: "ZIN", value: "ZIN" },
+  { label: "PGB", value: "PGB" },
+];
+
 export const CONTRACT_STATUS_OPTIONS: SelectionOption[] = [
   { label: "Selecteer Status", value: "" },
   { label: "Concept", value: "draft" },
   { label: "Goedgekeurd", value: "approved" },
   { label: "Beëindigd", value: "terminated" },
+  { label: "gestopt", value: "stopped" },
 ];
+
+export const NOTIFICATIONS_VIEW = "notifications.view";
+
+export const AGREEMENT_FILES_TAGS: SelectionOption[] = [
+  { value: "", label: "Selecteer Overeenkomst..." },
+  { value: "client_agreement", label: "Client Overeenkomst" },
+  { value: "framework_agreement", label: "Raamovereenkomst" },
+  { value: "decision", label: "Besluit" },
+  { value: "other", label: "Overige" },
+];
+
+export const CARE_RATE_BY_TYPE: Record<CareType, RateType[]> = {
+  ambulante: ["hourly", "minute"],
+  accommodation: ["daily", "weekly", "monthly"],
+};
+
+export type RateTypeOption = SelectionOption & {
+  value: RateType | "";
+};
+
+export const CARE_RATE_OPTIONS_BY_TYPE: Record<CareType, RateTypeOption[]> = {
+  ambulante: [
+    { label: "Selecteer Tarieftype", value: "" },
+    { label: "Per minuut", value: "minute" },
+    { label: "Per uur", value: "hourly" },
+  ],
+  accommodation: [
+    { label: "Selecteer Tarieftype", value: "" },
+    { label: "Dagelijks", value: "daily" },
+    { label: "Per week", value: "weekly" },
+    { label: "Per maand", value: "monthly" },
+  ],
+};
+
+export const CARE_TYPE_ARRAY = ["ambulante", "accommodation"] as const;
+
+export const HOURS_TERM_OPTIONS: SelectionOption[] = [
+  { label: "Selecteer Uren Term", value: "" },
+  { label: "Per Week", value: "weekly" },
+  { label: "Gehele Periode", value: "all_period" },
+];
+
+export const RATE_TYPE_ARRAY = ["daily", "minute", "hourly", "weekly", "monthly"] as const;
+
+export const FINANCING_LAW_OPTIONS: SelectionOption[] = [
+  { label: "Selecteer Financieringswet", value: "" },
+  { label: "Wmo 2015", value: "WMO" },
+  { label: "Zorgverzekeringswet (Zvw)", value: "ZVW" },
+  { label: "Wet langdurige zorg (WLZ)", value: "WLZ" },
+  { label: "Jeugdwet (JW)", value: "JW" },
+  { label: "Wet publieke gezondheidszorg (Wpg)", value: "WPG" },
+];
+
+export const FINANCING_OPTION_OPTIONS: SelectionOption[] = [
+  { label: "Selecteer Financieringsoptie", value: "" },
+  { label: "ZIN", value: "ZIN" },
+  { label: "PGB", value: "PGB" },
+];
+
+export type PatchContractReqDto = NewContractReqDto;
+
+export const AGREEMENT_FILES_TAGS_RECORD = {
+  client_agreement: "Cliënt Overeenkomst",
+  framework_agreement: "Raamovereenkomst",
+  decision: "Besluit",
+  other: "Overige",
+};

@@ -1,4 +1,5 @@
 import DarkModeSwitcher from "./DarkModeSwitcher";
+import DropdownNotification from "./DropdownNotification";
 import DropdownUser from "./DropdownUser";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 
@@ -55,6 +56,8 @@ const Header = (_props: {
             {/* <!-- Dark Mode Toggler --> */}
             <DarkModeSwitcher />
             {/* <!-- Dark Mode Toggler --> */}
+
+            <DropdownNotification />
 
 
             {/* <!-- Chat Notification Area --> */}

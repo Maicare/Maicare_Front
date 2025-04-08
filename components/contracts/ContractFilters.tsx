@@ -1,64 +1,88 @@
 import React, { FunctionComponent } from "react";
-import { FormikProvider, useFormik } from "formik";
-import ContactSelector from "../ContactSelector/ContactSelector";
-import ClientSelector from "../ClientSelector/ClientSelector";
 import Button from "../common/Buttons/Button";
-import { CARE_TYPE_OPTIONS, CONTRACT_STATUS_OPTIONS } from "@/consts";
-import Select from "@/common/components/Select";
+import { CARE_TYPE_OPTIONS, CONTRACT_STATUS_OPTIONS, FINANCING_ACT_TYPES, FINANCING_OPTIONS } from "@/consts";
 import { ContractFilterFormType } from "@/types/contracts.types";
+import { FormProvider, useForm } from "react-hook-form";
+import InputControl from "@/common/components/InputControl";
+import { ControlledSelect } from "@/common/components/ControlledSelect";
 
 const ContractFilters: FunctionComponent<{
   onSubmit: (values: ContractFilterFormType) => void;
 }> = (props) => {
-  const formik = useFormik<ContractFilterFormType>({
-    initialValues: {
-      sender: null,
-      client: null,
-      care_type: "",
-      status: "",
-    },
-    onSubmit: props.onSubmit,
+
+  const initialValues = {
+    search: "",
+    status: "",
+    care_type: "",
+    financing_act: "",
+    financing_option: ""
+  }
+
+  const methods = useForm<ContractFilterFormType>({
+    defaultValues: initialValues,
   });
-  const { handleSubmit, handleReset, submitForm, handleChange, values, handleBlur } = formik;
+
+  const {
+    handleSubmit,
+    formState: { isSubmitting },
+    reset
+  } = methods;
+
+  const handleSubmitCustom = (data: ContractFilterFormType) => {
+    props.onSubmit(data);
+  };
+
+
   return (
-    <FormikProvider value={formik}>
-      <form className="flex flex-wrap items-end gap-4 px-7 py-4" onSubmit={handleSubmit}>
-        <ClientSelector name={"client"} />
-        <ContactSelector name={"sender"} />
-        <Select
-          label="Zorgtype"
-          name="care_type"
-          value={values.care_type}
-          onChange={handleChange}
-          onBlur={handleBlur}
-          options={CARE_TYPE_OPTIONS}
+    <FormProvider {...methods}>
+
+      <form className="flex flex-wrap items-end gap-4 px-7 py-4" onSubmit={handleSubmit(handleSubmitCustom)}>
+        <InputControl
+          className="mb-0"
+          placeholder="Zoeken"
+          name="search"
+          label="Zoeken"
+          type="text"
         />
-        <Select
-          label={"Status"}
-          name={"status"}
+        <ControlledSelect
+          className=""
           options={CONTRACT_STATUS_OPTIONS}
-          onChange={handleChange}
-          onBlur={handleBlur}
-          value={values.status}
-          className="min-w-47.5"
+          name="status"
+          label="Status"
         />
-        <div className="flex gap-4">
-          <Button type="submit" onClick={submitForm}>
-            Zoeken
-          </Button>
-          <Button
-            type="button"
-            buttonType={"Outline"}
-            onClick={(e) => {
-              handleReset(e);
-              submitForm();
-            }}
-          >
-            Duidelijke Zoek
-          </Button>
-        </div>
+        <ControlledSelect
+          className=""
+          options={CARE_TYPE_OPTIONS}
+          name="care_type"
+          label="Zorgtype"
+        />
+        <ControlledSelect
+          className=""
+          options={FINANCING_ACT_TYPES}
+          name="financing_act"
+          label="Financieringswet"
+        />
+        <ControlledSelect
+          className=""
+          options={FINANCING_OPTIONS}
+          name="financing_option"
+          label="Financieringsoptie"
+        />
+        <Button isLoading={isSubmitting} type="submit" className="py-4 ">
+          Zoeken
+        </Button>
+        <Button
+          type="button"
+          className="py-4 "
+          buttonType={"Outline"}
+          onClick={(e) => {
+            reset(initialValues);
+          }}
+        >
+          Duidelijke Zoek
+        </Button>
       </form>
-    </FormikProvider>
+    </FormProvider>
   );
 };
 

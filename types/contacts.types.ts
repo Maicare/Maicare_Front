@@ -28,7 +28,7 @@ export type ContactType = {
 
 export type Contact = {
   id?: Id;
-  types: OpClientType | "";
+  types: OpClientType;
   name: string;
   address: string;
   postal_code: string;

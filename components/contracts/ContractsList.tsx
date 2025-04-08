@@ -17,15 +17,24 @@ import DropdownDefault from "@/common/components/DropdownDefault";
 import { getRate, rateType } from "@/utils/rate-utils";
 import { getDangerActionConfirmationModal } from "../common/Modals/DangerActionConfirmation";
 import { useContract } from "@/hooks/contract/use-contract";
-// import ContractFilters from "./ContractFilters";
+import ContractFilters from "./ContractFilters";
 
 
+type PropsType = {
+  clientId?: string;
+};
 
-const ContractsList: FunctionComponent = () => {
+const ContractsList: FunctionComponent<PropsType> = ({ clientId }) => {
   const router = useRouter();
-  // const [filters, setFilters] = useState<ContractFilterFormType>();
+  const [filters, setFilters] = useState<ContractFilterFormType>({
+    search: "",
+    status: "",
+    care_type: "",
+    financing_act: "",
+    financing_option: "",
+  });
 
-  const { contracts, setPage, page, isLoading } = useContract({});
+  const { contracts, setPage, page, isLoading } = useContract(filters);
 
   const { open } = useModal(
     getDangerActionConfirmationModal({
@@ -95,6 +104,7 @@ const ContractsList: FunctionComponent = () => {
       },
       {
         id: "actions",
+        accessorKey: "id",
         header: () => "",
         cell: (info) => (
           <div className="flex justify-end">
@@ -123,7 +133,7 @@ const ContractsList: FunctionComponent = () => {
 
   return (
     <>
-      {/* <ContractFilters onSubmit={setFilters} /> */}
+      <ContractFilters onSubmit={setFilters} />
 
       {isLoading && <Loader />}
       {contracts && (
