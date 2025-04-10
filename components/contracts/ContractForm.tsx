@@ -153,11 +153,10 @@ const ContractForm: FunctionComponent<PropsType> = ({ clientId, contract }) => {
         tax: parseInt(data.tax),
         hours: data.care_type === "ambulante" ? parseInt(data.hours) : 0,
         type_id: parseInt(data.type_id),
-        sender_id: 32,
         hours_type: data.hours_type ? data.hours_type : "all_period",
       };
       if (contract) {
-        await updateOne(preparedData, String(contract.id));
+        await updateOne({ ...preparedData, sender_id: 32 }, String(contract.id));
         router.push(`/contracts`)
       }
       else {

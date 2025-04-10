@@ -21,6 +21,8 @@ import { Client, ClientsSearchParams } from "@/types/client.types";
 import styles from "./styles.module.css";
 import { useDebounce } from "@/hooks/common/useDebounce";
 import ClientFilters from "@/components/clients/ClientFilters";
+import { STATUS_OPTIONS } from "@/consts";
+import { Any } from "@/common/types/types";
 
 const PAGE_SIZE = 10;
 
@@ -80,7 +82,7 @@ const ClientsPage = () => {
       {
         accessorKey: "status",
         header: () => "Status",
-        cell: (_info) => "N/A", //TODO: add thiss condition later
+        cell: (info) => STATUS_OPTIONS.find(item => item.value === info.getValue())?.label, //TODO: add thiss condition later
       },
       {
         accessorKey: "document_info",
