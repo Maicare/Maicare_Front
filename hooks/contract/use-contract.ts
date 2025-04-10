@@ -179,6 +179,35 @@ export function useContract({
         }
     }
 
+    const readClientContracts = async (id: string, options?: ApiOptions) => {
+        const { displayProgress = false, displaySuccess = false } = options || {};
+        try {
+            // Display progress bar
+            if (displayProgress) startProgress();
+            const { message, success, data, error } = await useApi<PaginatedResponse<ContractItem>>(
+                stringConstructor(
+                    ApiRoutes.Contract.AddOne.replace("{id}", id.toString()),
+                    constructUrlSearchParams({ search, status, care_type, financing_act, financing_option, page, page_size })
+                ), // Endpoint to fetch clients
+                "GET",
+                {}
+            );
+            if (!data)
+                throw new Error(error || message || "An unknown error occurred");
+
+            // Display success message
+            if (displaySuccess && success) {
+                enqueueSnackbar("Contracts fetch successful!", { variant: "success" });
+            }
+            return data;
+        } catch (err: any) {
+            enqueueSnackbar(err?.response?.data?.message || "Contracts fetch failed", { variant: "error" });
+            throw err;
+        } finally {
+            if (displayProgress) stopProgress();
+        }
+    }
+
 
     return {
         contracts,
@@ -192,6 +221,7 @@ export function useContract({
         deleteContractTypes,
         addContract,
         readOne,
-        updateOne
+        updateOne,
+        readClientContracts
     };
 }

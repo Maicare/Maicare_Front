@@ -10,14 +10,15 @@ const MonthsBetween: FunctionComponent<{
     () => monthsBetween(dayjs(startDate).toDate(), dayjs(endDate).toDate()),
     [startDate, endDate]
   );
-  return (
-    <>
-      {[
-        months > 0 ? `${months} maanden` : "",
-        remainingDays > 0 ? `${remainingDays} dagen` : "",
-      ].join(" ")}
-    </>
-  );
+  // Build display string; if both values are 0, show "0 dagen"
+  const display = [
+    months > 0 ? `${months} maanden` : "",
+    remainingDays > 0 ? `${remainingDays} dagen` : "",
+  ]
+    .filter(Boolean)
+    .join(" ");
+
+  return <>{display || "0 dagen"}</>;
 };
 
 export default MonthsBetween;

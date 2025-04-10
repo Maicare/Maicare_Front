@@ -81,7 +81,7 @@ const EmployeesPage = () => {
                 cell: (info) => info.getValue() || <span className='bg-red-100 text-red-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-sm dark:bg-red-900 dark:text-red-300'>Niet gespecificeerd</span>,
             },
             {
-                accessorKey: "email_address",
+                accessorKey: "email",
                 header: () => "E-mailadres",
                 cell: (info) => info.getValue() || <span className='bg-red-100 text-red-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-sm dark:bg-red-900 dark:text-red-300'>Niet gespecificeerd</span>,
             },
@@ -105,50 +105,50 @@ const EmployeesPage = () => {
     return (
         <div>
             <div className="flex justify-between items-center">
-            <div className='p-5 flex justify-between items-center w-60 rounded-lg bg-white shadow-md mb-4'>
-                <div className=" flex flex-col gap-4">
-                    <h1 className='text-xl font-bold'>Medewerkers</h1>
-                    <p className='text-sm font-semibold'>800</p>
+                <div className='p-5 flex justify-between items-center w-60 rounded-lg bg-white shadow-md mb-4'>
+                    <div className=" flex flex-col gap-4">
+                        <h1 className='text-xl font-bold'>Medewerkers</h1>
+                        <p className='text-sm font-semibold'>800</p>
+                    </div>
+                    <IconButton className='relative flex items-center justify-center overflow-hidden h-12 w-12'>
+                        <div className="h-full w-full absolute before:content-['']  before:-top-1 before:right-1/3 before:rotate-45 before:absolute before:w-2 before:h-14 before:bg-white/20 before:rounded-sm"></div>
+                        <GroupIcon />
+                        <div className="h-full w-full absolute before:content-['']  before:-top-12 before:right-1/2 before:rotate-45 before:absolute before:w-2 before:h-20 before:bg-white/40 before:rounded-sm hover:before:translate-x-10 hover:before:translate-y-10 before:transition-all before:duration-600 before:ease-in-out"></div>
+                    </IconButton>
                 </div>
-                <IconButton className='relative flex items-center justify-center overflow-hidden h-12 w-12'>
-                    <div className="h-full w-full absolute before:content-['']  before:-top-1 before:right-1/3 before:rotate-45 before:absolute before:w-2 before:h-14 before:bg-white/20 before:rounded-sm"></div>
-                    <GroupIcon />
-                    <div className="h-full w-full absolute before:content-['']  before:-top-12 before:right-1/2 before:rotate-45 before:absolute before:w-2 before:h-20 before:bg-white/40 before:rounded-sm hover:before:translate-x-10 hover:before:translate-y-10 before:transition-all before:duration-600 before:ease-in-out"></div>
-                </IconButton>
-            </div>
-            <div className='p-5 flex justify-between items-center w-60 rounded-lg bg-white shadow-md mb-4'>
-                <div className=" flex flex-col gap-4">
-                    <h1 className='text-xl font-bold'>Locatie</h1>
-                    <p className='text-sm font-semibold'>10</p>
+                <div className='p-5 flex justify-between items-center w-60 rounded-lg bg-white shadow-md mb-4'>
+                    <div className=" flex flex-col gap-4">
+                        <h1 className='text-xl font-bold'>Locatie</h1>
+                        <p className='text-sm font-semibold'>10</p>
+                    </div>
+                    <IconButton className='relative flex items-center justify-center overflow-hidden h-12 w-12'>
+                        <div className="h-full w-full absolute before:content-['']  before:-top-1 before:right-1/3 before:rotate-45 before:absolute before:w-2 before:h-14 before:bg-white/20 before:rounded-sm"></div>
+                        <BuildingIcon />
+                        <div className="h-full w-full absolute before:content-['']  before:-top-12 before:right-1/2 before:rotate-45 before:absolute before:w-2 before:h-20 before:bg-white/40 before:rounded-sm hover:before:translate-x-10 hover:before:translate-y-10 before:transition-all before:duration-600 before:ease-in-out"></div>
+                    </IconButton>
                 </div>
-                <IconButton className='relative flex items-center justify-center overflow-hidden h-12 w-12'>
-                    <div className="h-full w-full absolute before:content-['']  before:-top-1 before:right-1/3 before:rotate-45 before:absolute before:w-2 before:h-14 before:bg-white/20 before:rounded-sm"></div>
-                    <BuildingIcon />
-                    <div className="h-full w-full absolute before:content-['']  before:-top-12 before:right-1/2 before:rotate-45 before:absolute before:w-2 before:h-20 before:bg-white/40 before:rounded-sm hover:before:translate-x-10 hover:before:translate-y-10 before:transition-all before:duration-600 before:ease-in-out"></div>
-                </IconButton>
-            </div>
-            <div className='p-5 flex justify-between items-center w-60 rounded-lg bg-white shadow-md mb-4'>
-                <div className=" flex flex-col gap-4">
-                    <h1 className='text-xl font-bold'>Uit Dienst</h1>
-                    <p className='text-sm font-semibold'>37</p>
+                <div className='p-5 flex justify-between items-center w-60 rounded-lg bg-white shadow-md mb-4'>
+                    <div className=" flex flex-col gap-4">
+                        <h1 className='text-xl font-bold'>Uit Dienst</h1>
+                        <p className='text-sm font-semibold'>37</p>
+                    </div>
+                    <IconButton className='relative flex items-center justify-center overflow-hidden h-12 w-12'>
+                        <div className="h-full w-full absolute before:content-['']  before:-top-1 before:right-1/3 before:rotate-45 before:absolute before:w-2 before:h-14 before:bg-white/20 before:rounded-sm"></div>
+                        <Archive className='h-6 w-6' />
+                        <div className="h-full w-full absolute before:content-['']  before:-top-12 before:right-1/2 before:rotate-45 before:absolute before:w-2 before:h-20 before:bg-white/40 before:rounded-sm hover:before:translate-x-10 hover:before:translate-y-10 before:transition-all before:duration-600 before:ease-in-out"></div>
+                    </IconButton>
                 </div>
-                <IconButton className='relative flex items-center justify-center overflow-hidden h-12 w-12'>
-                    <div className="h-full w-full absolute before:content-['']  before:-top-1 before:right-1/3 before:rotate-45 before:absolute before:w-2 before:h-14 before:bg-white/20 before:rounded-sm"></div>
-                    <Archive className='h-6 w-6' />
-                    <div className="h-full w-full absolute before:content-['']  before:-top-12 before:right-1/2 before:rotate-45 before:absolute before:w-2 before:h-20 before:bg-white/40 before:rounded-sm hover:before:translate-x-10 hover:before:translate-y-10 before:transition-all before:duration-600 before:ease-in-out"></div>
-                </IconButton>
-            </div>
-            <div className='p-5 flex justify-between items-center w-60 rounded-lg bg-white shadow-md mb-4'>
-                <div className=" flex flex-col gap-4">
-                    <h1 className='text-xl font-bold'>Medewerkers</h1>
-                    <p className='text-sm font-semibold'>800</p>
+                <div className='p-5 flex justify-between items-center w-60 rounded-lg bg-white shadow-md mb-4'>
+                    <div className=" flex flex-col gap-4">
+                        <h1 className='text-xl font-bold'>Medewerkers</h1>
+                        <p className='text-sm font-semibold'>800</p>
+                    </div>
+                    <IconButton className='relative flex items-center justify-center overflow-hidden h-12 w-12'>
+                        <div className="h-full w-full absolute before:content-['']  before:-top-1 before:right-1/3 before:rotate-45 before:absolute before:w-2 before:h-14 before:bg-white/20 before:rounded-sm"></div>
+                        <GroupIcon />
+                        <div className="h-full w-full absolute before:content-['']  before:-top-12 before:right-1/2 before:rotate-45 before:absolute before:w-2 before:h-20 before:bg-white/40 before:rounded-sm hover:before:translate-x-10 hover:before:translate-y-10 before:transition-all before:duration-600 before:ease-in-out"></div>
+                    </IconButton>
                 </div>
-                <IconButton className='relative flex items-center justify-center overflow-hidden h-12 w-12'>
-                    <div className="h-full w-full absolute before:content-['']  before:-top-1 before:right-1/3 before:rotate-45 before:absolute before:w-2 before:h-14 before:bg-white/20 before:rounded-sm"></div>
-                    <GroupIcon />
-                    <div className="h-full w-full absolute before:content-['']  before:-top-12 before:right-1/2 before:rotate-45 before:absolute before:w-2 before:h-20 before:bg-white/40 before:rounded-sm hover:before:translate-x-10 hover:before:translate-y-10 before:transition-all before:duration-600 before:ease-in-out"></div>
-                </IconButton>
-            </div>
             </div>
             <Panel
                 title={"Employees List"}
