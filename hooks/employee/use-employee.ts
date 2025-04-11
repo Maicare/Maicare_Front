@@ -20,9 +20,7 @@ import { EmployeeForm as EmployeeFormType } from "@/types/employee.types";
 import { useMutation } from "@/common/hooks/use-mutate";
 import { AxiosError } from "axios";
 import { useRouter } from "next/navigation";
-import { Education } from "@/types/education.types";
-import { Experience } from "@/types/experience.types";
-import { CreateEmployee, CreateEmployeeRequestBody, UpdateEmployeeRequestBody } from "@/schemas/employee.schema";
+import {  CreateEmployeeRequestBody, UpdateEmployeeRequestBody } from "@/schemas/employee.schema";
 
 export function useEmployee({
   search,
@@ -34,7 +32,8 @@ export function useEmployee({
   page: pageParam = 1,
   page_size = 10,
   autoFetch = true,
-}: Partial<EmployeesSearchParams & { autoFetch?: boolean }>) {
+  v:_v
+}: Partial<EmployeesSearchParams & { autoFetch?: boolean,v?:string }>) {
   const [page, setPage] = useState(pageParam);
   const { enqueueSnackbar } = useSnackbar();
   const router = useRouter();
@@ -44,7 +43,7 @@ export function useEmployee({
     error,
     mutate,
   } = useSWR<PaginatedResponse<EmployeeList> | null>(
-    stringConstructor(
+    autoFetch ? stringConstructor(
       ApiRoutes.Employee.ReadAll,
       constructUrlSearchParams({
         search,
@@ -56,9 +55,9 @@ export function useEmployee({
         page,
         page_size,
       })
-    ), // Endpoint to fetch Locations
+    ) : null, // Endpoint to fetch Locations
     async (url) => {
-      if (!autoFetch)
+      if (!url){
         return {
           results: [],
           count: 0,
@@ -66,13 +65,14 @@ export function useEmployee({
           next: null,
           previous: null,
         };
+      }
       const response = await api.get(url);
       if (!response.data.data) {
         return null;
       }
       return response.data.data; // Assuming API returns data inside a "data" field
     },
-    { shouldRetryOnError: false }
+    { shouldRetryOnError: false,dedupingInterval:10000 }
   );
   const isLoading = !employees && !error;
   const readOne = async (id: number, options?: ApiOptions) => {

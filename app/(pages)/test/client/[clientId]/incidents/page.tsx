@@ -10,9 +10,6 @@ import { getDangerActionConfirmationModal } from "@/components/common/Modals/Dan
 import StatisticCard from '@/common/components/StatisticCard';
 import Loader from '@/components/common/loader';
 import LargeErrorMessage from '@/components/common/Alerts/LargeErrorMessage';
-import TableFilters from './_components/TableFilters';
-import { EmployeesSearchParams } from '@/types/employee.types';
-import { PAGE_SIZE } from '@/consts';
 import { DataTable } from '@/components/employee/table/data-table';
 import { columns } from './_components/columns';
 const Page = () => {
@@ -22,12 +19,7 @@ const Page = () => {
     const router = useRouter();
 
     const { isLoading, incidents, page, setPage } = useIncident({ autoFetch: true, clientId: parseInt(clientId as string) });
-    const [filters, setFilters] = useState<EmployeesSearchParams>({
-        page: 1,
-        page_size: PAGE_SIZE,
-        search: "",
-        location_id: undefined, is_archived: undefined, out_of_service: undefined
-    });
+
     const { open: _open } = useModal(
         getDangerActionConfirmationModal({
             msg: "Weet u zeker dat u deze ervaring wilt verwijderen?",
@@ -49,7 +41,7 @@ const Page = () => {
         }
     }
     const handleAdd = () => {
-        router.push(`/test/client/${clientId}/incident/create`);
+        router.push(`/test/client/${clientId}/incidents/create`);
     }
     // const handleDelete = async (incident: Incident) => {
     //     open({
@@ -106,11 +98,6 @@ const Page = () => {
                             :
                             <div className="grid grid-cols-1 gap-4">
 
-                                <TableFilters
-                                    filters={filters}
-                                    handleAdd={handleAdd}
-                                    setFilters={(filter) => setFilters(filter)}
-                                />
                                 <DataTable columns={columns} data={incidents?.results ?? []} onRowClick={() => { }} className="dark:bg-[#18181b] dark:border-black" />
                                 <div className="flex px-2 py-3 bg-white dark:bg-[#18181b] dark:border-black rounded-md mt-5 justify-between border-2 border-muted">
                                     <PrimaryButton

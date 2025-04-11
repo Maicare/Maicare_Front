@@ -47,6 +47,8 @@ export type Incident = {
   updated_at: string;
   created_at: string;
   is_confirmed: boolean;
+  employee_profile_picture	?: string;
+  location_name?: string;
 };
 
 export type CreateIncident = {

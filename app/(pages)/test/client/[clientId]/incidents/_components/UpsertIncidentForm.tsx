@@ -1,3 +1,4 @@
+"use client";
 import PrimaryButton from '@/common/components/PrimaryButton';
 import Tooltip from '@/common/components/Tooltip';
 import { Button } from '@/components/ui/button';
@@ -25,16 +26,16 @@ import MultiEmailsSelect from './MultiEmailsSelect';
 
 type Props = {
     mode: "create" | "update";
-    onSuccess?: (id: number) => void;
+    onSuccess?: () => void;
     defaultValues?: Incident;
     onCancel: () => void;
     clientId: string;
+    incidentId?: string;
 }
-const UpsertIncidentForm = ({ mode, onCancel, defaultValues, onSuccess, clientId }: Props) => {
+const UpsertIncidentForm = ({ mode, onCancel, defaultValues, onSuccess, clientId,incidentId }: Props) => {
     const { createOne, updateOne } = useIncident({ autoFetch: false, clientId: parseInt(clientId) });
     const [loading, setLoading] = useState(false);
     const { locations, } = useLocation({ autoFetch: true });
-
     // 1. Define your form.
 
     const form = useForm<CreateIncidentNew>({
@@ -93,13 +94,13 @@ const UpsertIncidentForm = ({ mode, onCancel, defaultValues, onSuccess, clientId
         if (mode === "create") {
             try {
                 setLoading(true);
-                const newClient = await createOne(
-                    values, parseInt(clientId), {
+                await createOne(
+                    {...values,emails:form.getValues("emails")}, parseInt(clientId), {
                     displaySuccess: true,
                     displayProgress: true
                 }
                 );
-                onSuccess?.(newClient.id);
+                onSuccess?.();
             } catch (error) {
                 console.log(error);
             } finally {
@@ -108,18 +109,18 @@ const UpsertIncidentForm = ({ mode, onCancel, defaultValues, onSuccess, clientId
         } else {
             try {
                 setLoading(true);
-                // await updateOne(
-                //     {
-                //         ...values
-                //     },
-                //     defaultValues?.id || 0,
-                //     parseInt(clientId),
-                //     {
-                //         displaySuccess: true,
-                //         displayProgress: true
-                //     }
-                // );
-                onSuccess?.(defaultValues?.id || 0);
+                await updateOne(
+                    {
+                        ...values
+                    },
+                    defaultValues?.id || 0,
+                    parseInt(clientId),
+                    {
+                        displaySuccess: true,
+                        displayProgress: true
+                    }
+                );
+                onSuccess?.();
             } catch (error) {
                 console.log(error);
             } finally {
@@ -127,10 +128,8 @@ const UpsertIncidentForm = ({ mode, onCancel, defaultValues, onSuccess, clientId
             }
         }
     }
-    const updateEmails = (emails: string[]) => {
-        form.setValue("emails", emails);
-    }
 
+    console.log({errors:form.formState.errors,values:form.getValues()})
     useEffect(() => {
         const clientOptions = form.getValues("client_options");
         const selectedClientOptions = clientOptions.filter((option) => option !== undefined);
@@ -143,13 +142,16 @@ const UpsertIncidentForm = ({ mode, onCancel, defaultValues, onSuccess, clientId
         const selectedOrganizational = organizational.filter((option) => option !== undefined);
         const technical = form.getValues("technical");
         const selectedTechnical = technical.filter((option) => option !== undefined);
+        const succession = form.getValues("succession");
+        const selectedSuccession = succession.filter((option) => option !== undefined);
         form.setValue("client_options", selectedClientOptions);
         form.setValue("inform_who", selectedInFormWho);
         form.setValue("mese_worker", selectedMeseWorker);
         form.setValue("organizational", selectedOrganizational);
         form.setValue("technical", selectedTechnical);
+        form.setValue("succession", selectedSuccession);
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [form.getValues("client_options"), form.getValues("inform_who"), form.getValues("mese_worker"), form.getValues("organizational"), form.getValues("technical")])
+    }, [form.getValues("client_options"),form.getValues("succession"), form.getValues("inform_who"), form.getValues("mese_worker"), form.getValues("organizational"), form.getValues("technical")])
     return (
         <Form {...form} >
             <form onSubmit={form.handleSubmit(onSubmit)} className="grid grid-cols-2 gap-4">
@@ -1102,14 +1104,14 @@ const UpsertIncidentForm = ({ mode, onCancel, defaultValues, onSuccess, clientId
                     </div>
                     <div className="grid grid-cols-1 gap-4 h-fit">
                         <div className="flex flex-col gap-4 px-6 py-3 bg-white rounded-md border-2 border-muted h-fit">
-                            <h1 className='text-base font-semibold text-black'>Opvolging</h1>
+                            <h1 className='text-base font-semibold text-black'>Rapport</h1>
                             <Separator className='bg-slate-300' />
                             <div className="grid grid-cols-2 gap-x-2 gap-y-4">
                                 <MultiEmailsSelect
-                                    mode='create'
+                                    mode='update'
                                     clientId={clientId}
-                                    updateState={updateEmails}
                                     label='Selecteer de medewerkers e-mailadressen'
+                                    emails={defaultValues ? defaultValues.emails : []}
                                 />
                             </div>
                         </div>

@@ -5,21 +5,21 @@ import { MultiSelectCombobox } from '@/components/ui/MultiSelectCombobox';
 import { useClient } from '@/hooks/client/use-client';
 import { useEmployee } from '@/hooks/employee/use-employee';
 import React, { useEffect, useMemo, useState } from 'react'
+import { useFormContext } from 'react-hook-form';
 
 type Props = {
     mode?: "create" | "update";
     emails?: string[];
     clientId?: string;
-    updateState?: (emails: string[]) => void;
     label:string;
 }
 
-const MultiEmailsSelect = ({ mode = "create", emails, clientId, updateState,label }: Props) => {
+const MultiEmailsSelect = ({ mode = "create", emails, clientId, label }: Props) => {
     const { readEmployeesEmails } = useEmployee({ autoFetch: false });
     const { readClientRelatedEmails } = useClient({ autoFetch: false });
     const [selectedValues, setSelectedValues] = useState<string[]>([])
     const [suggestions, setSuggestions] = useState<Any[]>([]);
-
+    const form = useFormContext();
     useEffect(() => {
         if (mode === "update") {
             setSelectedValues(emails || []);
@@ -35,7 +35,7 @@ const MultiEmailsSelect = ({ mode = "create", emails, clientId, updateState,labe
             })();
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [clientId, mode]);
+    }, [clientId, mode,emails]);
 
     useEffect(() => {
         (async () => {
@@ -49,17 +49,16 @@ const MultiEmailsSelect = ({ mode = "create", emails, clientId, updateState,labe
         })();
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
-    useEffect(() => {
-        if (updateState) {
-            updateState(emails || []);
-        }
-    }, [emails, updateState]);
+    
     const options = useMemo(() => {
         return suggestions.map((item) => ({
             value: item.email,
             label: item.email + " (" + item.first_name + " " + item.last_name + ")",
         }));
     }, [suggestions]);
+    useEffect(() => {
+        form.setValue("emails", selectedValues);
+    }, [selectedValues]);
     return (
         <div className='col-span-2 w-full'>
             <FormLabel className='flex items-center justify-between text-sm text-slate-700 font-semibold mb-2'>

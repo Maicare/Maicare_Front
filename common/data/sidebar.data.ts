@@ -10,12 +10,12 @@ export const sidebarLinks = [
     },
     {
         title: "Clients",
-        url: "/clients",
+        url: "/test/client",
         icon: Handshake,
     },
     {
         title: "Employees",
-        url: "/employees",
+        url: "/test/employee",
         icon: Users2,
     },
     {

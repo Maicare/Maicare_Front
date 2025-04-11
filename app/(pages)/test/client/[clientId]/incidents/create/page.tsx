@@ -7,8 +7,8 @@ import UpsertIncidentForm from "../_components/UpsertIncidentForm";
 const Page = () => {
     const router = useRouter();
     const {clientId} = useParams();
-    const onSuccess = (id:number) => {
-        router.push(`/employee/${id}`)
+    const onSuccess = () => {
+        router.push(`/test/client/${clientId}/incidents`)
     }
     const onCancel = () => {
         router.back();

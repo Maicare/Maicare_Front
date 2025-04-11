@@ -102,7 +102,7 @@ const EpisodeForm: FunctionComponent<Props> = ({
 
       if (mode === "edit" && incident) {
         setIsDataLoading(true);
-        await updateOne({...formattedValues}, incident.id, clientId);
+        // await updateOne({...formattedValues}, incident.id, clientId);
         setIsDataLoading(false);
         router.push(`/clients/${clientId}/incidents`);
       } else if (mode === "new") {

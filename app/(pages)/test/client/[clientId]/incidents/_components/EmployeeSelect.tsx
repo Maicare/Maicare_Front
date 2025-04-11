@@ -22,8 +22,8 @@ export const EmployeeSelect: FunctionComponent<Props> = ({
     className,
 }) => {
     const form = useFormContext();
-    const [filter, setFilter] = useState({ search: "", autofetch: true });
-    const { employees } = useEmployee(filter);
+    const [filter, setFilter] = useState({ search: "", autoFetch: true });
+    const { employees } = useEmployee({...filter, autoFetch: true});
     // Build options from employees
     const options = useMemo(() => {
         if (!employees) return [];
@@ -73,7 +73,7 @@ export const EmployeeSelect: FunctionComponent<Props> = ({
                                     placeholder="Zoek medewerker..."
                                     className="h-9"
                                     onValueChange={(search) => {
-                                        setFilter(prev => ({ ...prev, search }));
+                                        setFilter(prev => ({ ...prev, search,autoFetch:true }));
                                     }}
                                 />
                                 <CommandList>

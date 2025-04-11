@@ -18,7 +18,6 @@ import {
 import { constructUrlSearchParams } from "@/utils/construct-search-params";
 import { stringConstructor } from "@/utils/string-constructor";
 import { DepartureEntries } from "@/types/contracts.types";
-import { UpdateClientRequestBody } from "@/schemas/clientNew.schema";
 
 export function useClient({
   search,

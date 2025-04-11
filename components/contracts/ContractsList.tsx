@@ -1,4 +1,4 @@
-import React, { FunctionComponent, useMemo } from "react";
+import React, { FunctionComponent, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useModal } from "@/components/providers/ModalProvider";
 import { ColumnDef } from "@tanstack/react-table";
@@ -10,7 +10,7 @@ import {
 } from "@/consts";
 import MonthsBetween from "@/common/components/MonthsBetween";
 import StatusBadge from "../common/StatusBadge/StatusBadge";
-import {  ContractItem } from "@/types/contracts.types";
+import {  ContractFilterFormType, ContractItem } from "@/types/contracts.types";
 import PaginatedTable from "../common/PaginatedTable/PaginatedTable";
 import Loader from "../common/loader";
 import DropdownDefault from "@/common/components/DropdownDefault";

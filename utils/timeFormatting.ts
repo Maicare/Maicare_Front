@@ -54,15 +54,25 @@ export function monthYearFormat(date: string | Date) {
   return dayjs(date).format(MONTH_YEAR_FORMAT);
 }
 
-export const formatDateToDutch = (dateString: string): string => {
-  const date = new Date(dateString);
+export const formatDateToDutch = (dateString: string | Date, isDay: boolean = false): string => {
+  let date = typeof dateString === "string" ? new Date(dateString) : dateString;
   const months = [
     "januari", "februari", "maart", "april", "mei", "juni",
     "juli", "augustus", "september", "oktober", "november", "december"
   ];
-  
+
   const month = months[date.getUTCMonth()]; // Get month in Dutch
   const year = date.getUTCFullYear(); // Get year
-  
+  if (isDay) {
+    const day = date.getUTCDate(); // Get day
+    const daySuffix = (day: number): string => {
+      const suffixes = ["ste", "de", "de", "de", "de", "de", "de", "de", "de", "de"];
+      return suffixes[day % 10] || "";
+    }
+    const dayWithSuffix = `${day}${daySuffix(day)}`; // Add suffix to day
+    const formattedDate = `${dayWithSuffix} ${month} ${year}`; // Format date
+    return formattedDate;
+  }
+
   return `${month} ${year}`;
 };

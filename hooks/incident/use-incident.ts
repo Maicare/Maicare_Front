@@ -124,7 +124,7 @@ export function useIncident({
   };
 
   const updateOne = async (
-    incident: CreateIncident,
+    incident: CreateIncidentNew,
     incident_id: Id,
     client_id: Id,
     options?: ApiOptions
@@ -133,21 +133,21 @@ export function useIncident({
     try {
       // Display progress bar
       if (displayProgress) startProgress();
-      const { message, success, data, error } = await useApi<CreateIncident&{id:Id}>(
+      const { message, success, data, error } = await useApi<CreateIncidentNew&{id:Id}>(
         ApiRoutes.Client.Incident.UpdateOne.replace(
           "{id}",
           client_id.toString()
         ).replace("{incident_id}", incident_id.toString()),
         "PUT",
         {},
-        incident
+        {...incident,employee_id: parseInt(incident.employee_id),location_id: parseInt(incident.location_id)}
       );
       if (!data)
         throw new Error(error || message || "An unknown error occurred");
 
       // Display success message
       if (displaySuccess && success) {
-        enqueueSnackbar("Client Incident created successful!", {
+        enqueueSnackbar("Client Incident updated successful!", {
           variant: "success",
         });
       }
@@ -155,7 +155,7 @@ export function useIncident({
       return data;
     } catch (err: any) {
       enqueueSnackbar(
-        err?.response?.data?.message || "Client Incident creationg failed",
+        err?.response?.data?.message || "Client Incident updation failed",
         { variant: "error" }
       );
       throw err;

@@ -52,19 +52,19 @@ export function NavMain({
                 defaultOpen={pathname.startsWith(item.url) || item.items.some(current=>pathname.startsWith(current.url))}
                 className="group/collapsible"
               >
-                <SidebarMenuItem className="bg-white/30 backdrop-blur-sm rounded-md text-white">
+                <SidebarMenuItem className="text-white">
                   <CollapsibleTrigger asChild >
-                    <SidebarMenuButton tooltip={item.title} className={cn("hover:bg-indigo-300 dark:hover:bg-indigo-800", (pathname.startsWith(item.url) || item.items.some(current=>pathname.startsWith(current.url))) && "bg-gray-300 dark:bg-gray-500")}>
+                    <SidebarMenuButton tooltip={item.title} className={cn("hover:!bg-indigo-400/30 hover:!text-white hover:backdrop-blur-sm dark:hover:bg-indigo-800", (pathname.startsWith(item.url) || item.items.some(current=>pathname.startsWith(current.url))) && "bg-white/30 backdrop-blur-sm rounded-md text-white")}>
                       {item.icon && <item.icon />}
                       <span>{item.title}</span>
                       <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
                     </SidebarMenuButton>
                   </CollapsibleTrigger>
                   <CollapsibleContent>
-                    <SidebarMenuSub>
+                    <SidebarMenuSub className="text-white">
                       {item.items?.map((subItem) => (
                         <SidebarMenuSubItem key={subItem.title}>
-                          <SidebarMenuSubButton asChild className={cn("hover:bg-indigo-300 dark:hover:bg-indigo-800", pathname.startsWith(subItem.url) && "bg-indigo-200 dark:bg-indigo-800")}>
+                          <SidebarMenuSubButton asChild className={cn("hover:bg-indigo-300 dark:hover:bg-indigo-800 text-white", pathname.startsWith(subItem.url) && "bg-white/30 backdrop-blur-sm rounded-md text-white")}>
                             <a href={subItem.url}>
                               <span>{subItem.title}</span>
                             </a>

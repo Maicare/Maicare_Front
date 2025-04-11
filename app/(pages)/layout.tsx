@@ -4,6 +4,7 @@ import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/s
 import { AppSidebar } from "@/common/components/AppSidebar";
 import { Separator } from "@/components/ui/separator";
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "@/components/ui/breadcrumb";
+import DropdownNotification from "@/components/common/Header/DropdownNotification";
 
 export default function RootLayout({ children }: { children: ReactNode }) {
 
@@ -21,7 +22,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
             <div className="relative flex flex-1 flex-col overflow-y-auto overflow-x-hidden">
               {/* <!-- ===== Header Start ===== --> */}
               {/* <Header sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} /> */}
-              <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12 bg-sidebar text-sidebar-foreground dark:bg-[#18181b] navbar-img">
+              <header className="flex h-16 shrink-0 items-center justify-between transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12 bg-sidebar text-sidebar-foreground dark:bg-[#18181b] navbar-img">
                 <div className="flex items-center gap-2 px-4 text-white">
                   <SidebarTrigger className="-ml-1" />
                   <Separator orientation="vertical" className="mr-2 h-4" />
@@ -38,6 +39,9 @@ export default function RootLayout({ children }: { children: ReactNode }) {
                       </BreadcrumbItem>
                     </BreadcrumbList>
                   </Breadcrumb>
+                </div>
+                <div className="mr-8">
+                <DropdownNotification />
                 </div>
               </header>
               {/* <!-- ===== Header End ===== --> */}
