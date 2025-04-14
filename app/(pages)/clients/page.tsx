@@ -85,19 +85,9 @@ const ClientsPage = () => {
         cell: (info) => STATUS_OPTIONS.find(item => item.value === info.getValue())?.label, //TODO: add thiss condition later
       },
       {
-        accessorKey: "document_info",
-        header: () => "Documenten",
-        cell: (_info) => {
-          //   let missing_documents = info.getValue() ["not_uploaded_document_labels"]?.length;
-          const missing_documents = 0;
-          return missing_documents > 0 ? (
-            <span className="text-red-600">
-              {missing_documents} missende documenten
-            </span>
-          ) : (
-            <span className="text-green">✅ voltooid</span>
-          );
-        },
+        accessorKey: "bsn",
+        header: () => "BSN",
+        cell: (info) => info.getValue(),
       },
     ];
   }, []);
@@ -128,7 +118,7 @@ const ClientsPage = () => {
             />
             <PermitableComponent permission={PermissionsObjects.CreateEmployee}>
               <LinkButton
-                text={"Nieuwe Medewerker Toevoegen"}
+                text={"Nieuwe klant toevoegen"}
                 href={`/clients/new`}
               />
             </PermitableComponent>

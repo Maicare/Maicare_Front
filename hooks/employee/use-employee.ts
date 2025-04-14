@@ -144,7 +144,7 @@ export function useEmployee({
       if (displayProgress) startProgress();
       const { message, success, data, error } =
         await useApi<EmployeeDetailsResponse>(
-          ApiRoutes.Employee.UpdateOne.replace("{id}",employee.id.toString()),
+          ApiRoutes.Employee.UpdateOne.replace("{id}", employee.id.toString()),
           "PUT",
           {},
           employee
@@ -323,6 +323,31 @@ export function useEmployee({
     }
   };
 
+
+
+  const updateEmployeePassword = async (new_password: string, old_password: string, options?: ApiOptions) => {
+    const { displayProgress = false, displaySuccess = false } = options || {};
+    try {
+      // Display progress bar
+      if (displayProgress) startProgress();
+      const { message, success, data, error } = await useApi(ApiRoutes.Employee.UpdatePassword, "POST", {}, {
+        new_password,
+        old_password
+      });
+
+      // Display success message
+      if (displaySuccess && success) {
+        enqueueSnackbar("Password changed successfully!", { variant: "success" });
+      }
+      return data;
+    } catch (err: any) {
+      enqueueSnackbar(err?.response?.data?.message || "Password did not change", { variant: "error" });
+      throw err;
+    } finally {
+      if (displayProgress) stopProgress();
+    }
+  }
+
   //TODO: Add logic to CRUD user role
   return {
     employees,
@@ -337,6 +362,7 @@ export function useEmployee({
     updateEmployeePicture,
     readEmployeesEmails,
     createOne,
-    updateOne
+    updateOne,
+    updateEmployeePassword
   };
 }

@@ -102,6 +102,8 @@ const EmployeesPage = () => {
         <></>
     );
 
+    console.log(employees?.results)
+
     return (
         <div>
             <div className="flex justify-between items-center">

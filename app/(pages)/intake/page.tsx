@@ -108,18 +108,20 @@ const ClientsPage = () => {
             </div>
 
             <div className="rounded-lg overflow-hidden">
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 items-stretch">
+                <div className={!isLoading && intakes && intakes.results.length > 0 ? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 items-stretch" : ''}>
                     {isLoading && (
                         <div className="col-span-full flex justify-center items-center">
                             <Loader />
                         </div>
                     )}
-                    {!isLoading && (!intakes || intakes.results.length === 0) ? <LargeErrorMessage
-                        firstLine={"Oeps!"}
-                        secondLine={
-                            "Het lijkt erop dat er geen inlaten zijn die voldoen aan uw zoekcriteria."
-                        }
-                    /> : ''}
+                    {!isLoading && (!intakes || intakes.results.length === 0) ?
+                        <LargeErrorMessage
+                            firstLine={"Oeps!"}
+                            secondLine={
+                                "Het lijkt erop dat er geen inlaten zijn die voldoen aan uw zoekcriteria."
+                            }
+                        />
+                        : ''}
                     {intakes && intakes.results.length > 0 && intakes.results.map(client => (
                         <div key={client.id} className="bg-white shadow-md flex flex-col border rounded-lg overflow-hidden shadow-sm">
                             <div className="p-4 border-b">

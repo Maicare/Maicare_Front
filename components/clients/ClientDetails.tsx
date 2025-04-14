@@ -159,7 +159,7 @@ const ClientDetails: FunctionComponent<PropsType> = ({ clientId }) => {
           <InvolvedEmployeesSummary clientId={clientData?.id} />
         </Panel>
 
-        <ClientContactSummary client={clientData} />
+        <ClientContactSummary client={clientData} clientId={clientData?.id} />
 
         <Panel
           title={"Contracten"}
