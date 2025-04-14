@@ -31,7 +31,7 @@ export function useAutomaticReport({
   const { start: startProgress, stop: stopProgress } = useProgressBar();
 
   const [page, setPage] = useState(params?.page || 1);
-  const page_size = params?.page_size || 5;
+  const page_size = params?.page_size || 8;
 
   const {
     data: automaticReports,
@@ -46,6 +46,9 @@ export function useAutomaticReport({
         )}?page=${page}&page_size=${page_size}`
       : null,
     async (url) => {
+      if (!url) {
+        return null;
+      }
       const response = await api.get(url);
       if (!response.data.data) {
         return null;
@@ -115,14 +118,13 @@ export function useAutomaticReport({
         );
       if (!data)
         throw new Error(error || message || "An unknown error occurred");
-
+      mutate();
       // Display success message
       if (displaySuccess && success) {
         enqueueSnackbar("Automatic report created successful!", {
           variant: "success",
         });
       }
-      router.push(`/clients/${clientId}/reports-record/automatic-reports`);
       mutate();
       return data;
     } catch (err: any) {

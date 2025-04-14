@@ -84,6 +84,7 @@ const TextEnhancingModal: FunctionComponent<ModalProps> = ({ additionalProps, ..
                 <div className="rounded-xl bg-white p-5 mb-10 text-red-600">
                     Er is een fout opgetreden bij het verbeteren van de tekst.
                     <Button
+                        type="button"
                         onClick={async () => {
                             setIsError(false);
                             await enhanceReport(additionalProps?.content || "");
@@ -95,6 +96,7 @@ const TextEnhancingModal: FunctionComponent<ModalProps> = ({ additionalProps, ..
             )}
             <div className="flex justify-center gap-4">
                 <Button
+                    type="button"
                     buttonType={"Outline"}
                     onClick={() => {
                         props.onClose();
@@ -104,6 +106,7 @@ const TextEnhancingModal: FunctionComponent<ModalProps> = ({ additionalProps, ..
                 </Button>
                 <Button
                     disabled={!enhanced}
+                    type="button"
                     onClick={() => {
                         additionalProps?.onConfirm(enhanced);
                         props.onClose();

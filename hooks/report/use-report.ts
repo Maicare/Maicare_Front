@@ -5,7 +5,8 @@ import useProgressBar from "@/common/hooks/use-progress-bar";
 import { ApiOptions } from "@/common/types/api.types";
 import { PaginatedResponse } from "@/common/types/pagination.types";
 import { Id } from "@/common/types/types";
-import { CreateReport, Report } from "@/types/reports.types";
+import { CreateReport } from "@/schemas/report.schema";
+import { Report } from "@/types/reports.types";
 import { constructUrlSearchParams } from "@/utils/construct-search-params";
 import { stringConstructor } from "@/utils/string-constructor";
 import { usePathname } from "next/navigation";
@@ -14,9 +15,10 @@ import { useEffect, useState } from "react";
 import useSWR from "swr";
 
 
-export function useReport({ autoFetch = true,clientId,page=1,page_size=10 }: { autoFetch?: boolean,clientId:Id,page?:number,page_size?:number }) {
+export function useReport({ autoFetch = true, clientId, page: pageParams = 1, page_size = 8 }: { autoFetch?: boolean, clientId: Id, page?: number, page_size?: number }) {
     const { enqueueSnackbar } = useSnackbar();
-    const [reports,setReports] = useState<PaginatedResponse<Report>>({
+    const [page, setPage] = useState(1);
+    const [reports, setReports] = useState<PaginatedResponse<Report>>({
         results: [],
         count: 0,
         page_size: 0,
@@ -24,10 +26,10 @@ export function useReport({ autoFetch = true,clientId,page=1,page_size=10 }: { a
         previous: null
     });
     const { start: startProgress, stop: stopProgress } = useProgressBar();
-    const { data, error, mutate,isLoading } = useSWR<PaginatedResponse<Report>>(
-        stringConstructor(ApiRoutes.Report.ReadAll.replace("{id}",clientId.toString()), constructUrlSearchParams({ page, page_size })),
+    const { data, error, mutate, isLoading } = useSWR<PaginatedResponse<Report>>(
+        autoFetch ? stringConstructor(ApiRoutes.Report.ReadAll.replace("{id}", clientId.toString()), constructUrlSearchParams({ page, page_size })) : null,
         async (url) => {
-            if (!autoFetch) {
+            if (!url) {
                 return {
                     results: [],
                     count: 0,
@@ -49,13 +51,13 @@ export function useReport({ autoFetch = true,clientId,page=1,page_size=10 }: { a
             }
             return response.data.data;
         },
-        { shouldRetryOnError: false, revalidateOnFocus: true }
+        { shouldRetryOnError: false, revalidateOnFocus: true, }
     );
 
-    useEffect(()=> {
-        if(data){
+    useEffect(() => {
+        if (data) {
             setReports(data);
-        }else{
+        } else {
             setReports({
                 results: [],
                 count: 0,
@@ -64,20 +66,20 @@ export function useReport({ autoFetch = true,clientId,page=1,page_size=10 }: { a
                 previous: null
             });
         }
-    },[data]);
+    }, [data]);
     const pathname = usePathname();
 
-useEffect(() => {
-    mutate();  // Forces SWR to re-fetch data
-}, [pathname]);  // Runs when the route changes
+    useEffect(() => {
+        mutate();  // Forces SWR to re-fetch data
+    }, [pathname]);  // Runs when the route changes
 
 
-    const createOne = async (report:CreateReport, options?: ApiOptions) => {
+    const createOne = async (report: CreateReport, options?: ApiOptions) => {
         const { displayProgress = false, displaySuccess = false } = options || {};
         try {
             // Display progress bar
             if (displayProgress) startProgress();
-            const { message, success, data, error } = await useApi<Report>(ApiRoutes.Report.CreateOne.replace("{id}",clientId.toString()), "POST", {},report);
+            const { message, success, data, error } = await useApi<Report>(ApiRoutes.Report.CreateOne.replace("{id}", clientId.toString()), "POST", {}, report);
             if (!data)
                 throw new Error(error || message || "An unknown error occurred");
 
@@ -94,12 +96,12 @@ useEffect(() => {
             if (displayProgress) stopProgress();
         }
     }
-    const updateOne = async (report:CreateReport, options?: ApiOptions) => {
+    const updateOne = async (report: CreateReport, options?: ApiOptions) => {
         const { displayProgress = false, displaySuccess = false } = options || {};
         try {
             // Display progress bar
             if (displayProgress) startProgress();
-            const { message, success, data, error } = await useApi<Report>(ApiRoutes.Report.UpdateOne.replace("{id}",clientId.toString()).replace("{report_id}",report.id!.toString()), "PUT", {},report);
+            const { message, success, data, error } = await useApi<Report>(ApiRoutes.Report.UpdateOne.replace("{id}", clientId.toString()).replace("{report_id}", report.id!.toString()), "PUT", {}, report);
             if (!data)
                 throw new Error(error || message || "An unknown error occurred");
 
@@ -116,12 +118,12 @@ useEffect(() => {
             if (displayProgress) stopProgress();
         }
     }
-    const readOne = async (report:Id, options?: ApiOptions) => {
+    const readOne = async (report: Id, options?: ApiOptions) => {
         const { displayProgress = false, displaySuccess = false } = options || {};
         try {
             // Display progress bar
             if (displayProgress) startProgress();
-            const { message, success, data, error } = await useApi<Report>(ApiRoutes.Report.ReadOne.replace("{id}",clientId.toString()).replace("{report_id}",report.toString()), "GET");
+            const { message, success, data, error } = await useApi<Report>(ApiRoutes.Report.ReadOne.replace("{id}", clientId.toString()).replace("{report_id}", report.toString()), "GET");
             if (!data)
                 throw new Error(error || message || "An unknown error occurred");
 
@@ -139,12 +141,12 @@ useEffect(() => {
         }
     }
 
-    const enhanceReport = async(report:string,options?: ApiOptions) => {
+    const enhanceReport = async (report: string, options?: ApiOptions) => {
         const { displayProgress = false, displaySuccess = false } = options || {};
         try {
             // Display progress bar
             if (displayProgress) startProgress();
-            const { message, success, data, error } = await useApi<{corrected_text:string,initial_text:string}>(ApiRoutes.Report.Enhance, "POST", {},{initial_text:report});
+            const { message, success, data, error } = await useApi<{ corrected_text: string, initial_text: string }>(ApiRoutes.Report.Enhance, "POST", {}, { initial_text: report });
             if (!data)
                 throw new Error(error || message || "An unknown error occurred");
 
@@ -160,8 +162,8 @@ useEffect(() => {
             if (displayProgress) stopProgress();
         }
     }
-    
-    
+
+
     return {
         reports,
         error,
@@ -170,6 +172,8 @@ useEffect(() => {
         createOne,
         updateOne,
         readOne,
-        enhanceReport
+        enhanceReport,
+        setPage,
+        page
     }
 }

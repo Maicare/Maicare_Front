@@ -75,12 +75,6 @@ const Page = () => {
                 <StatisticCard colorKey="pink" icon={Timer} title="Avg. Response Time" value={4} prefix='Hours' className='lg:w-[280px] ' />
                 <StatisticCard colorKey="orange" icon={TriangleAlert} title="Ovl. Rate" value={8} prefix='%' className='lg:w-[280px] ' />
             </div>
-            {/* {adding ?
-                <UpsertCertificationForm employeeId={parseInt(employeeId as string)} onCancel={cancelAdd} mode="add" onSuccess={cancelAdd} />
-                : editing ?
-                    <UpsertCertificationForm employeeId={parseInt(employeeId as string)} onCancel={cancelEdit} mode="update" onSuccess={cancelEdit} defaultValues={certification || undefined} />
-                    : null
-            } */}
             <div className="grid grid-cols-1 gap-4">
                 {
                     isLoading ?

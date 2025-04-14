@@ -96,8 +96,18 @@ export const sidebarClientLinks = (client:{first_name:string,last_name:string,id
     },
     {
         title: "Rapporten",
-        url: "/test/client/" + client?.id+"/reports-record/reports",
+        url: "/test/client/" + client?.id+"/reports",
         icon: FileBadge ,
+        items: [
+            {
+                title: "User Reports",
+                url: "/test/client/" + client?.id+"/reports/user-reports",
+            },
+            {
+                title: "Automatic Reports",
+                url: "/test/client/" + client?.id+"/reports/automatic-reports",
+            }
+        ],
     },
     {
         title: "Documenten",

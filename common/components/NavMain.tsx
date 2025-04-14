@@ -49,6 +49,7 @@ export function NavMain({
               <Collapsible
                 key={item.title}
                 asChild
+                open={pathname.startsWith(item.url) || item.items.some(current=>pathname.startsWith(current.url))}
                 defaultOpen={pathname.startsWith(item.url) || item.items.some(current=>pathname.startsWith(current.url))}
                 className="group/collapsible"
               >
