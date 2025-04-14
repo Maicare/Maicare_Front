@@ -13,6 +13,8 @@ import { EmployeeDetailsResponse } from "@/types/employee.types";
 import Loader from "../common/loader";
 import { useModal } from "../providers/ModalProvider";
 import { EmployeeProfilePictureModal } from "../common/Modals/EmployeeProfileModal";
+import Button from "../common/Buttons/Button";
+import { ChangePassModal } from "../common/Modals/ChangePassModal";
 
 type Props = {
   employeeId: number;
@@ -22,20 +24,24 @@ const EmployeeInformation: FunctionComponent<Props> = ({ employeeId }) => {
   const { readOne } = useEmployee({ autoFetch: false });
   const [employee, setEmployee] = useState<EmployeeDetailsResponse | null>(null);
   const [picture, setPicture] = useState("/images/user/user-default.png");
-  const [refetch,setRefetch] = useState(false);
+  const [refetch, setRefetch] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-  const {open} = useModal(EmployeeProfilePictureModal);
+  const { open } = useModal(EmployeeProfilePictureModal);
+  const { open: openChangePassword } = useModal(ChangePassModal);
+
+  console.log("IDDDD", employee)
+
 
   useEffect(() => {
     const fetchEmployee = async () => {
       const data = await readOne(employeeId);
       setEmployee(data);
-      setPicture(data.profile_picture||"/images/user/user-default.png");
+      setPicture(data.profile_picture || "/images/user/user-default.png");
       setIsLoading(false);
     };
     fetchEmployee();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [employeeId,refetch]);
+  }, [employeeId, refetch]);
 
   if (isLoading) return <Loader />;
 
@@ -48,7 +54,7 @@ const EmployeeInformation: FunctionComponent<Props> = ({ employeeId }) => {
             open({
               id: employeeId,
               employeeImage: picture,
-              onRefetch:()=>setRefetch(v=>!v),
+              onRefetch: () => setRefetch(v => !v),
             });
           }}
           className="relative w-fit cursor-pointer"
@@ -144,6 +150,19 @@ const EmployeeInformation: FunctionComponent<Props> = ({ employeeId }) => {
         label={"Dienstnummer"}
         value={employee.employment_number || "Niet gespecificeerd"}
       />
+
+      {employee.is_logged_in_user &&
+        <Button
+          className="col-span-2 my-5"
+          onClick={() => {
+            openChangePassword({});
+          }}
+          buttonType="Primary"
+        >Wachtwoord Wijzigen</Button>
+
+
+      }
+
     </div>
   );
 };

@@ -70,7 +70,8 @@ export type EmployeeDetailsResponse = {
     has_borrowed: boolean,
     out_of_service: boolean,
     is_archived: boolean,
-    profile_picture: string
+    profile_picture: string,
+    is_logged_in_user?: boolean,
 }
 
 export type EmployeeForm = {

@@ -20,6 +20,7 @@ const ApiRoutes = {
   UpdateImage: prefix + "/{id}/profile_picture",
   DeleteOne: prefix + "/{id}",
   ReadEmails: prefix + "/emails",
+  UpdatePassword: "/auth/change_password",
 };
 
 export default ApiRoutes;

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { FunctionComponent } from "react";
+import React, { FunctionComponent, useEffect, useState } from "react";
 import DetailCell from "../../common/DetailCell";
 import { Client as ClientType } from "@/types/client.types";
 import Panel from "../../common/Panel/Panel";
@@ -9,9 +9,14 @@ import { OpClientType, OpClientTypeRecord } from "@/types/contacts.types";
 import Button from "../../common/Buttons/Button";
 import ClientContactModal from "../../common/Modals/ClientContactModal";
 import { useModal } from "../../providers/ModalProvider";
+import { useClient } from "@/hooks/client/use-client";
+import { set } from "nprogress";
+import { Any } from "@/common/types/types";
+import Loader from "@/components/common/loader";
 
 type Props = {
     client: ClientType | null;
+    clientId: number | undefined;
 };
 
 const data = {
@@ -27,11 +32,34 @@ const data = {
 };
 
 
-const ClientContactSummary: FunctionComponent<Props> = ({ client }) => {
+const ClientContactSummary: FunctionComponent<Props> = ({ client, clientId }) => {
 
     const { open } = useModal(ClientContactModal);
+    const { readOneSender } = useClient({});
 
-    if (client?.sender_id)
+    const [sender, setSender] = useState<Any>(null);
+    const [loading, setLoading] = useState(false);
+
+    useEffect(() => {
+        const getSender = async () => {
+            if (!clientId) return
+            try {
+                setLoading(true);
+                const response = await readOneSender(clientId);
+                setSender(response);
+                setLoading(false);
+            } catch (error) {
+                console.log(error)
+                setLoading(false);
+            }
+        }
+
+        getSender()
+    }, [clientId])
+
+
+    if (loading) return <Loader />
+    if (sender && sender?.types)
         return (
             <Panel
                 title={"Opdrachtgever"}
@@ -53,15 +81,15 @@ const ClientContactSummary: FunctionComponent<Props> = ({ client }) => {
                 }
             >
                 <section className="grid grid-cols-3 gap-2">
-                    <DetailCell label={"Opdrachtgever"} value={OpClientTypeRecord[data.types as OpClientType]} />
-                    <DetailCell label={"Naam"} value={data.name} />
-                    <DetailCell label={"Adres"} value={data.address} />
-                    <DetailCell label={"Postcode"} value={data.postal_code} />
-                    <DetailCell label={"Plaats"} value={data.place} />
-                    <DetailCell label={"Telefoonnummer"} type={"phone"} value={data.phone_number} />
-                    <DetailCell label={"KvK nummer"} value={data.KVKnumber} />
-                    <DetailCell label={"BTW nummer"} value={data.BTWnumber} />
-                    <DetailCell label={"Cliëntnummer"} value={data.client_number} />
+                    <DetailCell label={"Opdrachtgever"} value={OpClientTypeRecord[sender.types as OpClientType]} />
+                    <DetailCell label={"Naam"} value={sender.name} />
+                    <DetailCell label={"Adres"} value={sender.address} />
+                    <DetailCell label={"Postcode"} value={sender.postal_code} />
+                    <DetailCell label={"Plaats"} value={sender.place} />
+                    <DetailCell label={"Telefoonnummer"} type={"phone"} value={sender.phone_number} />
+                    <DetailCell label={"KvK nummer"} value={sender.KVKnumber} />
+                    <DetailCell label={"BTW nummer"} value={sender.btwnumber} />
+                    <DetailCell label={"Cliëntnummer"} value={sender.client_number} />
                 </section>
             </Panel>
         );

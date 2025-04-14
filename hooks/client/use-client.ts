@@ -234,6 +234,29 @@ export function useClient({
     }
   };
 
+  const readOneSender = async (id: Id, options?: ApiOptions) => {
+    const { displayProgress = false } = options || {};
+    try {
+      if (displayProgress) startProgress();
+      const response = await useApi<Client>(
+        ApiRoutes.Client.ReadSender.replace("{id}", id.toString()),
+        "GET"
+      );
+      if (!response.data) {
+        throw new Error("Client not found");
+      }
+      return response.data;
+    } catch (err: any) {
+      enqueueSnackbar(
+        err?.response?.data?.message || "Failed to fetch client",
+        { variant: "error" }
+      );
+      throw err;
+    } finally {
+      if (displayProgress) stopProgress();
+    }
+  };
+
   //TODO: Add logic to CRUD user role
   return {
     clients,
@@ -247,6 +270,7 @@ export function useClient({
     readClientRelatedEmails,
     updateStatus,
     getStatusHistory,
-    updateOne
+    updateOne,
+    readOneSender
   };
 }
