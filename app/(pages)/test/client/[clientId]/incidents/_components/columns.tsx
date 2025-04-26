@@ -1,19 +1,15 @@
 "use client"
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { INCIDENT_TYPE_NOTIFICATIONS, INJURY_OPTIONS, PSYCHOLOGICAL_DAMAGE_OPTIONS, SEVERITY_OF_INCIDENT_OPTIONS, TYPES_INCIDENT_OPTIONS } from "@/consts"
 import { Incident } from "@/types/incident.types"
 import { cn } from "@/utils/cn"
 import { formatDateToDutch } from "@/utils/timeFormatting"
-import { ColumnDef } from "@tanstack/react-table"
-import { format } from "date-fns"
-import { AlertCircle, AlertOctagon, AlertTriangle, Bandage, Bell, Bone, Brain, Building2, CheckCircle, Droplets, Edit2, Eye, FileText, Flame, FlaskConical, HeartPulse, Info, MoreHorizontal, Pill, ServerCrash, Skull, Trash, UserX, XCircle } from "lucide-react"
+import { ColumnDef, Row } from "@tanstack/react-table"
+import { AlertCircle, AlertOctagon, AlertTriangle, Bandage, Bell, Bone, Brain, Building2, CheckCircle, Droplets, Edit2,  FileText, Flame, FlaskConical, HeartPulse, Info, MoreHorizontal, Pill, ServerCrash, Skull, Trash, UserX } from "lucide-react"
 import { useRouter } from "next/navigation"
-import DeleteIncidentDialog from "./DeleteIncidentDialog"
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog"
 import { useIncident } from "@/hooks/incident/use-incident"
 import { useState } from "react"
@@ -296,104 +292,106 @@ export const columns: ColumnDef<Incident>[] = [
   {
     id: "actions",
     header: "Acties",
-    cell: ({ row }) => {
-      const router = useRouter();
-      const [type, setType] = useState<"delete" | "confirm">("delete");
-      const { confirmOne, generatePdf } = useIncident({ clientId: row.original.client_id, autoFetch: false });
-      const dialogProps: Record<"delete" | "confirm", { title: string, desc: string, action: string }> = {
-        delete: {
-          title: "Incident verwijderen",
-          desc: "Weet u zeker dat u dit incident wilt verwijderen?",
-          action: "Bevestigen"
-        },
-        confirm: {
-          title: "Bevestig dit incident",
-          desc: "Door dit incident te bevestigen, wordt de hier gegenereerde pdf per e-mail verzonden. Weet je het zeker?",
-          action: "Bevestigen"
-        }
-      }
-      const selectedDialog = dialogProps[type];
-      const handleView = async () => {
-        try {
-          const res = await generatePdf(row.original?.id as number, { displaySuccess: true });
-          window.open(res.file_url, "_blank");
-        } catch (error) {
-          console.error(error);
-        }
-      }
-      const handleConfirm = async () => {
-        if (type === "confirm") {
-          try {
-            await confirmOne(row.original.id, { displaySuccess: true, displayProgress: true });
-          } catch (error) {
-            console.error(error);
-          }
-        }
-      }
-      return (
-        <AlertDialog>
-          <DropdownMenu modal={false}>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className="h-8 w-8 p-0">
-                <span className="sr-only">Open menu</span>
-                <MoreHorizontal className="h-4 w-4" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="bg-white">
-              <DropdownMenuLabel>Acties</DropdownMenuLabel>
-              <DropdownMenuItem
-                onClick={() => { router.push(`/test/client/${row.original.client_id}/incidents/${row.original.id}/update`) }}
-                className="hover:bg-indigo-100 hover:text-indigo-500 transition-colors ease-in-out cursor-pointer flex items-center gap-2"
-              >
-                <Edit2 className="h-4 w-4" />
-                <span className="text-sm font-medium">Bewerken</span>
-              </DropdownMenuItem>
-              <DropdownMenuSeparator />
-              <AlertDialogTrigger asChild>
-
-                <DropdownMenuItem
-                  onClick={()=>{setType("confirm")}}
-                  className="bg-green-100 hover:bg-green-200 hover:text-green-500 transition-colors ease-in-out cursor-pointer flex items-center gap-2"
-                >
-                  <FileText className="h-4 w-4" />
-                  <span className="text-sm font-medium">Bevestig</span>
-                </DropdownMenuItem>
-              </AlertDialogTrigger>
-              <AlertDialogTrigger asChild>
-
-                <DropdownMenuItem
-                  onClick={() => { setType("delete") }}
-                  className="bg-red-100 hover:bg-red-200 hover:text-red-500 transition-colors ease-in-out cursor-pointer flex items-center gap-2"
-                >
-                  <Trash className="h-4 w-4" />
-                  <span className="text-sm font-medium">verwijderen</span>
-                </DropdownMenuItem>
-              </AlertDialogTrigger>
-
-            </DropdownMenuContent>
-          </DropdownMenu>
-          <AlertDialogContent>
-            <AlertDialogHeader>
-              <AlertDialogTitle className="flex flex-col gap-2 items-center">
-                <span className="h-12 w-12 rounded-full bg-red-200 flex items-center justify-center">
-                  <AlertTriangle className="text-red-600 h-8 w-8" />
-                </span>
-                <span className="text-lg font-semibold">{selectedDialog.title}</span>
-              </AlertDialogTitle>
-              <AlertDialogDescription className="text-center">
-                {selectedDialog.desc}
-              </AlertDialogDescription>
-            </AlertDialogHeader>
-            <AlertDialogFooter className="w-full grid grid-cols-2 gap-2 space-x-0">
-              {
-                type === "confirm" && <Button onClick={handleView} className="ml-2 p-2 w-full col-span-2 border-none ring-0 bg-sky-200 px-2 py-1 text-sky-500 hover:bg-sky-400 hover:text-white transition-colors">View PDF</Button>
-              }
-              <AlertDialogCancel className="w-full border-none ring-0 bg-indigo-200 px-2 py-1 text-indigo-500 hover:bg-indigo-400 hover:text-white transition-colors ml-0 space-x-0">Annuleren</AlertDialogCancel>
-              <AlertDialogAction onClick={handleConfirm} className="w-full border-none ring-0 bg-red-200 px-2 py-1 text-red-500 hover:bg-red-500 hover:text-white transition-colors ml-0 space-x-0">{selectedDialog.action}</AlertDialogAction>
-            </AlertDialogFooter>
-          </AlertDialogContent>
-        </AlertDialog>
-      );
-    }
+    cell: ({ row }) => <ActionCell row={row} />,
   }
 ];
+
+const ActionCell = ({ row }: { row: Row<Incident> }) => {
+  const router = useRouter();
+  const [type, setType] = useState<"delete" | "confirm">("delete");
+  const { confirmOne, generatePdf } = useIncident({ clientId: row.original.client_id, autoFetch: false });
+  const dialogProps: Record<"delete" | "confirm", { title: string, desc: string, action: string }> = {
+    delete: {
+      title: "Incident verwijderen",
+      desc: "Weet u zeker dat u dit incident wilt verwijderen?",
+      action: "Bevestigen"
+    },
+    confirm: {
+      title: "Bevestig dit incident",
+      desc: "Door dit incident te bevestigen, wordt de hier gegenereerde pdf per e-mail verzonden. Weet je het zeker?",
+      action: "Bevestigen"
+    }
+  }
+  const selectedDialog = dialogProps[type];
+  const handleView = async () => {
+    try {
+      const res = await generatePdf(row.original?.id as number, { displaySuccess: true });
+      window.open(res.file_url, "_blank");
+    } catch (error) {
+      console.error(error);
+    }
+  }
+  const handleConfirm = async () => {
+    if (type === "confirm") {
+      try {
+        await confirmOne(row.original.id, { displaySuccess: true, displayProgress: true });
+      } catch (error) {
+        console.error(error);
+      }
+    }
+  }
+  return (
+    <AlertDialog>
+      <DropdownMenu modal={false}>
+        <DropdownMenuTrigger asChild>
+          <Button variant="ghost" className="h-8 w-8 p-0">
+            <span className="sr-only">Open menu</span>
+            <MoreHorizontal className="h-4 w-4" />
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end" className="bg-white">
+          <DropdownMenuLabel>Acties</DropdownMenuLabel>
+          <DropdownMenuItem
+            onClick={() => { router.push(`/test/client/${row.original.client_id}/incidents/${row.original.id}/update`) }}
+            className="hover:bg-indigo-100 hover:text-indigo-500 transition-colors ease-in-out cursor-pointer flex items-center gap-2"
+          >
+            <Edit2 className="h-4 w-4" />
+            <span className="text-sm font-medium">Bewerken</span>
+          </DropdownMenuItem>
+          <DropdownMenuSeparator />
+          <AlertDialogTrigger asChild>
+
+            <DropdownMenuItem
+              onClick={() => { setType("confirm") }}
+              className="bg-green-100 hover:bg-green-200 hover:text-green-500 transition-colors ease-in-out cursor-pointer flex items-center gap-2"
+            >
+              <FileText className="h-4 w-4" />
+              <span className="text-sm font-medium">Bevestig</span>
+            </DropdownMenuItem>
+          </AlertDialogTrigger>
+          <AlertDialogTrigger asChild>
+
+            <DropdownMenuItem
+              onClick={() => { setType("delete") }}
+              className="bg-red-100 hover:bg-red-200 hover:text-red-500 transition-colors ease-in-out cursor-pointer flex items-center gap-2"
+            >
+              <Trash className="h-4 w-4" />
+              <span className="text-sm font-medium">verwijderen</span>
+            </DropdownMenuItem>
+          </AlertDialogTrigger>
+
+        </DropdownMenuContent>
+      </DropdownMenu>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle className="flex flex-col gap-2 items-center">
+            <span className="h-12 w-12 rounded-full bg-red-200 flex items-center justify-center">
+              <AlertTriangle className="text-red-600 h-8 w-8" />
+            </span>
+            <span className="text-lg font-semibold">{selectedDialog.title}</span>
+          </AlertDialogTitle>
+          <AlertDialogDescription className="text-center">
+            {selectedDialog.desc}
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter className="w-full grid grid-cols-2 gap-2 space-x-0">
+          {
+            type === "confirm" && <Button onClick={handleView} className="ml-2 p-2 w-full col-span-2 border-none ring-0 bg-sky-200 px-2 py-1 text-sky-500 hover:bg-sky-400 hover:text-white transition-colors">View PDF</Button>
+          }
+          <AlertDialogCancel className="w-full border-none ring-0 bg-indigo-200 px-2 py-1 text-indigo-500 hover:bg-indigo-400 hover:text-white transition-colors ml-0 space-x-0">Annuleren</AlertDialogCancel>
+          <AlertDialogAction onClick={handleConfirm} className="w-full border-none ring-0 bg-red-200 px-2 py-1 text-red-500 hover:bg-red-500 hover:text-white transition-colors ml-0 space-x-0">{selectedDialog.action}</AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
+  );
+}

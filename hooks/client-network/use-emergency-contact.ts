@@ -12,6 +12,7 @@ import { useState } from "react";
 import useSWR from "swr";
 import { useRouter } from "next/navigation";
 import { EmergencyContactForm, EmergencyContactList, EmergencyContactsSearchParams } from "@/types/emergency.types";
+import { CreateEmergencyContact } from "@/schemas/emergencyContact.schema";
 
 
 export function useEmergencyContact({ search, page: pageParam = 1, page_size = 10, autoFetch = true, clientId = '0' }: Partial<EmergencyContactsSearchParams & { autoFetch?: boolean }>) {
@@ -41,7 +42,7 @@ export function useEmergencyContact({ search, page: pageParam = 1, page_size = 1
     );
     const isLoading = !emergencyContacts && !error;
 
-    const createOne = async (contact: EmergencyContactForm, options?: ApiOptions) => {
+    const createOne = async (contact: CreateEmergencyContact, options?: ApiOptions) => {
         const { displayProgress = false, displaySuccess = false } = options || {};
         try {
             if (displayProgress) startProgress();
@@ -53,7 +54,6 @@ export function useEmergencyContact({ search, page: pageParam = 1, page_size = 1
             if (displaySuccess && success) {
                 enqueueSnackbar("Client Emergency contact created successful!", { variant: "success" });
             }
-            router.push(`/clients/${clientId}/client-network/emergency`);
             mutate()
             return data;
         } catch (err: any) {
@@ -86,7 +86,7 @@ export function useEmergencyContact({ search, page: pageParam = 1, page_size = 1
         }
     }
 
-    const updateOne = async (contact: EmergencyContactForm, id: string, options?: ApiOptions) => {
+    const updateOne = async (contact: CreateEmergencyContact, id: string, options?: ApiOptions) => {
         const { displayProgress = false, displaySuccess = false } = options || {};
         try {
             if (displayProgress) startProgress();
@@ -98,7 +98,6 @@ export function useEmergencyContact({ search, page: pageParam = 1, page_size = 1
             if (displaySuccess && success) {
                 enqueueSnackbar("Client Emergency contact updated successful!", { variant: "success" });
             }
-            router.push(`/clients/${clientId}/client-network/emergency`);
             mutate()
             return data;
         } catch (err: any) {

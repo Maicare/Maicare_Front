@@ -10,12 +10,8 @@ import InputControl from "@/common/components/InputControl";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { CreateReport, DAILY_REPORT_TYPES_OPTIONS, EMOTIONAL_STATE_OPTIONS, Report } from "@/types/reports.types";
 import { ReportSchema } from "@/schemas/report.schema";
-import { useReport } from "@/hooks/report/use-report";
 import { Id } from "@/common/types/types";
 import SmartTextarea from "@/common/components/SmartTextareaControl";
-import { useAuth } from "@/common/hooks/use-auth";
-import { useRouter } from "next/navigation";
-
 
 
 const initialValues: CreateReport = {
@@ -42,9 +38,7 @@ export const ReportsForm: FunctionComponent<PropsType> = ({
     mode,
     report = initialValues,
 }) => {
-    const { createOne,updateOne } = useReport({ autoFetch: false, clientId });
-    const {user} = useAuth();
-    const router = useRouter();
+
     const methods = useForm<CreateReport>({
         resolver: yupResolver(ReportSchema),
         defaultValues: report,
@@ -54,17 +48,17 @@ export const ReportsForm: FunctionComponent<PropsType> = ({
         handleSubmit,
         formState: { isSubmitting },
     } = methods;
-    const onSubmit = async (data: Report) => {
-        try {
-            if (mode === "edit") {
-                await updateOne({...data,employee_id:user?.employee_id||0,date:data.date + ":00Z"});
-            } else {
-                await createOne({...data,employee_id:user?.employee_id||0,date:data.date + ":00Z"});
-            }
-            router.push(`/clients/${clientId}/reports`);
-        } catch (error) {
-            console.error({error});
-        }
+    const onSubmit = async (_data: Report) => {
+        // try {
+        //     if (mode === "edit") {
+        //         await updateOne({...data,employee_id:user?.employee_id||0,date:data.date + ":00Z"});
+        //     } else {
+        //         await createOne({...data,employee_id:user?.employee_id||0,date:data.date + ":00Z"});
+        //     }
+        //     router.push(`/clients/${clientId}/reports`);
+        // } catch (error) {
+        //     console.error({error});
+        // }
     }
     const medicationRecords = {
         count: 2,

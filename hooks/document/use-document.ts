@@ -14,8 +14,9 @@ import { useEffect, useState } from "react";
 import useSWR from "swr";
 
 
-export function useDocument({ autoFetch = true, clientId, page = 1, page_size = 10 }: { autoFetch?: boolean, clientId: Id, page?: number, page_size?: number }) {
+export function useDocument({ autoFetch = true, clientId, page:pageProp = 1, page_size = 10 }: { autoFetch?: boolean, clientId: Id, page?: number, page_size?: number }) {
     const { enqueueSnackbar } = useSnackbar();
+    const [page,setPage] = useState(1);
     const [documents, setDocuments] = useState<PaginatedResponse<Document>>({
         results: [],
         count: 0,
@@ -146,6 +147,8 @@ export function useDocument({ autoFetch = true, clientId, page = 1, page_size = 
         mutate,
         createOne,
         deleteOne,
-        readMissingDocs
+        readMissingDocs,
+        setPage,
+        page
     }
 }

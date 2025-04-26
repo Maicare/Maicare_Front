@@ -1,4 +1,4 @@
-import React, { FunctionComponent, PropsWithChildren, useEffect } from "react";
+import React, { FunctionComponent, PropsWithChildren } from "react";
 import { Dialog } from "@headlessui/react";
 import { cn } from "@/utils/cn";
 import ModalActionButton from "../Buttons/ModalActionButton";

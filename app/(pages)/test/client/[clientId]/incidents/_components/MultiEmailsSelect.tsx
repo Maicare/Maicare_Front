@@ -58,6 +58,7 @@ const MultiEmailsSelect = ({ mode = "create", emails, clientId, label }: Props) 
     }, [suggestions]);
     useEffect(() => {
         form.setValue("emails", selectedValues);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [selectedValues]);
     return (
         <div className='col-span-2 w-full'>

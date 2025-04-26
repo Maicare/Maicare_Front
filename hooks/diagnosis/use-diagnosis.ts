@@ -10,8 +10,9 @@ import { useSnackbar } from "notistack";
 import useProgressBar from "@/common/hooks/use-progress-bar";
 import { useApi } from "@/common/hooks/use-api";
 import { useRouter } from "next/navigation";
+import { CreateDiagnosis } from "@/schemas/diagnosis.schema";
 
-export function useDiagnosis(clientId: Number, params?: PaginationParams) {
+export function useDiagnosis({clientId, params,autoFetch=false}:{ clientId: number, params?: PaginationParams,autoFetch?: boolean }) {
 
   const router = useRouter();
 
@@ -28,11 +29,12 @@ export function useDiagnosis(clientId: Number, params?: PaginationParams) {
     error,
     mutate,
   } = useSWR<PaginatedResponse<Diagnosis>>(
-    `${ApiRoutes.Client.Medical.Diagnosis.ReadAll.replace(
+    autoFetch ? `${ApiRoutes.Client.Medical.Diagnosis.ReadAll.replace(
       "{id}",
       clientId.toString()
-    )}?page=${page}&page_size=${page_size}&ordering=-date_of_diagnosis`,
+    )}?page=${page}&page_size=${page_size}&ordering=-date_of_diagnosis` : null,
     async (url) => {
+      if (!url) return null;
       const response = await api.get(url);
       if (!response.data.data) {
         return null;
@@ -43,11 +45,19 @@ export function useDiagnosis(clientId: Number, params?: PaginationParams) {
   );
   const isLoading = !diagnosis && !error;
 
-  const createOne = async (diagnosis: DiagnosisForm, options?: ApiOptions) => {
+  const createOne = async (diagnosis: CreateDiagnosis, options?: ApiOptions) => {
     const { displayProgress = false, displaySuccess = false } = options || {};
     try {
+      const medications = diagnosis.medications.map((medication) => ({
+        ...medication,
+        administered_by_id: parseInt(medication.administered_by_id),
+      }));
+      const body = {
+        ...diagnosis,
+        medications,
+        };
       if (displayProgress) startProgress();
-      const { message, success, data, error } = await useApi<DiagnosisForm>(ApiRoutes.Client.Medical.Diagnosis.CreateOne.replace("{id}", clientId.toString()), "POST", {}, diagnosis);
+      const { message, success, data, error } = await useApi<Diagnosis>(ApiRoutes.Client.Medical.Diagnosis.CreateOne.replace("{id}", clientId.toString()), "POST", {}, body);
       if (!data)
         throw new Error(error || message || "An unknown error occurred");
 
@@ -55,7 +65,6 @@ export function useDiagnosis(clientId: Number, params?: PaginationParams) {
       if (displaySuccess && success) {
         enqueueSnackbar("Diagnosis created successful!", { variant: "success" });
       }
-      router.push(`/clients/${clientId}/medical-record/diagnosis`);
       mutate()
       return data;
     } catch (err: any) {
@@ -88,11 +97,19 @@ export function useDiagnosis(clientId: Number, params?: PaginationParams) {
     }
   }
 
-  const updateOne = async (diagnosis: DiagnosisForm, id: string, options?: ApiOptions) => {
+  const updateOne = async (diagnosis: CreateDiagnosis, id: string, options?: ApiOptions) => {
     const { displayProgress = false, displaySuccess = false } = options || {};
     try {
       if (displayProgress) startProgress();
-      const { message, success, data, error } = await useApi<DiagnosisForm>(ApiRoutes.Client.Medical.Diagnosis.readOne.replace("{diagnosis_id}", id).replace("{id}", clientId.toString()), "PUT", {}, diagnosis);
+      const medications = diagnosis.medications.map((medication) => ({
+        ...medication,
+        administered_by_id: parseInt(medication.administered_by_id),
+      }));
+      const body = {
+        ...diagnosis,
+        medications,
+        };
+      const { message, success, data, error } = await useApi<Diagnosis>(ApiRoutes.Client.Medical.Diagnosis.readOne.replace("{diagnosis_id}", id).replace("{id}", clientId.toString()), "PUT", {}, body);
       if (!data)
         throw new Error(error || message || "An unknown error occurred");
 
@@ -100,7 +117,6 @@ export function useDiagnosis(clientId: Number, params?: PaginationParams) {
       if (displaySuccess && success) {
         enqueueSnackbar("Diagnosis updated successful!", { variant: "success" });
       }
-      router.push(`/clients/${clientId}/medical-record/diagnosis`);
       mutate()
       return data;
     } catch (err: any) {

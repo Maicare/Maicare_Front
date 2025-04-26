@@ -33,7 +33,8 @@ const EditContract: FunctionComponent = () => {
         console.log(error);
       }
     }
-    getContract()
+    getContract();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [contractId, clientId]);
 
   if (loading)

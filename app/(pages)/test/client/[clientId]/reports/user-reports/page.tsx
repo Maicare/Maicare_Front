@@ -3,7 +3,7 @@ import PrimaryButton from '@/common/components/PrimaryButton'
 import LargeErrorMessage from '@/components/common/Alerts/LargeErrorMessage';
 import Loader from '@/components/common/loader';
 import { useReport } from '@/hooks/report/use-report';
-import { ArrowBigLeft, ArrowBigRight, FileUser, PlusCircle } from 'lucide-react'
+import { ArrowBigLeft, ArrowBigRight, FileUser } from 'lucide-react'
 import { useParams } from 'next/navigation';
 import ReportCard from './_components/ReportCard';
 import { Report, REPORT_TYPE_RECORD } from '@/types/reports.types';
@@ -57,7 +57,7 @@ const UserReports = () => {
             console.log(error);
         }
     }
-    const handleDelete = async (id: number) => {
+    const handleDelete = async (_id: number) => {
         try {
             alert("deleted !")
         } catch (error) {

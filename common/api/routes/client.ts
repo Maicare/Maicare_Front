@@ -27,9 +27,11 @@ const ApiRoutes = {
       CreateOne: prefix + "/{id}/episodes",
     },
     Medications: {
-      ReadAll: prefix + "/{id}/medications",
-      CreateOne: prefix + "/{id}/medications",
+      ReadAll: prefix + "/{id}/diagnosis/{diagnosis_id}/medications",
+      CreateOne: prefix + "/{id}/diagnosis/{diagnosis_id}/medications",
+      UpdateOne: prefix + "/{id}/diagnosis/{diagnosis_id}/medications/{medication_id}",
       readOne: prefix + "/{id}/diagnosis/{medication_id}",
+      DeleteOne: prefix + "/{id}/medications/{medication_id}",
     },
   },
   Incident: {

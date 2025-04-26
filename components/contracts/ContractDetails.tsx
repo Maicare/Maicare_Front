@@ -8,19 +8,15 @@ import {
   CONTRACT_STATUS_VARIANT_DICT,
 } from "@/consts";
 import { useModal } from "@/components/providers/ModalProvider";
-import { ContractFormType, ContractItem, ContractResDto, DepartureEntries } from "@/types/contracts.types";
+import {  ContractResDto } from "@/types/contracts.types";
 import StatusBadge from "../common/StatusBadge/StatusBadge";
 import TerminationModal from "../common/Modals/TerminationModal";
 import ContactAssignment from "./ContactAssignment";
-import { resDtoToPatchDto } from "./resDtoToPatchDto";
-import { getConfirmModal } from "../common/Modals/ConfirmationModal";
-import Button from "../common/Buttons/Button";
 import MonthsBetween from "@/common/components/MonthsBetween";
 import { WhenNotification } from "./WhenNotification";
 import { Loader } from "lucide-react";
 import { formatPrice, rateType, calculateTotalRate, getRate } from "@/utils/rate-utils";
 import { ClientDetailsResDto } from "@/types/client.types";
-import DownloadFile from "../common/DownloadFile";
 import { useContact } from "@/hooks/contact/use-contact";
 import { useClient } from "@/hooks/client/use-client";
 import { Any } from "@/common/types/types";
@@ -55,6 +51,7 @@ const ContractDetails: FunctionComponent<Props> = ({ contractData, clientId }) =
     if (contractData?.sender_id) {
       getContact();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [contractData]);
 
   useEffect(() => {
@@ -69,6 +66,7 @@ const ContractDetails: FunctionComponent<Props> = ({ contractData, clientId }) =
       }
     };
     getClient();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [clientId]);
 
   return (
@@ -109,7 +107,7 @@ function ClientData(props: { clientData: ClientDetailsResDto; contractData: Cont
   //   })
   // );
 
-  const { open: openTerminate } = useModal(TerminationModal);
+  const { open: _openTerminate } = useModal(TerminationModal);
   return (
     <div className="flex flex-col-reverse gap-5 xl:flex-row xl:justify-between">
       <div className="flex flex-col gap-4 sm:flex-row xl:gap-9">
@@ -239,7 +237,7 @@ function ContractData(props: { contractData: ContractResDto }) {
   );
 }
 
-function PaymentDetails(props: { item: ContractResDto }) {
+export function PaymentDetails(props: { item: ContractResDto }) {
   return (
     <div className="-mx-4 flex flex-wrap">
       <div className="w-full px-4 sm:w-1/2 xl:w-3/12">

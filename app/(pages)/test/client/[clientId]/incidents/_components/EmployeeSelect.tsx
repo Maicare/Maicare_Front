@@ -15,11 +15,13 @@ type Props = {
     label?: string;
     className?: string;
     required?: boolean;
+    modal?:boolean;
 };
 
 export const EmployeeSelect: FunctionComponent<Props> = ({
     name,
     className,
+    modal=false
 }) => {
     const form = useFormContext();
     const [filter, setFilter] = useState({ search: "", autoFetch: true });
@@ -39,14 +41,14 @@ export const EmployeeSelect: FunctionComponent<Props> = ({
             defaultValue={0} // or null, depending on your defaults
             control={form.control}
             render={({ field }) => (
-                <FormItem>
+                <FormItem className={cn("w-full", className)}>
                     <FormLabel className="flex items-center justify-between">
                         Medewerker
                         <Tooltip text='This is Locatie '>
                             <Info className='h-5 w-5 mr-2' />
                         </Tooltip>
                     </FormLabel>
-                    <Popover>
+                    <Popover modal={modal}>
                         <PopoverTrigger asChild>
                             <FormControl>
                                 <Button

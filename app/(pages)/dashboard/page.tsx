@@ -3,7 +3,6 @@ import React, { useMemo } from "react";
 import Link from "next/link";
 import { ClipboardList, AlertTriangle, AlertCircle } from "lucide-react";
 import Table from "@/components/common/Table/Table";
-import { useRouter } from "next/navigation";
 import { ColumnDef } from "@tanstack/table-core";
 import withAuth, { AUTH_MODE } from "@/common/hocs/with-auth";
 import withPermissions from "@/common/hocs/with-permissions";
@@ -120,7 +119,6 @@ const fakeDischargeData = [
 
 
 const DashboardPage = () => {
-  const router = useRouter();
 
   const waitlistColumnDef = useMemo<ColumnDef<Partial<IntakeFormType>>[]>(() => [
     {
@@ -214,11 +212,11 @@ const DashboardPage = () => {
     },
   ], []);
 
-  const handleRowClick = (client: Partial<IntakeFormType>) => {
+  const handleRowClick = (_client: Partial<IntakeFormType>) => {
     // Navigation logic here...
   };
 
-  const handleCareTrajectoryRowClick = (trajectory: Any) => {
+  const handleCareTrajectoryRowClick = (_trajectory: Any) => {
     // Navigation logic here...
   };
 

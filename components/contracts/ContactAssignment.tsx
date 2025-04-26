@@ -4,7 +4,6 @@ import React, { FunctionComponent } from "react";
 import InfoIcon from "@/components/icons/InfoIcon";
 import { Contact, OpClientTypeRecord } from "@/types/contacts.types";
 import DetailCell from "../common/DetailCell";
-import { Client } from "@/types/client.types";
 // import Button from "../common/Buttons/Button";
 
 const ContactAssignment: FunctionComponent<{
@@ -12,7 +11,7 @@ const ContactAssignment: FunctionComponent<{
   clientId: string;
   unassigned: boolean;
   text?: string;
-}> = ({ data, clientId, unassigned, text }) => {
+}> = ({ data,  text }) => {
   // const { open } = useModal(ContactModal);
   return (
     <>

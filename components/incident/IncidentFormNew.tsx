@@ -33,7 +33,6 @@ import Succession, {
 } from "./incidentsSteps/Succession";
 import { CreateIncident, Incident } from "@/types/incident.types";
 import Button from "../common/Buttons/Button";
-import { useIncident } from "@/hooks/incident/use-incident";
 import Report from "./incidentsSteps/Report";
 
 const formSchema = Yup.object().shape({
@@ -67,10 +66,7 @@ const EpisodeForm: FunctionComponent<Props> = ({
     ...IncidentInfosInitial,
   };
 
-  const { createOne, updateOne } = useIncident({
-    clientId: clientId,
-    autoFetch: false,
-  });
+
 
   const methods = useForm<CreateIncident>({
     resolver: yupResolver(formSchema),
@@ -93,12 +89,12 @@ const EpisodeForm: FunctionComponent<Props> = ({
   }, [mode, incident, reset]);
 
   const onSubmit = useCallback(
-    async (values: CreateIncident) => {
-      const formattedValues = {
-        ...values,
-        incident_date: new Date(values.incident_date).toISOString(),
-        emails: selectedEmails,
-      };
+    async (_values: CreateIncident) => {
+      // const formattedValues = {
+      //   ...values,
+      //   incident_date: new Date(values.incident_date).toISOString(),
+      //   emails: selectedEmails,
+      // };
 
       if (mode === "edit" && incident) {
         setIsDataLoading(true);
@@ -112,8 +108,8 @@ const EpisodeForm: FunctionComponent<Props> = ({
         setIsDataLoading(false);
         router.push(`/clients/${clientId}/incidents`);
       }
-    },
-    [ updateOne, mode, incident, clientId, selectedEmails, router]
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [mode, incident, clientId, selectedEmails, router]
   );
 
   const FORMS = [

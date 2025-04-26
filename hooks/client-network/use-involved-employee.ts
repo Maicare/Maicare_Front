@@ -13,6 +13,7 @@ import useSWR from "swr";
 import { useRouter } from "next/navigation";
 import { EmergencyContactForm } from "@/types/emergency.types";
 import { InvolvedEmployeeForm, InvolvedEmployeeList, InvolvedEmployeesSearchParams } from "@/types/involved.types";
+import { CreateInvolvedEmployee } from "@/schemas/involvedEmployee.schema";
 
 
 export function useInvolvedEmployee({ search, page: pageParam = 1, page_size = 10, autoFetch = true, clientId = '0' }: Partial<InvolvedEmployeesSearchParams & { autoFetch?: boolean }>) {
@@ -42,11 +43,11 @@ export function useInvolvedEmployee({ search, page: pageParam = 1, page_size = 1
     );
     const isLoading = !involvedEmployees && !error;
 
-    const createOne = async (employee: InvolvedEmployeeForm, options?: ApiOptions) => {
+    const createOne = async (employee: CreateInvolvedEmployee, options?: ApiOptions) => {
         const { displayProgress = false, displaySuccess = false } = options || {};
         try {
             if (displayProgress) startProgress();
-            const { message, success, data, error } = await useApi<InvolvedEmployeeForm>(ApiRoutes.ClientNetwork.involved.CreateOne.replace("{id}", clientId), "POST", {}, employee);
+            const { message, success, data, error } = await useApi<InvolvedEmployeeForm>(ApiRoutes.ClientNetwork.involved.CreateOne.replace("{id}", clientId), "POST", {}, {...employee,employee_id:parseInt(employee.employee_id)});
             if (!data)
                 throw new Error(error || message || "An unknown error occurred");
 
@@ -54,7 +55,6 @@ export function useInvolvedEmployee({ search, page: pageParam = 1, page_size = 1
             if (displaySuccess && success) {
                 enqueueSnackbar("Client Involved Employee created successful!", { variant: "success" });
             }
-            router.push(`/clients/${clientId}/client-network/emergency`);
             mutate()
             return data;
         } catch (err: any) {
@@ -87,11 +87,11 @@ export function useInvolvedEmployee({ search, page: pageParam = 1, page_size = 1
         }
     }
 
-    const updateOne = async (contact: InvolvedEmployeeForm, id: string, options?: ApiOptions) => {
+    const updateOne = async (contact: CreateInvolvedEmployee, id: string, options?: ApiOptions) => {
         const { displayProgress = false, displaySuccess = false } = options || {};
         try {
             if (displayProgress) startProgress();
-            const { message, success, data, error } = await useApi<EmergencyContactForm>(ApiRoutes.ClientNetwork.involved.ReadOne.replace("{employee_id}", id.toString()).replace("{id}", clientId), "PUT", {}, contact);
+            const { message, success, data, error } = await useApi<EmergencyContactForm>(ApiRoutes.ClientNetwork.involved.ReadOne.replace("{employee_id}", id.toString()).replace("{id}", clientId), "PUT", {}, {...contact,employee_id:parseInt(contact.employee_id)});
             if (!data)
                 throw new Error(error || message || "An unknown error occurred");
 
@@ -99,7 +99,6 @@ export function useInvolvedEmployee({ search, page: pageParam = 1, page_size = 1
             if (displaySuccess && success) {
                 enqueueSnackbar("Client Involved Employee updated successful!", { variant: "success" });
             }
-            router.push(`/clients/${clientId}/client-network/emergency`);
             mutate()
             return data;
         } catch (err: any) {

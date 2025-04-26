@@ -1,14 +1,12 @@
 "use client";
 
 import PrimaryButton from "@/common/components/PrimaryButton";
-import { Id } from "@/common/types/types";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Textarea } from "@/components/ui/textarea";
-import { useAutomaticReport } from "@/hooks/automatic-report/use-automatic-report";
 import { CreateAutomaticReport, ValidateAutomaticReport } from "@/types/automatic-report.types";
 import { cn } from "@/utils/cn";
 import { addDays, addHours, format } from "date-fns";

@@ -42,7 +42,7 @@ export const sidebarLinks = [
 export const sidebarEmployeeLinks = (employee:{first_name:string,last_name:string,id:number})=> [
     {
         title: "Overzicht ("+employee?.first_name + " " + employee?.last_name + ")",
-        url: "/test/employee/" + employee?.id,
+        url: "/test/employee/" + employee?.id + "/overview",
         icon: Users2,
         isActive: true,
     },
@@ -65,7 +65,7 @@ export const sidebarEmployeeLinks = (employee:{first_name:string,last_name:strin
 export const sidebarClientLinks = (client:{first_name:string,last_name:string,id:number})=> [
     {
         title: "Overzicht ("+client?.first_name + " " + client?.last_name + ")",
-        url: "/test/client/" + client?.id,
+        url: "/test/client/" + client?.id + "/overview",
         icon: UserCircle,
         isActive: true,
     },
@@ -93,6 +93,16 @@ export const sidebarClientLinks = (client:{first_name:string,last_name:string,id
         title: "Cliëntennetwerk",
         url: "/test/client/" + client?.id+"/client-network",
         icon: UsersRound ,
+        items: [
+            {
+                title: "Noodcontacten",
+                url: "/test/client/" + client?.id+"/client-network/emergency",
+            },
+            {
+                title: "Betrokken medewerkers",
+                url: "/test/client/" + client?.id+"/client-network/involved-employees",
+            }
+        ],
     },
     {
         title: "Rapporten",

@@ -12,7 +12,7 @@ import AutomaticReport from './_components/AutomaticReport';
 
 const AutomaticReports = () => {
   const { clientId } = useParams();
-  const { automaticReports, isLoading, error, page, setPage, generateOne, validateOne } = useAutomaticReport({ clientId: parseInt(clientId as string), autoFetch: true });
+  const { automaticReports, isLoading,  page, setPage, generateOne, validateOne } = useAutomaticReport({ clientId: parseInt(clientId as string), autoFetch: true });
   const handleGenerate = async (values:CreateAutomaticReport) => {
     try {
       const res = await generateOne(values);

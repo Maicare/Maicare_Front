@@ -2,7 +2,7 @@
 
 import Loader from "@/components/common/loader";
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogClose, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Dialog, DialogClose, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { useReport } from "@/hooks/report/use-report";
 import { cn } from "@/utils/cn";
 import { Change, diffWords } from "diff";

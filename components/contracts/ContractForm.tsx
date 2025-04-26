@@ -2,8 +2,8 @@
 
 import { ContractFormType, ContractResDto } from "@/types/contracts.types";
 import dayjs from "dayjs";
-import React, { FunctionComponent, useEffect, useMemo, useState } from "react";
-import { FormProps, FormProvider, Resolver, useForm } from "react-hook-form";
+import React, { FunctionComponent, useEffect,  useState } from "react";
+import { FormProps, FormProvider,  useForm } from "react-hook-form";
 import Button from "../common/Buttons/Button";
 import { useContact } from "@/hooks/contact/use-contact";
 import { useClient } from "@/hooks/client/use-client";
@@ -12,8 +12,6 @@ import { ControlledSelect } from "@/common/components/ControlledSelect";
 import { useContract } from "@/hooks/contract/use-contract";
 import InputControl from "@/common/components/InputControl";
 import { AGREEMENT_FILES_TAGS, CARE_RATE_OPTIONS_BY_TYPE, CARE_TYPE_OPTIONS, FINANCING_LAW_OPTIONS, FINANCING_OPTION_OPTIONS, HOURS_TERM_OPTIONS } from "@/consts";
-import ControlledCheckboxItem from "@/common/components/ControlledCheckboxItem";
-import FilesUploader from "@/common/components/FilesUploader";
 import InfoIcon from "../icons/InfoIcon";
 import { useModal } from "../providers/ModalProvider";
 import ManageContractTypeModal from "./ManageContractTypeModal";
@@ -86,6 +84,7 @@ const ContractForm: FunctionComponent<PropsType> = ({ clientId, contract }) => {
       setClientData(data);
     };
     getClient();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [clientId]);
 
   useEffect(() => {
@@ -97,6 +96,7 @@ const ContractForm: FunctionComponent<PropsType> = ({ clientId, contract }) => {
     if (clientData && clientData.sender_id) {
       getContact();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [clientData]);
 
   useEffect(() => {
@@ -112,11 +112,12 @@ const ContractForm: FunctionComponent<PropsType> = ({ clientId, contract }) => {
       );
     };
     getContractTypes();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const parsedInitialValues = useMemo(() => {
-    return initialValues;
-  }, []);
+  // const parsedInitialValues = useMemo(() => {
+  //   return initialValues;
+  // }, []);
 
   const methods = useForm<ContractFormType>({
     // resolver: yupResolver(contractSchema) as Resolver<ContractFormType>,
@@ -140,6 +141,7 @@ const ContractForm: FunctionComponent<PropsType> = ({ clientId, contract }) => {
       }
     };
     getContract();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [contract]);
 
   const onSubmit = async (data: ContractFormType) => {

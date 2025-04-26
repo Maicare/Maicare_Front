@@ -1,4 +1,3 @@
-import { ContractFormType } from "@/types/contracts.types";
 import dayjs from "dayjs";
 import { FunctionComponent } from "react";
 import InfoIcon from "../icons/InfoIcon";

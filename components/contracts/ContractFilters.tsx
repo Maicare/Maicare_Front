@@ -75,7 +75,7 @@ const ContractFilters: FunctionComponent<{
           type="button"
           className="py-4 "
           buttonType={"Outline"}
-          onClick={(e) => {
+          onClick={() => {
             reset(initialValues);
           }}
         >

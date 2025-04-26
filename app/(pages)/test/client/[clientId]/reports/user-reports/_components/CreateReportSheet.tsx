@@ -19,8 +19,6 @@ import { Calendar } from '@/components/ui/calendar';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import TextEnhancingDialog from './TextEnhancingDialog';
-import { useReport } from '@/hooks/report/use-report';
-import { useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 type Props = {
     mode: "create" | "update";
@@ -71,6 +69,7 @@ const CreateReportSheet = ({ mode,handleCreate,handleUpdate,report,handleOpen,is
             form.setValue("employee_id",report.employee_id);
             form.setValue("id",report.id);
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [user?.employee_id,report])
     return (
         <Sheet open={isOpen} onOpenChange={(o) => handleOpen(o)}>

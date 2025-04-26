@@ -24,7 +24,7 @@ type PropsType = {
   clientId?: string;
 };
 
-const ContractsList: FunctionComponent<PropsType> = ({ clientId }) => {
+const ContractsList: FunctionComponent<PropsType> = ({  }) => {
   const router = useRouter();
   const [filters, setFilters] = useState<ContractFilterFormType>({
     search: "",

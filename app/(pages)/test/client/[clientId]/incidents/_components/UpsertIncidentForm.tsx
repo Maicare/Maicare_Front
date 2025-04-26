@@ -32,7 +32,7 @@ type Props = {
     clientId: string;
     incidentId?: string;
 }
-const UpsertIncidentForm = ({ mode, onCancel, defaultValues, onSuccess, clientId,incidentId }: Props) => {
+const UpsertIncidentForm = ({ mode, onCancel, defaultValues, onSuccess, clientId }: Props) => {
     const { createOne, updateOne } = useIncident({ autoFetch: false, clientId: parseInt(clientId) });
     const [loading, setLoading] = useState(false);
     const { locations, } = useLocation({ autoFetch: true });
@@ -129,7 +129,6 @@ const UpsertIncidentForm = ({ mode, onCancel, defaultValues, onSuccess, clientId
         }
     }
 
-    console.log({errors:form.formState.errors,values:form.getValues()})
     useEffect(() => {
         const clientOptions = form.getValues("client_options");
         const selectedClientOptions = clientOptions.filter((option) => option !== undefined);

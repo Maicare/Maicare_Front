@@ -1,7 +1,6 @@
 import React, { FunctionComponent, useEffect, useState } from "react";
 import Link from "next/link";
 import { shortDateTimeFormat } from "@/utils/timeFormatting";
-import { Button } from "@/components/ui/button";
 import { Any } from "@/common/types/types";
 
 const NotificationTypes = [

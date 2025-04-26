@@ -9,7 +9,7 @@ import { useParams } from "next/navigation";
 import { useContract } from "@/hooks/contract/use-contract";
 import Loader from "@/components/common/loader";
 import LargeErrorMessage from "@/components/common/Alerts/LargeErrorMessage";
-import { ContractFormType, ContractItem, ContractResDto } from "@/types/contracts.types";
+import {  ContractResDto } from "@/types/contracts.types";
 import ContractDetails from "@/components/contracts/ContractDetails";
 
 const Page: FunctionComponent = () => {
@@ -37,6 +37,7 @@ const Page: FunctionComponent = () => {
       }
     }
     getContract()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [contractId, clientId]);
 
   console.log("Contract", contract)

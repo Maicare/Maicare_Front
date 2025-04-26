@@ -1,9 +1,8 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import BellIcon from "@/components/icons/BellIcon";
-import { NOTIFICATIONS_VIEW } from "@/consts";
 import Ping from "@/common/components/Ping";
-import Notifications, { NotificationItem } from "./Notifications";
+import Notifications from "./Notifications";
 import { Any } from "@/common/types/types";
 
 const fakeNotifications = {
@@ -64,7 +63,7 @@ const DropdownNotification = () => {
         return () => document.removeEventListener("keydown", keyHandler);
     });
 
-    const { data, isLoading } = { data: fakeNotifications, isLoading: false };
+    const { data, isLoading:_ } = { data: fakeNotifications, isLoading: false };
     const hasUnread = useMemo(() => {
         if (!data) return false;
         return data?.results.some((n) => !n.is_read);

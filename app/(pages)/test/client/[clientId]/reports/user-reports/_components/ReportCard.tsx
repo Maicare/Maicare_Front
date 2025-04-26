@@ -18,9 +18,7 @@ import {
     BookOpen,
     HelpCircle,
     LucideIcon,
-    MoreHorizontal,
     Edit2,
-    FileText,
     Trash,
     AlertTriangle,
     MoreVertical

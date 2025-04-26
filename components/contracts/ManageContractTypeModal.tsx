@@ -1,10 +1,7 @@
 import React, { FunctionComponent, useCallback, useEffect, useState } from "react";
 // import { useModal } from "@/components/providers/ModalProvider";
 // import ContactModal from "@/components/Modals/ContactModal";
-import InfoIcon from "@/components/icons/InfoIcon";
-import { Contact, OpClientTypeRecord } from "@/types/contacts.types";
-import DetailCell from "../common/DetailCell";
-import { Client } from "@/types/client.types";
+
 import { ModalProps } from "@/common/types/modal-props.types";
 import { ContractTypeCreateReqDto, ContractTypeItem } from "@/types/contracts.types";
 import * as Yup from "yup";
@@ -17,7 +14,6 @@ import Loader from "../common/loader";
 import IconButton from "../common/Buttons/IconButton";
 import TrashIcon from "../icons/TrashIcon";
 import { useContract } from "@/hooks/contract/use-contract";
-import { set } from "nprogress";
 // import Button from "../common/Buttons/Button";
 
 const ManageContractTypeModal: FunctionComponent<ModalProps> = ({ additionalProps, ...props }) => {
@@ -26,7 +22,6 @@ const ManageContractTypeModal: FunctionComponent<ModalProps> = ({ additionalProp
 
     const [contractTypes, setContractTypes] = useState<ContractTypeItem[]>([]);
     const [isLoading, setIsLoading] = useState(true);
-    const [deleteLoading, setDeleteLoading] = useState(false);
 
     const getContractTypes = useCallback(async () => {
         setIsLoading(true);
@@ -38,10 +33,12 @@ const ManageContractTypeModal: FunctionComponent<ModalProps> = ({ additionalProp
             }))
         );
         setIsLoading(false);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     useEffect(() => {
         getContractTypes();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const methods = useForm<ContractTypeCreateReqDto>({
