@@ -26,8 +26,8 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     const router = useRouter();
     const pathname = usePathname();
     const {clientId,employeeId} = useParams();
-    const isClient = pathname.startsWith("/test/client/") && pathname !== "/test/client/";
-    const isEmployee = pathname.startsWith("/test/employee/") && pathname !== "/test/employee/";
+    const isClient = pathname.startsWith("/clients/") && pathname !== "/clients/";
+    const isEmployee = pathname.startsWith("/employees/") && pathname !== "/employees/";
     const [user, setUser] = useState({first_name:"Loading",last_name:"",id:parseInt(employeeId as string) ?? parseInt(clientId as string)});
     
     const [isLoading, setIsLoading] = useState(false);
@@ -47,10 +47,10 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             setIsLoading(false);
         }
         if (isEmployee) {
-            const employeeId = pathname.split("/")[3];
+            const employeeId = pathname.split("/")[2];
             if (employeeId) fetchEmployee(+employeeId);
         }else if (isClient) {
-            const clientId = pathname.split("/")[3];
+            const clientId = pathname.split("/")[2];
             if (clientId) fetchClient(+clientId);
         } 
     }

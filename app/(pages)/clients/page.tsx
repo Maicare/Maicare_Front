@@ -1,173 +1,89 @@
 "use client";
-import { PermitableComponent } from "@/common/components/permitable-component";
-import { PermissionsObjects } from "@/common/data/permission.data";
-import withAuth, { AUTH_MODE } from "@/common/hocs/with-auth";
-import withPermissions from "@/common/hocs/with-permissions";
-import Routes from "@/common/routes";
-import LinkButton from "@/components/common/Buttons/LinkButton";
-import Loader from "@/components/common/loader";
-import Panel from "@/components/common/Panel/Panel";
-import Table from "@/components/common/Table/Table";
-import { useRouter } from "next/navigation";
-import { useMemo, useState } from "react";
-import { ColumnDef } from "@tanstack/table-core";
-import ProfilePicture from "@/components/common/profilePicture/profile-picture";
-import { getAge } from "@/utils/get-age";
-import { mappingGender } from "@/common/data/gender.data";
-import Pagination from "@/components/common/Pagination/Pagination";
-import LargeErrorMessage from "@/components/common/Alerts/LargeErrorMessage";
+import PrimaryButton from "@/common/components/PrimaryButton";
+import StatisticCard from "@/common/components/StatisticCard";
+import { DataTable } from "@/components/employee/table/data-table"
+import { PAGE_SIZE } from "@/consts";
 import { useClient } from "@/hooks/client/use-client";
-import { Client, ClientsSearchParams } from "@/types/client.types";
-import styles from "./styles.module.css";
 import { useDebounce } from "@/hooks/common/useDebounce";
-import ClientFilters from "@/components/clients/ClientFilters";
+import { Client, ClientsSearchParams } from "@/types/client.types";
+import { Row } from "@tanstack/table-core";
+import { ArrowBigLeft, ArrowBigRight, ListRestart, ListX, SquareActivity, Users } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { columns } from "./_components/columns";
+import TableFilters from "./_components/TableFilters";
 
-const PAGE_SIZE = 10;
 
-const ClientsPage = () => {
-  const router = useRouter();
 
-  const [filters, setFilters] = useState<ClientsSearchParams>({
-    page: 1,
-    page_size: PAGE_SIZE,
-  });
+export default function Page() {
 
-  const deboucedFilters = useDebounce(filters, 500);
+    const router = useRouter();
 
-  const { clients, error, isLoading, page, setPage } = useClient(deboucedFilters);
+    const [filters, setFilters] = useState<ClientsSearchParams>({
+        page: 1,
+        page_size: PAGE_SIZE,
+        search:"",
+        status:"On Waiting List"
+    });
 
-  const handleRowClick = (client: Client) => {
-    router.push(`/clients/${client.id}`);
-  };
+    const deboucedFilters = useDebounce(filters, 500);
 
-  const columnDef = useMemo<ColumnDef<Client>[]>(() => {
-    return [
-      {
-        id: "profilePicture",
-        // Profile
-        header: () => <div className="text-center">Profiel</div>,
-        cell: (info) => (
-          <div className="flex items-center justify-center">
-            <ProfilePicture
-              profilePicture={info.row.original.profile_picture}
-              width={48}
-              height={48}
-            />
-          </div>
-        ),
-      },
-      {
-        id: "full_name",
-        header: () => "Volledige Naam",
-        accessorFn: (client) => `${client.first_name} ${client.last_name}`,
-      },
-      {
-        accessorKey: "date_of_birth",
-        header: () => "Leeftijd",
-        cell: (info) =>
-          info.getValue()
-            ? getAge(info.getValue() as string)
-            : <span className='bg-red-100 text-red-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-sm dark:bg-red-900 dark:text-red-300'>Niet Beschikbaar</span>,
-      },
-      {
-        accessorKey: "gender",
-        header: () => "Geslacht",
-        cell: (info) =>
-          mappingGender[info.getValue() as string] || <span className='bg-red-100 text-red-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-sm dark:bg-red-900 dark:text-red-300'>Niet Beschikbaar</span>,
-      },
-      {
-        accessorKey: "status",
-        header: () => "Status",
-        cell: (_info) => "N/A", //TODO: add thiss condition later
-      },
-      {
-        accessorKey: "document_info",
-        header: () => "Documenten",
-        cell: (_info) => {
-          //   let missing_documents = info.getValue() ["not_uploaded_document_labels"]?.length;
-          const missing_documents = 0;
-          return missing_documents > 0 ? (
-            <span className="text-red-600">
-              {missing_documents} missende documenten
-            </span>
-          ) : (
-            <span className="text-green">✅ voltooid</span>
-          );
-        },
-      },
-    ];
-  }, []);
+    const { clients, page, setPage } = useClient(deboucedFilters);
 
-  const pagination = clients ? (
-    <div className="p-4 sm:p-6 xl:p-7.5 flex items-center justify-between">
-      <Pagination
-        page={page}
-        disabled={isLoading || error || clients.results.length === 0}
-        onClick={setPage}
-        totalPages={Math.ceil(clients.count / PAGE_SIZE)}
-      />
-      {isLoading && <div className="text-sm">Fetching page {page}...</div>}
-    </div>
-  ) : (
-    <></>
-  );
-  return (
-    <div>
-      <Panel
-        title={"Clients List"}
-        header={
-          <div className="flex grow justify-between flex-wrap gap-4">
-            <ClientFilters
-              onFiltersChange={(values) => {
-                setFilters((vs) => ({ ...vs, ...values }));
-              }}
-            />
-            <PermitableComponent permission={PermissionsObjects.CreateEmployee}>
-              <LinkButton
-                text={"Nieuwe Medewerker Toevoegen"}
-                href={`/clients/new`}
-              />
-            </PermitableComponent>
-          </div>
+    const handleRowClick = (employeeRow: Row<Client>) => {
+        const employee = employeeRow.original;
+        router.push(`/clients/${employee.id}/overview`);
+    };
+
+    const handlePrevious = () => {
+        if (page <= 1) {
+            setPage(1);
+            return;
         }
-      >
-        {isLoading && <Loader />}
-        {pagination}
-
-        {clients && (
-          <Table
-            onRowClick={handleRowClick}
-            data={clients.results}
-            columns={columnDef}
-            className={styles.table}
-          />
-        )}
-
-        {clients && clients.results.length === 0 && (
-          <LargeErrorMessage
-            firstLine={"Oops!"}
-            secondLine={
-              "Het lijkt erop dat er geen medewerkers zijn die aan uw zoekcriteria voldoen."
-            }
-          />
-        )}
-        {/* {error && (
-                    <LargeErrorMessage
-                        firstLine={"Oops!"}
-                        secondLine={"Een fout heeft ons verhinderd de medewerkerslijst op te halen."}
-                    />
-                )} */}
-
-        {pagination}
-      </Panel>
-    </div>
-  );
-};
-
-export default withAuth(
-  withPermissions(ClientsPage, {
-    redirectUrl: Routes.Common.NotFound,
-    requiredPermissions: PermissionsObjects.ViewEmployee, // TODO: Add correct permisssion
-  }),
-  { mode: AUTH_MODE.LOGGED_IN, redirectUrl: Routes.Auth.Login }
-);
+        setPage(page - 1);
+    }
+    const handleNext = () => {
+        if (clients?.next) {
+            setPage(page + 1);
+            return;
+        }
+    }
+    const handleAdd = () => {
+        router.push(`/test/client/new`);
+    }
+    return (
+        <div className="">
+            <div className="flex justify-between items-center mb-5">
+                <h1 className="text-xl font-semibold">Clients</h1>
+                <p>Dashboard / <span className="font-medium text-indigo-500 hover:cursor-pointer">Clients</span></p>
+            </div>
+            <div className="w-full grid lg:grid-cols-[repeat(4,230px)] grid-cols-[repeat(3,205px)] md:grid-cols-[repeat(4,205px)] justify-between mb-5 ">
+                <StatisticCard colorKey="teal" icon={Users} title="Clienten" value={800} />
+                <StatisticCard colorKey="sky" icon={ListRestart} title="Wachtlijst" value={32} />
+                <StatisticCard colorKey="pink" icon={SquareActivity} title="In Zorg" value={45} />
+                <StatisticCard colorKey="orange" icon={ListX} title="Uit Zorg" value={94} />
+            </div>
+            <TableFilters
+                filters={filters}
+                handleAdd={handleAdd}
+                setFilters={(filters)=>setFilters(filters)}
+            />
+            <DataTable columns={columns} data={clients?.results ?? []} onRowClick={handleRowClick} className="dark:bg-[#18181b] dark:border-black" />
+            <div className="flex px-2 py-3 bg-white dark:bg-[#18181b] dark:border-black rounded-md mt-5 justify-between border-2 border-muted">
+                <PrimaryButton
+                    disabled={page === 1}
+                    onClick={handlePrevious}
+                    text={"Previous"}
+                    icon={ArrowBigLeft}
+                    iconSide="left"
+                />
+                <PrimaryButton
+                    disabled={clients?.next ? false : true}
+                    onClick={handleNext}
+                    text={"Next"}
+                    icon={ArrowBigRight}
+                />
+            </div>
+        </div>
+    )
+}

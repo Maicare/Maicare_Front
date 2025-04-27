@@ -1,4 +1,3 @@
-import { EmployeeDetailsResponse } from "@/types/employee.types";
 import {  BellRing, BookMarked, BriefcaseBusiness, Calendar, FileBadge, FilesIcon, FileText, Goal, GraduationCap, Handshake, HeartPulse, Home, Map,  UserCircle,  Users2, UsersRound } from "lucide-react";
 
 export const sidebarLinks = [
@@ -10,12 +9,12 @@ export const sidebarLinks = [
     },
     {
         title: "Clients",
-        url: "/test/client",
+        url: "/clients",
         icon: Handshake,
     },
     {
         title: "Employees",
-        url: "/test/employee",
+        url: "/employees",
         icon: Users2,
     },
     {
@@ -42,91 +41,91 @@ export const sidebarLinks = [
 export const sidebarEmployeeLinks = (employee:{first_name:string,last_name:string,id:number})=> [
     {
         title: "Overzicht ("+employee?.first_name + " " + employee?.last_name + ")",
-        url: "/test/employee/" + employee?.id + "/overview",
+        url: "/employees/" + employee?.id + "/overview",
         icon: Users2,
         isActive: true,
     },
     {
         title: "Certificaten",
-        url: "/test/employee/" + employee?.id+"/certification",
+        url: "/employees/" + employee?.id+"/certification",
         icon: BookMarked,
     },
     {
         title: "Opleidingen",
-        url: "/test/employee/" + employee?.id+"/education",
+        url: "/employees/" + employee?.id+"/education",
         icon: GraduationCap,
     },
     {
         title: "Ervaringen",
-        url: "/test/employee/" + employee?.id+"/experience",
+        url: "/employees/" + employee?.id+"/experience",
         icon: BriefcaseBusiness ,
     }
 ];
 export const sidebarClientLinks = (client:{first_name:string,last_name:string,id:number})=> [
     {
         title: "Overzicht ("+client?.first_name + " " + client?.last_name + ")",
-        url: "/test/client/" + client?.id + "/overview",
+        url: "/clients/" + client?.id + "/overview",
         icon: UserCircle,
         isActive: true,
     },
     {
         title: "Medisch Dossier",
-        url: "/test/client/" + client?.id+"/medical-record",
+        url: "/clients/" + client?.id+"/medical-record",
         icon: HeartPulse,
     },
     {
         title: "Afsprakenkaart",
-        url: "/test/client/" + client?.id+"/appointment-card",
+        url: "/clients/" + client?.id+"/appointment-card",
         icon: Calendar,
     },
     {
         title: "Doelen",
-        url: "/test/client/" + client?.id+"/goals",
+        url: "/clients/" + client?.id+"/goals",
         icon: Goal ,
     },
     {
         title: "Incidenten",
-        url: "/test/client/" + client?.id+"/incidents",
+        url: "/clients/" + client?.id+"/incidents",
         icon: BellRing ,
     },
     {
         title: "Cliëntennetwerk",
-        url: "/test/client/" + client?.id+"/client-network",
+        url: "/clients/" + client?.id+"/client-network",
         icon: UsersRound ,
         items: [
             {
                 title: "Noodcontacten",
-                url: "/test/client/" + client?.id+"/client-network/emergency",
+                url: "/clients/" + client?.id+"/client-network/emergency",
             },
             {
                 title: "Betrokken medewerkers",
-                url: "/test/client/" + client?.id+"/client-network/involved-employees",
+                url: "/clients/" + client?.id+"/client-network/involved-employees",
             }
         ],
     },
     {
         title: "Rapporten",
-        url: "/test/client/" + client?.id+"/reports",
+        url: "/clients/" + client?.id+"/reports",
         icon: FileBadge ,
         items: [
             {
                 title: "User Reports",
-                url: "/test/client/" + client?.id+"/reports/user-reports",
+                url: "/clients/" + client?.id+"/reports/user-reports",
             },
             {
                 title: "Automatic Reports",
-                url: "/test/client/" + client?.id+"/reports/automatic-reports",
+                url: "/clients/" + client?.id+"/reports/automatic-reports",
             }
         ],
     },
     {
         title: "Documenten",
-        url: "/test/client/" + client?.id+"/documents",
+        url: "/clients/" + client?.id+"/documents",
         icon: FileText ,
     },
     {
         title: "Vragenlijsten",
-        url: "/test/client/" + client?.id+"/questionnaires",
+        url: "/clients/" + client?.id+"/questionnaires",
         icon: FilesIcon ,
     }
 ];

@@ -1,26 +1,30 @@
 "use client";
 
-import { PermissionsObjects } from "@/common/data/permission.data";
-import withAuth, { AUTH_MODE } from "@/common/hocs/with-auth";
-import withPermissions from "@/common/hocs/with-permissions";
-import Routes from "@/common/routes";
-import Breadcrumb from "@/components/common/Breadcrumbs/Breadcrumb";
-import EmployeeForm from "@/components/employee/EmployeeForm";
-import React, { FunctionComponent } from "react";
+import { useRouter } from "next/navigation";
+import UpsertEmployeeForm from "../[employeeId]/_components/UpsertEmployeeForm";
 
-const NewEmployeePage: FunctionComponent = () => {
-  return (
-    <>
-      <Breadcrumb pageName="Medewerker Aanmaken" />
-      <EmployeeForm />
-    </>
-  );
-};
 
-export default withAuth(
-  withPermissions(NewEmployeePage, {
-    redirectUrl: Routes.Common.Home,
-    requiredPermissions: PermissionsObjects.ViewEmployee, // TODO: Add correct permisssion
-  }),
-  { mode: AUTH_MODE.LOGGED_IN, redirectUrl: Routes.Auth.Login }
-);
+const Page = () => {
+    const router = useRouter();
+    const onSuccess = (id:number) => {
+        router.push(`/employee/${id}`)
+    }
+    const onCancel = () => {
+        router.back();
+    }
+    return (
+        <div className="container mx-auto">
+            <div className="flex justify-between items-center mb-5">
+                <h1 className="text-xl font-semibold">Medewerker Aanmaken</h1>
+                <p>Dashboard / <span className="font-medium text-indigo-500 hover:cursor-pointer">Medewerker Aanmaken</span></p>
+            </div>
+            <UpsertEmployeeForm 
+                mode="create"
+                onSuccess={onSuccess}
+                onCancel={onCancel}
+            />
+        </div>
+    )
+}
+
+export default Page

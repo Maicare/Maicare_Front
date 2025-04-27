@@ -23,7 +23,7 @@ import { useState } from "react"
 
 export function NavMain({
   items,
-  label="Platform"
+  label = "Platform"
 }: {
   items: {
     title: string
@@ -36,28 +36,28 @@ export function NavMain({
       isActive?: boolean
     }[]
   }[],
-  label?:string
+  label?: string
 }) {
   const pathname = usePathname();
   const router = useRouter();
-  const [open,setOpen] = useState(false);
   return (
     <SidebarGroup>
       <SidebarGroupLabel className="text-white">{label}</SidebarGroupLabel>
       <SidebarMenu>
         {items.map((item) => {
+          const [open, setOpen] = useState(false);
           if (item.items) {
             return (
               <Collapsible
                 key={item.title}
                 asChild
-                open={pathname.startsWith(item.url) || item.items.some(current=>pathname.startsWith(current.url)) || open}
-                defaultOpen={pathname.startsWith(item.url) || item.items.some(current=>pathname.startsWith(current.url))}
+                open={pathname.startsWith(item.url) || item.items.some(current => pathname.startsWith(current.url)) || open}
+                defaultOpen={pathname.startsWith(item.url) || item.items.some(current => pathname.startsWith(current.url))}
                 className="group/collapsible"
               >
                 <SidebarMenuItem className="text-white">
-                  <CollapsibleTrigger asChild onClick={()=>setOpen(true)} >
-                    <SidebarMenuButton tooltip={item.title} className={cn("hover:!bg-indigo-400/30 hover:!text-white hover:backdrop-blur-sm dark:hover:bg-indigo-800", (pathname.startsWith(item.url) || item.items.some(current=>pathname.startsWith(current.url))) && "bg-white/30 backdrop-blur-sm rounded-md text-white")}>
+                  <CollapsibleTrigger asChild onClick={() => setOpen(true)} >
+                    <SidebarMenuButton tooltip={item.title} className={cn("hover:!bg-indigo-400/30 hover:!text-white hover:backdrop-blur-sm dark:hover:bg-indigo-800", (pathname.startsWith(item.url) || item.items.some(current => pathname.startsWith(current.url))) && "bg-white/30 backdrop-blur-sm rounded-md text-white")}>
                       {item.icon && <item.icon />}
                       <span>{item.title}</span>
                       <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
@@ -82,7 +82,7 @@ export function NavMain({
           }
           return (
             <SidebarMenuItem key={item.title} className=" rounded-md text-white">
-              <SidebarMenuButton onClick={()=>router.push(item.url)} tooltip={item.title} className={cn("hover:bg-indigo-400/30 hover:text-white hover:backdrop-blur-sm dark:hover:bg-indigo-800", (pathname === item.url || pathname.startsWith(item.url)) && "bg-white/30 backdrop-blur-sm dark:bg-gray-500")}>
+              <SidebarMenuButton onClick={() => router.push(item.url)} tooltip={item.title} className={cn("hover:bg-indigo-400/30 hover:text-white hover:backdrop-blur-sm dark:hover:bg-indigo-800", (pathname === item.url || pathname.startsWith(item.url)) && "bg-white/30 backdrop-blur-sm dark:bg-gray-500")}>
                 {item.icon && <item.icon />}
                 <span>{item.title}</span>
               </SidebarMenuButton>
