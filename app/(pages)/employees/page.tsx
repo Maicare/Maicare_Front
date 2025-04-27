@@ -32,7 +32,7 @@ const EmployeesPage = () => {
 
   const handleRowClick = (employeeRow: Row<EmployeeList>) => {
     const employee = employeeRow.original;
-    router.push(`/test/employee/${employee.id}`);
+    router.push(`/employees/${employee.id}`);
   };
 
   const handlePrevious = () => {

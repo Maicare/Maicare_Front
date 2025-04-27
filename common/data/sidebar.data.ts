@@ -41,7 +41,7 @@ export const sidebarLinks = [
 export const sidebarEmployeeLinks = (employee:{first_name:string,last_name:string,id:number})=> [
     {
         title: "Overzicht ("+employee?.first_name + " " + employee?.last_name + ")",
-        url: "/employees/" + employee?.id + "/overview",
+        url: "/employees/" + employee?.id ,
         icon: Users2,
         isActive: true,
     },
