@@ -5,7 +5,8 @@ import useProgressBar from "@/common/hooks/use-progress-bar";
 import { ApiOptions } from "@/common/types/api.types";
 import { PaginatedResponse } from "@/common/types/pagination.types";
 import { Id } from "@/common/types/types";
-import { Assessment, AssessmentResponse } from "@/types/assessment.types";
+import { CreateAssessment } from "@/schemas/assessment.schema";
+import {  Assessment, AssessmentResponse } from "@/types/assessment.types";
 import { constructUrlSearchParams } from "@/utils/construct-search-params";
 import { stringConstructor } from "@/utils/string-constructor";
 import { useSnackbar } from "notistack";
@@ -23,9 +24,9 @@ export function useAssessment({ autoFetch = true, clientId, page: pageParam = 1,
     isLoading,
     mutate,
   } = useSWR<PaginatedResponse<AssessmentResponse> | null>(
-    stringConstructor(ApiRoutes.Client.Assessment.ReadAll.replace("{id}", clientId.toString()), constructUrlSearchParams({ page, page_size })), // Endpoint to fetch Assessments
+    autoFetch ? stringConstructor(ApiRoutes.Client.Assessment.ReadAll.replace("{id}", clientId.toString()), constructUrlSearchParams({ page, page_size })) : null, // Endpoint to fetch Assessments
     async (url) => {
-      if (!autoFetch) return {
+      if (!url) return {
         results: [],
         count: 0,
         page_size: 0,
@@ -40,7 +41,33 @@ export function useAssessment({ autoFetch = true, clientId, page: pageParam = 1,
     },
     { shouldRetryOnError: false }
   );
+  const createOne = async(assessment: CreateAssessment[],clientId:Id, options?: ApiOptions) => {
+    const { displayProgress = false, displaySuccess = false } = options || {};
+    try {
+      const body = assessment.map((i)=>({
+        ...i,
+        initial_level:parseInt(i.initial_level as unknown as string),
+        maturity_matrix_id:parseInt(i.maturity_matrix_id as unknown as string),
+      }))
+        // Display progress bar
+        if (displayProgress) startProgress();
+        const { message, success, data, error } = await useApi<Assessment>(ApiRoutes.Client.Assessment.CreateOne.replace("{id}", clientId.toString()), "POST", {}, {assessment:body});
+        if (!data)
+            throw new Error(error || message || "An unknown error occurred");
 
+        // Display success message
+        if (displaySuccess && success) {
+            enqueueSnackbar("Client Assessment created successful!", { variant: "success" });
+        }
+        mutate();
+        return data;
+    } catch (err: any) {
+        enqueueSnackbar(err?.response?.data?.message || "Client Assessment creation failed", { variant: "error" });
+        throw err;
+    } finally {
+        if (displayProgress) stopProgress();
+    }
+}
   const readOne = async (id: Id, options?: ApiOptions) => {
     const { displayProgress = false } = options || {};
     try {
@@ -68,6 +95,9 @@ export function useAssessment({ autoFetch = true, clientId, page: pageParam = 1,
     error,
     isLoading,
     mutate,
-    readOne
+    readOne,
+    page,
+    setPage,
+    createOne
   };
 }

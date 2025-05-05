@@ -7,7 +7,7 @@ const CreateDiagnosisPage = () => {
     const router = useRouter();
     const { clientId } = useParams();
     const onSuccess = () => {
-        router.push(`/test/client/${clientId}/medical-record`)
+        router.push(`/clients/${clientId}/medical-record`)
     }
     const onCancel = () => {
         router.back();

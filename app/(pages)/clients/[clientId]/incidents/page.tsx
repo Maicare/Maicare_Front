@@ -1,12 +1,8 @@
 "use client";
 import PrimaryButton from '@/common/components/PrimaryButton'
 import { useIncident } from '@/hooks/incident/use-incident';
-import { CreateIncident } from '@/types/incident.types';
 import { AlarmClock, ArrowBigLeft, ArrowBigRight, BellRing, PlusCircle, Timer, TriangleAlert } from 'lucide-react'
 import { useParams, useRouter } from 'next/navigation';
-import React, { useState } from 'react'
-import { useModal } from "@/components/providers/ModalProvider";
-import { getDangerActionConfirmationModal } from "@/components/common/Modals/DangerActionConfirmation";
 import StatisticCard from '@/common/components/StatisticCard';
 import Loader from '@/components/common/loader';
 import LargeErrorMessage from '@/components/common/Alerts/LargeErrorMessage';
@@ -14,18 +10,10 @@ import { DataTable } from '@/components/employee/table/data-table';
 import { columns } from './_components/columns';
 const Page = () => {
 
-    const [_incident, _setIncident] = useState<CreateIncident & { id: number } | null>(null);
     const { clientId } = useParams();
     const router = useRouter();
 
     const { isLoading, incidents, page, setPage } = useIncident({ autoFetch: true, clientId: parseInt(clientId as string) });
-
-    const { open: _open } = useModal(
-        getDangerActionConfirmationModal({
-            msg: "Weet u zeker dat u deze ervaring wilt verwijderen?",
-            title: "Ervaring Verwijderen",
-        })
-    );
 
     const handlePrevious = () => {
         if (page <= 1) {
@@ -41,19 +29,9 @@ const Page = () => {
         }
     }
     const handleAdd = () => {
-        router.push(`/test/client/${clientId}/incidents/create`);
+        router.push(`/clients/${clientId}/incidents/create`);
     }
-    // const handleDelete = async (incident: Incident) => {
-    //     open({
-    //         onConfirm: async () => {
-    //             try {
-    //                 // await deleteOne(incident, { displayProgress: true, displaySuccess: true });
-    //             } catch (error) {
-    //                 console.log(error);
-    //             }
-    //         },
-    //     });
-    // }
+
     return (
         <div className="w-full flex flex-col gap-4">
             <div className="flex items-center justify-between">

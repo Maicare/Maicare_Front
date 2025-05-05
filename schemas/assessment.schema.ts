@@ -1,8 +1,23 @@
-import { CreateAssessment } from "@/types/assessment.types";
-import * as Yup from "yup";
-export const AssessmentSchema: Yup.ObjectSchema<CreateAssessment> = Yup.object().shape({
-    maturity_matrix_id: Yup.number().required("Geef alstublieft een domein"),
-    initial_level: Yup.number().required("Geef alstublieft een niveau"),
-    start_date: Yup.string().required("Geef alstublieft een startdatum"),
-    end_date: Yup.string().required("Geef alstublieft een einddatum"),
+import { z } from "zod";
+
+export const createAssessmentSchema = z.object({
+    maturity_matrix_id: z.string({
+        required_error: "Geef alstublieft een domein",
+        invalid_type_error: "Domein moet een nummer zijn"
+    }),
+
+    initial_level: z.string({
+        required_error: "Geef alstublieft een niveau",
+        invalid_type_error: "Niveau moet een nummer zijn"
+    }),
+
+    start_date: z.coerce.date().refine(date => !isNaN(date.getTime()), {
+        message: "Geboortedatum is vereist", // Invalid date format
+    }),
+
+    end_date: z.coerce.date().refine(date => !isNaN(date.getTime()), {
+        message: "Geboortedatum is vereist", // Invalid date format
+    }),
 });
+
+export type CreateAssessment = z.infer<typeof createAssessmentSchema>;

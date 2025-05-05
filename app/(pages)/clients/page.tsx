@@ -49,7 +49,7 @@ export default function Page() {
         }
     }
     const handleAdd = () => {
-        router.push(`/test/client/new`);
+        router.push(`/clients/new`);
     }
     return (
         <div className="">

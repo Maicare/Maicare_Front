@@ -15,7 +15,7 @@ const Page = () => {
     const [incident, setIncident] = useState<Incident | null>(null);
     const { readOne } = useIncident({ autoFetch: false, clientId: parseInt(clientId as string) });
     const onSuccess = () => {
-        router.push(`/test/client/${clientId}/incidents`)
+        router.push(`/clients/${clientId}/incidents`)
     }
     const onCancel = () => {
         router.back();

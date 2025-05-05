@@ -342,7 +342,7 @@ const ActionCell = ({ row }: { row: Row<Incident> }) => {
         <DropdownMenuContent align="end" className="bg-white">
           <DropdownMenuLabel>Acties</DropdownMenuLabel>
           <DropdownMenuItem
-            onClick={() => { router.push(`/test/client/${row.original.client_id}/incidents/${row.original.id}/update`) }}
+            onClick={() => { router.push(`/clients/${row.original.client_id}/incidents/${row.original.id}/update`) }}
             className="hover:bg-indigo-100 hover:text-indigo-500 transition-colors ease-in-out cursor-pointer flex items-center gap-2"
           >
             <Edit2 className="h-4 w-4" />

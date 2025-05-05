@@ -6,9 +6,8 @@ import SelectControlled from "@/common/components/SelectControlled";
 import { LEVEL_OPTIONS } from "@/types/maturity-matrix.types";
 import { ControlledDomainSelect } from "@/components/ControlledDomainSelect/ControlledDomainSelect";
 import { CreateAssessment } from "@/types/assessment.types";
-import { FormProvider, useForm } from "react-hook-form";
-import { yupResolver } from "@hookform/resolvers/yup";
-import { AssessmentSchema } from "@/schemas/assessment.schema";
+// import { FormProvider, useForm } from "react-hook-form";
+// import { yupResolver } from "@hookform/resolvers/yup";
 import InputControl from "@/common/components/InputControl";
 import dayjs from "dayjs";
 import { useDomain } from "@/hooks/domain/use-domain";
@@ -18,34 +17,34 @@ import { fullDateFormat } from "@/utils/timeFormatting";
 import Panel from "@/components/common/Panel/Panel";
 import IconButton from "@/components/common/Buttons/IconButton";
 import { X } from "lucide-react";
-import { ZRM_MATRIX } from "@/types/goals.types";
+// import { ZRM_MATRIX } from "@/types/goals.types";
 
 type PropsType = {
   clientId: string;
 };
-const initialValues: CreateAssessment = {
-  maturity_matrix_id: 0,
-  initial_level: 0,
-  start_date: "",
-  end_date: "",
-};
+// const initialValues: CreateAssessment = {
+//   maturity_matrix_id: 0,
+//   initial_level: 0,
+//   start_date: "",
+//   end_date: "",
+// };
 export const GoalForm: FunctionComponent<PropsType> = ({ clientId }) => {
   const { createOne, domains } = useDomain({ autoFetch: true });
   const [formData, setFormData] = useState<CreateAssessment[]>([]);
   const router = useRouter();
-  const methods = useForm<CreateAssessment>({
-    resolver: yupResolver(AssessmentSchema),
-    defaultValues: initialValues,
-  });
-  const {
-    handleSubmit,
-    formState: { isSubmitting, isValid, },
-    getValues,
-    watch
-    // reset
-  } = methods;
-  const {maturity_matrix_id,initial_level} = watch();
-  const onSubmit = async (_data: CreateAssessment) => {
+  // const methods = useForm<CreateAssessment>({
+  //   resolver: yupResolver(AssessmentSchema),
+  //   defaultValues: initialValues,
+  // });
+  // const {
+  //   handleSubmit,
+  //   formState: { isSubmitting, isValid, },
+  //   getValues,
+  //   watch
+  //   // reset
+  // } = methods;
+  // const {maturity_matrix_id,initial_level} = watch();
+  const _onSubmit = async (_data: CreateAssessment) => {
     try {
       const data = formData.map(i=>({
         ...i,
@@ -61,15 +60,15 @@ export const GoalForm: FunctionComponent<PropsType> = ({ clientId }) => {
     }
   };
   const AddToFormdata = () => {
-    const data = getValues();
-    setFormData(prev => [...prev, data]);
+    // const data = getValues();
+    // setFormData(prev => [...prev, data]);
   }
   const RemoveFromFormdata = (index: number) => {
     setFormData(prev => prev.filter((_item, id) => id !== index));
   }
   return (
-    <FormProvider {...methods}>
-      <form onSubmit={handleSubmit(onSubmit,()=>{})} className="p-6.5 pt-4.5">
+    // <FormProvider >
+      <form onSubmit={()=>{}} className="p-6.5 pt-4.5">
         <ControlledDomainSelect
           label={"Domein"}
           name={"maturity_matrix_id"}
@@ -83,7 +82,7 @@ export const GoalForm: FunctionComponent<PropsType> = ({ clientId }) => {
           options={LEVEL_OPTIONS}
           className={"w-full mb-4.5"}
         />
-        {maturity_matrix_id  ? (
+        {/* {maturity_matrix_id  ? (
           <div className="p-6.5 bg-meta-6/20">
             <ul>
               {ZRM_MATRIX.levels[parseInt(`${initial_level}`)+1 as keyof typeof ZRM_MATRIX.levels]?.domains[parseInt(`${maturity_matrix_id}`) as keyof typeof ZRM_MATRIX.levels].map((item, index) => (
@@ -93,7 +92,7 @@ export const GoalForm: FunctionComponent<PropsType> = ({ clientId }) => {
               ))}
             </ul>
           </div>
-        ) : null}
+        ) : null} */}
         <div className="flex gap-4 mt-4">
           <InputControl
             className={"w-full mb-4.5"}
@@ -117,7 +116,7 @@ export const GoalForm: FunctionComponent<PropsType> = ({ clientId }) => {
           />
         </div>
         <div className="flex justify-end gap-4.5 mt-4">
-          <Button type={"button"} onClick={AddToFormdata} disabled={!isValid}>
+          <Button type={"button"} onClick={AddToFormdata} disabled={false}>
             Add Assessment
           </Button>
         </div>
@@ -161,7 +160,7 @@ export const GoalForm: FunctionComponent<PropsType> = ({ clientId }) => {
                 </Panel>
               ))}
               <div className="flex justify-end gap-4.5 mt-4">
-                <Button type={"submit"} disabled={isSubmitting} isLoading={isSubmitting} formNoValidate={true}>
+                <Button type={"submit"} formNoValidate={true}>
                   Create
                 </Button>
               </div>
@@ -169,7 +168,6 @@ export const GoalForm: FunctionComponent<PropsType> = ({ clientId }) => {
           )
         }
       </form>
-    </FormProvider>
   );
 };
 

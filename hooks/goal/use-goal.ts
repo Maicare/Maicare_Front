@@ -5,7 +5,8 @@ import useProgressBar from "@/common/hooks/use-progress-bar";
 import { ApiOptions } from "@/common/types/api.types";
 import { PaginatedResponse } from "@/common/types/pagination.types";
 import { Id } from "@/common/types/types";
-import { CreateGoal, CreateObjective, Goal, GoalWithObjectives } from "@/types/goals.types";
+import { CreateGoal } from "@/schemas/goal.schema";
+import {  CreateObjective, Goal, GoalWithObjectives } from "@/types/goals.types";
 import { CreateReport, Report } from "@/types/reports.types";
 import { constructUrlSearchParams } from "@/utils/construct-search-params";
 import { stringConstructor } from "@/utils/string-constructor";
@@ -15,7 +16,7 @@ import { useEffect, useState } from "react";
 import useSWR from "swr";
 
 
-export function useGoal({ autoFetch = true,clientId,assessmentId,page=1,page_size=10 }: { autoFetch?: boolean,clientId:Id,assessmentId:Id,page?:number,page_size?:number }) {
+export function useGoal({ autoFetch = true,clientId,assessmentId,page:pageParam=1,page_size=10 }: { autoFetch?: boolean,clientId:Id,assessmentId:Id,page?:number,page_size?:number }) {
     const { enqueueSnackbar } = useSnackbar();
     const [goals,setGoals] = useState<PaginatedResponse<Goal>>({
         results: [],
@@ -24,6 +25,7 @@ export function useGoal({ autoFetch = true,clientId,assessmentId,page=1,page_siz
         next: null,
         previous: null
     });
+    const [page,setPage] = useState(pageParam);
     const { start: startProgress, stop: stopProgress } = useProgressBar();
     const { data, error, mutate,isLoading } = useSWR<PaginatedResponse<Goal>>(
         stringConstructor(ApiRoutes.Client.Goal.ReadAll.replace("{id}",clientId.toString()).replace("{assessment_id}",assessmentId.toString()), constructUrlSearchParams({ page, page_size })),
@@ -65,7 +67,7 @@ export function useGoal({ autoFetch = true,clientId,assessmentId,page=1,page_siz
                 previous: null
             });
         }
-    },[data]);
+    },[data,page]);
     const pathname = usePathname();
 
     useEffect(() => {
@@ -79,8 +81,6 @@ export function useGoal({ autoFetch = true,clientId,assessmentId,page=1,page_siz
             const transformed_data = {
                 ...goal,
                 target_level: parseInt(goal.target_level as unknown as string),
-                start_date: goal.start_date + "T15:04:05Z",
-                target_date: goal.target_date + "T15:04:05Z",
             };
             // Display progress bar
             if (displayProgress) startProgress();
@@ -204,6 +204,8 @@ export function useGoal({ autoFetch = true,clientId,assessmentId,page=1,page_siz
         updateOne,
         readOne,
         generateObjective,
-        createObjective
+        createObjective,
+        page,
+        setPage
     }
 }

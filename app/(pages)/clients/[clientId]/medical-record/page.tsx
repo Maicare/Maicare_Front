@@ -27,7 +27,7 @@ const MedicalPage = () => {
         }
     }
     const handleAdd = () => {
-        router.push(`/test/client/${clientId}/medical-record/create`);
+        router.push(`/clients/${clientId}/medical-record/create`);
     }
 
     return (

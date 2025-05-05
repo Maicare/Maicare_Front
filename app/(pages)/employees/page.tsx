@@ -49,7 +49,7 @@ const EmployeesPage = () => {
     }
   }
   const handleAdd = () => {
-    router.push(`/test/employee/new`);
+    router.push(`/employees/new`);
   }
 
   return (
