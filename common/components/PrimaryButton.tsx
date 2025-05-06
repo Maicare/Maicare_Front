@@ -9,7 +9,7 @@ type Props = {
     text:string;
     className?:string;
     iconSide?:"left"|"right";
-    animation?:"animate-bounce"|"arrow-animation";
+    animation?:"animate-bounce"|"arrow-animation"|"none";
     type?:"button"|"submit"|"reset";
 };
 
