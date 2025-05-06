@@ -134,28 +134,27 @@ const EmergencyContactPage: FunctionComponent = () => {
     );
   }
 
-  return (
+  return (<>
+    <div className="flex w-full justify-end gap-2 mb-6">
+      <PrimaryButton
+        text="Download"
+        icon={Download}
+        animation="none"
+        onClick={handleDownload}
+        className="bg-indigo-200 text-indigo-700 hover:text-white hover:bg-indigo-500"
+      />
+      <Link href={`/clients/${clientId}/appointment-card/edit`}>
+        <PrimaryButton
+          text="Bewerken"
+          icon={Pencil}
+          animation="animate-bounce"
+          className="bg-blue-500 hover:bg-blue-700 text-white transition-colors duration-300"
+        />
+      </Link>
+    </div>
+
     <Panel
       title={`Afsprakenkaart Chrystal voor cliënt ${clientId}`}
-      header={
-        <div className="flex w-full justify-end gap-2">
-          <PrimaryButton
-            text="Download"
-            icon={Download}
-            animation="none"
-            onClick={handleDownload}
-            className="bg-indigo-200 text-indigo-700 hover:text-white hover:bg-indigo-500"
-          />
-          <Link href={`/clients/${clientId}/appointment-card/edit`}>
-            <PrimaryButton
-              text="Bewerken"
-              icon={Pencil}
-              animation="animate-bounce"
-              className="bg-blue-500 hover:bg-blue-700 text-white transition-colors duration-300"
-            />
-          </Link>
-        </div>
-      }
     >
       <div className="p-6 grid grid-cols-1 md:grid-cols-2 gap-10">
         {renderSection(
@@ -203,6 +202,7 @@ const EmergencyContactPage: FunctionComponent = () => {
         )}
       </div>
     </Panel>
+  </>
   );
 };
 

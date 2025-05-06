@@ -7,36 +7,46 @@ import { LEVEL_OPTIONS } from "@/types/maturity-matrix.types"
 import { cn, getTailwindClasses } from "@/utils/cn"
 import { AssessmentResponse } from "@/types/assessment.types"
 import PencilSquare from "@/components/icons/PencilSquare"
-import { TrashIcon } from "lucide-react"
+import { Pencil, Trash, TrashIcon } from "lucide-react"
 import Loader from "@/components/common/loader"
+import PrimaryButton from "@/common/components/PrimaryButton"
+import { useRouter } from "next/navigation"
 
-export function AssessmentDetails({ 
-  clientId, 
-  assessmentId, 
-  assessment 
-}:{
-    clientId: string,
-    assessmentId: string,
-    assessment?: AssessmentResponse
+export function AssessmentDetails({
+  clientId,
+  assessmentId,
+  assessment
+}: {
+  clientId: string,
+  assessmentId: string,
+  assessment?: AssessmentResponse
 }) {
-    if (!assessment) {
-        return (
-            <Loader />
-        )
-    }
+  const router = useRouter()
+
+  if (!assessment) {
+    return (
+      <Loader />
+    )
+  }
   return (
     <Card className="bg-cyan-600/20 backdrop-blur-sm shadow-sm rounded-md">
       <CardHeader className="flex flex-row items-center justify-between p-6">
         <CardTitle>Assessment Details</CardTitle>
         <div className="flex gap-2">
-          <Link href={`/clients/${clientId}/goals/${assessmentId}/edit`}>
-            <Button variant="outline" size="icon">
-              <PencilSquare className="h-4 w-4" />
-            </Button>
-          </Link>
-          <Button variant="destructive" size="icon">
-            <TrashIcon className="h-4 w-4" />
-          </Button>
+          <PrimaryButton
+            text="Edit"
+            icon={Pencil}
+            onClick={() => router.push(`/clients/${clientId}/goals/${assessmentId}/edit`)}
+            animation='none'
+            className="bg-indigo-400 text-white hover:bg-indigo-500"
+          />
+          <PrimaryButton
+            text="Delete"
+            icon={Trash}
+            onClick={() => console.log("Delete")}
+            animation='none'
+            className="bg-red-400 text-white hover:bg-red-500"
+          />
         </div>
       </CardHeader>
       <CardContent className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-6">

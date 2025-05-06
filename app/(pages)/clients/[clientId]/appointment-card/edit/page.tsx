@@ -96,7 +96,7 @@ const FieldArraySection: React.FC<FieldArraySectionProps> = ({
         <h3 className="text-base font-semibold text-gray-800">{title}</h3>
       </div>
 
-      <div className="space-y-4">
+      <div >
         {fields.length > 0 ? (
           fields.map((field, index) => (
             <div
@@ -179,34 +179,29 @@ export default function AppointmentCardEditPage() {
 
   return (
     <FormProvider {...methods}>
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <Panel
-          title="Afspraak Bewerken"
-          sideActions={
-            <>
-              <PrimaryButton
-                text="Opslaan"
-                icon={Check}
-                type="submit"
-                className="bg-blue-600 text-white hover:bg-blue-700 shadow-sm hover:shadow-md focus:ring-4 focus:ring-blue-200 focus:ring-offset-2 transition-all duration-300 transform hover:scale-[1.02]"
-                animation="animate-bounce"
-              />
-            </>
-          }
-        >
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 p-8 bg-gray-50/60">
-            {Object.keys(formDefaultValues).map((key) => (
-              <FieldArraySection
-                key={key}
-                name={key}
-                control={control}
-                register={register}
-                title={translationMap[key] || key.replace(/_/g, " ")}
-                Icon={sectionIcons[key] || Info}
-              />
-            ))}
-          </div>
-        </Panel>
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
+        <div className="flex justify-end">
+          <PrimaryButton
+            text="Opslaan"
+            icon={Check}
+            type="submit"
+            className="bg-blue-600 text-white hover:bg-blue-700 shadow-sm hover:shadow-md focus:ring-4 focus:ring-blue-200 focus:ring-offset-2 transition-all duration-300 transform hover:scale-[1.02]"
+            animation="animate-bounce"
+          />
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          {Object.keys(formDefaultValues).map((key) => (
+            <FieldArraySection
+              key={key}
+              name={key}
+              control={control}
+              register={register}
+              title={translationMap[key] || key.replace(/_/g, " ")}
+              Icon={sectionIcons[key] || Info}
+            />
+          ))}
+        </div>
       </form>
     </FormProvider>
   );

@@ -27,6 +27,8 @@ import { MoreHorizontal, Trash } from "lucide-react";
 import PrimaryButton from "@/common/components/PrimaryButton";
 import UpsertObjectiveSheet from "./UpsertObjectiveSheet";
 import { useGoal } from "@/hooks/goal/use-goal";
+import { cn } from "@/utils/cn";
+import { dateFormat } from "@/utils/timeFormatting";
 
 
 export type ObjectiveRow = {
@@ -46,28 +48,54 @@ export const getColumns = (
     {
       accessorKey: "objective_description",
       header: "Description",
-      cell: (ctx) => <span className="text-sm">{ctx.getValue()}</span>,
-    },
-    {
-      accessorKey: "due_date",
-      header: "Due Date",
       cell: (ctx) => (
-        <span className="text-sm">
-          {new Date(ctx.getValue() as string).toLocaleDateString()}
+        <span
+          className={cn(
+            "bg-gray-100 text-gray-800 text-xs font-medium px-2 py-0.5 rounded-sm"
+          )}
+        >
+          {ctx.getValue() as string}
         </span>
       ),
     },
     {
-      accessorKey: "status",
-      header: "Status",
-      cell: (ctx) => (
-        <Badge
-          variant={ctx.getValue() === "pending" ? "secondary" : "default"}
-        >
-          {ctx.getValue()}
-        </Badge>
-      ),
+      accessorKey: "due_date",
+      header: "Due Date",
+      cell: (ctx) => {
+        const raw = ctx.getValue() as string;
+        const formatted = dateFormat(raw);
+        return (
+          <span
+            className={cn(
+              formatted
+                ? "bg-yellow-100 text-yellow-800"
+                : "bg-red-100 text-red-800",
+              "text-xs font-medium px-2 py-0.5 rounded-sm"
+            )}
+          >
+            {formatted || "Not Available"}
+          </span>
+        );
+      },
     },
+        {
+            accessorKey: "status",
+            header: "Status",
+            cell: (ctx) => {
+              const status = ctx.getValue() as string;
+              const bg =
+                status === "pending"
+                  ? "bg-orange-100 text-orange-800"
+                  : "bg-green-100 text-green-800";
+              return (
+                <span
+                  className={cn(bg, "text-xs font-medium px-2 py-0.5 rounded-sm")}
+                >
+                  {status}
+                </span>
+              );
+            },
+          },
     {
       id: "actions",
       header: "",
