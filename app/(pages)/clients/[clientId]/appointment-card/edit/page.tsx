@@ -21,7 +21,6 @@ import {
 } from "lucide-react";
 import { useParams } from "next/navigation";
 
-import Panel from "@/components/common/Panel/Panel";
 import IconButton from "@/components/common/Buttons/IconButton";
 import InputControl from "@/common/components/InputControl";
 import { useAppointment } from "@/hooks/client/use-appointment";
@@ -72,8 +71,8 @@ const sectionIcons: Record<string, LucideIcon> = {
 
 interface FieldArraySectionProps {
   name: string;
-  control: any;
-  register: any;
+  control: Any;
+  register: Any;
   title: string;
   Icon: LucideIcon;
 }
@@ -146,12 +145,13 @@ export default function AppointmentCardEditPage() {
   const formDefaultValues = useMemo(() => {
     return Object.keys(appointmentData).reduce((acc, key) => {
       if (keysToExclude.includes(key)) return acc;
-      const value = (appointmentData as any)[key];
+      const value = (appointmentData as Any)[key];
       acc[key] = Array.isArray(value)
         ? value.map((item: string) => ({ content: item }))
         : value;
       return acc;
     }, {} as Record<string, Any>);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [appointmentData]);
 
   const methods = useForm({ defaultValues: formDefaultValues });
@@ -164,17 +164,19 @@ export default function AppointmentCardEditPage() {
   const onSubmit = (data: Any) => {
     const transformed: typeof appointmentData = Object.keys(data).reduce(
       (acc, key) => {
-        const val = (data as any)[key];
+        const val = (data as Any)[key];
         acc[key as keyof typeof appointmentData] = Array.isArray(val)
-          ? val.map((i: any) => i.content || "")
+          ? val.map((i: Any) => i.content || "")
           : val;
         return acc;
       },
       {} as typeof appointmentData
     );
-    appointments
-      ? updateAppointment(transformed)
-      : createAppointment(transformed);
+    if (appointments) {
+      updateAppointment(transformed)
+    }else{
+      createAppointment(transformed);
+    }
   };
 
   return (

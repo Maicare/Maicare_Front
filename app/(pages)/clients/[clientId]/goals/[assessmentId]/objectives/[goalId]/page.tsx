@@ -5,22 +5,20 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { useGoal } from '@/hooks/goal/use-goal';
 import { Goal } from '@/types/goals.types';
-import { Calendar, Clock, Flag, Pencil, Target, Text, Trash, Variable } from 'lucide-react';
+import {  Clock, Flag, Trash, Variable } from 'lucide-react';
 import { useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import ObjectivesDetails from './_components/ObjectivesDetails';
 import { Badge } from '@/components/ui/badge';
 import { dateFormat } from '@/utils/timeFormatting';
 import { cn, getTailwindClasses } from '@/utils/cn';
-import PencilSquare from '@/components/icons/PencilSquare';
-import TrashIcon from '@/components/icons/TrashIcon';
 import { CreateGoal } from '@/schemas/goal.schema';
 import UpsertGoalSheet from '../../_components/UpsertGoalSheet';
 import PrimaryButton from '@/common/components/PrimaryButton';
 
 const ObjectivePage = () => {
   const { assessmentId, clientId, goalId } = useParams();
-  const { readOne, updateOne } = useGoal({
+  const { readOne } = useGoal({
     autoFetch: false,
     clientId: parseInt(clientId as string),
     assessmentId: parseInt(assessmentId as string),
@@ -44,7 +42,7 @@ const ObjectivePage = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [goalId]);
 
-  const handleUpdate = async (values: CreateGoal) => {
+  const handleUpdate = async (_values: CreateGoal) => {
     console.log("Update Clicked")
     setIsEditOpen(false);
   };
@@ -70,7 +68,7 @@ const ObjectivePage = () => {
               Objective Not Found
             </h1>
             <p className="text-sm text-slate-500">
-              The requested objective doesn't exist or may have been removed.
+              The requested objective doesn&apos;t exist or may have been removed.
             </p>
           </div>
 
