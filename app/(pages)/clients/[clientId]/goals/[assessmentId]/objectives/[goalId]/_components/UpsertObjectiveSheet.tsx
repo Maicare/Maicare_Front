@@ -38,10 +38,9 @@ import { cn } from "@/utils/cn";
 import { format } from "date-fns";
 import { Calendar } from "@/components/ui/calendar";
 import { useEffect, useState } from "react";
-import { Separator } from "@/components/ui/separator";
 import { Textarea } from "@/components/ui/textarea";
 import { z } from "zod";
-import { GoalObjective } from "@/types/goals.types";
+import { ObjectiveRow } from "./columns";
 
 export const createObjectiveSchema = z.object({
   objective_description: z.string().min(1, "Description is required"),
@@ -56,7 +55,7 @@ type Props = {
   handleCreate: (values: CreateObjectiveForm) => void;
   handleUpdate: (values: CreateObjectiveForm) => void;
   handleGenerate: () => void;
-  objective?: GoalObjective;
+  objective?: ObjectiveRow;
   isOpen: boolean;
   handleOpen: (bool: boolean) => void;
   className?: string;

@@ -5,15 +5,12 @@ import Loader from "@/components/common/loader";
 import { DataTable } from "@/components/employee/table/data-table";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useGoal } from "@/hooks/goal/use-goal";
-import { ArrowBigLeft, ArrowBigRight, SquareCheck } from "lucide-react";
-import PrimaryButton from "@/common/components/PrimaryButton";
+import {  SquareCheck } from "lucide-react";
 import { Row } from "@tanstack/table-core";
-import { GoalWithObjectives, CreateObjective, Goal } from "@/types/goals.types";
-import { useRouter, useParams } from "next/navigation";
+import { GoalWithObjectives } from "@/types/goals.types";
 import { useState, useEffect } from "react";
-import { CreateGoal } from "@/schemas/goal.schema";
-import UpsertGoalSheet from "../../../_components/UpsertGoalSheet";
 import { getColumns, ObjectiveRow } from "./columns";
+import UpsertObjectiveSheet, { CreateObjectiveForm } from "./UpsertObjectiveSheet";
 
 const ObjectivesDetails = ({
   assessmentId,
@@ -24,7 +21,6 @@ const ObjectivesDetails = ({
   assessmentId: string;
   goalId: string;
 }) => {
-  const router = useRouter();
 
   const { readOne, createObjective } = useGoal({
     autoFetch: false,
@@ -32,7 +28,7 @@ const ObjectivesDetails = ({
     assessmentId: parseInt(assessmentId),
   });
 
-  const [objectives, setObjectives] = useState<CreateObjective[]>([]);
+  const [objectives, setObjectives] = useState<ObjectiveRow[]>([]);
   const [loadingObjs, setLoadingObjs] = useState(true);
   const [errorObjs, setErrorObjs] = useState<Error | null>(null);
   const [open, setOpen] = useState(false);
@@ -62,35 +58,20 @@ const ObjectivesDetails = ({
     }
 
     fetchObjectives();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [goalId]);
 
-  const handleRowClick = (row: Row<Goal>) => {
+  const handleRowClick = (_row: Row<ObjectiveRow>) => {
     // router.push(
     //   `/clients/${clientId}/goals/${assessmentId}/objectives/${row.original.id}`
     // );
   };
 
-  const handleCreate = async (values: CreateGoal) => {
+  const handleCreate = async (values: CreateObjectiveForm) => {
     try {
-      const dateOnly = values.target_date.toISOString().split("T")[0];
-      const objPayload: CreateObjective = {
-        due_date: dateOnly,
-        objective_description: values.description,
-      };
-      await createObjective(parseInt(goalId as string), [objPayload], {
-        displayProgress: true,
-        displaySuccess: true,
-      });
-      const updated = await readOne(parseInt(goalId as string));
-      // sort again after create
-      const sorted = [...updated.objectives].sort(
-        (a, b) =>
-          new Date(b.created_at).getTime() -
-          new Date(a.created_at).getTime()
-      );
-      setObjectives(sorted);
-    } catch (err) {
-      console.log(err);
+      await createObjective(+goalId!, [{...values,due_date:values.due_date.toISOString().split("T")[0]}], { displayProgress: true, displaySuccess: true });
+    } catch (error) {
+      console.error({ error });
     }
   };
 
@@ -106,14 +87,15 @@ const ObjectivesDetails = ({
       <CardHeader className="flex flex-row items-center justify-between p-0 pb-4">
         <CardTitle className="text-lg flex items-center gap-2">
           <SquareCheck className="text-indigo-400" />
-          Goal's Objectives
+          Goal&apos;s Objectives
         </CardTitle>
         <div className="flex gap-2">
-          <UpsertGoalSheet
+          <UpsertObjectiveSheet
             isOpen={open}
             handleCreate={handleCreate}
             handleOpen={setOpen}
             handleUpdate={() => { }}
+            handleGenerate={() => { }}
             mode="create"
           />
         </div>

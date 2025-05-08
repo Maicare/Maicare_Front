@@ -3,7 +3,6 @@
 import React, { useState } from "react";
 import { ColumnDef, Row } from "@tanstack/react-table";
 import { useParams } from "next/navigation";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -174,7 +173,7 @@ const ActionsCell = ({
               mode="update"
               isOpen={isEditOpen}
               handleOpen={setIsEditOpen}
-              objective={row.original}
+              objective={row.original as ObjectiveRow}
               handleCreate={() => { }}
               handleUpdate={() => {
                 handleEdit(row.original);

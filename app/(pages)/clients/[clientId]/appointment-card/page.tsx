@@ -22,7 +22,6 @@ import {
 import { useAppointment } from "@/hooks/client/use-appointment";
 
 import Panel from "@/components/common/Panel/Panel";
-import IconButton from "@/components/common/Buttons/IconButton";
 import LargeErrorMessage from "@/components/common/Alerts/LargeErrorMessage";
 import PrimaryButton from "@/common/components/PrimaryButton";
 

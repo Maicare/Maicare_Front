@@ -4,7 +4,7 @@ import Button from "@/components/common/Buttons/Button";
 import TextareaControlled from "@/components/common/FormFields/TextareaControlled";
 import { useGoal } from "@/hooks/goal/use-goal";
 // import { CreateGoalSchema } from "@/schemas/goal.schema";
-import { CreateGoal, GOAL_STATUSES } from "@/types/goals.types";
+import {  GOAL_STATUSES } from "@/types/goals.types";
 import { LEVEL_OPTIONS } from "@/types/maturity-matrix.types";
 // import { yupResolver } from "@hookform/resolvers/yup";
 import dayjs from "dayjs";
@@ -35,15 +35,15 @@ const AssessmentGoalForm = (props: Props) => {
     //     formState: { isSubmitting, isValid, },
     //     reset
     // } = methods;
-    const onSubmit = async (_data: CreateGoal) => {
-        try {
-            // await createOne(_data, { displayProgress: true, displaySuccess: true });
-            // reset();
-            router.push(`/clients/${clientId}/goals`);
-        } catch (error) {
-            console.error({ error });
-        }
-    };
+    // const onSubmit = async (_data: CreateGoal) => {
+    //     try {
+    //         // await createOne(_data, { displayProgress: true, displaySuccess: true });
+    //         // reset();
+    //         router.push(`/clients/${clientId}/goals`);
+    //     } catch (error) {
+    //         console.error({ error });
+    //     }
+    // };
 
 
     return (
