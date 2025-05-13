@@ -29,9 +29,6 @@ const EmployeeInformation: FunctionComponent<Props> = ({ employeeId }) => {
   const { open } = useModal(EmployeeProfilePictureModal);
   const { open: openChangePassword } = useModal(ChangePassModal);
 
-  console.log("IDDDD", employee)
-
-
   useEffect(() => {
     const fetchEmployee = async () => {
       const data = await readOne(employeeId);
