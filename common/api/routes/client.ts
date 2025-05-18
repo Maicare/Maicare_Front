@@ -1,3 +1,5 @@
+import { add } from "date-fns";
+
 const prefix = "/clients";
 const ApiRoutes = {
   ReadAll: prefix,
@@ -6,6 +8,7 @@ const ApiRoutes = {
   Status: prefix + "/{id}/status",
   StatusHistory: prefix + "/{id}/status_history",
   CreateOne: prefix,
+  addresses: prefix + "/{id}/addresses",
   Appointment: {
     ReadAll: prefix + "/{id}/appointment_cards",
     Download: prefix + "/{id}/appointment_cards/generate_document",
