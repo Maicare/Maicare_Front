@@ -3,23 +3,32 @@ import { DOCUMENT_LABELS } from '@/consts';
 import { ArrowRight, CheckCircle, FileText, XCircle } from 'lucide-react'
 import React from 'react'
 import DocumentPreviewSkeleton from './DocumentPreviewSkeleton';
+import Link from 'next/link';
+import { useParams } from 'next/navigation';
+
 type Props = {
     isParentLoading: boolean;
 }
+
 const DocumentsPreview = ({ isParentLoading }: Props) => {
+
+    const { clientId } = useParams();
+
     if (isParentLoading) {
-        return(
-            <DocumentPreviewSkeleton/>
+        return (
+            <DocumentPreviewSkeleton />
         );
     }
     return (
         <div className="w-full h-[287px] rounded-sm shadow-md p-4 bg-white overflow-y-scroll">
             <div className="flex justify-between items-center">
                 <h1 className='flex items-center gap-2 m-0 p-0 font-extrabold text-lg text-slate-600'><FileText size={18} className='text-indigo-400' />Documenten</h1>
-                <Button className='bg-indigo-400 text-white text-xs py-1 px-2 rounded-md flex items-center gap-2 '>
-                    <span>View All</span>
-                    <ArrowRight size={15} className='arrow-animation' />
-                </Button>
+                <Link href={`/clients/${clientId}/documents`}>
+                    <Button className='bg-indigo-400 text-white text-xs py-1 px-2 rounded-md flex items-center gap-2 '>
+                        <span>View All</span>
+                        <ArrowRight size={15} className='arrow-animation' />
+                    </Button>
+                </Link>
             </div>
             <div className="mt-4 w-full p-2 flex flex-col gap-1 ">
                 {

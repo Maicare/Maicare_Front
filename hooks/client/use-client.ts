@@ -62,7 +62,7 @@ export function useClient({
     const { displayProgress = false } = options || {};
     try {
       if (displayProgress) startProgress();
-      const response = await useApi<Client&{identity_attachment_ids:string[]}>(
+      const response = await useApi<Client & { identity_attachment_ids: string[] }>(
         ApiRoutes.Client.ReadOne.replace("{id}", id.toString()),
         "GET"
       );
@@ -216,6 +216,25 @@ export function useClient({
     }
   };
 
+  const readClientAddresses = async (id: Id) => {
+    try {
+      const response = await useApi<any>(
+        ApiRoutes.Client.addresses.replace("{id}", id.toString()),
+        "GET"
+      );
+      if (!response.data) {
+        throw new Error("Client not found");
+      }
+      return response.data;
+    } catch (err: any) {
+      enqueueSnackbar(
+        err?.response?.data?.message || "Failed to fetch client",
+        { variant: "error" }
+      );
+      throw err;
+    }
+  };
+
   const getStatusHistory = async (id: string, options?: ApiOptions) => {
     const { displayProgress = false, displaySuccess = false } = options || {};
     try {
@@ -240,6 +259,7 @@ export function useClient({
     error,
     isLoading,
     page,
+    readClientAddresses,
     setPage,
     readOne,
     createOne,

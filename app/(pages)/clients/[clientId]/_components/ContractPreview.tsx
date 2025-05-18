@@ -3,14 +3,20 @@ import { ArrowRight, Receipt } from 'lucide-react'
 import React from 'react'
 import ContractItem from './ContractItem'
 import ContractPreviewSkeleton from './ContractPreviewSkeleton'
+import { useContract } from '@/hooks/contract/use-contract'
 
 type Props = {
-    isParentLoading:boolean;
+    isParentLoading: boolean;
 }
 
-const ContractPreview = ({isParentLoading}:Props) => {
+const ContractPreview = ({ isParentLoading }: Props) => {
+
+    const { contracts } = useContract({});
+
+    console.log("CONTRACTS", contracts)
+
     if (isParentLoading) {
-        return(
+        return (
             <ContractPreviewSkeleton />
         )
     }

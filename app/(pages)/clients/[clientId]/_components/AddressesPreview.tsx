@@ -2,24 +2,46 @@ import CopyTooltip from '@/common/components/CopyTooltip'
 import PrimaryButton from '@/common/components/PrimaryButton';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { AddressType } from '@/types/client.types';
-import {  Edit, MapPinned } from 'lucide-react'
+import { Edit, MapPinned } from 'lucide-react'
 import Image from 'next/image';
 import React from 'react'
 import { AddressesLoaderSkeleton } from './AddressesLoaderSkeleton';
+import { useParams } from 'next/navigation';
+import { useClient } from '@/hooks/client/use-client';
 
 type Props = {
-  addresses: AddressType[];
   isParentLoading: boolean;
 }
 
-const AddressesPreview = ({ addresses, isParentLoading }: Props) => {
-  if (isParentLoading) {
+const AddressesPreview = ({ isParentLoading }: Props) => {
+
+  const { clientId } = useParams();
+
+  const { readClientAddresses } = useClient({});
+
+  const [addressesData, setAddressesData] = React.useState<AddressType[]>([]);
+  const [isLoading, setIsLoading] = React.useState(true);
+
+  React.useEffect(() => {
+    const fetchAddresses = async () => {
+      setIsLoading(true);
+      const numericClientId = Number(Array.isArray(clientId) ? clientId[0] : clientId);
+      const response = await readClientAddresses(numericClientId);
+      const data = response;
+      setAddressesData(data.addresses);
+      setIsLoading(false);
+    }
+    if (clientId) fetchAddresses();
+  }, [clientId]);
+
+
+  if (isParentLoading || isLoading) {
     return (
       <AddressesLoaderSkeleton />
     )
   }
 
-  if (addresses?.length === 0) {
+  if (addressesData?.length === 0) {
     return (
       <div className="w-full h-[287px] rounded-sm shadow-md p-4 bg-white">
         <h1 className='flex items-center gap-2 m-0 p-0 font-extrabold text-lg text-slate-600'><MapPinned size={18} className='text-indigo-400' /> Addresses Information</h1>
@@ -42,7 +64,7 @@ const AddressesPreview = ({ addresses, isParentLoading }: Props) => {
       <div className="mt-2 w-full">
         <Accordion type="single" collapsible className="w-full" defaultValue='item-1'>
           {
-            addresses.map(({ address, belongs_to, city, phone_number, zip_code }, index) => (
+            addressesData.map(({ address, belongs_to, city, phone_number, zip_code }, index) => (
               <AccordionItem value={`item-${index + 1}`} key={index}>
                 <AccordionTrigger className='text-sm text-slate-600 font-bold'>{address}:</AccordionTrigger>
                 <AccordionContent>

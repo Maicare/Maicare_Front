@@ -25,75 +25,77 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     const { open } = useSidebar();
     const router = useRouter();
     const pathname = usePathname();
-    const {clientId,employeeId} = useParams();
+    const { clientId, employeeId } = useParams();
     const isClient = pathname.startsWith("/clients/") && pathname !== "/clients/";
     const isEmployee = pathname.startsWith("/employees/") && pathname !== "/employees/";
-    const [user, setUser] = useState({first_name:"Loading",last_name:"",id:parseInt(employeeId as string) ?? parseInt(clientId as string)});
-    
+    const [user, setUser] = useState({ first_name: "Loading", last_name: "", email: "", id: parseInt(employeeId as string) ?? parseInt(clientId as string), profile_picture: "/images/avatar-1.jpg" });
+
     const [isLoading, setIsLoading] = useState(false);
     const { readOne } = useEmployee({ autoFetch: false });
-    const { readOne:readClient } = useClient({ autoFetch: false });
+    const { readOne: readClient } = useClient({ autoFetch: false });
     useEffect(() => {
         const fetchEmployee = async (id: number) => {
             setIsLoading(true);
             const data = await readOne(id);
-            setUser(data);
+            setUser({ ...data, profile_picture: data.profile_picture ?? "/images/avatar-1.jpg" });
             setIsLoading(false);
         }
         const fetchClient = async (id: number) => {
             setIsLoading(true);
             const data = await readClient(id);
-            setUser(data);
+            setUser({ ...data, profile_picture: data.profile_picture ?? "/images/avatar-1.jpg" });
             setIsLoading(false);
         }
         if (isEmployee) {
             const employeeId = pathname.split("/")[2];
             if (employeeId) fetchEmployee(+employeeId);
-        }else if (isClient) {
+        } else if (isClient) {
             const clientId = pathname.split("/")[2];
             if (clientId) fetchClient(+clientId);
-        } 
+        }
     }
-        , [isEmployee,isClient,pathname]);
+        , [isEmployee, isClient, pathname]);
+
+    console.log("USSSSSSSER", user)
 
     if (isLoading) {
         return (
             <Sidebar collapsible="icon" {...props}>
-            <SidebarHeader>
-                <SidebarMenu>
-                    <SidebarMenuItem>
-                        <SidebarMenuButton
-                            onClick={() => router.push("/dashboard")}
-                            size="lg"
-                            className="text-white bg-white/30 backdrop-blur-sm rounded-md data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground data-[state=open]:h-14 hover:bg-indigo-300 dark:hover:bg-indigo-800"
-                        >
-                            <div className="flex aspect-square data-[state=open]:size-12 size-8 items-center justify-center rounded-lg bg-transparent text-sidebar-primary-foreground">
-                                {
-                                    open ?
-                                        <Image height={48} width={48} alt="Logo." src={"/images/logo/logo.ico"} />
-                                        :
-                                        <Image height={30} width={30} alt="Logo." src={"/images/logo/logo.ico"} />
-                                }
-                            </div>
-                            <div className="grid flex-1 text-left text-sm leading-tight">
-                                <span className="truncate font-semibold">
-                                    MaiCare
-                                </span>
-                                <span className="truncate text-xs">Admin</span>
-                            </div>
-                        </SidebarMenuButton>
-                    </SidebarMenuItem>
-                </SidebarMenu>
-            </SidebarHeader>
-            <SidebarContent>
-                <NavMain items={isEmployee ? sidebarEmployeeLinks({first_name:"Loading",last_name:"",id:parseInt(employeeId as string) ?? parseInt(clientId as string)}) : isClient ? sidebarClientLinks({first_name:"Loading",last_name:"",id:parseInt(employeeId as string) ?? parseInt(clientId as string)}) : sidebarLinks} label={isEmployee ? "Medewerker" : isClient ? "Clienten" : "Dashboard"} />
-            </SidebarContent>
-            <SidebarFooter>
-                <ThemeSwitcher />
-                <NavUser user={{ name: "bourichi taha", email: "bourichi.taha@gmail.com", avatar: "/images/avatar-1.jpg" }} />
-            </SidebarFooter>
-            <SidebarRail />
-        </Sidebar>
+                <SidebarHeader>
+                    <SidebarMenu>
+                        <SidebarMenuItem>
+                            <SidebarMenuButton
+                                onClick={() => router.push("/dashboard")}
+                                size="lg"
+                                className="text-white bg-white/30 backdrop-blur-sm rounded-md data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground data-[state=open]:h-14 hover:bg-indigo-300 dark:hover:bg-indigo-800"
+                            >
+                                <div className="flex aspect-square data-[state=open]:size-12 size-8 items-center justify-center rounded-lg bg-transparent text-sidebar-primary-foreground">
+                                    {
+                                        open ?
+                                            <Image height={48} width={48} alt="Logo." src={"/images/logo/logo.ico"} />
+                                            :
+                                            <Image height={30} width={30} alt="Logo." src={"/images/logo/logo.ico"} />
+                                    }
+                                </div>
+                                <div className="grid flex-1 text-left text-sm leading-tight">
+                                    <span className="truncate font-semibold">
+                                        MaiCare
+                                    </span>
+                                    <span className="truncate text-xs">Admin</span>
+                                </div>
+                            </SidebarMenuButton>
+                        </SidebarMenuItem>
+                    </SidebarMenu>
+                </SidebarHeader>
+                <SidebarContent>
+                    <NavMain items={isEmployee ? sidebarEmployeeLinks({ first_name: "Loading", last_name: "", id: parseInt(employeeId as string) ?? parseInt(clientId as string) }) : isClient ? sidebarClientLinks({ first_name: "Loading", last_name: "", id: parseInt(employeeId as string) ?? parseInt(clientId as string) }) : sidebarLinks} label={isEmployee ? "Medewerker" : isClient ? "Clienten" : "Dashboard"} />
+                </SidebarContent>
+                <SidebarFooter>
+                    <ThemeSwitcher />
+                    <NavUser user={{ name: user.first_name + " " + user.last_name, email: user.email, avatar: user.profile_picture || "/images/avatar-1.jpg" }} />
+                </SidebarFooter>
+                <SidebarRail />
+            </Sidebar>
         );
     }
     return (
@@ -129,7 +131,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             </SidebarContent>
             <SidebarFooter>
                 <ThemeSwitcher />
-                <NavUser user={{ name: "bourichi taha", email: "bourichi.taha@gmail.com", avatar: "/images/avatar-1.jpg" }} />
+                <NavUser user={{ name: user.first_name + " " + user.last_name, email: user.email, avatar: user.profile_picture || "/images/avatar-1.jpg" }} />
             </SidebarFooter>
             <SidebarRail />
         </Sidebar>
