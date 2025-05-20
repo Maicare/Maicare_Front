@@ -22,11 +22,11 @@ const Select: FunctionComponent<SelectProps> = ({
       {label && <label className="mb-2.5 block text-slate-800  dark:text-white font-medium" htmlFor={id}>
         {label} {required && <span className="text-meta-1">*</span>}
       </label>}
-      <div className="relative z-20 bg-transparent dark:bg-form-input">
+      <div className="relative bg-transparent dark:bg-form-input">
         <select
           id={id}
           required={required}
-          className="relative bg-white z-20 w-full appearance-none rounded-lg border border-stroke bg-transparent py-2 px-5 outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary py-4"
+          className="relative bg-white  w-full appearance-none rounded-lg border border-stroke bg-transparent py-2 px-5 outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
           {...props}
         >
           {options.map((option) => {
@@ -38,7 +38,7 @@ const Select: FunctionComponent<SelectProps> = ({
           })}
         </select>
         <span className="absolute bg-white dark:bg-form-input top-1/2 right-4 z-30 -translate-y-1/2 pointer-events-none">
-          <ChevronDown />
+          <ChevronDown className="w-4 h-4" />
         </span>
       </div>
       {error && (
