@@ -35,12 +35,12 @@ export function useClient({
     error,
     mutate,
   } = useSWR<PaginatedResponse<Client> | null>(
-    stringConstructor(
+    autoFetch ? stringConstructor(
       ApiRoutes.Client.ReadAll,
       constructUrlSearchParams({ search, status, location_id, page, page_size })
-    ), // Endpoint to fetch clients
+    ) : null, // Endpoint to fetch clients
     async (url) => {
-      if (!autoFetch)
+      if (!url)
         return {
           results: [],
           count: 0,
@@ -62,7 +62,7 @@ export function useClient({
     const { displayProgress = false } = options || {};
     try {
       if (displayProgress) startProgress();
-      const response = await useApi<Client&{identity_attachment_ids:string[]}>(
+      const response = await useApi<Client & { identity_attachment_ids: string[] }>(
         ApiRoutes.Client.ReadOne.replace("{id}", id.toString()),
         "GET"
       );

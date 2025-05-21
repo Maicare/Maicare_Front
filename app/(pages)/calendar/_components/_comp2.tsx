@@ -23,6 +23,7 @@ import MultiEmployeeSelect from "./MultiEmployeeSelect";
 import MultiClientSelect from "./MultiClientSelect";
 import { LocationSelect } from "@/components/employee/LocationSelect";
 import RecurrenceSelect from "./RecurrenceSelect";
+import { useCalendar } from "@/hooks/calendar/use-calendar";
 import { appointmentSchema, CreateAppointmentType } from "@/schemas/calendar.schemas";
 
 export type CalendarEventDTO = Omit<
@@ -38,7 +39,6 @@ export type CalendarEventDTO = Omit<
 
 const POPUP_WIDTH = 380;
 const POPUP_HEIGHT = 460;
-const STORAGE_KEY = "bookings";
 
 const getContrastColor = (hex: string): string => {
   const h = hex.replace("#", "");
@@ -49,24 +49,11 @@ const getContrastColor = (hex: string): string => {
   return yiq >= 128 ? "#000" : "#fff";
 };
 
-/* ───────────────────── helpers for localStorage ───────────────────── */
-const loadBookings = (): CalendarEventDTO[] => {
-  try {
-    return JSON.parse(localStorage.getItem(STORAGE_KEY) ?? "[]");
-  } catch {
-    return [];
-  }
-};
-
-const saveBookings = (events: CalendarEventDTO[]) =>
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(events));
-/* ───────────────────────────────────────────────────────────────────── */
-
 export interface BookingPopupProps {
   createRange: DateSelectArg | null;
   editEvent: EventClickArg | null;
   position: { left: number; top: number };
-  containerRef: React.RefObject<HTMLDivElement | null>;
+  containerRef: React.RefObject<HTMLDivElement|null>;
   onClose: () => void;
   onUpsert: (payload: CalendarEventDTO, isEdit: boolean) => void;
   onDelete: (eventId: string) => void;
@@ -81,18 +68,19 @@ const BookingPopup: FunctionComponent<BookingPopupProps> = ({
   onUpsert,
   onDelete,
 }) => {
-  /* ─────── state ─────── */
   const [startDate, setStartDate] = useState<Date>(
     createRange ? new Date(createRange.start) : editEvent?.event.start ?? new Date(),
   );
   const [endDate, setEndDate] = useState<Date>(
     createRange ? new Date(createRange.end) : editEvent?.event.end ?? new Date(),
   );
+
   const [selectedColor, setSelectedColor] = useState<string>(
     editEvent?.event.backgroundColor ?? "#4f46e5",
   );
+
   const [selectedClientIds, setSelectedClientIds] = useState<Id[]>(
-    (editEvent?.event.extendedProps.client_ids as Id[]) ?? [],
+    (editEvent?.event.extendedProps.clients as Id[]) ?? [],
   );
   const [selectedEmployeeIds, setSelectedEmployeeIds] = useState<Id[]>(
     (editEvent?.event.extendedProps.participant_employee_ids as Id[]) ?? [],
@@ -100,6 +88,7 @@ const BookingPopup: FunctionComponent<BookingPopupProps> = ({
   const [selectedLocation, setSelectedLocation] = useState<string | null>(
     (editEvent?.event.extendedProps.location as string) ?? null,
   );
+
   const [recurrenceType, setRecurrenceType] = useState<RecurrenceType>(
     (editEvent?.event.extendedProps.recurrence_type as RecurrenceType) ??
     RecurrenceType.NONE,
@@ -108,16 +97,22 @@ const BookingPopup: FunctionComponent<BookingPopupProps> = ({
     (editEvent?.event.extendedProps.recurrence_interval as number) ?? 1,
   );
   const [recurrenceEndDate, setRecurrenceEndDate] = useState<Date | null>(() => {
-    const raw = editEvent?.event.extendedProps.recurrence_end_date as string | undefined;
+    const raw = editEvent?.event.extendedProps.recurrence_end_date as
+      | string
+      | undefined;
     return raw ? new Date(raw) : null;
   });
+
   const [formError, setFormError] = useState<string | null>(null);
 
-  /* ─────── dragging ─────── */
   const [isDragging, setIsDragging] = useState(false);
-  const [dragOffset, setDragOffset] = useState<{ x: number; y: number } | null>(null);
+  const [dragOffset, setDragOffset] = useState<{ x: number; y: number } | null>(
+    null,
+  );
+
   const [pos, setPos] = useState(position);
   useEffect(() => setPos(position), [position]);
+
 
   useEffect(() => {
     if (!isDragging || !dragOffset) return;
@@ -142,7 +137,6 @@ const BookingPopup: FunctionComponent<BookingPopupProps> = ({
     };
   }, [isDragging, dragOffset, containerRef]);
 
-  /* ─────── live color preview ─────── */
   useEffect(() => {
     const fg = getContrastColor(selectedColor);
 
@@ -150,6 +144,7 @@ const BookingPopup: FunctionComponent<BookingPopupProps> = ({
       const ev = editEvent.event;
       ev.setProp("backgroundColor", selectedColor);
       ev.setProp("textColor", fg);
+
       const el = editEvent.el as HTMLElement | null;
       if (el) {
         el.style.backgroundColor = selectedColor;
@@ -160,16 +155,19 @@ const BookingPopup: FunctionComponent<BookingPopupProps> = ({
     }
 
     if (createRange) {
-      document.querySelectorAll<HTMLElement>(".fc-event-mirror").forEach((el) => {
-        el.style.backgroundColor = selectedColor;
-        el.style.borderColor = "transparent";
-        el.style.color = fg;
-      });
+      document
+        .querySelectorAll<HTMLElement>(".fc-event-mirror")
+        .forEach((el) => {
+          el.style.backgroundColor = selectedColor;
+          el.style.borderColor = "transparent";
+          el.style.color = fg;
+        });
     }
   }, [selectedColor, editEvent, createRange]);
 
-  /* ─────── submit ─────── */
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const { createAppointment } = useCalendar("");
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setFormError(null);
 
@@ -186,7 +184,9 @@ const BookingPopup: FunctionComponent<BookingPopupProps> = ({
       end_time: endDate,
       recurrence_type: recurrenceType,
       recurrence_interval:
-        recurrenceType === RecurrenceType.NONE ? 0 : Math.max(1, recurrenceInterval),
+        recurrenceType === RecurrenceType.NONE
+          ? 0
+          : Math.max(1, recurrenceInterval),
       recurrence_end_date:
         recurrenceType === RecurrenceType.NONE || !recurrenceEndDate
           ? endDate
@@ -199,58 +199,40 @@ const BookingPopup: FunctionComponent<BookingPopupProps> = ({
       return;
     }
 
-    const fg = getContrastColor(selectedColor);
-    const dto: CalendarEventDTO = {
-      id: editEvent?.event.id ?? Date.now().toString(),
-      ...parsed.data,
-      start_time:
-        typeof parsed.data.start_time === "string"
-          ? new Date(parsed.data.start_time)
-          : parsed.data.start_time,
-      end_time:
-        typeof parsed.data.end_time === "string"
-          ? new Date(parsed.data.end_time)
-          : parsed.data.end_time,
-      recurrence_end_date:
-        typeof parsed.data.recurrence_end_date === "string"
-          ? new Date(parsed.data.recurrence_end_date)
-          : parsed.data.recurrence_end_date,
-      backgroundColor: selectedColor,
-      textColor: fg,
-    };
+    try {
+      const createdOrUpdated = await createAppointment(parsed.data as CreateAppointmentType);
+       const fg = getContrastColor(selectedColor);
 
-    /* ── localStorage persistence ── */
-    const bookings = loadBookings();
-    if (editEvent) {
-      const idx = bookings.findIndex((b) => b.id === dto.id);
-      if (idx >= 0) bookings[idx] = dto;
-      else bookings.push(dto);
-    } else {
-      bookings.push(dto);
+      const dto: CalendarEventDTO = {
+        id:
+          editEvent?.event.id ??
+          String((createdOrUpdated as any)?.id ?? Date.now().toString()),
+        ...parsed.data,
+        end_time: typeof parsed.data.end_time === "string" ? new Date(parsed.data.end_time) : parsed.data.end_time,
+        start_time: typeof parsed.data.start_time === "string" ? new Date(parsed.data.start_time) : parsed.data.start_time,
+        recurrence_end_date: typeof parsed.data.recurrence_end_date === "string" ? new Date(parsed.data.recurrence_end_date) : parsed.data.recurrence_end_date,
+        backgroundColor: selectedColor,
+        textColor: fg,
+      };
+
+      onUpsert(dto, !!editEvent);
+    } catch (err: any) {
+      setFormError(err?.message ?? "Save failed, please try again.");
     }
-    saveBookings(bookings);
-    /* ───────────────────────────── */
-
-    onUpsert(dto, !!editEvent);
   };
 
-  /* ─────── delete ─────── */
-  const handleDeleteClick = () => {
+  const handleDeleteClick = async () => {
     if (!editEvent) return;
-
-    const bookings = loadBookings().filter((b) => b.id !== editEvent.event.id);
-    saveBookings(bookings);
-
+    // await DeleteBooking(editEvent.event.id);
     onDelete(editEvent.event.id);
   };
 
-  /* ─────── render ─────── */
+  const currentPos = pos;
   return (
     <div
       className="fc-popup fixed z-50 w-80 bg-white border border-slate-200 shadow-xl rounded-lg flex flex-col"
       style={{ ...pos, width: POPUP_WIDTH, maxHeight: POPUP_HEIGHT }}
     >
-      {/* draggable header */}
       <div
         className="flex items-center justify-end w-full h-8 bg-slate-100 border-b border-slate-200 cursor-move select-none px-2"
         onMouseDown={(e) => {
@@ -259,8 +241,8 @@ const BookingPopup: FunctionComponent<BookingPopupProps> = ({
           const rect = containerRef?.current?.getBoundingClientRect();
           if (!rect) return;
           setDragOffset({
-            x: e.clientX - pos.left,
-            y: e.clientY - pos.top,
+            x: e.clientX - currentPos.left,
+            y: e.clientY - currentPos.top,
           });
           setIsDragging(true);
         }}
@@ -277,7 +259,6 @@ const BookingPopup: FunctionComponent<BookingPopupProps> = ({
         </button>
       </div>
 
-      {/* form  */}
       <div className="p-4 flex-1 overflow-y-auto form-scroll">
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* description */}
