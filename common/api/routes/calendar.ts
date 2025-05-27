@@ -6,7 +6,7 @@ const ApiRoutes = {
   UpdateOne: prefix + "/{id}",
   DeleteOne: prefix + "/{id}",
   AddClient: prefix + "/{id}/clients",
-  ConfirmAppointment: prefix + "/{id]/confirm",
+  ConfirmAppointment: prefix + "/{id}/confirm",
   AddParticipants: prefix + "/{id}/participants",
 };
 
