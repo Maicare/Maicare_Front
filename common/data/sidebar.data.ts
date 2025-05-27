@@ -132,5 +132,10 @@ export const sidebarClientLinks = (client:{first_name:string,last_name:string,id
         title: "Vragenlijsten",
         url: "/clients/" + client?.id+"/questionnaires",
         icon: FilesIcon ,
-    }
+    },
+    {
+      title: "Kalender",
+      url: "/clients/" + client?.id + "/calendar",
+      icon: CalendarDays,
+    },
 ];

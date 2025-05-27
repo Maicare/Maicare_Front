@@ -5,16 +5,16 @@ import Breadcrumb from "@/components/common/Breadcrumbs/Breadcrumb";
 import BookingCalendar from "@/components/calendar/BookingCalendar";
 
 interface PageProps {
-  params: Promise<{ employeeId: string }>;
+  params: Promise<{ clientId: string }>;
 }
 
 const Page: FunctionComponent<PageProps> = ({ params }) => {
-  const { employeeId } = use(params);
+  const { clientId } = use(params);
 
   return (
     <>
       <Breadcrumb pageName="Opdrachtgevers" />
-      <BookingCalendar employeeId={Number(employeeId)} />
+      <BookingCalendar clientId={Number(clientId)} />
     </>
   );
 };

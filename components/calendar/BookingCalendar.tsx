@@ -29,15 +29,17 @@ const getContrast = (hex: string) => {
 
 
 interface Props {
-  employeeId: number;
+  employeeId?: number;
+  clientId?: number;
   initialEvents?: EventInput[];
 }
 
 export default function BookingCalendar({
   employeeId,
+  clientId,
   initialEvents = [],
 }: Props) {
-  const { fetchAppointmentsWindow, readOneAppointment, deleteAppointment } = useCalendar(String(employeeId));
+  const { fetchAppointmentsWindowByEmployee, fetchAppointmentsWindowByClient, readOneAppointment, deleteAppointment } = useCalendar(String(employeeId));
 
   const fcRef = useRef<FullCalendar | null>(null);
   const containerRef = useRef<HTMLDivElement>(null!);
@@ -63,12 +65,13 @@ export default function BookingCalendar({
     };
   };
 
-  /* replace the stub */
   const loadEvents = async (start: Date, end: Date) => {
     try {
-      const data = await fetchAppointmentsWindow(start, end);
-      const mapped = data.map(toEventInput);
-      setEvents(mapped);
+      const data = clientId != null
+        ? await fetchAppointmentsWindowByClient(String(clientId), start, end)
+        : await fetchAppointmentsWindowByEmployee(start, end);
+
+      setEvents(data.map(toEventInput));
     } catch (e) {
       console.error("Could not fetch appointments", e);
     }
@@ -78,7 +81,7 @@ export default function BookingCalendar({
     if (!fcRef.current) return;
     const view = fcRef.current.getApi().view;
     loadEvents(view.currentStart, view.currentEnd);
-  }, [employeeId]);
+  }, [employeeId, clientId]);
 
   /* ---------- popup helpers ---------- */
   const openPopupAt = (x: number, y: number) =>
@@ -94,7 +97,7 @@ export default function BookingCalendar({
     setPopupPos(null);
   };
 
-  /* ---------- FC interaction ---------- */
+  /* ---------- FullCalendar interaction ---------- */
   const handleDateSelect = (info: DateSelectArg) => {
     setEditEvent(null);
     setCreateRange(info);
@@ -176,7 +179,7 @@ export default function BookingCalendar({
 
     // then remove from FullCalendar + local state
     fcRef.current?.getApi().getEventById(id)?.remove();
-    setEvents((prev) => prev.filter((e) => e.id !== id));
+    setEvents(prev => prev.filter(e => e.id !== id));
     closePopup();
   };
 

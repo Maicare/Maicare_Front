@@ -56,7 +56,7 @@ export function useCalendar(employeeId: string, autoFetch: boolean = false, para
   );
   const isLoading = !appointments && !error;
 
-  const fetchAppointmentsWindow = async (
+  const fetchAppointmentsWindowByEmployee = async (
     start: Date,
     end: Date,
     options?: ApiOptions,
@@ -67,6 +67,35 @@ export function useCalendar(employeeId: string, autoFetch: boolean = false, para
 
       const { data, error, success, message } = await useApi<CalendarAppointment[]>(
         ApiRoutes.Employee.Appointmens.ReadAll.replace("{id}", employeeId),
+        "POST",
+        {},
+        {
+          start_date: start.toISOString(),
+          end_date: end.toISOString(),
+        },
+      );
+
+      if (!success || !data)
+        throw new Error(error || message || "Could not load appointments");
+
+      return data;
+    } finally {
+      if (displayProgress) stopProgress();
+    }
+  };
+
+  const fetchAppointmentsWindowByClient = async (
+    clientId: string,
+    start: Date,
+    end: Date,
+    options?: ApiOptions,
+  ): Promise<CalendarAppointment[]> => {
+    const { displayProgress = false } = options || {};
+    try {
+      if (displayProgress) startProgress();
+
+      const { data, error, success, message } = await useApi<CalendarAppointment[]>(
+        ApiRoutes.Client.Appointmens.ReadAll.replace("{id}", clientId),
         "POST",
         {},
         {
@@ -256,7 +285,8 @@ export function useCalendar(employeeId: string, autoFetch: boolean = false, para
     page,
     setPage,
     mutate,
-    fetchAppointmentsWindow,
+    fetchAppointmentsWindowByEmployee,
+    fetchAppointmentsWindowByClient,
     readOneAppointment,
     createAppointment,
     updateAppointment,
