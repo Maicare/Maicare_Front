@@ -46,6 +46,8 @@ import {
   CreateAppointmentType,
 } from "@/schemas/calendar.schemas";
 import { CalendarAppointment, RecurrenceType } from "@/types/calendar.types";
+import LocationSelectByName from "./LocationSelectByName";
+import { Label } from "../ui/label";
 
 export type UpsertPayload = CreateAppointmentType & {
   id: string;
@@ -355,11 +357,13 @@ const BookingPopup: FunctionComponent<BookingPopupProps> = ({
               name="location"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Location</FormLabel>
+                  <Label className="flex items-center justify-between text-slate-600 font-medium mb-1">
+                    Location
+                  </Label>
                   <FormControl>
-                    <LocationSelect
+                    <LocationSelectByName
                       value={field.value}
-                      onChange={(e) => field.onChange(e.target.value)}
+                      onChange={field.onChange}
                       className="w-full"
                     />
                   </FormControl>
