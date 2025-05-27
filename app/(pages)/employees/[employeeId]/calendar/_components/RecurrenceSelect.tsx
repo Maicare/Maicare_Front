@@ -1,5 +1,4 @@
 import { FunctionComponent, useMemo } from "react";
-import { RecurrenceType } from "@/types/appointment.types";
 import { format } from "date-fns";
 
 import { Label } from "@/components/ui/label";
@@ -13,6 +12,7 @@ import {
 import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
 import { cn } from "@/utils/cn";
+import { RecurrenceType } from "@/types/calendar.types";
 
 /* ── local constants (only used here) ───────────────────────────────────── */
 const recurrenceOptions = [

@@ -14,7 +14,7 @@ import { format } from "date-fns";
 import { Clock, Calendar as CalendarIcon } from "lucide-react";
 import ReactDatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import BookingPopup, { CalendarEventDTO } from "./BookingPopup";
+import BookingPopup, { CalendarEventDTO } from "./_comp2";
 
 const getContrastColor = (hex: string): string => {
   const h = hex.replace("#", "");

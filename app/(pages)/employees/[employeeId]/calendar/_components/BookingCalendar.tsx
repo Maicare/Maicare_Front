@@ -5,13 +5,17 @@ import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
-import { DateSelectArg, EventClickArg } from "@fullcalendar/core";
+import {
+  DateSelectArg,
+  EventClickArg,
+  EventInput,
+} from "@fullcalendar/core";
 
-import BookingPopup, { CalendarEventDTO } from "./BookingPopup";
-import { Id } from "@/common/types/types";
-import { RecurrenceType } from "@/types/appointment.types";
-import { useAppointment } from "@/hooks/client/use-appointment";
+import BookingPopup, { UpsertPayload } from "./BookingPopup";
+import { CalendarAppointment, RecurrenceType } from "@/types/calendar.types";
+import { useCalendar } from "@/hooks/calendar/use-calendar";
 
+/* ───────────────────────── helpers ───────────────────────── */
 const POPUP_WIDTH = 380;
 const POPUP_HEIGHT = 460;
 
@@ -20,82 +24,53 @@ const getContrast = (hex: string) => {
   const r = parseInt(h.slice(0, 2), 16);
   const g = parseInt(h.slice(2, 4), 16);
   const b = parseInt(h.slice(4, 6), 16);
-  return (r * 299 + g * 587 + b * 114) / 1_000 >= 128 ? "#000" : "#fff";
+  return (r * 299 + g * 587 + b * 114) / 1000 >= 128 ? "#000" : "#fff";
 };
 
-export type CalendarEvent = {
-  id: string;
-  start: Date;
-  end: Date;
-  allDay?: boolean;
-  backgroundColor?: string;
-  textColor?: string;
-  clients?: Id[];
-  participant_employee_ids?: Id[];
-  location?: string;
-  recurrence_type: RecurrenceType;
-  recurrence_interval?: number;
-  recurrence_end_date?: Date;
-};
 
 interface Props {
   employeeId: number;
-  initialEvents: CalendarEvent[];
+  initialEvents?: EventInput[];
 }
 
 export default function BookingCalendar({
   employeeId,
   initialEvents = [],
 }: Props) {
+  const { fetchAppointmentsWindow, readOneAppointment, deleteAppointment } = useCalendar(String(employeeId));
+
   const fcRef = useRef<FullCalendar | null>(null);
   const containerRef = useRef<HTMLDivElement>(null!);
   const ignoreSelect = useRef(false);
 
-  const [events, setEvents] = useState<CalendarEvent[]>(initialEvents||[]);
+  const [events, setEvents] = useState<EventInput[]>(initialEvents);
   const [createRange, setCreateRange] = useState<DateSelectArg | null>(null);
   const [editEvent, setEditEvent] = useState<EventClickArg | null>(null);
-  const [popupPos, setPopupPos] = useState<{ left: number; top: number } | null>(null);
+  const [popupPos, setPopupPos] = useState<{ left: number; top: number } | null>(
+    null,
+  );
 
-  // const { ReadAllByEmployee } = useAppointment();
+  const toEventInput = (a: CalendarAppointment): EventInput => {
+    const bg = "#4f46e5";
+    return {
+      id: String((a as any).id),
+      title: a.description ?? "",
+      start: new Date(a.start_time),
+      end: new Date(a.end_time),
+      backgroundColor: bg,
+      textColor: getContrast(bg),
+      extendedProps: a,
+    };
+  };
 
-  // const normalize = (apiData: any[]): CalendarEvent[] =>
-  //   apiData.map((a) => {
-  //     const start = a.start_time;
-  //     const end = a.end_time;
-
-  //     return {
-  //       id: String(a.id),
-  //       start,
-  //       end,
-  //       start_time: start,
-  //       end_time: end,
-
-  //       backgroundColor: a.color ?? "#4f46e5",
-  //       textColor: getContrast(a.color ?? "#4f46e5"),
-
-  //       description: a.description,
-
-  //       client_ids: a.client_ids,
-  //       clients: a.client_ids,
-
-  //       participant_employee_ids: a.participant_employee_ids,
-  //       location: a.location,
-  //       recurrence_type: a.recurrence_type,
-  //       recurrence_interval: a.recurrence_interval,
-  //       recurrence_end_date: a.recurrence_end_date,
-  //     };
-  //   });
-
+  /* replace the stub */
   const loadEvents = async (start: Date, end: Date) => {
     try {
-      // const data = await ReadAllByEmployee(employeeId, {
-      //   start_date: start.toISOString(),
-      //   end_date: end.toISOString(),
-      // });
-      // setEvents(normalize(data));
-    } catch (err) {
-      // eslint-disable-next-line no-console
-      console.error("Could not fetch appointments", err);
+      const data = await fetchAppointmentsWindow(start, end);
+      const mapped = data.map(toEventInput);
+      setEvents(mapped);
+    } catch (e) {
+      console.error("Could not fetch appointments", e);
     }
   };
 
@@ -105,12 +80,12 @@ export default function BookingCalendar({
     loadEvents(view.currentStart, view.currentEnd);
   }, [employeeId]);
 
-  const openPopupAt = (x: number, y: number) => {
+  /* ---------- popup helpers ---------- */
+  const openPopupAt = (x: number, y: number) =>
     setPopupPos({
       left: Math.min(Math.max(0, x), window.innerWidth - POPUP_WIDTH),
       top: Math.min(Math.max(0, y), window.innerHeight - POPUP_HEIGHT),
     });
-  };
 
   const closePopup = () => {
     if (createRange) createRange.view.calendar.unselect();
@@ -119,70 +94,89 @@ export default function BookingCalendar({
     setPopupPos(null);
   };
 
+  /* ---------- FC interaction ---------- */
   const handleDateSelect = (info: DateSelectArg) => {
     setEditEvent(null);
     setCreateRange(info);
     openPopupAt(info.jsEvent!.clientX, info.jsEvent!.clientY);
   };
 
-  const handleEventClick = (click: EventClickArg) => {
+  const handleEventClick = async (click: EventClickArg) => {
     setCreateRange(null);
+
+    const full = await readOneAppointment(click.event.id);
+    if (full) {
+      /* convert nested arrays into the flat IDs the popup expects */
+      click.event.setExtendedProp(
+        "client_ids",
+        full.clients_details?.map(c => c.client_id) ?? [],
+      );
+      click.event.setExtendedProp(
+        "participant_employee_ids",
+        full.participants_details?.map(p => p.employee_id) ?? [],
+      );
+
+      /* keep a few other bits in sync with the server response */
+      click.event.setExtendedProp("location", full.location);
+      click.event.setExtendedProp("description", full.description);
+      click.event.setStart(new Date(full.start_time));
+      click.event.setEnd(new Date(full.end_time));
+    }
+
     setEditEvent(click);
     openPopupAt(click.jsEvent!.clientX, click.jsEvent!.clientY);
   };
 
-  const handleUpsert = (dto: CalendarEventDTO, isEdit: boolean) => {
+  /* ---------- upsert from popup ---------- */
+  const handleUpsert = (p: UpsertPayload, isEdit: boolean) => {
     const api = fcRef.current?.getApi();
     if (!api) return;
 
+    const bg = p.card_color ?? "#4f46e5";
+    const fg = p.textColor;
+
+    const fcEvent: EventInput = {
+      id: p.id,
+      title: p.description ?? "",
+      start: p.start_time,
+      end: p.end_time,
+      backgroundColor: bg,
+      textColor: fg,
+      extendedProps: {
+        ...p,
+        recurrence_type: p.recurrence_type as RecurrenceType,
+      },
+    };
+
     if (isEdit) {
-      const ev = api.getEventById(dto.id);
+      /* update FC instance */
+      const ev = api.getEventById(p.id);
       if (ev) {
-        ev.setStart(dto.start_time);
-        ev.setEnd(dto.end_time);
-        ev.setProp("backgroundColor", dto.backgroundColor);
-        ev.setProp("textColor", dto.textColor);
-        ev.setProp("title", dto.description ?? "");
-        Object.entries(dto).forEach(([k, v]) => ev.setExtendedProp(k, v));
+        ev.setStart(p.start_time);
+        ev.setEnd(p.end_time);
+        ev.setProp("backgroundColor", bg);
+        ev.setProp("textColor", fg);
+        ev.setProp("title", p.description ?? "");
+        Object.entries(p).forEach(([k, v]) => ev.setExtendedProp(k, v));
       }
-      setEvents(prev => prev.map(e => (e.id === dto.id ? 
-        { ...e, 
-          ...dto,
-          recurrence_type: e.recurrence_type || dto.recurrence_type || undefined,
-        end_time:typeof dto.end_time === "string" ? new Date(dto.end_time):dto.end_time,
-        start_time:typeof dto.start_time === "string" ? new Date(dto.start_time):dto.start_time,
-        recurrence_end_date:typeof dto.recurrence_end_date === "string" ? new Date(dto.recurrence_end_date):dto.recurrence_end_date,
-      } 
-        : e)));
+      /* update local state array */
+      setEvents((prev) =>
+        prev.map((e) => (e.id === p.id ? fcEvent : e)),
+      );
     } else {
-      const {
-        id,
-        start_time,
-        end_time,
-        backgroundColor,
-        textColor,
-        description,
-        ...restProps
-      } = dto;
-
-
-      api.addEvent({
-        id,
-        start: start_time,
-        end: end_time,
-        backgroundColor,
-        textColor,
-        title: description ?? "",
-        ...restProps,
-      });
-      setEvents(prev => prev.concat(dto as unknown as CalendarEvent));
+      api.addEvent(fcEvent);
+      setEvents((prev) => [...prev, fcEvent]);
     }
     closePopup();
   };
 
-  const handleDelete = (id: string) => {
+  const handleDelete = async (id: string) => {
+    // first delete on the server
+    await deleteAppointment(id);
+
+    // then remove from FullCalendar + local state
     fcRef.current?.getApi().getEventById(id)?.remove();
-    setEvents(prev => prev.filter(e => e.id !== id));
+    setEvents((prev) => prev.filter((e) => e.id !== id));
     closePopup();
   };
 

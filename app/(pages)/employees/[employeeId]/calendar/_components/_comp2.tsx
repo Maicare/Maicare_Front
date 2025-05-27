@@ -7,7 +7,6 @@ import {
 } from "react";
 import { DateSelectArg, EventClickArg } from "@fullcalendar/core";
 import { Id } from "@/common/types/types";
-import { RecurrenceType } from "@/types/appointment.types";
 
 import { Button } from "@/components/ui/button";
 import { X } from "lucide-react";
@@ -24,6 +23,7 @@ import MultiClientSelect from "./MultiClientSelect";
 import { LocationSelect } from "@/components/employee/LocationSelect";
 import RecurrenceSelect from "./RecurrenceSelect";
 import { appointmentSchema, CreateAppointmentType } from "@/schemas/calendar.schemas";
+import { RecurrenceType } from "@/types/calendar.types";
 
 export type CalendarEventDTO = Omit<
   CreateAppointmentType,

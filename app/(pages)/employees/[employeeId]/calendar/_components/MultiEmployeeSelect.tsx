@@ -1,6 +1,5 @@
-// MultiClientSelect.tsx
 import React, { useMemo, useState } from "react";
-import { useClient } from "@/hooks/client/use-client";
+import { useEmployee } from "@/hooks/employee/use-employee";
 import {
   Popover,
   PopoverContent,
@@ -17,47 +16,40 @@ import {
   CommandItem,
   CommandList,
 } from "@/components/ui/command";
-import Tooltip from "@/common/components/Tooltip";
 import { Label } from "@/components/ui/label";
 import { Id } from "@/common/types/types";
 
 type Props = {
-  /** Selected client IDs */
   value: Id[];
-  /** Fires with new array when a selection toggles */
   onChange: (ids: Id[]) => void;
   label?: string;
   className?: string;
   modal?: boolean;
 };
 
-const MultiClientSelect = ({
+const MultiEmployeeSelect = ({
   value,
   onChange,
-  label = "Clients",
+  label = "Participants",
   className,
   modal = false,
 }: Props) => {
   const [filter, setFilter] = useState({ search: "", autoFetch: true });
-  const { clients } = useClient({ ...filter, autoFetch: true });
+  const { employees } = useEmployee({ ...filter, autoFetch: true });
 
-  /* ── transform api results ───────────────────────────────────────────── */
   const options = useMemo(() => {
-    if (!clients) return [];
-    return clients.results.map(
-      (c: { first_name: string; last_name?: string; id: number }) => ({
-        label: c.last_name
-          ? `${c.first_name} ${c.last_name}`
-          : c.first_name,
-        value: c.id as Id,
+    if (!employees) return [];
+    return employees.results.map(
+      (emp: { first_name: string; last_name: string; id: number }) => ({
+        label: `${emp.first_name} ${emp.last_name}`,
+        value: emp.id as Id,
       }),
     );
-  }, [clients]);
+  }, [employees]);
 
   const selectedLabels = options
     .filter((o) => value.includes(o.value))
     .map((o) => o.label);
-
   const buttonText =
     selectedLabels.length === 0
       ? `Select ${label.toLowerCase()}…`
@@ -88,7 +80,7 @@ const MultiClientSelect = ({
         <PopoverContent className="w-full p-0 bg-white border border-slate-200 rounded-lg shadow-xl">
           <Command>
             <CommandInput
-              placeholder="Search clients…"
+              placeholder="Search employees…"
               className="h-9"
               onValueChange={(search) =>
                 setFilter((prev) => ({ ...prev, search, autoFetch: true }))
@@ -96,7 +88,7 @@ const MultiClientSelect = ({
             />
             <CommandList className="max-h-60 overflow-y-auto">
               <CommandEmpty className="px-4 py-2 text-sm text-slate-500">
-                No clients found
+                No employees found
               </CommandEmpty>
               <CommandGroup>
                 {options.map((opt) => {
@@ -105,13 +97,13 @@ const MultiClientSelect = ({
                     <CommandItem
                       key={opt.value}
                       value={opt.label}
-                      onSelect={() =>
+                      onSelect={() => {
                         onChange(
                           isSelected
-                            ? value.filter((id) => id !== opt.value)
+                            ? value.filter((v) => v !== opt.value)
                             : [...value, opt.value],
-                        )
-                      }
+                        );
+                      }}
                       className="group cursor-pointer px-4 py-2 text-sm hover:bg-indigo-50 aria-selected:bg-indigo-50 transition-colors"
                     >
                       <Check
@@ -135,4 +127,4 @@ const MultiClientSelect = ({
   );
 };
 
-export default MultiClientSelect;
+export default MultiEmployeeSelect;

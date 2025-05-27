@@ -1,5 +1,3 @@
-import { Id } from "@/common/types/types";
-
 export type Appointment = {
   client_id?: number,
   created_at?: string,
@@ -16,23 +14,4 @@ export type Appointment = {
   updated_at?: string,
   work: string[],
   youth_officer_agreements: string[]
-};
-
-export enum RecurrenceType {
-  NONE = "NONE",
-  DAILY = "DAILY",
-  WEEKLY = "WEEKLY",
-  MONTHLY = "MONTHLY",
-}
-
-export type AppointmentPayload = {
-  client_ids: Id[];
-  participant_employee_ids: Id[];
-  description: string;
-  location: string;
-  start_time: string;
-  end_time: string;
-  recurrence_type: RecurrenceType;
-  recurrence_interval: number;
-  recurrence_end_date?: string | null;
 };

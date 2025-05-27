@@ -1,25 +1,62 @@
+import { RecurrenceType } from '@/types/calendar.types';
 import { z } from 'zod';
 
 // Zod schema
-export const appointmentSchema = z.object({
-  client_ids: z.array(z.number()).min(1, "At least one client ID is required"),
-  description: z.string().min(1, "Description is required"),
-  end_time: z.string().datetime().or(z.date()),
-  location: z.string().min(1, "Location is required"),
-  participant_employee_ids: z.array(z.number()).min(1, "At least one participant is required"),
-  recurrence_end_date: z.string().datetime().or(z.date()),
-  recurrence_interval: z.number().int().nonnegative(),
-  recurrence_type: z.enum(['DAILY', 'WEEKLY', 'MONTHLY', 'NONE']),
-  start_time: z.string().datetime().or(z.date())
-}).refine(data => new Date(data.start_time) < new Date(data.end_time), {
-  message: "End time must be after start time",
-  path: ["end_time"]
-});
+export const appointmentSchema = z
+  .object({
+    client_ids: z
+      .array(z.number())
+      .min(1, "Please select at least one client."),
 
-// Infer the TypeScript type from Zod schema
+    participant_employee_ids: z
+      .array(z.number())
+      .min(1, "Please select at least one participant."),
+
+    description: z
+      .string()
+      .min(1, "Please enter a description for this appointment."),
+
+    location: z
+      .string()
+      .min(1, "Please choose a location."),
+
+    start_time: z.union([
+      z.string().datetime({ message: "Please pick a valid start date & time." }),
+      z.date(),
+    ]),
+    end_time: z.union([
+      z.string().datetime({ message: "Please pick a valid end date & time." }),
+      z.date(),
+    ]),
+
+    recurrence_type: z
+      .nativeEnum(RecurrenceType, {
+        required_error: "Please select a recurrence pattern.",
+      }),
+    recurrence_interval: z
+      .number()
+      .int({ message: "Recurrence interval must be a whole number." })
+      .nonnegative({ message: "Recurrence interval cannot be negative." }),
+    recurrence_end_date: z.union([
+      z.string().datetime({ message: "Please pick a valid recurrence end date." }),
+      z.date(),
+    ]),
+
+    card_color: z
+      .string()
+      .regex(/^#[0-9A-Fa-f]{6}$/, "Color must be a hex code like #4f46e5")
+      .optional(),
+  })
+  .refine(
+    (data) => new Date(data.start_time) < new Date(data.end_time),
+    {
+      message: "Please ensure the end time is after the start time.",
+      path: ["end_time"],
+    }
+  );
+
 export type CreateAppointmentType = z.infer<typeof appointmentSchema>;
 
-// Optional: Helper function to parse dates if using string format
 function parseEventDates(input: Omit<CreateAppointmentType, 'start_time' | 'end_time' | 'recurrence_end_date'> & {
   start_time: string;
   end_time: string;
