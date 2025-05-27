@@ -13,7 +13,7 @@ import {
 } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
-import { Any, Id } from "@/common/types/types";
+import { Id } from "@/common/types/types";
 import { Button } from "@/components/ui/button";
 import { X } from "lucide-react";
 import { Calendar } from "@/components/ui/calendar";
@@ -46,8 +46,7 @@ import {
   CreateAppointmentType,
 } from "@/schemas/calendar.schemas";
 import { CalendarAppointment, RecurrenceType } from "@/types/calendar.types";
-import LocationSelectByName from "./LocationSelectByName";
-import { Label } from "../ui/label";
+import { Input } from "../ui/input";
 
 export type UpsertPayload = CreateAppointmentType & {
   id: string;
@@ -357,14 +356,11 @@ const BookingPopup: FunctionComponent<BookingPopupProps> = ({
               name="location"
               render={({ field }) => (
                 <FormItem>
-                  <Label className="flex items-center justify-between text-slate-600 font-medium mb-1">
-                    Location
-                  </Label>
+                  <FormLabel className="flex items-center justify-between text-slate-600 font-medium mb-1">Location</FormLabel>
                   <FormControl>
-                    <LocationSelectByName
-                      value={field.value}
-                      onChange={field.onChange}
-                      className="w-full"
+                    <Input
+                      {...field}
+                      placeholder="Enter location"
                     />
                   </FormControl>
                   <FormMessage />
