@@ -37,6 +37,11 @@ export const sidebarLinks = [
         url: "/locations",
         icon: Map,
     },
+    {
+      title: "Calendar",
+      url: "/calendar",
+      icon: Calendar,
+    },
 ];
 export const sidebarEmployeeLinks = (employee:{first_name:string,last_name:string,id:number})=> [
     {
