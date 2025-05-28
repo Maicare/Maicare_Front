@@ -10,10 +10,12 @@ import {
   EventClickArg,
   EventInput,
 } from "@fullcalendar/core";
+import tinycolor from "tinycolor2";
 
 import BookingPopup, { UpsertPayload } from "./BookingPopup";
 import { CalendarAppointment, RecurrenceType } from "@/types/calendar.types";
 import { useCalendar } from "@/hooks/calendar/use-calendar";
+import { BriefcaseIcon, MapPinIcon, UserIcon, UsersIcon } from "lucide-react";
 
 /* ───────────────────────── helpers ───────────────────────── */
 const POPUP_WIDTH = 380;
@@ -54,6 +56,10 @@ export default function BookingCalendar({
 
   const toEventInput = (a: CalendarAppointment): EventInput => {
     const bg = "#4f46e5";
+    // flatten nested details into id-only arrays for the initial render
+    const clientIds = a.clients_details?.map((c) => c.client_id) ?? [];
+    const employeeIds = a.participants_details?.map((p) => p.employee_id) ?? [];
+
     return {
       id: String((a as any).id),
       title: a.description ?? "",
@@ -61,7 +67,11 @@ export default function BookingCalendar({
       end: new Date(a.end_time),
       backgroundColor: bg,
       textColor: getContrast(bg),
-      extendedProps: a,
+      extendedProps: {
+        ...a,
+        client_ids: clientIds,
+        participant_employee_ids: employeeIds,
+      },
     };
   };
 
@@ -183,6 +193,14 @@ export default function BookingCalendar({
     closePopup();
   };
 
+  const formatTime = (date: Date): string => {
+    return date.toLocaleTimeString([], {
+      hour: 'numeric',
+      minute: '2-digit',
+      hour12: true
+    });
+  };
+
   return (
     <div ref={containerRef} className="relative">
       <FullCalendar
@@ -256,24 +274,152 @@ export default function BookingCalendar({
           });
         }}
 
-        eventContent={arg => {
-          const desc = (arg.event.extendedProps.description as string | undefined) ?? "";
+        eventContent={(arg) => {
+          const event = arg.event;
+          const desc = event.extendedProps.description || "(No description)";
+          const location = event.extendedProps.location;
+          const showTime = arg.view.type.startsWith('timeGrid');
+
+          const clientIds = event.extendedProps.client_ids || [];
+          const employeeIds = event.extendedProps.participant_employee_ids || [];
+          const totalParticipants = clientIds.length + employeeIds.length;
+
           return (
-            <div className="flex flex-col">
-              <div className="font-bold whitespace-pre-wrap break-words">
-                {desc || "(No description)"}
+            <div className="flex flex-col w-full h-full justify-between">
+              <div>
+                {showTime && event.start && event.end && (
+                  <div className="text-[0.65rem] font-medium mb-0.5 opacity-90">
+                    {formatTime(event.start)} - {formatTime(event.end)}
+                  </div>
+                )}
+
+                <div className="font-bold text-xs leading-tight whitespace-normal break-words">
+                  {desc}
+                </div>
+
+                {location && (
+                  <div className="text-[0.65rem] mt-0.5 flex items-center truncate">
+                    <MapPinIcon className="w-2.5 h-2.5 mr-1 flex-shrink-0" />
+                    <span className="truncate">{location}</span>
+                  </div>
+                )}
               </div>
+
+              {(clientIds.length > 0 || employeeIds.length > 0) && (
+                <div className="mt-1.5 flex items-center justify-between border-t border-white/20 pt-1">
+                  <div className="flex items-center space-x-2">
+                    {/* Clients count with tooltip */}
+                    {clientIds.length > 0 && (
+                      <div
+                        className="group relative flex items-center text-[0.6rem]"
+                        title={`${clientIds.length} client${clientIds.length !== 1 ? 's' : ''}`}
+                      >
+                        <UserIcon className="w-3 h-3 mr-0.5" />
+                        <span>{clientIds.length}</span>
+
+                        {/* Tooltip for client names */}
+                        {clientIds.length > 0 && (
+                          <div className="hidden group-hover:block absolute bottom-full left-0 mb-1 px-2 py-1 text-xs rounded bg-black text-white whitespace-nowrap z-50">
+                            {clientIds.length} client{clientIds.length !== 1 ? 's' : ''}
+                          </div>
+                        )}
+                      </div>
+                    )}
+
+                    {/* Employees count with tooltip */}
+                    {employeeIds.length > 0 && (
+                      <div
+                        className="group relative flex items-center text-[0.6rem]"
+                        title={`${employeeIds.length} employee${employeeIds.length !== 1 ? 's' : ''}`}
+                      >
+                        <BriefcaseIcon className="w-3 h-3 mr-0.5" />
+                        <span>{employeeIds.length}</span>
+
+                        {/* Tooltip for employee names */}
+                        {employeeIds.length > 0 && (
+                          <div className="hidden group-hover:block absolute bottom-full left-0 mb-1 px-2 py-1 text-xs rounded bg-black text-white whitespace-nowrap z-50">
+                            {employeeIds.length} employee{employeeIds.length !== 1 ? 's' : ''}
+                          </div>
+                        )}
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Total participants indicator */}
+                  <div className="text-[0.6rem] opacity-80 flex items-center">
+                    <UsersIcon className="w-3 h-3 mr-0.5" />
+                    <span>{totalParticipants}</span>
+                  </div>
+                </div>
+              )}
             </div>
           );
         }}
 
-        eventDidMount={info => {
+        eventDidMount={(info) => {
           const bg = info.isMirror ? "#4f46e5" : info.event.backgroundColor;
           if (!bg) return;
+
           const el = info.el as HTMLElement;
+          const textColor = getContrast(bg);
+
           el.style.backgroundColor = bg;
-          el.style.borderColor = "transparent";
-          el.style.color = getContrast(bg);
+          el.style.color = textColor;
+          el.style.boxShadow = '0 1px 2px rgba(0,0,0,0.1)';
+          el.style.borderLeft = `3px solid ${tinycolor(bg).darken(10).toString()}`;
+
+          // Add hover effect
+          el.style.transition = 'all 0.2s ease';
+          el.addEventListener('mouseenter', () => {
+            el.style.filter = 'brightness(1.05)';
+            el.style.boxShadow = '0 2px 4px rgba(0,0,0,0.15)';
+          });
+          el.addEventListener('mouseleave', () => {
+            el.style.filter = 'none';
+            el.style.boxShadow = '0 1px 2px rgba(0,0,0,0.1)';
+          });
+
+          // Add tooltip styling
+          const tooltipCSS = `
+            .fc-event-tooltip {
+              position: absolute;
+              background: rgba(0,0,0,0.85);
+              color: white;
+              padding: 4px 8px;
+              border-radius: 4px;
+              font-size: 0.75rem;
+              z-index: 1000;
+              pointer-events: none;
+              transform: translateX(-50%);
+              left: 50%;
+              bottom: calc(100% + 5px);
+              white-space: nowrap;
+              opacity: 0;
+              transition: opacity 0.2s;
+            }
+            
+            .group:hover .fc-event-tooltip {
+              opacity: 1;
+            }
+            
+            .fc-event-tooltip:after {
+              content: '';
+              position: absolute;
+              top: 100%;
+              left: 50%;
+              margin-left: -5px;
+              border-width: 5px;
+              border-style: solid;
+              border-color: rgba(0,0,0,0.85) transparent transparent transparent;
+            }
+          `;
+
+          if (!document.head.querySelector('#event-tooltip-style')) {
+            const style = document.createElement('style');
+            style.id = 'event-tooltip-style';
+            style.textContent = tooltipCSS;
+            document.head.appendChild(style);
+          }
         }}
 
         viewDidMount={arg => {

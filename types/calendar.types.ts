@@ -11,6 +11,14 @@ export interface CalendarAppointment {
   recurrence_interval: number;
   recurrence_end_date: Date;
   card_color?: string
+  clients_details: [
+    {
+      client_id: Id;
+    }
+  ]
+  participants_details: [{
+    employee_id: Id;
+  }]
 }
 
 export enum RecurrenceType {
