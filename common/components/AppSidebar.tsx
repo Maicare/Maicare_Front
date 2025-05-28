@@ -33,6 +33,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     const [isLoading, setIsLoading] = useState(false);
     const { readOne } = useEmployee({ autoFetch: false });
     const { readOne:readClient } = useClient({ autoFetch: false });
+    console.log(clientId)
     useEffect(() => {
         const fetchEmployee = async (id: number) => {
             setIsLoading(true);

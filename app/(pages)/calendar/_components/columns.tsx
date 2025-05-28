@@ -33,6 +33,7 @@ export const getColumns = (
       header: "Location",
       cell: info => info.getValue() as string ?? "",
     },
+    
     {
       id: "actions",
       header: "",

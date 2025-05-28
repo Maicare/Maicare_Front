@@ -366,7 +366,6 @@ export default function BookingCalendar({
           el.style.backgroundColor = bg;
           el.style.color = textColor;
           el.style.boxShadow = '0 1px 2px rgba(0,0,0,0.1)';
-          el.style.borderLeft = `3px solid ${tinycolor(bg).darken(10).toString()}`;
 
           // Add hover effect
           el.style.transition = 'all 0.2s ease';
