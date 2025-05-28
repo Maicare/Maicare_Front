@@ -3,7 +3,7 @@
 import { ColumnDef, Row } from "@tanstack/react-table"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { Button } from "@/components/ui/button"
-import { MoreHorizontal, CheckCircle2 } from "lucide-react"
+import { MoreHorizontal, CheckCircle2, X } from "lucide-react"
 import { format } from "date-fns"
 
 import { CalendarAppointment } from "@/types/calendar.types"
@@ -33,7 +33,18 @@ export const getColumns = (
       header: "Location",
       cell: info => info.getValue() as string ?? "",
     },
-    
+    {
+      id: "status",
+      header: "Status",
+      cell: ({ row }) => {
+        const confirmed = row.original.is_confirmed;
+        return confirmed ? (
+          <CheckCircle2 className="h-4 w-4 text-green-600" />
+        ) : (
+          <X className="h-4 w-4 text-red-600" />
+        );
+      },
+    },
     {
       id: "actions",
       header: "",
