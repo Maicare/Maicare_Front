@@ -84,6 +84,8 @@ export interface BookingPopupProps {
   onClose: () => void;
   onUpsert: (p: UpsertPayload, isEdit: boolean) => void;
   onDelete: (id: string) => void;
+  initialClientId?: number;
+  initialEmployeeId?: number;
 }
 
 const BookingPopup: FunctionComponent<BookingPopupProps> = ({
@@ -94,6 +96,8 @@ const BookingPopup: FunctionComponent<BookingPopupProps> = ({
   onClose,
   onUpsert,
   onDelete,
+  initialClientId,
+  initialEmployeeId
 }) => {
   const { createAppointment, updateAppointment } = useCalendar("");
 
@@ -110,11 +114,16 @@ const BookingPopup: FunctionComponent<BookingPopupProps> = ({
   const form = useForm<CreateAppointmentType>({
     resolver: zodResolver(appointmentSchema),
     defaultValues: {
-      client_ids:
-        (editEvent?.event.extendedProps.client_ids as Id[]) ?? [],
-      participant_employee_ids:
-        (editEvent?.event.extendedProps
-          .participant_employee_ids as Id[]) ?? [],
+      client_ids: editEvent
+        ? (editEvent.event.extendedProps.client_ids as Id[]) ?? []
+        : initialClientId != null
+          ? [initialClientId]
+          : [],
+      participant_employee_ids: editEvent
+        ? (editEvent.event.extendedProps.participant_employee_ids as Id[]) ?? []
+        : initialEmployeeId != null
+          ? [initialEmployeeId]
+          : [],
       description:
         (editEvent?.event.extendedProps.description as string) ?? "",
       location:

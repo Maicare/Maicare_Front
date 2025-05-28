@@ -448,6 +448,8 @@ export default function BookingCalendar({
           onClose={closePopup}
           onUpsert={handleUpsert}
           onDelete={handleDelete}
+          initialClientId={clientId}
+          initialEmployeeId={employeeId}
         />
       )}
 
