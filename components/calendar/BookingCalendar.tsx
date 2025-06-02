@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
@@ -10,12 +10,13 @@ import {
   EventClickArg,
   EventInput,
 } from "@fullcalendar/core";
-import tinycolor from "tinycolor2";
 
 import BookingPopup, { UpsertPayload } from "./BookingPopup";
 import { CalendarAppointment, RecurrenceType } from "@/types/calendar.types";
 import { useCalendar } from "@/hooks/calendar/use-calendar";
 import { BriefcaseIcon, MapPinIcon, UserIcon, UsersIcon } from "lucide-react";
+import { Id } from "@/common/types/types";
+import MultiPartySelect from "./MultiPartySelect";
 
 /* ───────────────────────── helpers ───────────────────────── */
 const POPUP_WIDTH = 380;
@@ -41,7 +42,21 @@ export default function BookingCalendar({
   clientId,
   initialEvents = [],
 }: Props) {
-  const { fetchAppointmentsWindowByEmployee, fetchAppointmentsWindowByClient, readOneAppointment, deleteAppointment } = useCalendar(String(employeeId));
+  const [selection, setSelection] = useState<{ type: "client" | "employee"; id: Id } | null>(null);
+  const dropdownContainerRef = useRef<HTMLDivElement | null>(null);
+
+  const active = useMemo(() => {
+    if (clientId) return { type: "client" as const, id: clientId };
+    if (employeeId) return { type: "employee" as const, id: employeeId };
+    return selection;
+  }, [clientId, employeeId, selection]);
+
+  const {
+    fetchAppointmentsWindowByEmployee,
+    fetchAppointmentsWindowByClient,
+    readOneAppointment,
+    deleteAppointment,
+  } = useCalendar(String(active?.type === "employee" ? active.id : ""));
 
   const fcRef = useRef<FullCalendar | null>(null);
   const containerRef = useRef<HTMLDivElement>(null!);
@@ -76,10 +91,12 @@ export default function BookingCalendar({
   };
 
   const loadEvents = async (start: Date, end: Date) => {
+    if (!active) return setEvents([]);
     try {
-      const data = clientId != null
-        ? await fetchAppointmentsWindowByClient(String(clientId), start, end)
-        : await fetchAppointmentsWindowByEmployee(start, end);
+      const data =
+        active.type === "client"
+          ? await fetchAppointmentsWindowByClient(String(active.id), start, end)
+          : await fetchAppointmentsWindowByEmployee(start, end);
 
       setEvents(data.map(toEventInput));
     } catch (e) {
@@ -91,7 +108,21 @@ export default function BookingCalendar({
     if (!fcRef.current) return;
     const view = fcRef.current.getApi().view;
     loadEvents(view.currentStart, view.currentEnd);
-  }, [employeeId, clientId]);
+  }, [employeeId, clientId, active]);
+
+  useEffect(() => {
+    const buttonGroup = document.querySelector(
+      ".fc-header-toolbar .fc-toolbar-chunk-start .fc-button-group"
+    );
+
+    if (
+      buttonGroup &&
+      dropdownContainerRef.current &&
+      !buttonGroup.contains(dropdownContainerRef.current)
+    ) {
+      buttonGroup.appendChild(dropdownContainerRef.current);
+    }
+  }, [fcRef.current]);
 
   /* ---------- popup helpers ---------- */
   const openPopupAt = (x: number, y: number) =>
@@ -187,7 +218,7 @@ export default function BookingCalendar({
     // first delete on the server
     await deleteAppointment(id);
 
-    // then remove from FullCalendar + local state
+    // then remove from FullCalendar  local state
     fcRef.current?.getApi().getEventById(id)?.remove();
     setEvents(prev => prev.filter(e => e.id !== id));
     closePopup();
@@ -203,8 +234,16 @@ export default function BookingCalendar({
 
   return (
     <div ref={containerRef} className="relative">
-      <FullCalendar
-        ref={fcRef}
+      {!employeeId && !clientId && (
+        <div ref={dropdownContainerRef} className="ml-2 inline-block">
+          <MultiPartySelect
+            value={selection}
+            onChange={setSelection}
+          />
+        </div>
+      )}
+
+      <FullCalendar ref={fcRef}
         plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
 
         initialView="timeGridWeek"
@@ -448,8 +487,10 @@ export default function BookingCalendar({
           onClose={closePopup}
           onUpsert={handleUpsert}
           onDelete={handleDelete}
-          initialClientId={clientId}
-          initialEmployeeId={employeeId}
+          initialClientId={active?.type === "client" ? active.id : undefined}
+          initialEmployeeId={
+            active?.type === "employee" ? active.id : undefined
+          }
         />
       )}
 

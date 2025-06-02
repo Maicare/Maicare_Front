@@ -42,6 +42,11 @@ export const sidebarLinks = [
       url: "/calendar",
       icon: Calendar,
     },
+    {
+      title: "Schedules",
+      url: "/schedules",
+      icon: CalendarDays,
+    }
 ];
 export const sidebarEmployeeLinks = (employee:{first_name:string,last_name:string,id:number})=> [
     {

@@ -12,6 +12,7 @@ import AutomaticReport from "./routes/automatic-report";
 import IntakeForm from "./routes/intake-form"
 import Contract from "./routes/contract";
 import Calendar from "./routes/calendar";
+import Schedule from "./routes/schedule";
 
 const ApiRoutes = {
   Auth,
@@ -27,7 +28,8 @@ const ApiRoutes = {
   AutomaticReport,
   IntakeForm,
   Contract,
-  Calendar
+  Calendar,
+  Schedule
 };
 
 export default ApiRoutes;
