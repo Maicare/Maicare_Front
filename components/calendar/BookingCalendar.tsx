@@ -111,16 +111,21 @@ export default function BookingCalendar({
   }, [employeeId, clientId, active]);
 
   useEffect(() => {
-    const buttonGroup = document.querySelector(
-      ".fc-header-toolbar .fc-toolbar-chunk-start .fc-button-group"
+    const todayBtn = document.querySelector(
+      ".fc-header-toolbar .fc-today-button"
     );
 
     if (
-      buttonGroup &&
+      todayBtn instanceof HTMLElement &&
       dropdownContainerRef.current &&
-      !buttonGroup.contains(dropdownContainerRef.current)
+      todayBtn.parentElement &&
+      !todayBtn.parentElement.contains(dropdownContainerRef.current)
     ) {
-      buttonGroup.appendChild(dropdownContainerRef.current);
+      // insert dropdown immediately after the Today button
+      todayBtn.parentElement.insertBefore(
+        dropdownContainerRef.current,
+        todayBtn.nextSibling
+      );
     }
   }, [fcRef.current]);
 
