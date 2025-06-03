@@ -6,15 +6,10 @@ import {
   useState,
 } from "react";
 import { DateSelectArg, EventClickArg } from "@fullcalendar/core";
-import {
-  Controller,
-  useForm,
-} from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-
 import { Button } from "@/components/ui/button";
-import { X } from "lucide-react";
-import { Calendar as CalendarIcon, Clock } from "lucide-react";
+import { X, Calendar as CalendarIcon, Clock } from "lucide-react";
 import { format } from "date-fns";
 import {
   Popover,
@@ -34,9 +29,9 @@ import {
 } from "@/components/ui/form";
 import { LocationSelect } from "@/components/employee/LocationSelect";
 import { useSchedule } from "@/hooks/schedule/use-schedule";
-
 import { scheduleSchema, CreateScheduleType } from "@/schemas/schedule.schemas";
 import SingleEmployeeSelect from "./SingleEmployeeSelect";
+import { ensureHex } from "@/utils/color-utils";
 
 export type SchedulePayload = {
   id: string;
@@ -44,15 +39,14 @@ export type SchedulePayload = {
   location_id: number;
   start_datetime: Date;
   end_datetime: Date;
+  color: string;
 };
 
 export interface SchedulePopupProps {
   createRange: DateSelectArg | null;
   editEvent: EventClickArg | null;
-
   eventStart?: Date;
   eventEnd?: Date;
-
   position: { left: number; top: number };
   containerRef: React.RefObject<HTMLDivElement | null>;
   onClose: () => void;
@@ -68,8 +62,8 @@ const POPUP_HEIGHT = 450;
 const SchedulePopup: FunctionComponent<SchedulePopupProps> = ({
   createRange,
   editEvent,
-  eventStart,   
-  eventEnd,     
+  eventStart,
+  eventEnd,
   position,
   containerRef,
   onClose,
@@ -81,16 +75,9 @@ const SchedulePopup: FunctionComponent<SchedulePopupProps> = ({
   const { createSchedule, updateSchedule } = useSchedule();
 
   const computedStart: Date =
-    editEvent?.event.start ??
-    eventStart ??
-    createRange?.start ??
-    new Date();
-
+    editEvent?.event.start ?? eventStart ?? createRange?.start ?? new Date();
   const computedEnd: Date =
-    editEvent?.event.end ??
-    eventEnd ??
-    createRange?.end ??
-    new Date();
+    editEvent?.event.end ?? eventEnd ?? createRange?.end ?? new Date();
 
   const form = useForm<CreateScheduleType>({
     resolver: zodResolver(scheduleSchema),
@@ -107,7 +94,7 @@ const SchedulePopup: FunctionComponent<SchedulePopupProps> = ({
   const {
     control,
     handleSubmit,
-    reset, 
+    reset,
     formState: { errors },
   } = form;
 
@@ -177,24 +164,31 @@ const SchedulePopup: FunctionComponent<SchedulePopupProps> = ({
         ? new Date(data.end_datetime)
         : data.end_datetime;
 
-    const payload = {
+    const assignedColor = ensureHex(
+      editEvent?.event.extendedProps.color as string | undefined,
+      data.employee_id
+    );
+
+    const apiPayload = {
       employee_id: data.employee_id,
       location_id: data.location_id,
       start_datetime: startDt,
       end_datetime: endDt,
-    };
+      color: assignedColor,
+    } as any;
 
     const saved = editEvent
-      ? await updateSchedule(editEvent.event.id, payload)
-      : await createSchedule(payload);
+      ? await updateSchedule(editEvent.event.id, apiPayload)
+      : await createSchedule(apiPayload);
 
     onUpsert(
       {
         id: editEvent?.event.id ?? String((saved as any)?.id ?? Date.now()),
-        employee_id: payload.employee_id,
-        location_id: payload.location_id,
-        start_datetime: payload.start_datetime,
-        end_datetime: payload.end_datetime,
+        employee_id: apiPayload.employee_id,
+        location_id: apiPayload.location_id,
+        start_datetime: apiPayload.start_datetime,
+        end_datetime: apiPayload.end_datetime,
+        color: assignedColor,
       },
       !!editEvent
     );

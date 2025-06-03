@@ -42,7 +42,7 @@ export const appointmentSchema = z
       z.date(),
     ]),
 
-    card_color: z
+    color: z
       .string()
       .regex(/^#[0-9A-Fa-f]{6}$/, "Color must be a hex code like #4f46e5")
       .optional(),

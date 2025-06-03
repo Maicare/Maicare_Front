@@ -10,7 +10,7 @@ export interface CalendarAppointment {
   recurrence_type: RecurrenceType;
   recurrence_interval: number;
   recurrence_end_date: Date;
-  card_color?: string
+  color?: string
   is_confirmed: boolean;
   clients_details: [
     {

@@ -70,8 +70,8 @@ export default function BookingCalendar({
   );
 
   const toEventInput = (a: CalendarAppointment): EventInput => {
-    const bg = "#4f46e5";
-    // flatten nested details into id-only arrays for the initial render
+    const bg = a.color ?? "#4f46e5";
+    const fg = getContrast(bg);
     const clientIds = a.clients_details?.map((c) => c.client_id) ?? [];
     const employeeIds = a.participants_details?.map((p) => p.employee_id) ?? [];
 
@@ -81,13 +81,21 @@ export default function BookingCalendar({
       start: new Date(a.start_time),
       end: new Date(a.end_time),
       backgroundColor: bg,
-      textColor: getContrast(bg),
+      textColor: fg,
       extendedProps: {
         ...a,
         client_ids: clientIds,
         participant_employee_ids: employeeIds,
       },
     };
+  };
+
+  const dedupeById = (arr: EventInput[]) => {
+    const map = new Map<string, EventInput>();
+    for (const ev of arr) {
+      map.set(ev.id as string, ev);
+    }
+    return Array.from(map.values());
   };
 
   const loadEvents = async (start: Date, end: Date) => {
@@ -127,7 +135,7 @@ export default function BookingCalendar({
         todayBtn.nextSibling
       );
     }
-  }, [fcRef.current]);
+  }, []);
 
   /* ---------- popup helpers ---------- */
   const openPopupAt = (x: number, y: number) =>
@@ -181,8 +189,8 @@ export default function BookingCalendar({
     const api = fcRef.current?.getApi();
     if (!api) return;
 
-    const bg = p.card_color ?? "#4f46e5";
-    const fg = p.textColor;
+    const bg = p.color ?? "#4f46e5";
+    const fg = getContrast(bg);
 
     const fcEvent: EventInput = {
       id: p.id,
@@ -194,6 +202,7 @@ export default function BookingCalendar({
       extendedProps: {
         ...p,
         recurrence_type: p.recurrence_type as RecurrenceType,
+        color: bg,
       },
     };
 
@@ -237,6 +246,29 @@ export default function BookingCalendar({
     });
   };
 
+  const calendarViews = useMemo(
+    () => ({
+      timeGridWeek: { buttonText: "Week" },
+      workWeek: {
+        type: "timeGridWeek",
+        hiddenDays: [0, 6],
+        buttonText: "Work Week",
+      },
+    }),
+    []
+  );
+
+  const headerToolbar = useMemo(
+    () => ({
+      start: "prev,next today",
+      center: "title",
+      end: "dayGridMonth,timeGridWeek,workWeek,timeGridDay",
+    }),
+    []
+  );
+
+
+
   return (
     <div ref={containerRef} className="relative">
       {!employeeId && !clientId && (
@@ -248,9 +280,9 @@ export default function BookingCalendar({
         </div>
       )}
 
-      <FullCalendar ref={fcRef}
+      <FullCalendar
+        ref={fcRef}
         plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
-
         initialView="timeGridWeek"
         selectable
         selectMirror
@@ -258,16 +290,9 @@ export default function BookingCalendar({
         datesSet={(info) => loadEvents(info.start, info.end)}
         select={handleDateSelect}
         eventClick={handleEventClick}
-
-        views={{
-          timeGridWeek: { buttonText: "Week" },
-          workWeek: { type: "timeGridWeek", hiddenDays: [0, 6], buttonText: "Work Week" },
-        }}
-        headerToolbar={{
-          start: "prev,next today",
-          center: "title",
-          end: "dayGridMonth,timeGridWeek,workWeek,timeGridDay",
-        }}
+        fixedWeekCount={false}
+        views={calendarViews}
+        headerToolbar={headerToolbar}
         allDaySlot={false}
         unselectAuto={false}
         unselectCancel=".fc-popup"
@@ -410,6 +435,7 @@ export default function BookingCalendar({
           el.style.backgroundColor = bg;
           el.style.color = textColor;
           el.style.boxShadow = '0 1px 2px rgba(0,0,0,0.1)';
+          el.style.border = 'none';
 
           // Add hover effect
           el.style.transition = 'all 0.2s ease';
@@ -477,7 +503,7 @@ export default function BookingCalendar({
           }
         }}
 
-        eventClassNames="border rounded-lg px-2 py-1 transition-colors"
+        eventClassNames="rounded-lg px-2 py-1 transition-colors"
         dayCellClassNames="bg-white hover:bg-slate-50 transition-colors"
         viewClassNames="rounded-lg overflow-hidden p-2"
         buttonText={{ today: "Today", month: "Month", timeGridWeek: "Week", workWeek: "Work Week", day: "Day" }}

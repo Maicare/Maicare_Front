@@ -137,7 +137,7 @@ const BookingPopup: FunctionComponent<BookingPopupProps> = ({
         (editEvent?.event.extendedProps.recurrence_interval as number) ??
         1,
       recurrence_end_date: new Date(initialRecEnd),
-      card_color: editEvent?.event.backgroundColor ?? "#4f46e5",
+      color: editEvent?.event.backgroundColor ?? "#4f46e5",
     },
   });
 
@@ -145,26 +145,31 @@ const BookingPopup: FunctionComponent<BookingPopupProps> = ({
 
   const chosenColor = useWatch({
     control,
-    name: "card_color",
+    name: "color",
   });
 
   useEffect(() => {
     const fg = getContrastColor(chosenColor ?? "#4f46e5");
-    if (editEvent) {
-      editEvent.event.setProp("backgroundColor", chosenColor);
-      editEvent.event.setProp("textColor", fg);
-      (editEvent.el as HTMLElement).style.cssText = `
+
+    queueMicrotask(() => {
+      if (editEvent) {
+        editEvent.event.setProp("backgroundColor", chosenColor);
+        editEvent.event.setProp("textColor", fg);
+        (editEvent.el as HTMLElement).style.cssText = `
         background:${chosenColor};
         color:${fg};
-        border-color:transparent;
+        border:0;
       `;
-    } else if (createRange) {
-      document.querySelectorAll<HTMLElement>(".fc-event-mirror").forEach((el) => {
-        el.style.backgroundColor = chosenColor ?? "#4f46e5";
-        el.style.borderColor = "transparent";
-        el.style.color = fg;
-      });
-    }
+      } else if (createRange) {
+        document
+          .querySelectorAll<HTMLElement>(".fc-event-mirror")
+          .forEach((el) => {
+            el.style.background = chosenColor ?? "#4f46e5";
+            el.style.border = "none";
+            el.style.color = fg;
+          });
+      }
+    });
   }, [chosenColor, editEvent, createRange]);
 
   const [pos, setPos] = useState(position);
@@ -225,10 +230,10 @@ const BookingPopup: FunctionComponent<BookingPopupProps> = ({
         typeof data.recurrence_end_date === "string"
           ? new Date(data.recurrence_end_date)
           : data.recurrence_end_date,
-      card_color: data.card_color,
+      color: data.color,
     };
 
-    const fg = getContrastColor(data.card_color ?? "#4f46e5");
+    const fg = getContrastColor(data.color ?? "#4f46e5");
 
     const saved = editEvent
       ? await updateAppointment(editEvent.event.id, normalizedForApi)
@@ -419,7 +424,7 @@ const BookingPopup: FunctionComponent<BookingPopupProps> = ({
             {/* Color Picker */}
             <FormField
               control={control}
-              name="card_color"
+              name="color"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Color</FormLabel>

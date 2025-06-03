@@ -86,7 +86,7 @@ const MultiPartySelect = ({
       : `Filter by party...`;
 
   return (
-    <div className={cn("w-full", className)}>
+    <div className={cn("w-full" , className)}>
       {label && (
         <Label className="flex items-center justify-between text-slate-600 font-medium mb-1">
           {label}
@@ -98,7 +98,7 @@ const MultiPartySelect = ({
             variant="outline"
             role="combobox"
             className={cn(
-              "w-full justify-between hover:bg-white hover:border-indigo-300 focus:border-indigo-400 focus:ring-1 focus:ring-indigo-200",
+              "w-full justify-between h-[35px] hover:bg-white hover:border-indigo-300 focus:border-indigo-400 focus:ring-1 focus:ring-indigo-200",
               !value && "text-muted-foreground"
             )}
           >

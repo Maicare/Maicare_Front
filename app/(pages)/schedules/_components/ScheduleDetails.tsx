@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useSchedule } from "@/hooks/schedule/use-schedule";
 import { X, Clock, User, Calendar, Briefcase } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { pastelHexFromId } from "@/utils/color-utils";
 
 interface ScheduleDetailsProps {
   date: Date;
@@ -20,6 +21,7 @@ interface CalendarScheduleResponse {
   start_time: string;
   end_time: string;
   location_id: number;
+  color: string | null;
 }
 
 interface DailyResponse {
@@ -27,12 +29,21 @@ interface DailyResponse {
   shifts: CalendarScheduleResponse[];
 }
 
-const ScheduleDetails = ({ date, locationId, calendarHeight, onClose, onShiftClick, refreshKey }: ScheduleDetailsProps) => {
+const getShiftColor = (shift: CalendarScheduleResponse) =>
+  shift.color?.startsWith("#") ? shift.color : pastelHexFromId(shift.employee_id);
+
+const ScheduleDetails = ({
+  date,
+  locationId,
+  calendarHeight,
+  onClose,
+  onShiftClick,
+  refreshKey,
+}: ScheduleDetailsProps) => {
   const { readSchedulesByDay } = useSchedule();
   const [dailySchedules, setDailySchedules] = useState<CalendarScheduleResponse[] | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-
 
   useEffect(() => {
     if (!locationId) return;
@@ -53,40 +64,22 @@ const ScheduleDetails = ({ date, locationId, calendarHeight, onClose, onShiftCli
           setDailySchedules([]);
         }
       })
-      .catch((err: any) => {
-        setError(err.message || "Failed to load schedules");
-      })
-      .finally(() => {
-        setLoading(false);
-      });
+      .catch((err: any) => setError(err.message || "Failed to load schedules"))
+      .finally(() => setLoading(false));
   }, [date, locationId, refreshKey]);
 
-  const getEmployeeColor = (id: number) => {
-    const hue = (id * 137) % 360;
-    return `hsl(${hue}, 70%, 85%)`;
-  };
-
-  const groupShiftsByTime = () => {
-    if (!dailySchedules) return {};
-
-    return dailySchedules.reduce((groups: Record<string, CalendarScheduleResponse[]>, shift) => {
+  const groupShiftsByTime = () =>
+    dailySchedules?.reduce((groups: Record<string, CalendarScheduleResponse[]>, shift) => {
       const key = `${shift.start_time}-${shift.end_time}`;
-      if (!groups[key]) groups[key] = [];
-      groups[key].push(shift);
+      (groups[key] ||= []).push(shift);
       return groups;
-    }, {});
-  };
+    }, {}) || {};
 
   const groupedShifts = groupShiftsByTime();
   const timeSlots = Object.entries(groupedShifts);
 
-  const formatTime = (dateString: string) => {
-    return new Date(dateString).toLocaleTimeString([], {
-      hour: '2-digit',
-      minute: '2-digit',
-      hour12: false
-    });
-  };
+  const formatTime = (d: string) =>
+    new Date(d).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", hour12: false });
 
   return (
     <motion.div
@@ -96,9 +89,10 @@ const ScheduleDetails = ({ date, locationId, calendarHeight, onClose, onShiftCli
       className="relative w-full max-w-[350px] overflow-y-auto rounded-md border border-slate-100 bg-white p-4 shadow-xl backdrop-blur-lg custom-scrollbar"
       style={{
         height: calendarHeight,
-        background: 'linear-gradient(to bottom right, #ffffff, #f9faff)',
-        boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.1), 0 10px 30px -15px rgba(0, 0, 0, 0.05)',
-        border: '1px solid rgba(241, 245, 249, 0.8)'
+        background: "linear-gradient(to bottom right, #ffffff, #f9faff)",
+        boxShadow:
+          "0 25px 50px -12px rgba(0, 0, 0, 0.1), 0 10px 30px -15px rgba(0, 0, 0, 0.05)",
+        border: "1px solid rgba(241, 245, 249, 0.8)",
       }}
     >
       <style jsx global>{`
@@ -208,12 +202,12 @@ const ScheduleDetails = ({ date, locationId, calendarHeight, onClose, onShiftCli
         {!loading && !error && dailySchedules && dailySchedules.length > 0 && (
           <AnimatePresence>
             <div className="space-y-5">
-              {timeSlots.map(([timeRange, shifts], groupIndex) => (
+              {timeSlots.map(([timeRange, shifts], groupIdx) => (
                 <motion.div
                   key={timeRange}
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: groupIndex * 0.1 }}
+                  transition={{ delay: groupIdx * 0.1 }}
                   className="bg-white rounded-lg p-4 border border-gray-200 shadow"
                 >
                   <div className="flex items-center mb-4">
@@ -222,7 +216,7 @@ const ScheduleDetails = ({ date, locationId, calendarHeight, onClose, onShiftCli
                       {formatTime(shifts[0].start_time)} - {formatTime(shifts[0].end_time)}
                     </span>
                     <div className="ml-auto px-3 py-1 bg-indigo-100 text-indigo-700 rounded-full text-xs font-medium">
-                      {shifts.length} {shifts.length === 1 ? 'employee' : 'employees'}
+                      {shifts.length} {shifts.length === 1 ? "employee" : "employees"}
                     </div>
                   </div>
 
@@ -236,7 +230,7 @@ const ScheduleDetails = ({ date, locationId, calendarHeight, onClose, onShiftCli
                       >
                         <div
                           className="w-8 h-8 rounded-full flex items-center justify-center text-white font-bold mr-2 text-xs"
-                          style={{ backgroundColor: getEmployeeColor(sched.employee_id) }}
+                          style={{ backgroundColor: getShiftColor(sched) }}
                         >
                           {sched.employee_first_name[0]}
                           {sched.employee_last_name[0]}

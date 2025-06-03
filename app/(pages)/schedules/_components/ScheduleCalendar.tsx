@@ -20,6 +20,7 @@ import { useSchedule } from "@/hooks/schedule/use-schedule";
 import { LocationSelect } from "@/components/employee/LocationSelect";
 import { ClockIcon } from "lucide-react";
 import ScheduleDetails from "./ScheduleDetails";
+import { ensureHex } from "@/utils/color-utils";
 
 interface DayWithShifts {
   date: string;
@@ -31,6 +32,7 @@ interface DayWithShifts {
     start_time: string;
     end_time: string;
     location_id: number;
+    color: string | null;
   }>;
 }
 
@@ -39,7 +41,6 @@ const ScheduleCalendar: FunctionComponent = () => {
   const { readSchedulesByMonth, deleteSchedule } = useSchedule();
 
   const [events, setEvents] = useState<EventInput[]>([]);
-
   const [createRange, setCreateRange] = useState<DateSelectArg | null>(null);
   const [editEvent, setEditEvent] = useState<EventClickArg | null>(null);
   const [popupPos, setPopupPos] = useState<{ left: number; top: number } | null>(
@@ -47,21 +48,64 @@ const ScheduleCalendar: FunctionComponent = () => {
   );
   const [refreshFlag, setRefreshFlag] = useState(0);
   const [sidebarDate, setSidebarDate] = useState<Date | null>(null);
-
   const [clickedFallbackDates, setClickedFallbackDates] = useState<{
     start: Date;
     end: Date;
   } | null>(null);
-
   const [selectedLocation, setSelectedLocation] = useState<string>("");
   const [calendarHeight, setCalendarHeight] = useState<number>(0);
-
   const [viewDate, setViewDate] = useState<{ year: number; month: number }>(
     () => {
       const now = new Date();
       return { year: now.getFullYear(), month: now.getMonth() + 1 };
     }
   );
+
+  const renderLegend = () => {
+    const map: Record<
+      string,
+      { name: string; color: string }
+    > = {};
+    events.forEach((ev) => {
+      const empId = ev.extendedProps?.employee_id as number;
+      const empName = ev.extendedProps?.employee_name as string;
+      const color = ev.extendedProps?.color as string;
+      map[empId] = { name: empName, color };
+    });
+
+    const container = document.createElement("div");
+    container.className = "fc-legend flex flex-wrap gap-4 py-2 px-3";
+
+    Object.values(map).forEach((info) => {
+      const dot = document.createElement("span");
+      dot.className = "w-3 h-3 rounded-full inline-block mr-1";
+      dot.style.backgroundColor = info.color;
+
+      const label = document.createElement("span");
+      label.textContent = info.name;
+
+      const item = document.createElement("div");
+      item.className = "flex items-center text-sm text-gray-700";
+      item.append(dot, label);
+      container.appendChild(item);
+    });
+
+    return container;
+  };
+
+  useEffect(() => {
+    if (!calendarContainerRef.current) return;
+    const existing = calendarContainerRef.current.querySelector(".fc-legend");
+    if (existing) existing.remove();
+
+    const toolbar = calendarContainerRef.current.querySelector(
+      ".fc-header-toolbar"
+    );
+    if (!toolbar) return;
+
+    const legendEl = renderLegend();
+    toolbar.parentNode!.insertBefore(legendEl, toolbar.nextSibling);
+  }, [events]);
 
   useEffect(() => {
     const fetchEvents = async () => {
@@ -70,11 +114,14 @@ const ScheduleCalendar: FunctionComponent = () => {
         return;
       }
 
-      const locationId = selectedLocation;
       const { year, month } = viewDate;
 
       try {
-        const data = (await readSchedulesByMonth(locationId, year, month)) as DayWithShifts[] | null;
+        const data = (await readSchedulesByMonth(
+          selectedLocation,
+          year,
+          month
+        )) as DayWithShifts[] | null;
 
         if (!data) {
           setEvents([]);
@@ -85,32 +132,32 @@ const ScheduleCalendar: FunctionComponent = () => {
 
         data.forEach((dayEntry) => {
           dayEntry.shifts.forEach((sh) => {
-            const idStr = sh.shift_id.toString();
+            const assignedColor = ensureHex(sh.color, sh.employee_id);
             newEvents.push({
-              id: idStr,
+              id: sh.shift_id.toString(),
               start: sh.start_time,
               end: sh.end_time,
               title: "",
               extendedProps: {
                 employee_id: sh.employee_id,
+                employee_name: `${sh.employee_first_name} ${sh.employee_last_name}`,
                 location_id: sh.location_id,
                 rawStart: sh.start_time,
                 rawEnd: sh.end_time,
+                color: assignedColor,
               },
-              backgroundColor: "#4f46e5",
+              backgroundColor: assignedColor,
               textColor: "#fff",
             });
           });
         });
 
         const seen = new Set<string>();
-        const uniqueEvents: EventInput[] = [];
-        newEvents.forEach((ev) => {
-          const evId = ev.id as string;
-          if (!seen.has(evId)) {
-            seen.add(evId);
-            uniqueEvents.push(ev);
-          }
+        const uniqueEvents = newEvents.filter((ev) => {
+          const id = ev.id as string;
+          if (seen.has(id)) return false;
+          seen.add(id);
+          return true;
         });
 
         setEvents(uniqueEvents);
@@ -141,30 +188,36 @@ const ScheduleCalendar: FunctionComponent = () => {
   };
 
   const handleUpsert = (payload: SchedulePayload, isEdit: boolean) => {
-    const { id, start_datetime, end_datetime, employee_id, location_id } = payload;
+    const {
+      id,
+      start_datetime,
+      end_datetime,
+      employee_id,
+      location_id,
+      color,
+    } = payload;
+
+    const assignedColor = ensureHex(color, id);
 
     const newEvent: EventInput = {
       id,
       start: start_datetime,
       end: end_datetime,
-      title: "", // no text
+      title: "",
       extendedProps: {
         employee_id,
         location_id,
         rawStart: start_datetime.toISOString(),
         rawEnd: end_datetime.toISOString(),
+        color: assignedColor,
       },
-      backgroundColor: "#4f46e5",
+      backgroundColor: assignedColor,
       textColor: "#fff",
     };
 
-    setEvents((prev) => {
-      if (isEdit) {
-        return prev.map((e) => (e.id === id ? newEvent : e));
-      } else {
-        return [...prev, newEvent];
-      }
-    });
+    setEvents((prev) =>
+      isEdit ? prev.map((e) => (e.id === id ? newEvent : e)) : [...prev, newEvent]
+    );
 
     handleClosePopup();
     setRefreshFlag((prev) => prev + 1);
@@ -225,11 +278,13 @@ const ScheduleCalendar: FunctionComponent = () => {
         id: shift.shift_id.toString(),
         start: new Date(shift.start_time),
         end: new Date(shift.end_time),
+        backgroundColor: ensureHex(shift.color, shift.employee_id),
         extendedProps: {
           employee_id: shift.employee_id,
           location_id: shift.location_id,
           rawStart: shift.start_time,
           rawEnd: shift.end_time,
+          color: ensureHex(shift.color, shift.employee_id),
         },
       },
     } as any);
@@ -237,7 +292,6 @@ const ScheduleCalendar: FunctionComponent = () => {
     setCreateRange(null);
     setPopupPos({ left, top });
   };
-
 
   return (
     <>
@@ -266,10 +320,12 @@ const ScheduleCalendar: FunctionComponent = () => {
             height="auto"
             events={groupedEvents}
             datesSet={(arg: DatesSetArg) => {
-              const newDate = new Date(arg.start);
+              const inMonth = new Date(arg.start);
+              inMonth.setDate(inMonth.getDate() + 7);
+
               setViewDate({
-                year: newDate.getFullYear(),
-                month: newDate.getMonth() + 1,
+                year: inMonth.getFullYear(),
+                month: inMonth.getMonth() + 1,
               });
             }}
             dayHeaderClassNames={(arg) =>
@@ -369,17 +425,24 @@ const ScheduleCalendar: FunctionComponent = () => {
             }}
             dayMaxEvents={false}
             eventContent={(arg) => {
-              const id = arg.event.id;
-              const numeric = parseInt(id, 10) || 1;
-              const hue = (numeric * 137) % 360;
-              const pastel = `hsl(${hue}, 50%, 75%)`;
+              const baseColor = ensureHex(
+                arg.event.backgroundColor ||
+                arg.event.extendedProps.color ||
+                null,
+                arg.event.id
+              );
+
               if (arg.event.extendedProps.group) {
                 const shifts = arg.event.extendedProps.shifts || [];
                 const start = arg.event.start;
                 const end = arg.event.end;
 
                 const formatTime = (date: Date) =>
-                  date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false });
+                  date.toLocaleTimeString([], {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                    hour12: false,
+                  });
 
                 return (
                   <div className="shift-group">
@@ -387,24 +450,26 @@ const ScheduleCalendar: FunctionComponent = () => {
                       <ClockIcon className="w-3 h-3 mr-1" />
                       {start && end ? (
                         `${formatTime(start)} - ${formatTime(end)}`
-                      ) : 'All Day'}
+                      ) : (
+                        "All Day"
+                      )}
                     </div>
                     <div className="shift-dots flex flex-wrap gap-1">
-                      {shifts.slice(0, 4).map((shift: any) => {
-                        const id = shift.id;
-                        const numeric = parseInt(id, 10) || 1;
-                        const hue = (numeric * 137) % 360;
-                        const pastel = `hsl(${hue}, 50%, 75%)`;
-
-                        return (
-                          <div
-                            key={shift.id}
-                            className="shift-dot w-5 h-5 rounded-full"
-                            style={{ backgroundColor: pastel }}
-                            tabIndex={0}
-                          />
-                        );
-                      })}
+                      {shifts.slice(0, 4).map((shift: any) => (
+                        <div
+                          key={shift.id}
+                          className="shift-dot w-5 h-5 rounded-full"
+                          style={{
+                            backgroundColor: ensureHex(
+                              shift.backgroundColor ||
+                              shift.extendedProps?.color ||
+                              null,
+                              shift.id
+                            ),
+                          }}
+                          tabIndex={0}
+                        />
+                      ))}
                       {shifts.length > 4 && (
                         <div className="shift-dot w-5 h-5 rounded-full flex items-center justify-center text-xs text-gray-700 bg-gray-200">
                           +{shifts.length - 4}
@@ -418,7 +483,7 @@ const ScheduleCalendar: FunctionComponent = () => {
               return (
                 <div
                   className="shift-dot w-6 h-6 rounded-full"
-                  style={{ backgroundColor: pastel }}
+                  style={{ backgroundColor: baseColor }}
                   tabIndex={0}
                 />
               );

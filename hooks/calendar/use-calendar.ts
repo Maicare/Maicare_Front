@@ -32,7 +32,7 @@ export function useCalendar(employeeId: string, autoFetch: boolean = false, para
     recurrence_type?: RecurrenceType;
     recurrence_interval?: number;
     recurrence_end_date?: string;
-    card_color?: string;
+    color?: string;
   }
 
   const {
