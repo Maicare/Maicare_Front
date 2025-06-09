@@ -10,18 +10,24 @@ import { cn } from "@/utils/cn";
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
 import Tooltip from "@/common/components/Tooltip";
 
+type Variant = "full" | "inputOnly"
+
 type Props = {
     name: string;
     label?: string;
     className?: string;
     required?: boolean;
     modal?:boolean;
+    variant?: Variant
 };
+
 
 export const EmployeeSelect: FunctionComponent<Props> = ({
     name,
+    label = "Medewerker",
     className,
-    modal=false
+    modal=false,
+    variant = "full",
 }) => {
     const form = useFormContext();
     const [filter, setFilter] = useState({ search: "", autoFetch: true });
@@ -42,12 +48,14 @@ export const EmployeeSelect: FunctionComponent<Props> = ({
             control={form.control}
             render={({ field }) => (
                 <FormItem className={cn("w-full", className)}>
-                    <FormLabel className="flex items-center justify-between">
-                        Medewerker
-                        <Tooltip text='This is Locatie '>
-                            <Info className='h-5 w-5 mr-2' />
+                    {variant === "full" && (
+                      <FormLabel className="flex items-center justify-between">
+                        {label}
+                        <Tooltip text="This is Medewerker">
+                          <Info className="h-5 w-5" />
                         </Tooltip>
-                    </FormLabel>
+                      </FormLabel>
+                    )}
                     <Popover modal={modal}>
                         <PopoverTrigger asChild>
                             <FormControl>

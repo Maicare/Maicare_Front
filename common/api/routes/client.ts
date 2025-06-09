@@ -67,6 +67,9 @@ const ApiRoutes = {
   RelatedEmails: {
     ReadAll: prefix + "/{id}/related_emails",
   },
+  Appointmens: {
+    ReadAll: prefix + "/{id}/appointments",
+  }
 };
 
 export default ApiRoutes;
