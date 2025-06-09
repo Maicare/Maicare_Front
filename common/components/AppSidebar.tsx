@@ -55,7 +55,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             if (clientId) fetchClient(+clientId);
         } 
     }
-        , [isEmployee]);
+        , [isEmployee,isClient]);
 
     if (isLoading) {
         return (
