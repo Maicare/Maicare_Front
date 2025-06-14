@@ -3,9 +3,6 @@ name: Deploy Frontend to VPS
 on:
   push:
     branches: [ master ]
-  pull_request:
-    branches: [ master ]
-    types: [ closed ]
 
 env:
   DOCKER_IMAGE: ${{ secrets.DOCKERHUB_USERNAME }}/maicare
@@ -15,8 +12,6 @@ jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
     environment: maicare-prod   # Set this up in GitHub repo settings
-    # Only run on push to master or when PR is merged to master
-    if: github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.pull_request.merged == true)
 
     steps:
       - name: Checkout code
