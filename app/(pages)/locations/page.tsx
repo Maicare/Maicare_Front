@@ -1,217 +1,121 @@
 "use client";
 
-import React, { FunctionComponent, useMemo, useEffect } from "react";
-
-import Panel from "@/components/common/Panel/Panel";
-import { ColumnDef } from "@tanstack/react-table";
+import PrimaryButton from "@/common/components/PrimaryButton";
+import LargeErrorMessage from "@/components/common/Alerts/LargeErrorMessage";
 import Loader from "@/components/common/loader";
-import Table from "@/components/common/Table/Table";
-import Button from "@/components/common/Buttons/Button";
-import FormModal from "@/components/common/Modals/FormModal";
-import IconButton from "@/components/common/Buttons/IconButton";
-import { getDangerActionConfirmationModal } from "@/components/common/Modals/DangerActionConfirmation";
-import Textarea from "@/components/common/FormFields/Textarea";
-import InputField from "@/components/common/FormFields/InputField";
-import { useModal } from "@/components/providers/ModalProvider";
-import XMarkIcon from "@/components/icons/XMarkIcon";
-
-import { ModalProps } from "@/common/types/modal-props.types";
-
-import { useForm, SubmitHandler } from "react-hook-form";
-import { yupResolver } from "@hookform/resolvers/yup";
-import * as yup from "yup";
+import { DataTable } from "@/components/employee/table/data-table";
 import { useLocation } from "@/hooks/location/use-location";
-import { CreateLocationReqDto, Location } from "@/types/location.types";
-import withPermissions from "@/common/hocs/with-permissions";
-import Routes from "@/common/routes";
-import withAuth, { AUTH_MODE } from "@/common/hocs/with-auth";
-import { PermissionsObjects } from "@/common/data/permission.data";
+import { CreateLocation } from "@/schemas/location.schema";
+import { Location } from "@/types/location.types";
+import { ArrowBigLeft, ArrowBigRight, Locate } from "lucide-react";
+import { useState } from "react";
+import { getColumns } from "./_components/columns";
+import CreateLocationSheet from "./_components/CreateLocationSheet";
 
-type FormValues = CreateLocationReqDto;
 
-const initialValues: CreateLocationReqDto = {
-  name: "",
-  address: "",
-  capacity: 0,
-};
-
-const validationSchema: yup.ObjectSchema<CreateLocationReqDto> = yup.object({
-  name: yup.string().required("Naam is verplicht"),
-  address: yup.string().required("Adres is verplicht"),
-  capacity: yup
-    .number()
-    .required("Capaciteit is verplicht")
-    .positive("Capaciteit moet positief zijn"),
-});
-
-const LocationFormModal: FunctionComponent<ModalProps> = ({
-  onClose,
-  open,
-  additionalProps,
-}) => {
-  const { getLocation, modifyLocation, addLocation } = useLocation({autoFetch:false});
-  const isEditMode = additionalProps?.mode === "edit" && additionalProps?.id;
-
-  const { data: initialData, isLoading: isFetching } = isEditMode
-    ? getLocation(additionalProps.id)
-    : { data: initialValues, isLoading: false };
-
-  const {
-    register,
-    handleSubmit,
-    formState: { errors, isSubmitting },
-    reset,
-  } = useForm<FormValues>({
-    resolver: yupResolver(validationSchema),
-    defaultValues: initialData ?? initialValues,
-  });
-
-  const onSubmit: SubmitHandler<FormValues> = async (values) => {
-    if (isEditMode) {
-      await modifyLocation(additionalProps.id, values);
-    } else {
-      await addLocation(values);
-    }
-    onClose();
-  };
-
-  useEffect(() => {
-    reset(initialData ?? initialValues);
-  }, [reset, initialData]);
-
-  return (
-    <FormModal open={open} onClose={onClose} title={"Nieuwe locatie"}>
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <InputField
-          className={"mb-4"}
-          label={"Naam"}
-          required={true}
-          {...register("name")}
-          error={errors.name?.message}
-          placeholder={"Naam"}
-        />
-        <InputField
-          className={"mb-4"}
-          label={"Capaciteit"}
-          type={"number"}
-          required={true}
-          {...register("capacity")}
-          error={errors.capacity?.message}
-          placeholder={"Capaciteit"}
-        />
-        <Textarea
-          className={"mb-6"}
-          label={"Adres"}
-          required={true}
-          rows={6}
-          {...register("address")}
-          error={errors.address?.message}
-          placeholder={"Adres"}
-        />
-        <Button
-          type={"submit"}
-          isLoading={isSubmitting || isFetching}
-          disabled={isSubmitting || isFetching}
-          formNoValidate={true}
-        >
-          Opslaan
-        </Button>
-      </form>
-    </FormModal>
-  );
-};
-
-const Page: FunctionComponent = () => {
-  const { open } = useModal(LocationFormModal);
-  return (
-    <Panel
-      title={"Locaties"}
-      sideActions={
-        <Button
-          onClick={() => {
-            open({});
-          }}
-        >
-          Nieuwe locatie
-        </Button>
+const LocationsPage = () => {
+  const { locations, isLoading, createOne, updateOne } = useLocation({ autoFetch: true });
+  const [open, setOpen] = useState(false);
+  const [location, setLocation] = useState<Location | null>(null);
+  const handleOpen = (bool: boolean) => {
+    setOpen(bool);
+  }
+  const handlePrevious = () => {
+    // if (page <= 1) {
+    //   setPage(1);
+    //   return;
+    // }
+    // setPage(page - 1);
+  }
+  const handleNext = () => {
+    // if (locations?.next) {
+    //   setPage(page + 1);
+    //   return;
+    // }
+  }
+  const handleCreate = async (values: CreateLocation) => {
+    try {
+      await createOne(
+        values, {
+        displayProgress: true,
+        displaySuccess: true
       }
-    >
-      <LocationsList />
-    </Panel>
-  );
-};
-
-const LocationsList = () => {
-  const { locations, isLoading, deleteLocation } = useLocation({autoFetch:true});
-
-  const { open } = useModal(
-    getDangerActionConfirmationModal({
-      msg: "Weet je zeker dat je deze locatie wilt verwijderen?",
-      title: "Locatie Verwijderen",
-    })
-  );
-  const { open: openLocationFormModal } = useModal(LocationFormModal);
-  const columnDefs = useMemo<ColumnDef<Location>[]>(() => {
-    return [
-      {
-        accessorKey: "name",
-        header: "Naam",
-      },
-      {
-        accessorKey: "address",
-        header: "Adres",
-      },
-      {
-        accessorKey: "capacity",
-        header: "Capaciteit",
-      },
-      {
-        id: "actions",
-        cell: (info) => {
-          return (
-            <div className="flex justify-end mr-4">
-              <IconButton
-                buttonType={"Danger"}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  open({
-                    onConfirm: () => {
-                      deleteLocation(info.row.original.id);
-                    },
-                  });
-                }}
-              >
-                <XMarkIcon className="w-5 h-5" />
-              </IconButton>
-            </div>
-          );
-        },
-      },
-    ];
-  }, [open, deleteLocation]);
-
-  if (isLoading) {
-    return <Loader />;
+      );
+    } catch (error) {
+      console.log(error);
+    }
   }
-
-  if (!locations) {
-    return null;
+  const handleUpdate = async (values: CreateLocation) => {
+    try {
+      await updateOne(
+        values,
+        location!.id!.toString(),
+        {
+          displayProgress: true,
+          displaySuccess: true
+        }
+      );
+    } catch (error) {
+      console.log(error);
+    }
+  }
+  const handlePreUpdate = (location: Location) => {
+    setLocation(location);
+    setOpen(true);
   }
   return (
-    <Table
-      data={locations}
-      columns={columnDefs}
-      onRowClick={(locationItem) => {
-        openLocationFormModal({ id: locationItem.id, mode: "edit" });
-      }}
-    />
-  );
-};
+    <div className="w-full flex flex-col gap-4">
+      <div className="flex items-center justify-between">
+        <h1 className='flex items-center gap-2 m-0 p-0 font-extrabold text-lg text-slate-600'>
+          <Locate size={24} className='text-indigo-400' />  Locatie
+        </h1>
+        <CreateLocationSheet
+          mode={location ? "update" : "create"}
+          handleCreate={handleCreate}
+          handleUpdate={handleUpdate}
+          handleOpen={handleOpen}
+          location={location ?? undefined}
+          isOpen={open}
+        />
 
-export default withAuth(
-  withPermissions(Page, {
-    redirectUrl: Routes.Common.NotFound,
-    requiredPermissions: PermissionsObjects.ViewLocation,
-  }),
-  { mode: AUTH_MODE.LOGGED_IN, redirectUrl: Routes.Auth.Login }
-);
+      </div>
+      <div className="grid grid-cols-1 gap-4">
+        {
+          isLoading ?
+            <Loader />
+            : locations?.length === 0 ?
+              <div className="col-span-4 w-full flex items-center justify-center">
+                <LargeErrorMessage
+                  firstLine={"Oops!"}
+                  secondLine={
+                    "Het lijkt erop dat er geen medewerkers zijn die aan uw zoekcriteria voldoen."
+                  }
+                  className="w-full"
+                />
+              </div>
+              :
+              <div className="grid grid-cols-1 gap-4">
+                <DataTable columns={getColumns({handlePreUpdate})} data={locations ?? []} onRowClick={() => { }} className="dark:bg-[#18181b] dark:border-black" />
+                <div className="flex px-2 py-3 bg-white dark:bg-[#18181b] dark:border-black rounded-md mt-5 justify-between border-2 border-muted">
+                  <PrimaryButton
+                    disabled={true}
+                    onClick={handlePrevious}
+                    text={"Previous"}
+                    icon={ArrowBigLeft}
+                    iconSide="left"
+                  />
+                  <PrimaryButton
+                    disabled={true}
+                    onClick={handleNext}
+                    text={"Next"}
+                    icon={ArrowBigRight}
+                  />
+                </div>
+              </div>
+        }
+      </div>
+    </div>
+  )
+}
+
+export default LocationsPage

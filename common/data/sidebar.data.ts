@@ -1,4 +1,4 @@
-import {  BellRing, BookMarked, BriefcaseBusiness, Calendar, CalendarDays, FileBadge, FilesIcon, FileText, Goal, GraduationCap, Handshake, HeartPulse, Home, Map,  UserCircle,  Users2, UsersRound } from "lucide-react";
+import {  BellRing, BookMarked, BriefcaseBusiness, FileBadge, FilesIcon, FileText, Goal, GraduationCap, Handshake, HeartPulse, Home, Map,  UserCircle, UsersRound, CalendarClock, Users2, Calendar, ClockArrowUp } from "lucide-react";
 
 export const sidebarLinks = [
     {
@@ -38,15 +38,15 @@ export const sidebarLinks = [
         icon: Map,
     },
     {
-      title: "Calendar",
-      url: "/calendar",
-      icon: Calendar,
+        title: "Calendar",
+        url: "/calendar",
+        icon: CalendarClock,
     },
     {
-      title: "Schedules",
-      url: "/schedules",
-      icon: CalendarDays,
-    }
+        title: "Schedules",
+        url: "/schedules",
+        icon: Calendar,
+    },
 ];
 export const sidebarEmployeeLinks = (employee:{first_name:string,last_name:string,id:number})=> [
     {
@@ -70,11 +70,29 @@ export const sidebarEmployeeLinks = (employee:{first_name:string,last_name:strin
         url: "/employees/" + employee?.id+"/experience",
         icon: BriefcaseBusiness ,
     },
-      {
-        title: "Kalender",
-        url: "/employees/" + employee?.id + "/calendar",
-        icon: CalendarDays,
-      },
+    {
+        title: "CalendarClock",
+        url: "/employees/" + employee?.id+"/calendar",
+        icon: CalendarClock ,
+    }
+];
+export const sidebarLocationLinks = (location:{first_name:string,last_name:string,id:number})=> [
+    {
+        title: "Overzicht ("+location?.first_name + " " + location?.last_name + ")",
+        url: "/locations/" + location?.id+"/overview" ,
+        icon: Users2,
+        isActive: true,
+    },
+    {
+        title: "Shifts",
+        url: "/locations/" + location?.id+"/shifts",
+        icon: ClockArrowUp,
+    },
+    {
+        title: "Schedules",
+        url: "/locations/" + location?.id+"/schedules",
+        icon: Calendar,
+    }
 ];
 export const sidebarClientLinks = (client:{first_name:string,last_name:string,id:number})=> [
     {
@@ -91,7 +109,7 @@ export const sidebarClientLinks = (client:{first_name:string,last_name:string,id
     {
         title: "Afsprakenkaart",
         url: "/clients/" + client?.id+"/appointment-card",
-        icon: Calendar,
+        icon: CalendarClock,
     },
     {
         title: "Doelen",
@@ -144,8 +162,8 @@ export const sidebarClientLinks = (client:{first_name:string,last_name:string,id
         icon: FilesIcon ,
     },
     {
-      title: "Kalender",
-      url: "/clients/" + client?.id + "/calendar",
-      icon: CalendarDays,
-    },
+        title: "Calendar",
+        url: "/clients/" + client?.id+"/calendar",
+        icon: CalendarClock ,
+    }
 ];

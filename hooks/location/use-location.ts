@@ -1,24 +1,24 @@
 import api from "@/common/api/axios";
 import ApiRoutes from "@/common/api/routes";
 import { useApi } from "@/common/hooks/use-api";
-import { useMutation } from "@/common/hooks/use-mutate";
 import useProgressBar from "@/common/hooks/use-progress-bar";
 import { ApiOptions } from "@/common/types/api.types";
-import { CreateLocationReqDto, Location } from "@/types/location.types";
+import { CreateLocation, Location } from "@/schemas/location.schema";
 import {  useSnackbar } from "notistack";
 import useSWR from "swr";
 
-export function useLocation({autoFetch=true}:{autoFetch?:boolean}) {
+export function useLocation({autoFetch=false}:{autoFetch?:boolean}) {
   const { enqueueSnackbar } = useSnackbar();
+  
   const { start: startProgress, stop: stopProgress } = useProgressBar();
   const {
     data: locations,
     error,
     mutate,
   } = useSWR<Location[] | null>(
-    ApiRoutes.Location.ReadAll, // Endpoint to fetch Locations
+    autoFetch ? ApiRoutes.Location.ReadAll : null, // Endpoint to fetch Locations
     async (url) => {
-      if (!autoFetch) {
+      if (!url) {
         return null;
       }
       const response = await api.get(url);
@@ -32,70 +32,7 @@ export function useLocation({autoFetch=true}:{autoFetch?:boolean}) {
 
   const isLoading = !locations && !error;
 
-  const { mutate: createLocation } = useMutation<Location>();
-  const { mutate: updateLocation } = useMutation<Location>();
-  const { mutate: deleteLocationMutation } = useMutation<Location>();
-
-  const addLocation = async (newLocation: CreateLocationReqDto) => {
-    const created = await createLocation(
-      ApiRoutes.Location.CreateOne,
-      "POST",
-      newLocation
-    );
-    if (created) {
-      mutate([...(locations || []), created], false);
-      enqueueSnackbar("Location created successfully", {
-        variant: "success",
-      });
-    } else {
-      enqueueSnackbar("Failed to create location", { variant: "error" });
-    }
-  };
-
-  const modifyLocation = async (
-    id: number,
-    updatedLocation: CreateLocationReqDto
-  ) => {
-    const updated = await updateLocation(
-      `${ApiRoutes.Location.UpdateOne}`.replace("{id}", id.toString()),
-      "PUT",
-      updatedLocation
-    );
-    if (updated) {
-      mutate();
-      enqueueSnackbar("Location updated successfully", {
-        variant: "success",
-      });
-    } else {
-      enqueueSnackbar("Failed to update location", { variant: "error" });
-    }
-  };
-
-  const deleteLocation = async (id: number) => {
-    const deleted = await deleteLocationMutation(
-      `${ApiRoutes.Location.DeleteOne}`.replace("{id}", id.toString()),
-      "DELETE"
-    );
-    if (deleted) {
-      mutate();
-      enqueueSnackbar("Location deleted successfully", {
-        variant: "success",
-      });
-    } else {
-      enqueueSnackbar("Failed to delete location", { variant: "error" });
-    }
-  };
-
-  const getLocation = (id: number) => {
-    return useSWR<Location>(
-      `${ApiRoutes.Location.ReadOne}`.replace("{id}", id.toString()),
-      async (url: string) => {
-        const response = await api.get(url);
-        return response.data.data;
-      }
-    );
-  };
-
+  
   const readOne = async (id: number, options?: ApiOptions) => {
     const { displayProgress = false, displaySuccess = false } = options || {};
     try {
@@ -128,14 +65,55 @@ export function useLocation({autoFetch=true}:{autoFetch?:boolean}) {
     }
   };
 
+    const createOne = async (location: CreateLocation, options?: ApiOptions) => {
+      const { displayProgress = false, displaySuccess = false } = options || {};
+      try {
+        if (displayProgress) startProgress();
+        const { message, success, data, error } = await useApi<Location>(ApiRoutes.Location.CreateOne, "POST", {}, {...location});
+        if (!data)
+          throw new Error(error || message || "An unknown error occurred");
+  
+        // Display success message
+        if (displaySuccess && success) {
+          enqueueSnackbar("Location created successful!", { variant: "success" });
+        }
+        mutate()
+        return data;
+      } catch (err: any) {
+        enqueueSnackbar(err?.response?.data?.message || "Location creationg failed", { variant: "error" });
+        throw err;
+      } finally {
+        if (displayProgress) stopProgress();
+      }
+    }
+    const updateOne = async (location: CreateLocation,id:string, options?: ApiOptions) => {
+      const { displayProgress = false, displaySuccess = false } = options || {};
+      try {
+        if (displayProgress) startProgress();
+        const { message, success, data, error } = await useApi<Location>(ApiRoutes.Location.UpdateOne.replace("{id}", id), "PUT", {}, {...location});
+        if (!data)
+          throw new Error(error || message || "An unknown error occurred");
+  
+        // Display success message
+        if (displaySuccess && success) {
+          enqueueSnackbar("Location updated successful!", { variant: "success" });
+        }
+        mutate()
+        return data;
+      } catch (err: any) {
+        enqueueSnackbar(err?.response?.data?.message || "Location updating failed", { variant: "error" });
+        throw err;
+      } finally {
+        if (displayProgress) stopProgress();
+      }
+    }
+
   return {
     locations,
     error,
     isLoading,
-    getLocation,
-    addLocation,
-    modifyLocation,
-    deleteLocation,
-    readOne
+    readOne,
+    createOne,
+    updateOne
   };
 }
