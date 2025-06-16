@@ -26,6 +26,11 @@ interface ScheduleDetailsProps {
   onCreateCustomShift: (cust: ShiftDef) => void;
 }
 
+const sameUtcDay = (a: Date, b: Date) =>
+  a.getUTCFullYear() === b.getUTCFullYear() &&
+  a.getUTCMonth() === b.getUTCMonth() &&
+  a.getUTCDate() === b.getUTCDate();
+
 export interface CalendarScheduleResponse {
   shift_id: number;
   employee_id: number;
@@ -83,7 +88,15 @@ const ScheduleDetails = ({
     readSchedulesByDay(locationId, y, m, d, { displayProgress: false })
       .then((raw) => {
         const rows = (raw as unknown as DailyResponse)?.shifts ?? [];
-        setDaily(rows);
+
+        const requestedUtc = new Date(Date.UTC(
+          date.getFullYear(), date.getMonth(), date.getDate()
+        ));
+        const filtered = rows.filter(r =>
+          sameUtcDay(new Date(r.start_time), requestedUtc)
+        );
+
+        setDaily(filtered);
       })
       .catch((err: any) => setError(err.message ?? "Failed to load schedules"))
       .finally(() => setLoading(false));
