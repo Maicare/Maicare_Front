@@ -1,12 +1,12 @@
 import Button from '@/components/common/Buttons/Button'
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
-import { ArrowRight, HeartPulse, Timer } from 'lucide-react'
+import { ArrowRight, HeartPulse } from 'lucide-react'
 import React from 'react'
 import MedicalDossierPreviewSkeleton from './MedicalDossierPreviewSkeleton';
-import { useMedication } from '@/hooks/medication/use-medication';
 import { useParams } from 'next/navigation';
 import { useDiagnosis } from '@/hooks/diagnosis/use-diagnosis';
 import Link from 'next/link';
+import { formatDateToDutch } from '@/utils/timeFormatting';
 
 type Props = {
     isParentLoading: boolean;
@@ -39,19 +39,24 @@ const MedicalDossierPreview = ({ isParentLoading }: Props) => {
                     <p className='text-slate-500 font-medium'>Geen Medisch dossier gevonden!</p>
                 </div>
             ) : null}
-            <div>
-                {diagnosis?.results.map(({ title, diagnosis_code, created_at, description }, index) => (
-                    <div key={index} className="mt-1 w-full p-2 flex flex-col gap-4 ">
-                        <div className="grid grid-cols-3 gap-1 hover:bg-gray-100 hover:rounded-md p-2 hover:cursor-pointer">
-                            <span className='bg-orange-100 text-orange-800 text-xs font-medium px-2.5 py-0.5 rounded-sm dark:bg-orange-900 dark:text-orange-300'>{title}</span>
-                            <span className='bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded-sm dark:bg-green-900 dark:text-green-300'>{diagnosis_code}</span>
-                            <span className='bg-sky-100 text-sky-800 text-xs font-medium px-2.5 py-0.5 rounded-sm dark:bg-sky-900 dark:text-sky-300'>{created_at}</span>
-                            <p className="text-xs text-slate-500 font-medium px-2.5 py-0.5 col-span-3 truncate">
+            <div className="mt-4 w-full p-2 flex flex-col gap-4 ">
+                <Accordion type="single" collapsible className="w-full" defaultValue='Diagnose'>
+                    <AccordionItem value='Diagnose'>
+                        <AccordionTrigger className='text-sm text-slate-600 font-bold'>Diagnose</AccordionTrigger>
+                        <AccordionContent>
+                        {diagnosis?.results.map(({ title, diagnosis_code, created_at, description }, index) => (
+                            <div key={index} className="grid grid-cols-3 gap-1 hover:bg-gray-100 hover:rounded-md p-2 hover:cursor-pointer">
+                                <span className='bg-orange-100 text-orange-800 text-xs font-medium px-2.5 py-0.5 rounded-sm dark:bg-orange-900 dark:text-orange-300'>{title}</span>
+                                <span className='bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded-sm dark:bg-green-900 dark:text-green-300'>{diagnosis_code}</span>
+                                <span className='bg-sky-100 text-sky-800 text-xs font-medium px-2.5 py-0.5 rounded-sm dark:bg-sky-900 dark:text-sky-300'>{formatDateToDutch(created_at!,true)}</span>
+                                <p className="text-xs text-slate-500 font-medium px-2.5 py-0.5 col-span-3 truncate">
                                 {description}
-                            </p>
-                        </div>
-                    </div>
-                ))}
+                                </p>
+                            </div>
+                        ))}
+                        </AccordionContent>
+                    </AccordionItem>
+                </Accordion>
             </div>
         </div>
     )
