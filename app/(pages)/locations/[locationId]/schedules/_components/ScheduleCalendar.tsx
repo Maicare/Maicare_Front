@@ -103,6 +103,8 @@ const ScheduleCalendar: FunctionComponent<{ locationId: string }> = ({ locationI
   const [popupPos, setPopupPos] = useState<{ left: number; top: number } | null>(
     null
   );
+  const [createInitialShiftId, setCreateInitialShiftId] = useState<number>(0);
+
   const [calVer, setCalVer] = useState(0);
   const [refreshFlag, setRefreshFlag] = useState(0);
   const [sidebarDate, setSidebarDate] = useState<Date | null>(null);
@@ -118,36 +120,54 @@ const ScheduleCalendar: FunctionComponent<{ locationId: string }> = ({ locationI
     }
   );
 
-  const renderLegend = () => {
-    const map: Record<
-      string,
-      { name: string; color: string }
-    > = {};
-    events.forEach((ev) => {
-      const empId = ev.extendedProps?.employee_id as number;
-      const empName = ev.extendedProps?.employee_name as string;
-      const color = ev.extendedProps?.color as string;
-      map[empId] = { name: empName, color };
+  const openCreateForShift = (shiftDef: any, day: Date) => {
+    const left = window.innerWidth / 2 - 190;
+    const top = window.innerHeight / 2 - 225;
+
+    setCreateInitialShiftId(shiftDef.id);
+
+    setCreateRange({
+      start: day,
+      end: day,
+      startStr: day.toISOString(),
+      endStr: day.toISOString(),
+      allDay: true,
+      jsEvent: null as any,
+      view: calendarRef.current?.getApi().view!,
     });
 
-    const container = document.createElement("div");
-    container.className = "fc-legend flex flex-wrap gap-4 py-2 px-3";
+    setEditEvent(null);
+    setClickedFallbackDates(null);
 
-    Object.values(map).forEach((info) => {
-      const dot = document.createElement("span");
-      dot.className = "w-3 h-3 rounded-full inline-block mr-1";
-      dot.style.backgroundColor = info.color;
+    setPopupPos({ left, top });
+  };
 
-      const label = document.createElement("span");
-      label.textContent = info.name;
+  const openCreateForCustomShift = (cust: {
+    start_time: string;
+    end_time: string;
+  }) => {
+    const left = window.innerWidth / 2 - 190;
+    const top = window.innerHeight / 2 - 225;
 
-      const item = document.createElement("div");
-      item.className = "flex items-center text-sm text-gray-700";
-      item.append(dot, label);
-      container.appendChild(item);
+    setCreateInitialShiftId(0);
+
+    setClickedFallbackDates({
+      start: new Date(cust.start_time),
+      end: new Date(cust.end_time),
     });
 
-    return container;
+    setCreateRange({
+      start: new Date(cust.start_time),
+      end: new Date(cust.end_time),
+      startStr: cust.start_time,
+      endStr: cust.end_time,
+      allDay: false,
+      jsEvent: null as any,
+      view: calendarRef.current!.getApi().view,
+    });
+
+    setEditEvent(null);
+    setPopupPos({ left, top });
   };
 
   useEffect(() => {
@@ -274,6 +294,7 @@ const ScheduleCalendar: FunctionComponent<{ locationId: string }> = ({ locationI
     setEditEvent(null);
     setPopupPos(null);
     setClickedFallbackDates(null);
+    setCreateInitialShiftId(0);
   };
 
   const handleUpsert = (payload: SchedulePayload, isEdit: boolean) => {
@@ -374,6 +395,7 @@ const ScheduleCalendar: FunctionComponent<{ locationId: string }> = ({ locationI
       location_id,
       color,
       shift_name,
+      location_shift_id
     } = srcEv.extendedProps;
 
     return () =>
@@ -385,9 +407,9 @@ const ScheduleCalendar: FunctionComponent<{ locationId: string }> = ({ locationI
         location_id,
         color,
         shift_name,
+        location_shift_id
       });
   };
-
 
   const calendarKey = `${locationId}-${calVer}`;
 
@@ -498,6 +520,7 @@ const ScheduleCalendar: FunctionComponent<{ locationId: string }> = ({ locationI
                   typeof s.end === "string" ? s.end : "",
                 employee_name:
                   (s.extendedProps?.employee_name as string | undefined) ?? "—",
+                event_id: String(s.id),
               }));
 
               const DEFAULT_NAMES = new Set([
@@ -525,8 +548,6 @@ const ScheduleCalendar: FunctionComponent<{ locationId: string }> = ({ locationI
 
                   const key = `${name}-${startISO}-${endISO}`;
                   if (map.has(key)) return;
-
-                  console.log("qzdqzd", sh)
 
                   map.set(key, {
                     id: -Math.abs(key.hashCode?.() ?? key.length),
@@ -570,15 +591,20 @@ const ScheduleCalendar: FunctionComponent<{ locationId: string }> = ({ locationI
                         const src = shiftsForDay.find(
                           (ev) => ev.extendedProps?.shift_name === sh.shift
                         );
+
+                        const badgeHandler = src ? mkClick(src) : undefined;
+                        const containerHandler = () => openCreateForShift(sh, info.date);
+
                         return (
                           <ShiftPlaceholder
                             key={sh.id}
                             shift={sh}
                             isDefault={true}
                             schedule={schedulesForDay}
-                            onClick={mkClick(src)}
+                            onClick={containerHandler}
+                            onBadgeClick={badgeHandler}
                           />
-                        )
+                        );
                       })
                     }
                   </div>
@@ -592,13 +618,16 @@ const ScheduleCalendar: FunctionComponent<{ locationId: string }> = ({ locationI
                         < div className="flex flex-col gap-2" >
                           {
                             customShifts.map((sh) => {
-
-                              const src = shiftsForDay.find(ev =>
-                                typeof ev.start !== "number"
-                                && sameInstant(ev.start as string | Date | undefined, sh.start_time)
-                                && typeof ev.end !== "number"
-                                && sameInstant(ev.end as string | Date | undefined, sh.end_time)
+                              const src = shiftsForDay.find(
+                                (ev) =>
+                                  typeof ev.start !== "number" &&
+                                  sameInstant(ev.start as any, sh.start_time) &&
+                                  typeof ev.end !== "number" &&
+                                  sameInstant(ev.end as any, sh.end_time)
                               );
+
+                              const badgeHandler = src ? mkClick(src) : undefined;
+                              const containerHandler = () => openCreateForCustomShift(sh);
 
                               return (
                                 <ShiftPlaceholder
@@ -606,9 +635,10 @@ const ScheduleCalendar: FunctionComponent<{ locationId: string }> = ({ locationI
                                   shift={sh}
                                   isDefault={false}
                                   schedule={schedulesForDay}
-                                  onClick={mkClick(src)}
+                                  onClick={containerHandler}
+                                  onBadgeClick={badgeHandler}
                                 />
-                              )
+                              );
                             })
                           }
                         </div>
@@ -905,7 +935,13 @@ const ScheduleCalendar: FunctionComponent<{ locationId: string }> = ({ locationI
                 onDelete={handleDelete}
                 initialEmployeeId={editEvent?.event.extendedProps.employee_id}
                 initialLocationId={editEvent?.event.extendedProps.location_id}
-                initialShiftId={editEvent?.event.extendedProps.location_shift_id}
+                initialShiftId={
+                  editEvent
+                    ? editEvent.event.extendedProps.location_shift_id
+                    : createInitialShiftId
+                }
+                locationId={Number(locationId)}
+                existingEvents={events}
               />
             )
           }
@@ -920,6 +956,9 @@ const ScheduleCalendar: FunctionComponent<{ locationId: string }> = ({ locationI
             }
             onShiftClick={openShiftEditor}
             refreshKey={refreshFlag}
+            onCreateDefaultShift={openCreateForShift}
+            onCreateCustomShift={openCreateForCustomShift}
+
           />
         )}
       </div >
