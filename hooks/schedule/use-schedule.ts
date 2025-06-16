@@ -28,6 +28,7 @@ export function useSchedule(autoFetch: boolean = false, params?: PaginationParam
     employee_last_name: string;
     location_id: Id;
     location_name: string;
+    location_shift_id: Id;
     created_at: string;
     updated_at: string;
   }

@@ -29,19 +29,14 @@ import {
 } from "@/components/ui/form";
 import { LocationSelect } from "@/components/employee/LocationSelect";
 import { useSchedule } from "@/hooks/schedule/use-schedule";
-import { scheduleSchema, CreateScheduleType } from "@/schemas/schedule.schemas";
+import {
+  scheduleSchema,
+  CreateScheduleType,
+} from "@/schemas/schedule.schemas";
 import SingleEmployeeSelect from "./SingleEmployeeSelect";
 import { ensureHex } from "@/utils/color-utils";
-import { Any } from "@/common/types/types";
-
-export type SchedulePayload = {
-  id: string;
-  employee_id: number;
-  location_id: number;
-  start_datetime: Date;
-  end_datetime: Date;
-  color: string;
-};
+import { Checkbox } from "@/components/ui/checkbox";
+import MainShiftSelect from "@/app/(pages)/schedules/_components/MainShiftSelect";
 
 export interface SchedulePopupProps {
   createRange: DateSelectArg | null;
@@ -51,11 +46,36 @@ export interface SchedulePopupProps {
   position: { left: number; top: number };
   containerRef: React.RefObject<HTMLDivElement | null>;
   onClose: () => void;
-  onUpsert: (p: SchedulePayload, isEdit: boolean) => void;
+  onUpsert: (payload: any, isEdit: boolean) => void;
   onDelete: (id: string) => void;
   initialEmployeeId?: number;
   initialLocationId?: number;
+  initialShiftId?: number;
 }
+
+export type SchedulePayload = {
+  id: string;
+  employee_id: number;
+  location_id: number;
+  color: string;
+  is_custom: boolean;
+
+  location_shift_id: number;
+  shift_date: string;
+
+  start_datetime?: Date;
+  end_datetime?: Date;
+};
+
+type FormValues = {
+  is_custom: boolean;
+  employee_id: number;
+  location_id: number;
+  start_datetime: Date;
+  end_datetime: Date;
+  location_shift_id: number;
+  shift_date: string;
+};
 
 const POPUP_WIDTH = 380;
 const POPUP_HEIGHT = 450;
@@ -66,28 +86,40 @@ const SchedulePopup: FunctionComponent<SchedulePopupProps> = ({
   eventStart,
   eventEnd,
   position,
+  containerRef,
   onClose,
   onUpsert,
   onDelete,
   initialEmployeeId,
   initialLocationId,
+  initialShiftId,
 }) => {
+
   const { createSchedule, updateSchedule } = useSchedule();
 
-  const computedStart: Date =
+  const computedStart =
     editEvent?.event.start ?? eventStart ?? createRange?.start ?? new Date();
-  const computedEnd: Date =
+  const computedEnd =
     editEvent?.event.end ?? eventEnd ?? createRange?.end ?? new Date();
 
-  const form = useForm<CreateScheduleType>({
+  const form = useForm<FormValues>({
     resolver: zodResolver(scheduleSchema),
     defaultValues: {
       employee_id:
         editEvent?.event.extendedProps.employee_id ?? initialEmployeeId ?? 0,
       location_id:
         editEvent?.event.extendedProps.location_id ?? initialLocationId ?? 0,
+      is_custom:
+        editEvent
+          ? !(editEvent.event.extendedProps?.location_shift_id > 0)
+          : true,
       start_datetime: new Date(computedStart),
       end_datetime: new Date(computedEnd),
+      location_shift_id:
+        editEvent?.event.extendedProps.location_shift_id ??
+        initialShiftId ??
+        0,
+      shift_date: format(computedStart, "yyyy-MM-dd"),
     },
   });
 
@@ -95,20 +127,36 @@ const SchedulePopup: FunctionComponent<SchedulePopupProps> = ({
     control,
     handleSubmit,
     reset,
+    watch,
     formState: { errors },
   } = form;
 
+  const isCustom = watch("is_custom");
+  const currentLocationId = watch("location_id");
+  const location_shift_qid = watch("location_shift_id")
+
   useEffect(() => {
-    const baseStart = editEvent?.event.start ?? eventStart ?? createRange?.start;
-    const baseEnd = editEvent?.event.end ?? eventEnd ?? createRange?.end;
+    const baseStart =
+      editEvent?.event.start ?? eventStart ?? createRange?.start ?? new Date();
+    const baseEnd =
+      editEvent?.event.end ?? eventEnd ?? createRange?.end ?? new Date();
 
     reset({
       employee_id:
         editEvent?.event.extendedProps.employee_id ?? initialEmployeeId ?? 0,
       location_id:
         editEvent?.event.extendedProps.location_id ?? initialLocationId ?? 0,
-      start_datetime: new Date(baseStart ?? new Date()),
-      end_datetime: new Date(baseEnd ?? new Date()),
+      is_custom:
+        editEvent
+          ? !(editEvent.event.extendedProps?.location_shift_id > 0)
+          : true,
+      start_datetime: new Date(baseStart),
+      end_datetime: new Date(baseEnd),
+      location_shift_id:
+        editEvent?.event.extendedProps.location_shift_id ??
+        initialShiftId ??
+        0,
+      shift_date: format(baseStart, "yyyy-MM-dd"),
     });
   }, [
     createRange,
@@ -120,6 +168,39 @@ const SchedulePopup: FunctionComponent<SchedulePopupProps> = ({
     reset,
   ]);
 
+  const onValid = async (data: CreateScheduleType) => {
+
+    const apiPayload: CreateScheduleType =
+      data.is_custom
+        ? ({
+          is_custom: true as const,
+          employee_id: data.employee_id,
+          location_id: data.location_id,
+          start_datetime: data.start_datetime,
+          end_datetime: data.end_datetime,
+        })
+        : ({
+          is_custom: false as const,
+          employee_id: data.employee_id,
+          location_id: data.location_id,
+          location_shift_id: data.location_shift_id,
+          shift_date: data.shift_date,
+        });
+
+
+    const saved = editEvent
+      ? await updateSchedule(editEvent.event.id, apiPayload)
+      : await createSchedule(apiPayload);
+
+    onUpsert(
+      {
+        ...apiPayload,
+        id: editEvent?.event.id ?? (saved as any).id ?? Date.now(),
+      },
+      !!editEvent
+    );
+  };
+
   const [pos, setPos] = useState(position);
   const [isDragging, setDragging] = useState(false);
   const [dragOffset, setDragOffset] = useState<{ x: number; y: number } | null>(
@@ -127,6 +208,7 @@ const SchedulePopup: FunctionComponent<SchedulePopupProps> = ({
   );
 
   useEffect(() => setPos(position), [position]);
+
   useEffect(() => {
     if (!isDragging || !dragOffset) return;
     const move = (e: MouseEvent) =>
@@ -154,49 +236,9 @@ const SchedulePopup: FunctionComponent<SchedulePopupProps> = ({
     };
   }, [isDragging, dragOffset]);
 
-  const onValid = async (data: CreateScheduleType) => {
-    const startDt =
-      typeof data.start_datetime === "string"
-        ? new Date(data.start_datetime)
-        : data.start_datetime;
-    const endDt =
-      typeof data.end_datetime === "string"
-        ? new Date(data.end_datetime)
-        : data.end_datetime;
-
-    const assignedColor = ensureHex(
-      editEvent?.event.extendedProps.color as string | undefined,
-      data.employee_id
-    );
-
-    const apiPayload = {
-      employee_id: data.employee_id,
-      location_id: data.location_id,
-      start_datetime: startDt,
-      end_datetime: endDt,
-      color: assignedColor,
-    } as Any;
-
-    const saved = editEvent
-      ? await updateSchedule(editEvent.event.id, apiPayload)
-      : await createSchedule(apiPayload);
-
-    onUpsert(
-      {
-        id: editEvent?.event.id ?? String((saved as Any)?.id ?? Date.now()),
-        employee_id: apiPayload.employee_id,
-        location_id: apiPayload.location_id,
-        start_datetime: apiPayload.start_datetime,
-        end_datetime: apiPayload.end_datetime,
-        color: assignedColor,
-      },
-      !!editEvent
-    );
-  };
-
   return (
     <div
-      className="fc-popup fixed z-50 w-80 bg-white border border-slate-200 shadow-xl rounded-lg flex flex-col"
+      className="fc-popup fixed z-50 bg-white border border-slate-200 shadow-xl rounded-lg flex flex-col"
       style={{ ...pos, width: POPUP_WIDTH, maxHeight: POPUP_HEIGHT }}
     >
       <div
@@ -240,9 +282,7 @@ const SchedulePopup: FunctionComponent<SchedulePopupProps> = ({
               name="location_id"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="flex items-center justify-between text-slate-600 font-medium mb-1">
-                    Location
-                  </FormLabel>
+                  <FormLabel>Location</FormLabel>
                   <FormControl>
                     <LocationSelect
                       value={field.value}
@@ -254,38 +294,81 @@ const SchedulePopup: FunctionComponent<SchedulePopupProps> = ({
               )}
             />
 
-            <Controller
-              name="start_datetime"
+            <FormField
               control={control}
+              name="is_custom"
               render={({ field }) => (
-                <DateTimeRow
-                  labelIcon={CalendarIcon}
-                  date={field.value as Date}
-                  onChange={field.onChange}
-                />
+                <FormItem className="flex items-center space-x-3">
+                  <FormControl>
+                    <Checkbox
+                      checked={field.value}
+                      onCheckedChange={field.onChange}
+                    />
+                  </FormControl>
+                  <FormLabel className="!mt-0  font-normal">
+                    Custom hours
+                  </FormLabel>
+                </FormItem>
               )}
             />
-            {errors.start_datetime && (
-              <p className="text-sm text-red-600">
-                {errors.start_datetime.message}
-              </p>
-            )}
 
-            <Controller
-              name="end_datetime"
-              control={control}
-              render={({ field }) => (
-                <DateTimeRow
-                  labelIcon={Clock}
-                  date={field.value as Date}
-                  onChange={field.onChange}
+            {isCustom ? (
+              <>
+                <Controller
+                  name="start_datetime"
+                  control={control}
+                  render={({ field }) => (
+                    <DateTimeRow
+                      labelIcon={CalendarIcon}
+                      date={field.value as Date}
+                      onChange={field.onChange}
+                    />
+                  )}
                 />
-              )}
-            />
-            {errors.end_datetime && (
-              <p className="text-sm text-red-600">
-                {errors.end_datetime.message}
-              </p>
+                {errors.start_datetime && (
+                  <p className="text-sm text-red-600">
+                    {errors.start_datetime.message}
+                  </p>
+                )}
+
+                <Controller
+                  name="end_datetime"
+                  control={control}
+                  render={({ field }) => (
+                    <DateTimeRow
+                      labelIcon={Clock}
+                      date={field.value as Date}
+                      onChange={field.onChange}
+                    />
+                  )}
+                />
+                {errors.end_datetime && (
+                  <p className="text-sm text-red-600">
+                    {errors.end_datetime.message}
+                  </p>
+                )}
+              </>
+            ) : (
+              <>
+                <FormField
+                  control={control}
+                  name="location_shift_id"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Select shift</FormLabel>
+                      <FormControl>
+                        <MainShiftSelect
+                          locationId={currentLocationId}
+                          value={field.value}
+                          onChange={field.onChange}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <input type="hidden" {...form.register("shift_date")} />
+              </>
             )}
 
             <div className="flex justify-end gap-2 pt-4">
@@ -301,11 +384,7 @@ const SchedulePopup: FunctionComponent<SchedulePopupProps> = ({
                   Delete
                 </Button>
               )}
-              <Button
-                size="sm"
-                type="submit"
-                className="bg-indigo-600 text-white"
-              >
+              <Button size="sm" type="submit" className="bg-indigo-600 text-white">
                 Save
               </Button>
             </div>

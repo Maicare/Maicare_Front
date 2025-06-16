@@ -5,7 +5,6 @@ import {
   useRef,
   useState,
   useEffect,
-  useMemo,
 } from "react";
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
@@ -17,11 +16,11 @@ import {
 } from "@fullcalendar/core";
 import SchedulePopup, { SchedulePayload } from "./SchedulePopup";
 import { useSchedule } from "@/hooks/schedule/use-schedule";
-import { LocationSelect } from "@/components/employee/LocationSelect";
-import { ClockIcon } from "lucide-react";
 import ScheduleDetails from "./ScheduleDetails";
 import { ensureHex } from "@/utils/color-utils";
-import { Any } from "@/common/types/types";
+import { useShift } from "@/hooks/shift/use-shift";
+import { createRoot } from "react-dom/client";
+import ShiftPlaceholder from "@/app/(pages)/schedules/_components/ShiftPlaceholder";
 
 interface DayWithShifts {
   date: string;
@@ -34,12 +33,69 @@ interface DayWithShifts {
     end_time: string;
     location_id: number;
     color: string | null;
+    shift_name: string;
+    location_shift_id: string;
   }>;
 }
 
-const ScheduleCalendar: FunctionComponent<{locationId:string}> = ({locationId}:{locationId:string}) => {
+declare global {
+  interface String { hashCode(): number }
+}
+String.prototype.hashCode = function () {
+  let h = 0;
+  for (let i = 0; i < this.length; i++)
+    h = (Math.imul(31, h) + this.charCodeAt(i)) | 0;
+  return h;
+};
+
+function asLocal(ts: string) {
+  return ts.replace(/Z|(\+00:00)$/, "");
+}
+
+let holderVersion = 0;
+
+type ShiftHolder = HTMLElement & {
+  _root?: ReturnType<typeof createRoot>;
+  _version?: number;
+};
+
+
+function destroyHolder(
+  cellEl: HTMLElement,
+  deferUnmount: boolean = false
+) {
+  const holder = cellEl.querySelector<ShiftHolder>(".shift-holder");
+  if (!holder) return;
+
+  const root = holder._root;
+  const myVer = holder._version;
+
+  if (deferUnmount) {
+    requestAnimationFrame(() => {
+      if (holder.isConnected && holder._version === myVer) {
+        root?.unmount?.();
+        holder.remove();
+      }
+    });
+  } else {
+    root?.unmount?.();
+    holder.remove();
+  }
+}
+
+const sameInstant = (a: Date | string | undefined, b: Date | string) => {
+  const d1 = a instanceof Date ? a.getTime() : new Date(a ?? "").getTime();
+  const d2 = new Date(b).getTime();
+  return d1 === d2;
+};
+
+const ScheduleCalendar: FunctionComponent<{ locationId: string }> = ({ locationId }: { locationId: string }) => {
   const calendarContainerRef = useRef<HTMLDivElement | null>(null);
+  const calendarRef = useRef<FullCalendar>(null);
+
   const { readSchedulesByMonth, deleteSchedule } = useSchedule();
+
+  const { shifts } = useShift({ location_id: Number(locationId), autoFetch: true })
 
   const [events, setEvents] = useState<EventInput[]>([]);
   const [createRange, setCreateRange] = useState<DateSelectArg | null>(null);
@@ -47,6 +103,7 @@ const ScheduleCalendar: FunctionComponent<{locationId:string}> = ({locationId}:{
   const [popupPos, setPopupPos] = useState<{ left: number; top: number } | null>(
     null
   );
+  const [calVer, setCalVer] = useState(0);
   const [refreshFlag, setRefreshFlag] = useState(0);
   const [sidebarDate, setSidebarDate] = useState<Date | null>(null);
   const [clickedFallbackDates, setClickedFallbackDates] = useState<{
@@ -102,16 +159,13 @@ const ScheduleCalendar: FunctionComponent<{locationId:string}> = ({locationId}:{
       ".fc-header-toolbar"
     );
     if (!toolbar) return;
-
-    const legendEl = renderLegend();
-    toolbar.parentNode!.insertBefore(legendEl, toolbar.nextSibling);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [events]);
 
   useEffect(() => {
     const fetchEvents = async () => {
       if (!locationId) {
         setEvents([]);
+        setCalVer(v => v + 1);
         return;
       }
 
@@ -133,10 +187,19 @@ const ScheduleCalendar: FunctionComponent<{locationId:string}> = ({locationId}:{
 
         data.forEach((dayEntry) => {
           dayEntry.shifts.forEach((sh) => {
+
+            if (sh.location_id !== Number(locationId)) return;
             const assignedColor = ensureHex(sh.color, sh.employee_id);
+
+            let displayEnd = sh.end_time;
+            if (new Date(sh.end_time).getDate() !== new Date(sh.start_time).getDate()) {
+              const tmp = new Date(sh.start_time);
+              tmp.setMinutes(tmp.getMinutes() + 1);
+              displayEnd = tmp.toISOString();
+            }
             newEvents.push({
               id: sh.shift_id.toString(),
-              start: sh.start_time,
+              start: asLocal(sh.start_time),
               end: sh.end_time,
               title: "",
               extendedProps: {
@@ -146,10 +209,14 @@ const ScheduleCalendar: FunctionComponent<{locationId:string}> = ({locationId}:{
                 rawStart: sh.start_time,
                 rawEnd: sh.end_time,
                 color: assignedColor,
+                shift_name: sh.shift_name,
+                location_shift_id: sh.location_shift_id,
+                is_custom: false,
               },
               backgroundColor: assignedColor,
               textColor: "#fff",
             });
+
           });
         });
 
@@ -162,13 +229,15 @@ const ScheduleCalendar: FunctionComponent<{locationId:string}> = ({locationId}:{
         });
 
         setEvents(uniqueEvents);
+        setCalVer(v => v + 1);
       } catch {
         setEvents([]);
       }
     };
 
     fetchEvents();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    return () => setEvents([]);
+
   }, [locationId, viewDate.year, viewDate.month, refreshFlag]);
 
   useEffect(() => {
@@ -182,6 +251,12 @@ const ScheduleCalendar: FunctionComponent<{locationId:string}> = ({locationId}:{
     return () => window.removeEventListener("resize", updateHeight);
   }, [events, viewDate.year, viewDate.month]);
 
+  useEffect(() => {
+    if (shifts) {
+      setCalVer(v => v + 1);
+    }
+  }, [shifts]);
+
   const handleClosePopup = () => {
     setCreateRange(null);
     setEditEvent(null);
@@ -190,39 +265,51 @@ const ScheduleCalendar: FunctionComponent<{locationId:string}> = ({locationId}:{
   };
 
   const handleUpsert = (payload: SchedulePayload, isEdit: boolean) => {
-    const {
-      id,
-      start_datetime,
-      end_datetime,
-      employee_id,
-      location_id,
-      color,
-    } = payload;
+    let startDt: Date;
+    let endDt: Date;
 
-    const assignedColor = ensureHex(color, id);
+    if (payload.is_custom) {
+      startDt = payload.start_datetime as Date;
+      endDt = payload.end_datetime as Date;
+    } else {
+      const def = shifts?.find(s => s.id === payload.location_shift_id);
+      if (!def) {
+        console.error("Unknown shift id", payload.location_shift_id);
+        return;
+      }
+
+      const base = payload.shift_date;
+      startDt = new Date(`${base}T${def.start_time}`);
+      endDt = new Date(`${base}T${def.end_time}`);
+    }
+
+    const assignedColor = ensureHex(payload.color, payload.employee_id);
 
     const newEvent: EventInput = {
-      id,
-      start: start_datetime,
-      end: end_datetime,
+      id: payload.id,
+      start: asLocal(startDt.toISOString()),
+      end: endDt,
       title: "",
-      extendedProps: {
-        employee_id,
-        location_id,
-        rawStart: start_datetime.toISOString(),
-        rawEnd: end_datetime.toISOString(),
-        color: assignedColor,
-      },
       backgroundColor: assignedColor,
       textColor: "#fff",
+      extendedProps: {
+        employee_id: payload.employee_id,
+        location_id: payload.location_id,
+        location_shift_id: payload.location_shift_id,
+        rawStart: startDt.toISOString(),
+        rawEnd: endDt.toISOString(),
+        color: assignedColor,
+        is_custom: payload.is_custom,
+      },
     };
 
-    setEvents((prev) =>
-      isEdit ? prev.map((e) => (e.id === id ? newEvent : e)) : [...prev, newEvent]
+    setEvents(prev =>
+      isEdit ? prev.map(e => (e.id === payload.id ? newEvent : e))
+        : [...prev, newEvent]
     );
 
     handleClosePopup();
-    setRefreshFlag((prev) => prev + 1);
+    setRefreshFlag(f => f + 1);
   };
 
   const handleDelete = async (id: string) => {
@@ -235,38 +322,7 @@ const ScheduleCalendar: FunctionComponent<{locationId:string}> = ({locationId}:{
     }
   };
 
-  const groupEventsByTimeRange = (events: EventInput[]): EventInput[] => {
-    const groups: Record<string, EventInput> = {};
-
-    events.forEach((event) => {
-      if (!event.start || !event.end) return;
-
-      const timeRangeKey = `${event.start}-${event.end}`;
-
-      if (!groups[timeRangeKey]) {
-        groups[timeRangeKey] = {
-          id: String(event.id),
-          start: event.start,
-          end: event.end,
-          title: "",
-          extendedProps: {
-            ...event.extendedProps,
-            group: true,
-            shifts: [event],
-          },
-          backgroundColor: "transparent",
-        };
-      } else {
-        groups[timeRangeKey].extendedProps!.shifts.push(event);
-      }
-    });
-
-    return Object.values(groups);
-  };
-
-  const groupedEvents = useMemo(() => groupEventsByTimeRange(events), [events]);
-
-  const openShiftEditor = (shift: Any) => {
+  const openShiftEditor = (shift: any) => {
     const left = window.innerWidth / 2 - 190;
     const top = window.innerHeight / 2 - 225;
 
@@ -284,26 +340,55 @@ const ScheduleCalendar: FunctionComponent<{locationId:string}> = ({locationId}:{
         extendedProps: {
           employee_id: shift.employee_id,
           location_id: shift.location_id,
+          location_shift_id: shift.location_shift_id,
           rawStart: shift.start_time,
           rawEnd: shift.end_time,
           color: ensureHex(shift.color, shift.employee_id),
         },
       },
-    } as Any);
+    } as any);
 
     setCreateRange(null);
     setPopupPos({ left, top });
   };
 
+  const mkClick = (srcEv?: EventInput) => {
+    if (!srcEv?.extendedProps) return undefined;
+
+    const {
+      employee_id,
+      rawStart,
+      rawEnd,
+      location_id,
+      color,
+      shift_name,
+    } = srcEv.extendedProps;
+
+    return () =>
+      openShiftEditor({
+        shift_id: Number(srcEv.id),
+        employee_id,
+        start_time: rawStart,
+        end_time: rawEnd,
+        location_id,
+        color,
+        shift_name,
+      });
+  };
+
+
+  const calendarKey = `${locationId}-${calVer}`;
+
   return (
     <>
-
-      <div className="relative flex w-full rounded-lg gap-2">
+      < div className="relative flex w-full rounded-lg gap-2" >
         <div
           ref={calendarContainerRef}
           className="relative w-full rounded-lg border border-slate-200 bg-white pt-10 p-4 shadow-sm "
         >
           <FullCalendar
+            ref={calendarRef}
+            key={calendarKey}
             plugins={[dayGridPlugin]}
             initialView="dayGridMonth"
             fixedWeekCount={false}
@@ -313,11 +398,11 @@ const ScheduleCalendar: FunctionComponent<{locationId:string}> = ({locationId}:{
               end: "",
             }}
             height="auto"
-            events={groupedEvents}
+            events={events}
+            eventContent={() => null}
             datesSet={(arg: DatesSetArg) => {
               const inMonth = new Date(arg.start);
               inMonth.setDate(inMonth.getDate() + 7);
-
               setViewDate({
                 year: inMonth.getFullYear(),
                 month: inMonth.getMonth() + 1,
@@ -333,23 +418,23 @@ const ScheduleCalendar: FunctionComponent<{locationId:string}> = ({locationId}:{
                 weekday: "short",
               }).format(arg.date);
               if (arg.view.type === "dayGridMonth") {
-                return <span className="text-sm">{weekday}</span>;
+                return <span className="text-sm" > {weekday} </span>;
               }
               return null;
             }}
             dayCellDidMount={(info) => {
               if (info.view.type !== "dayGridMonth") return;
 
-              const numEl = info.el.querySelector<HTMLAnchorElement>(
-                ".fc-daygrid-day-number"
-              );
+              if (!shifts) {
+                destroyHolder(info.el);
+                return;
+              }
+
+              const numEl = info.el.querySelector<HTMLAnchorElement>(".fc-daygrid-day-number");
               if (numEl) {
                 numEl.classList.add(
-                  "cursor-pointer",
-                  "hover:bg-indigo-600",
-                  "hover:text-white",
-                  "rounded-full",
-                  "transition-colors"
+                  "cursor-pointer", "hover:bg-indigo-600", "hover:text-white",
+                  "rounded-full", "transition-colors"
                 );
                 numEl.addEventListener("click", (e) => {
                   e.stopPropagation();
@@ -357,35 +442,168 @@ const ScheduleCalendar: FunctionComponent<{locationId:string}> = ({locationId}:{
                 });
               }
 
-              info.el.addEventListener("click", (e: MouseEvent) => {
-                if (
-                  (e.target as HTMLElement).closest(".fc-daygrid-day-number")
-                ) {
-                  return;
-                }
-                const calendarApi = info.view.calendar;
-                const jsEvent = e as Any;
-                const dateArg: DateSelectArg = {
+              info.el.addEventListener("click", (e) => {
+                if ((e.target as HTMLElement).closest(".fc-daygrid-day-number")) return;
+                const jsEvent = e as any;
+                setCreateRange({
                   start: info.date,
                   end: info.date,
                   startStr: info.date.toISOString(),
                   endStr: info.date.toISOString(),
                   allDay: true,
                   jsEvent,
-                  view: calendarApi.view,
-                };
-
-                const left = Math.min(
-                  Math.max(0, jsEvent.clientX),
-                  window.innerWidth - 380
-                );
-                const top = Math.min(
-                  Math.max(0, jsEvent.clientY),
-                  window.innerHeight - 450
-                );
-                setCreateRange(dateArg);
-                setPopupPos({ left, top });
+                  view: info.view.calendar.view,
+                });
+                setPopupPos({
+                  left: Math.min(Math.max(0, jsEvent.clientX), window.innerWidth - 380),
+                  top: Math.min(Math.max(0, jsEvent.clientY), window.innerHeight - 450),
+                });
               });
+
+              const currentLoc = Number(locationId) || 0;
+              const calendarEvents = info.view.calendar.getEvents().filter(ev =>
+                ev.extendedProps.location_id === currentLoc
+              );
+
+
+              const eventsForDay = calendarEvents.filter(
+                (e) => e.start?.toDateString() === info.date.toDateString()
+              );
+
+              const shiftsForDay: EventInput[] = eventsForDay.flatMap((ev) =>
+                ev.extendedProps?.group
+                  ? (ev.extendedProps.shifts as EventInput[])
+                  : [ev]
+              );
+
+              const hasEvents = shiftsForDay.length > 0;
+
+              const schedulesForDay = shiftsForDay.map((s) => ({
+                shift_name: s.extendedProps?.shift_name as string,
+                start_time: s.start instanceof Date ? s.start.toISOString() :
+                  typeof s.start === "string" ? s.start : "",
+                end_time: s.end instanceof Date ? s.end.toISOString() :
+                  typeof s.end === "string" ? s.end : "",
+                employee_name:
+                  (s.extendedProps?.employee_name as string | undefined) ?? "—",
+              }));
+
+              const DEFAULT_NAMES = new Set([
+                "Ochtenddienst",
+                "Avonddienst",
+                "Slaapdienst of Waakdienst",
+              ]);
+
+              const customShifts = (() => {
+                if (!hasEvents) return [];
+                const map = new Map<string, any>();
+
+                shiftsForDay.forEach((sh) => {
+                  const name = sh.extendedProps?.shift_name as string | undefined;
+                  if (!name || DEFAULT_NAMES.has(name)) return;
+
+                  const startISO =
+                    sh.start instanceof Date
+                      ? sh.start.toISOString()
+                      : new Date(sh.start as string).toISOString();
+                  const endISO =
+                    sh.end instanceof Date
+                      ? sh.end.toISOString()
+                      : new Date(sh.end as string).toISOString();
+
+                  const key = `${name}-${startISO}-${endISO}`;
+                  if (map.has(key)) return;
+
+                  console.log("qzdqzd", sh)
+
+                  map.set(key, {
+                    id: -Math.abs(key.hashCode?.() ?? key.length),
+                    shift: name,
+                    start_time: startISO,
+                    end_time: endISO,
+                  });
+                });
+
+                return Array.from(map.values());
+              })();
+
+              const mountPoint =
+                info.el.querySelector<HTMLElement>(".fc-daygrid-day-top");
+              if (!mountPoint) return;
+
+              destroyHolder(info.el);
+
+              const holder = document.createElement("div") as ShiftHolder;
+              holder.className = "shift-holder";
+
+              mountPoint.insertAdjacentElement("afterend", holder);
+
+              const root = createRoot(holder);
+              holder._root = root;
+              holder._version = ++holderVersion;
+              (holder as any)._root = root;
+
+              const allShifts = shifts ?? [];
+              const defaultShifts = allShifts.filter((s) =>
+                DEFAULT_NAMES.has(s.shift)
+              );
+
+
+
+              root.render(
+                <>
+                  <div className="flex flex-col gap-2 p-2" >
+                    {
+                      defaultShifts.map((sh) => {
+                        const src = shiftsForDay.find(
+                          (ev) => ev.extendedProps?.shift_name === sh.shift
+                        );
+                        return (
+                          <ShiftPlaceholder
+                            key={sh.id}
+                            shift={sh}
+                            isDefault={true}
+                            schedule={schedulesForDay}
+                            onClick={mkClick(src)}
+                          />
+                        )
+                      })
+                    }
+                  </div>
+
+                  {
+                    customShifts.length > 0 && (
+                      <div className="p-2" >
+                        <div className="text-[0.65rem] mt-1 mb-0.5 text-gray-500" >
+                          Custom:
+                        </div>
+                        < div className="flex flex-col gap-2" >
+                          {
+                            customShifts.map((sh) => {
+
+                              const src = shiftsForDay.find(ev =>
+                                typeof ev.start !== "number"
+                                && sameInstant(ev.start as string | Date | undefined, sh.start_time)
+                                && typeof ev.end !== "number"
+                                && sameInstant(ev.end as string | Date | undefined, sh.end_time)
+                              );
+
+                              return (
+                                <ShiftPlaceholder
+                                  key={sh.id}
+                                  shift={sh}
+                                  isDefault={false}
+                                  schedule={schedulesForDay}
+                                  onClick={mkClick(src)}
+                                />
+                              )
+                            })
+                          }
+                        </div>
+                      </div>
+                    )}
+                </>
+              );
             }}
             eventClick={(clickInfo) => {
               const jsEvent = clickInfo.jsEvent;
@@ -419,76 +637,15 @@ const ScheduleCalendar: FunctionComponent<{locationId:string}> = ({locationId}:{
               setPopupPos({ left, top });
             }}
             dayMaxEvents={false}
-            eventContent={(arg) => {
-              const baseColor = ensureHex(
-                arg.event.backgroundColor ||
-                arg.event.extendedProps.color ||
-                null,
-                arg.event.id
-              );
-
-              if (arg.event.extendedProps.group) {
-                const shifts = arg.event.extendedProps.shifts || [];
-                const start = arg.event.start;
-                const end = arg.event.end;
-
-                const formatTime = (date: Date) =>
-                  date.toLocaleTimeString([], {
-                    hour: "2-digit",
-                    minute: "2-digit",
-                    hour12: false,
-                  });
-
-                return (
-                  <div className="shift-group">
-                    <div className="shift-time-range flex items-center text-xs text-gray-600 mb-1">
-                      <ClockIcon className="w-3 h-3 mr-1" />
-                      {start && end ? (
-                        `${formatTime(start)} - ${formatTime(end)}`
-                      ) : (
-                        "All Day"
-                      )}
-                    </div>
-                    <div className="shift-dots flex flex-wrap gap-1">
-                      {shifts.slice(0, 4).map((shift: Any) => (
-                        <div
-                          key={shift.id}
-                          className="shift-dot w-5 h-5 rounded-full"
-                          style={{
-                            backgroundColor: ensureHex(
-                              shift.backgroundColor ||
-                              shift.extendedProps?.color ||
-                              null,
-                              shift.id
-                            ),
-                          }}
-                          tabIndex={0}
-                        />
-                      ))}
-                      {shifts.length > 4 && (
-                        <div className="shift-dot w-5 h-5 rounded-full flex items-center justify-center text-xs text-gray-700 bg-gray-200">
-                          +{shifts.length - 4}
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                );
-              }
-
-              return (
-                <div
-                  className="shift-dot w-6 h-6 rounded-full"
-                  style={{ backgroundColor: baseColor }}
-                  tabIndex={0}
-                />
-              );
-            }}
             dayCellClassNames="bg-white hover:bg-slate-50 transition-colors"
             viewClassNames="rounded-lg overflow-hidden p-2"
             buttonText={{ today: "Today", month: "Month" }}
+            dayCellWillUnmount={(info) => {
+              destroyHolder(info.el, true);
+            }}
           />
 
-          <style jsx global>{`
+          < style jsx global > {`
           .fc-daygrid-day.fc-day-other {
             background-color: #f9fafb !important;
             pointer-events: none;
@@ -521,7 +678,37 @@ const ScheduleCalendar: FunctionComponent<{locationId:string}> = ({locationId}:{
             display: none !important;
           }
 
+          .available-shifts {
+            width: 100%;
+            pointer-events: none; /* Disable all interactions */
+          }
           
+          .available-shift {
+            display: flex;
+            align-items: center;
+            font-size: 0.65rem;
+            padding: 0.25rem;
+            user-select: none; /* Prevent text selection */
+            border-radius: 0.25rem;
+            background-color: #f9fafb;
+            border: 1px solid #f3f4f6;
+          }
+          
+          .clock-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 16px;
+            height: 16px;
+          }
+          
+          .shift-name {
+            flex-grow: 1;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            margin-left: 0.25rem;
+          }
             
           .fc .fc-daygrid-day-frame {
             min-height: 120px !important;
@@ -692,21 +879,24 @@ const ScheduleCalendar: FunctionComponent<{locationId:string}> = ({locationId}:{
           }
         `}</style>
 
-          {popupPos && (createRange || editEvent) && (
-            <SchedulePopup
-              createRange={createRange}
-              editEvent={editEvent}
-              eventStart={clickedFallbackDates?.start}
-              eventEnd={clickedFallbackDates?.end}
-              position={popupPos}
-              containerRef={calendarContainerRef}
-              onClose={handleClosePopup}
-              onUpsert={handleUpsert}
-              onDelete={handleDelete}
-              initialEmployeeId={editEvent?.event.extendedProps.employee_id}
-              initialLocationId={parseInt(locationId)}
-            />
-          )}
+          {
+            popupPos && (createRange || editEvent) && (
+              <SchedulePopup
+                createRange={createRange}
+                editEvent={editEvent}
+                eventStart={clickedFallbackDates?.start}
+                eventEnd={clickedFallbackDates?.end}
+                position={popupPos}
+                containerRef={calendarContainerRef}
+                onClose={handleClosePopup}
+                onUpsert={handleUpsert}
+                onDelete={handleDelete}
+                initialEmployeeId={editEvent?.event.extendedProps.employee_id}
+                initialLocationId={editEvent?.event.extendedProps.location_id}
+                initialShiftId={editEvent?.event.extendedProps.location_shift_id}
+              />
+            )
+          }
         </div>
 
         {sidebarDate && (
@@ -714,7 +904,8 @@ const ScheduleCalendar: FunctionComponent<{locationId:string}> = ({locationId}:{
             date={sidebarDate}
             locationId={locationId}
             calendarHeight={calendarHeight}
-            onClose={() => setSidebarDate(null)}
+            onClose={() => setSidebarDate(null)
+            }
             onShiftClick={openShiftEditor}
             refreshKey={refreshFlag}
           />

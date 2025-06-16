@@ -1,20 +1,24 @@
-import React, { useEffect, useState } from "react";
+"use client";
+
+import React, { useEffect, useMemo, useState } from "react";
+import { motion } from "framer-motion";
+import { Briefcase, Calendar as CalendarIco, X } from "lucide-react";
+
 import { useSchedule } from "@/hooks/schedule/use-schedule";
-import { X, Clock, User, Calendar, Briefcase } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
-import { pastelHexFromId } from "@/utils/color-utils";
-import { Any } from "@/common/types/types";
+import { useShift } from "@/hooks/shift/use-shift";
+import ShiftPlaceholder, { ScheduleRow } from "@/app/(pages)/schedules/_components/ShiftPlaceholder";
+
 
 interface ScheduleDetailsProps {
   date: Date;
   locationId: string;
-  onClose: () => void;
   calendarHeight: number;
-  onShiftClick: (shift: CalendarScheduleResponse) => void;
+  onClose: () => void;
+  onShiftClick: (row: CalendarScheduleResponse) => void;
   refreshKey: number;
 }
 
-interface CalendarScheduleResponse {
+export interface CalendarScheduleResponse {
   shift_id: number;
   employee_id: number;
   employee_first_name: string;
@@ -23,6 +27,7 @@ interface CalendarScheduleResponse {
   end_time: string;
   location_id: number;
   color: string | null;
+  shift_name: string;
 }
 
 interface DailyResponse {
@@ -30,8 +35,11 @@ interface DailyResponse {
   shifts: CalendarScheduleResponse[];
 }
 
-const getShiftColor = (shift: CalendarScheduleResponse) =>
-  shift.color?.startsWith("#") ? shift.color : pastelHexFromId(shift.employee_id);
+const DEFAULT_NAMES = new Set([
+  "Ochtenddienst",
+  "Avonddienst",
+  "Slaapdienst of Waakdienst",
+]);
 
 const ScheduleDetails = ({
   date,
@@ -41,222 +49,237 @@ const ScheduleDetails = ({
   onShiftClick,
   refreshKey,
 }: ScheduleDetailsProps) => {
+
   const { readSchedulesByDay } = useSchedule();
-  const [dailySchedules, setDailySchedules] = useState<CalendarScheduleResponse[] | null>(null);
+  const { shifts: shiftDefs } = useShift({
+    location_id: Number(locationId),
+    autoFetch: Boolean(locationId),
+  });
+
+  const [daily, setDaily] = useState<CalendarScheduleResponse[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     if (!locationId) return;
 
-    const year = date.getFullYear();
-    const month = date.getMonth() + 1;
-    const day = date.getDate();
+    const y = date.getFullYear();
+    const m = date.getMonth() + 1;
+    const d = date.getDate();
 
     setLoading(true);
     setError(null);
 
-    readSchedulesByDay(locationId, year, month, day, { displayProgress: false })
-      .then((res) => {
-        if (res) {
-          const daily = (res as unknown as DailyResponse).shifts;
-          setDailySchedules(daily || []);
-        } else {
-          setDailySchedules([]);
-        }
+    readSchedulesByDay(locationId, y, m, d, { displayProgress: false })
+      .then((raw) => {
+        const rows = (raw as unknown as DailyResponse)?.shifts ?? [];
+        setDaily(rows);
       })
-      .catch((err: Any) => setError(err.message || "Failed to load schedules"))
+      .catch((err: any) => setError(err.message ?? "Failed to load schedules"))
       .finally(() => setLoading(false));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [date, locationId, refreshKey]);
 
-  const groupShiftsByTime = () =>
-    dailySchedules?.reduce((groups: Record<string, CalendarScheduleResponse[]>, shift) => {
-      const key = `${shift.start_time}-${shift.end_time}`;
-      (groups[key] ||= []).push(shift);
-      return groups;
-    }, {}) || {};
+  type ShiftDef = {
+    id: number;
+    shift: string;
+    start_time: string;
+    end_time: string;
+  };
 
-  const groupedShifts = groupShiftsByTime();
-  const timeSlots = Object.entries(groupedShifts);
+  const defaultShifts: ShiftDef[] = useMemo(
+    () =>
+      (shiftDefs ?? []).filter((s) => DEFAULT_NAMES.has(s.shift)) as ShiftDef[],
+    [shiftDefs]
+  );
 
-  const formatTime = (d: string) =>
-    new Date(d).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", hour12: false });
+  const customShifts: ShiftDef[] = useMemo(() => {
+    const map = new Map<string, ShiftDef>();
+
+    daily.forEach((row) => {
+      if (DEFAULT_NAMES.has(row.shift_name)) return;
+      const key = `${row.shift_name}-${row.start_time}-${row.end_time}`;
+      if (map.has(key)) return;
+
+      map.set(key, {
+        id: -Math.abs(row.shift_name.hashCode?.() ?? row.shift_name.length),
+        shift: row.shift_name,
+        start_time: row.start_time,
+        end_time: row.end_time,
+      });
+    });
+    return Array.from(map.values());
+  }, [daily]);
+
+  const scheduleRows: ScheduleRow[] = useMemo(
+    () =>
+      daily.map((r) => ({
+        shift_name: r.shift_name,
+        start_time: r.start_time,
+        end_time: r.end_time,
+        employee_name: `${r.employee_first_name} ${r.employee_last_name}`,
+      })),
+    [daily]
+  );
+
+  const firstRowForDefault = (shiftName: string) =>
+    daily.find((r) => r.shift_name === shiftName);
+
+  const firstRowForCustom = (s: ShiftDef) =>
+    daily.find(
+      (r) =>
+        r.shift_name === s.shift &&
+        r.start_time === s.start_time &&
+        r.end_time === s.end_time
+    );
 
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: 20 }}
-      className="relative w-full max-w-[350px] overflow-y-auto rounded-md border border-slate-100 bg-white p-4 shadow-xl backdrop-blur-lg custom-scrollbar"
-      style={{
-        height: calendarHeight,
-        background: "linear-gradient(to bottom right, #ffffff, #f9faff)",
-        boxShadow:
-          "0 25px 50px -12px rgba(0, 0, 0, 0.1), 0 10px 30px -15px rgba(0, 0, 0, 0.05)",
-        border: "1px solid rgba(241, 245, 249, 0.8)",
-      }}
+      style={{ height: calendarHeight }}
+      className="relative h-full w-full max-w-[300px] overflow-y-auto rounded-md
+                 border border-slate-100 bg-white p-4 shadow-xl backdrop-blur-lg
+                 custom-scrollbar"
     >
-      <style jsx global>{`
-        .custom-scrollbar::-webkit-scrollbar {
-          width: 6px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-track {
-          background: rgba(241, 245, 249, 0.5);
-          border-radius: 10px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-thumb {
-          background: #c7d2fe;
-          border-radius: 10px;
-          transition: background 0.3s ease;
-        }
-        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-          background: #a5b4fc;
-        }
-        .custom-scrollbar {
-          scrollbar-width: thin;
-          scrollbar-color: #c7d2fe rgba(241, 245, 249, 0.5);
-        }
-      `}</style>
       <button
-        className="absolute top-4 right-4 p-1.5 rounded-full bg-gray-50 hover:bg-gray-100 text-gray-500 hover:text-gray-700 transition-colors"
         onClick={onClose}
+        className="absolute top-4 right-4 rounded-full bg-gray-50 p-1.5 text-gray-500
+                   transition-colors hover:bg-gray-100 hover:text-gray-700"
       >
         <X className="h-4 w-4" />
       </button>
 
-      <div className="flex items-center mb-6">
-        <div className="bg-indigo-50 p-2 rounded-xl mr-4">
-          <Calendar className="h-5 w-5 text-indigo-600" />
+      <div className="mb-6 flex items-center">
+        <div className="mr-4 rounded-xl bg-indigo-50 p-2">
+          <CalendarIco className="h-5 w-5 text-indigo-600" />
         </div>
         <div>
-          <h2 className="text-md font-bold text-gray-800">
+          <h2 className="text-md font-bold text-gray-800">Schedule details</h2>
+          <p className="text-sm text-gray-500">
             {date.toLocaleDateString(undefined, {
               weekday: "long",
               day: "numeric",
               month: "long",
-              year: "numeric"
+              year: "numeric",
             })}
-          </h2>
-          <div className="flex items-center text-gray-500 mt-1">
-            <Briefcase className="h-4 w-4 mr-1.5" />
-            <span className="text-sm">Location #{locationId}</span>
+          </p>
+          <div className="mt-0.5 flex items-center text-xs text-gray-500">
+            <Briefcase className="mr-1 h-4 w-4" />
+            Location #{locationId}
           </div>
         </div>
       </div>
 
-      <div className="mt-6">
-        {!locationId && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            className="flex flex-col items-center justify-center py-12"
+      {loading && (
+        <div className="space-y-4">
+          {[...Array(3)].map((_, i) => (
+            <motion.div
+              key={i}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className="h-20 animate-pulse rounded-2xl bg-gray-100 p-5"
+            />
+          ))}
+        </div>
+      )}
+
+      {error && (
+        <div className="flex items-center rounded-xl border border-red-100 bg-red-50 p-4 text-red-600">
+          <svg
+            className="mr-2 h-5 w-5"
+            fill="currentColor"
+            viewBox="0 0 20 20"
           >
-            <div className="bg-indigo-50 p-5 rounded-full mb-4">
-              <Briefcase className="h-8 w-8 text-indigo-600" />
-            </div>
-            <h3 className="text-xl font-semibold text-gray-700 mb-1">Select a Location</h3>
-            <p className="text-gray-500 text-center max-w-md">
-              Please choose a location from the dropdown to view scheduled shifts.
-            </p>
-          </motion.div>
-        )}
+            <path
+              fillRule="evenodd"
+              d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
+              clipRule="evenodd"
+            />
+          </svg>
+          {error}
+        </div>
+      )} 
 
-
-        {loading && (
-          <div className="space-y-4">
-            {[...Array(3)].map((_, i) => (
-              <motion.div
-                key={i}
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                className="animate-pulse bg-gray-100 rounded-2xl p-5 h-24"
-              />
-            ))}
-          </div>
-        )}
-
-        {error && (
-          <div className="bg-red-50 rounded-xl p-4 border border-red-100 text-red-600 flex items-center">
-            <svg className="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
-              <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
-            </svg>
-            {error}
-          </div>
-        )}
-
-        {!loading && !error && dailySchedules && dailySchedules.length === 0 && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            className="flex flex-col items-center justify-center py-12"
-          >
-            <div className="bg-indigo-50 p-5 rounded-full mb-4">
-              <Clock className="h-8 w-8 text-indigo-600" />
-            </div>
-            <h3 className="text-xl font-semibold text-gray-700 mb-1">No scheduled shifts</h3>
-            <p className="text-gray-500 text-center max-w-md">
-              There are no shifts scheduled for this day. Click Anywhere on the calendar to create a new shift.
-            </p>
-          </motion.div>
-        )}
-
-        {!loading && !error && dailySchedules && dailySchedules.length > 0 && (
-          <AnimatePresence>
-            <div className="space-y-5">
-              {timeSlots.map(([timeRange, shifts], groupIdx) => (
-                <motion.div
-                  key={timeRange}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: groupIdx * 0.1 }}
-                  className="bg-white rounded-lg p-4 border border-gray-200 shadow"
-                >
-                  <div className="flex items-center mb-4">
-                    <Clock className="h-4 w-4 text-indigo-600 mr-2" />
-                    <span className="font-semibold text-indigo-700">
-                      {formatTime(shifts[0].start_time)} - {formatTime(shifts[0].end_time)}
-                    </span>
-                    <div className="ml-auto px-3 py-1 bg-indigo-100 text-indigo-700 rounded-full text-xs font-medium">
-                      {shifts.length} {shifts.length === 1 ? "employee" : "employees"}
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-1 gap-3">
-                    {shifts.map((sched) => (
-                      <motion.div
-                        key={sched.shift_id}
-                        whileHover={{ y: -1 }}
-                        className="flex items-center p-2 rounded-lg bg-gray-50 hover:bg-indigo-50 transition-all cursor-pointer"
-                        onClick={() => onShiftClick(sched)}
-                      >
-                        <div
-                          className="w-8 h-8 rounded-full flex items-center justify-center text-white font-bold mr-2 text-xs"
-                          style={{ backgroundColor: getShiftColor(sched) }}
-                        >
-                          {sched.employee_first_name[0]}
-                          {sched.employee_last_name[0]}
-                        </div>
-                        <div>
-                          <div className="font-medium text-gray-800 text-sm">
-                            {sched.employee_first_name} {sched.employee_last_name}
-                          </div>
-                          <div className="text-xs text-gray-500 flex items-center mt-0.5">
-                            <User className="h-3 w-3 mr-1" />
-                            <span>ID: {sched.employee_id}</span>
-                          </div>
-                        </div>
-                      </motion.div>
-                    ))}
-                  </div>
-                </motion.div>
+      {!loading && !error && (
+        <>
+          <SectionTitle>Default Shifts</SectionTitle>
+          {defaultShifts.length === 0 ? (
+            <EmptyNote>No default shifts configured for this location.</EmptyNote>
+          ) : (
+            <div className="mt-2 grid gap-3">
+              {defaultShifts.map((def) => (
+                <ShiftPlaceholder
+                  key={def.id}
+                  shift={def as any}
+                  isDefault
+                  detailed
+                  schedule={scheduleRows}
+                  onClick={() => {
+                    const row = firstRowForDefault(def.shift);
+                    if (row) onShiftClick(row);
+                  }}
+                />
               ))}
             </div>
-          </AnimatePresence>
-        )}
-      </div>
+          )}
+
+          <SectionTitle className="mt-6">Custom Shifts</SectionTitle>
+          {customShifts.length === 0 ? (
+            <EmptyNote>No custom shifts scheduled.</EmptyNote>
+          ) : (
+            <div className="mt-2 grid gap-3">
+              {customShifts.map((cs) => (
+                <ShiftPlaceholder
+                  key={cs.id}
+                  shift={cs as any}
+                  isDefault={false}
+                  detailed
+                  schedule={scheduleRows}
+                  onClick={() => {
+                    const row = firstRowForCustom(cs);
+                    if (row) onShiftClick(row);
+                  }}
+                />
+              ))}
+            </div>
+          )}
+        </>
+      )}
     </motion.div>
   );
 };
+
+interface SectionTitleProps {
+  className?: string;
+  children: React.ReactNode;
+}
+
+const SectionTitle: React.FC<SectionTitleProps> = ({
+  children,
+  className = "",
+}) => (
+  <h3
+    className={`flex items-center text-sm font-semibold tracking-wide text-gray-600 ${className}`}
+  >
+    {children}
+  </h3>
+);
+
+interface EmptyNoteProps {
+  children: React.ReactNode;
+  className?: string;
+}
+
+const EmptyNote: React.FC<EmptyNoteProps> = ({
+  children,
+  className = "",
+}) => (
+  <p
+    className={`mt-1 rounded-md bg-gray-50 p-3 text-center text-xs text-gray-500 ${className}`}
+  >
+    {children}
+  </p>
+);
 
 export default ScheduleDetails;
