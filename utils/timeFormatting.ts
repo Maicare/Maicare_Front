@@ -76,3 +76,28 @@ export const formatDateToDutch = (dateString: string | Date, isDay: boolean = fa
 
   return `${month} ${year}`;
 };
+export function createDateFromTimeString(timeString: string): Date {
+  // Get today's date
+  const today = new Date();
+  
+  // Split the time string into hours and minutes
+  const [hours, minutes] = timeString.split(':').map(Number);
+  
+  // Create a new Date object with today's date and the specified time
+  const dateWithTime = new Date(
+    today.getFullYear(),
+    today.getMonth(),
+    today.getDate(),
+    hours,
+    minutes
+  );
+  
+  return dateWithTime;
+}
+export function formatTimeFromDate(date: Date): string {
+  // Get hours and minutes
+  const hours = date.getHours().toString().padStart(2, '0');
+  const minutes = date.getMinutes().toString().padStart(2, '0');
+  
+  return `${hours}:${minutes}`;
+}

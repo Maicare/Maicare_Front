@@ -14,25 +14,28 @@ import { NavUser } from "./NavUser"
 import Image from "next/image"
 import { NavMain } from "./NavMain"
 import { ThemeSwitcher } from "./ThemeSwitcher"
-import { sidebarClientLinks, sidebarEmployeeLinks, sidebarLinks } from "../data/sidebar.data"
+import { sidebarClientLinks, sidebarEmployeeLinks, sidebarLinks, sidebarLocationLinks } from "../data/sidebar.data"
 import { useParams, usePathname, useRouter } from "next/navigation"
 import { useEffect, useState } from "react";
 import { useEmployee } from "@/hooks/employee/use-employee";
 import { useClient } from "@/hooks/client/use-client";
+import { useLocation } from "@/hooks/location/use-location";
 
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     const { open } = useSidebar();
     const router = useRouter();
     const pathname = usePathname();
-    const { clientId, employeeId } = useParams();
-    const isClient = pathname.startsWith("/clients/") && pathname !== "/clients/";
+    const { clientId, employeeId,locationId } = useParams();
+    const isClient = pathname.startsWith("/clients/") && pathname !== "/clients/" && pathname !== "/clients/new";
     const isEmployee = pathname.startsWith("/employees/") && pathname !== "/employees/";
-    const [user, setUser] = useState({ first_name: "Loading", last_name: "", email: "", id: parseInt(employeeId as string) ?? parseInt(clientId as string), profile_picture: "/images/avatar-1.jpg" });
+    const isLocation = pathname.startsWith("/locations/") && pathname !== "/locations/";
+    const [user, setUser] = useState({ first_name: "Loading", last_name: "", email: "", id: parseInt(employeeId as string) ?? parseInt(clientId as string) ?? parseInt(locationId as string), profile_picture: "/images/avatar-1.jpg" });
 
     const [isLoading, setIsLoading] = useState(false);
     const { readOne } = useEmployee({ autoFetch: false });
     const { readOne: readClient } = useClient({ autoFetch: false });
+    const { readOne: readLocation } = useLocation({ autoFetch: false });
     useEffect(() => {
         const fetchEmployee = async (id: number) => {
             setIsLoading(true);
@@ -46,17 +49,25 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             setUser({ ...data, profile_picture: data.profile_picture ?? "/images/avatar-1.jpg" });
             setIsLoading(false);
         }
+        const fetchLocation = async (id: number) => {
+            setIsLoading(true);
+            const data = await readLocation(id);
+            setUser({ first_name:data.name,last_name:"",email:data.address,id:data.id, profile_picture: "/images/avatar-1.jpg" });
+            setIsLoading(false);
+        }
         if (isEmployee) {
             const employeeId = pathname.split("/")[2];
             if (employeeId) fetchEmployee(+employeeId);
         } else if (isClient) {
             const clientId = pathname.split("/")[2];
             if (clientId) fetchClient(+clientId);
+        } else if (isLocation) {
+            const locationId = pathname.split("/")[2];
+            if (locationId) fetchLocation(+locationId);
         }
     }
-        , [isEmployee, isClient, pathname]);
+        , [isEmployee, isClient,isLocation, pathname]);
 
-    console.log("USSSSSSSER", user)
 
     if (isLoading) {
         return (
@@ -88,7 +99,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                     </SidebarMenu>
                 </SidebarHeader>
                 <SidebarContent>
-                    <NavMain items={isEmployee ? sidebarEmployeeLinks({ first_name: "Loading", last_name: "", id: parseInt(employeeId as string) ?? parseInt(clientId as string) }) : isClient ? sidebarClientLinks({ first_name: "Loading", last_name: "", id: parseInt(employeeId as string) ?? parseInt(clientId as string) }) : sidebarLinks} label={isEmployee ? "Medewerker" : isClient ? "Clienten" : "Dashboard"} />
+                    <NavMain items={isEmployee ? sidebarEmployeeLinks({ first_name: "Loading", last_name: "", id: parseInt(employeeId as string) ?? parseInt(clientId as string) }) : isClient ? sidebarClientLinks({ first_name: "Loading", last_name: "", id: parseInt(employeeId as string) ?? parseInt(clientId as string) }) : isLocation ? sidebarLocationLinks({ first_name: "Loading", last_name: "", id: parseInt(locationId as string) ?? parseInt(clientId as string) ?? parseInt(employeeId as string) }) : sidebarLinks} label={isEmployee ? "Medewerker" : isClient ? "Clienten" : isLocation ? "Locatie" : "Dashboard"} />
                 </SidebarContent>
                 <SidebarFooter>
                     <ThemeSwitcher />
@@ -127,7 +138,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                 </SidebarMenu>
             </SidebarHeader>
             <SidebarContent>
-                <NavMain items={isEmployee ? sidebarEmployeeLinks(user) : isClient ? sidebarClientLinks(user) : sidebarLinks} label={isEmployee ? "Medewerker" : isClient ? "Clienten" : "Dashboard"} />
+                <NavMain items={isEmployee ? sidebarEmployeeLinks(user) : isClient ? sidebarClientLinks(user) : isLocation ? sidebarLocationLinks(user) : sidebarLinks} label={isEmployee ? "Medewerker" : isClient ? "Clienten" : isLocation ? "Locatie" : "Dashboard"} />
             </SidebarContent>
             <SidebarFooter>
                 <ThemeSwitcher />

@@ -6,9 +6,15 @@ import { Briefcase, Calendar as CalendarIco, X } from "lucide-react";
 
 import { useSchedule } from "@/hooks/schedule/use-schedule";
 import { useShift } from "@/hooks/shift/use-shift";
-
-import ShiftPlaceholder, { ScheduleRow } from "./ShiftPlaceholder";
+import ShiftPlaceholder, { ScheduleRow } from "@/app/(pages)/schedules/_components/ShiftPlaceholder";
 import { Any } from "@/common/types/types";
+
+type ShiftDef = {
+  id: number;
+  shift: string;
+  start_time: string;
+  end_time: string;
+};
 
 interface ScheduleDetailsProps {
   date: Date;
@@ -17,7 +23,14 @@ interface ScheduleDetailsProps {
   onClose: () => void;
   onShiftClick: (row: CalendarScheduleResponse) => void;
   refreshKey: number;
+  onCreateDefaultShift: (def: ShiftDef, day: Date) => void;
+  onCreateCustomShift: (cust: ShiftDef) => void;
 }
+
+const sameUtcDay = (a: Date, b: Date) =>
+  a.getUTCFullYear() === b.getUTCFullYear() &&
+  a.getUTCMonth() === b.getUTCMonth() &&
+  a.getUTCDate() === b.getUTCDate();
 
 export interface CalendarScheduleResponse {
   shift_id: number;
@@ -49,6 +62,8 @@ const ScheduleDetails = ({
   onClose,
   onShiftClick,
   refreshKey,
+  onCreateDefaultShift,
+  onCreateCustomShift
 }: ScheduleDetailsProps) => {
 
   const { readSchedulesByDay } = useSchedule();
@@ -74,19 +89,20 @@ const ScheduleDetails = ({
     readSchedulesByDay(locationId, y, m, d, { displayProgress: false })
       .then((raw) => {
         const rows = (raw as unknown as DailyResponse)?.shifts ?? [];
-        setDaily(rows);
+
+        const requestedUtc = new Date(Date.UTC(
+          date.getFullYear(), date.getMonth(), date.getDate()
+        ));
+        const filtered = rows.filter(r =>
+          sameUtcDay(new Date(r.start_time), requestedUtc)
+        );
+
+        setDaily(filtered);
       })
       .catch((err: Any) => setError(err.message ?? "Failed to load schedules"))
       .finally(() => setLoading(false));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [date, locationId, refreshKey]);
-
-  type ShiftDef = {
-    id: number;
-    shift: string;
-    start_time: string;
-    end_time: string;
-  };
 
   const defaultShifts: ShiftDef[] = useMemo(
     () =>
@@ -123,15 +139,13 @@ const ScheduleDetails = ({
     [daily]
   );
 
-  const firstRowForDefault = (shiftName: string) =>
-    daily.find((r) => r.shift_name === shiftName);
-
-  const firstRowForCustom = (s: ShiftDef) =>
+  const findOriginal = (row: ScheduleRow) =>
     daily.find(
       (r) =>
-        r.shift_name === s.shift &&
-        r.start_time === s.start_time &&
-        r.end_time === s.end_time
+        r.shift_name === row.shift_name &&
+        r.start_time === row.start_time &&
+        r.end_time === row.end_time &&
+        `${r.employee_first_name} ${r.employee_last_name}` === row.employee_name
     );
 
   if (!locationId) {
@@ -250,10 +264,12 @@ const ScheduleDetails = ({
                   isDefault
                   detailed
                   schedule={scheduleRows}
-                  onClick={() => {
-                    const row = firstRowForDefault(def.shift);
-                    if (row) onShiftClick(row);
+                  onClick={() => onCreateDefaultShift(def, date)}
+                  onBadgeClick={(sr) => {
+                    const orig = sr ? findOriginal(sr) : undefined;
+                    if (orig) onShiftClick(orig);
                   }}
+
                 />
               ))}
             </div>
@@ -271,9 +287,10 @@ const ScheduleDetails = ({
                   isDefault={false}
                   detailed
                   schedule={scheduleRows}
-                  onClick={() => {
-                    const row = firstRowForCustom(cs);
-                    if (row) onShiftClick(row);
+                  onClick={() => onCreateCustomShift(cs)}
+                  onBadgeClick={(sr) => {
+                    const orig = sr ? findOriginal(sr) : undefined;
+                    if (orig) onShiftClick(orig);
                   }}
                 />
               ))}

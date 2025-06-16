@@ -58,7 +58,7 @@ const NavMenuItem = ({ item }: {
     }
     return (
         <SidebarMenuItem key={item.title} className=" rounded-md text-white">
-            <SidebarMenuButton onClick={() => router.push(item.url)} tooltip={item.title} className={cn("hover:bg-indigo-400/30 hover:text-white hover:backdrop-blur-sm dark:hover:bg-indigo-800", (pathname === item.url || pathname.startsWith(item.url)) && "bg-white/30 backdrop-blur-sm dark:bg-gray-500")}>
+            <SidebarMenuButton onClick={() => router.push(item.url)} tooltip={item.title} className={cn("hover:bg-indigo-400/30 hover:text-white hover:backdrop-blur-sm dark:hover:bg-indigo-800", (pathname === item.url ) && "bg-white/30 backdrop-blur-sm dark:bg-gray-500")}>
                 {item.icon && <item.icon />}
                 <span>{item.title}</span>
             </SidebarMenuButton>

@@ -32,6 +32,7 @@ const AddressesPreview = ({ isParentLoading }: Props) => {
       setIsLoading(false);
     }
     if (clientId) fetchAddresses();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [clientId]);
 
 
