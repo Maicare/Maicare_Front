@@ -132,15 +132,48 @@ const ScheduleDetails = ({
         r.end_time === s.end_time
     );
 
+  if (!locationId) {
+    return (
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, y: 20 }}
+        style={{ height: calendarHeight }}
+        className="relative w-full max-w-[300px] overflow-y-auto rounded-md
+                   border border-slate-100 bg-white p-4 shadow-md backdrop-blur-lg
+                   custom-scrollbar flex items-center justify-center"
+      >
+        <button
+          onClick={onClose}
+          className="absolute top-4 right-4 rounded-full bg-gray-50 p-1.5 text-gray-500
+                   transition-colors hover:bg-gray-100 hover:text-gray-700"
+        >
+          <X className="h-4 w-4" />
+        </button>
+
+        <div className="text-center p-4">
+          <div className="mx-auto mb-4 rounded-xl bg-indigo-50 p-3 w-14 h-14 flex items-center justify-center">
+            <Briefcase className="h-6 w-6 text-indigo-600" />
+          </div>
+          <h3 className="text-md font-bold text-gray-800 mb-2">
+            No Location Selected
+          </h3>
+          <p className="text-sm text-gray-500">
+            Please select a location to view schedule details
+          </p>
+        </div>
+      </motion.div>
+    );
+  }
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: 20 }}
       style={{ height: calendarHeight }}
-      className="relative h-full w-full max-w-[300px] overflow-y-auto rounded-md
-                 border border-slate-100 bg-white p-4 shadow-xl backdrop-blur-lg
-                 custom-scrollbar"
+      className="relative w-full max-w-[300px] overflow-y-auto
+                  backdrop-blur-lg custom-scrollbar rounded-lg border border-slate-200 bg-white pt-10 p-4 shadow-sm"
     >
       <button
         onClick={onClose}
@@ -199,7 +232,7 @@ const ScheduleDetails = ({
           </svg>
           {error}
         </div>
-      )} 
+      )}
 
       {!loading && !error && (
         <>

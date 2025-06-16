@@ -241,15 +241,27 @@ const ScheduleCalendar: FunctionComponent<{ locationId: string }> = ({ locationI
   }, [locationId, viewDate.year, viewDate.month, refreshFlag]);
 
   useEffect(() => {
-    const updateHeight = () => {
-      if (calendarContainerRef.current) {
-        setCalendarHeight(calendarContainerRef.current.clientHeight);
+    if (!calendarContainerRef.current) return;
+    const el = calendarContainerRef.current;
+
+    const ro = new ResizeObserver((entries: ResizeObserverEntry[]) => {
+      for (const entry of entries) {
+        let h = entry.contentRect.height;
+
+        const borderSize = entry.borderBoxSize;
+        if (borderSize && borderSize.length > 0) {
+          h = borderSize[0].blockSize;
+        }
+
+        setCalendarHeight(h);
       }
-    };
-    updateHeight();
-    window.addEventListener("resize", updateHeight);
-    return () => window.removeEventListener("resize", updateHeight);
-  }, [events, viewDate.year, viewDate.month]);
+    });
+
+    ro.observe(el);
+    setCalendarHeight(el.getBoundingClientRect().height);
+
+    return () => ro.disconnect();
+  }, []);
 
   useEffect(() => {
     if (shifts) {

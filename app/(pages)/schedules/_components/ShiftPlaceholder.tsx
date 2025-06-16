@@ -120,7 +120,7 @@ const ShiftPlaceholder = ({
       </div>
 
       {count > 0 && (
-        <span className="truncate font-semibold">
+        <span className="whitespace-normal font-semibold">
           {names}
         </span>
       )}
