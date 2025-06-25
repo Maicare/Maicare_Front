@@ -23,7 +23,7 @@ const EducationPreview = ({ employeeId }: Props) => {
         return (
             <div className="w-[32%] h-[287px] rounded-sm shadow-md p-4 bg-white">
                 <div className="flex justify-between items-center">
-                    <h1 className='flex items-center gap-2 m-0 p-0 font-extrabold text-lg text-slate-600'><GraduationCap size={18} className='text-indigo-400' /> Education</h1>
+                    <h1 className='flex items-center gap-2 m-0 p-0 font-extrabold text-lg text-slate-600'><GraduationCap size={18} className='text-indigo-400' /> Opleidingen</h1>
                     <Button className='bg-indigo-400 text-white text-xs py-1 px-2 rounded-md flex items-center gap-2 '>
                         <span>View All</span>
                         <ArrowRight size={15} className='arrow-animation' />

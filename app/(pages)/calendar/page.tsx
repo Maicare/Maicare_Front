@@ -17,7 +17,7 @@ const Page = () => {
 
   return (
     <>
-      <Breadcrumb pageName="Opdrachtgevers" />
+      <Breadcrumb pageName="Agenda" />
 
       {/* Tabs Container */}
       <div className="mt-6">

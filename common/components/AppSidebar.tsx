@@ -28,7 +28,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     const pathname = usePathname();
     const { clientId, employeeId,locationId } = useParams();
     const isClient = pathname.startsWith("/clients/") && pathname !== "/clients/" && pathname !== "/clients/new";
-    const isEmployee = pathname.startsWith("/employees/") && pathname !== "/employees/";
+    const isEmployee = pathname.startsWith("/employees/") && pathname !== "/employees/" && pathname !== "/employees/new";
     const isLocation = pathname.startsWith("/locations/") && pathname !== "/locations/";
     const [user, setUser] = useState({ first_name: "Loading", last_name: "", email: "", id: parseInt(employeeId as string) ?? parseInt(clientId as string) ?? parseInt(locationId as string), profile_picture: "/images/avatar-1.jpg" });
 

@@ -45,7 +45,7 @@ const AddressesPreview = ({ isParentLoading }: Props) => {
   if (addressesData?.length === 0) {
     return (
       <div className="w-full h-[287px] rounded-sm shadow-md p-4 bg-white">
-        <h1 className='flex items-center gap-2 m-0 p-0 font-extrabold text-lg text-slate-600'><MapPinned size={18} className='text-indigo-400' /> Addresses Information</h1>
+        <h1 className='flex items-center gap-2 m-0 p-0 font-extrabold text-lg text-slate-600'><MapPinned size={18} className='text-indigo-400' /> Adresgegevens</h1>
         <div className="mt-4 w-full h-max border-slate-200 pl-6 p-2 flex flex-col items-center justify-center gap-4 ">
           <Image height={200} width={200} src={"/images/no-data.png"} alt='no data found!' />
           <PrimaryButton

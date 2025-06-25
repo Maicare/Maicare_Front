@@ -55,8 +55,8 @@ const EmployeesPage = () => {
   return (
     <div className="">
       <div className="flex justify-between items-center mb-5">
-        <h1 className="text-xl font-semibold">Employees</h1>
-        <p>Dashboard / <span className="font-medium text-indigo-500 hover:cursor-pointer">Employees</span></p>
+        <h1 className="text-xl font-semibold">Medewerkers</h1>
+        <p>Dashboard / <span className="font-medium text-indigo-500 hover:cursor-pointer">Medewerkers</span></p>
       </div>
       <Statistics />
       <TableFilters

@@ -20,7 +20,7 @@ const PersonalInformation = ({ email, first_name, last_name, birthplace, private
     }
     return (
         <div className="w-full h-[287px] rounded-sm shadow-md p-4 bg-white">
-            <h1 className='flex items-center gap-2 m-0 p-0 font-extrabold text-lg text-slate-600'><InfoIcon size={18} className='text-indigo-400' /> Personal Information</h1>
+            <h1 className='flex items-center gap-2 m-0 p-0 font-extrabold text-lg text-slate-600'><InfoIcon size={18} className='text-indigo-400' /> Persoonsgegevens</h1>
             <p className="mt-4 text-slate-400">
                 Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quidem. description text here.
             </p>

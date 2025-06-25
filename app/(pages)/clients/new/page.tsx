@@ -8,7 +8,7 @@ import UpsertClientForm from "../_components/UpsertClientForm";
 const Page = () => {
     const router = useRouter();
     const onSuccess = (id:number) => {
-        router.push(`/clients/${id}`)
+        router.push(`/clients/${id}/overview`)
     }
     const onCancel = () => {
         router.back();

@@ -7,7 +7,7 @@ const Page = () => {
 
   return (
     <>
-      <Breadcrumb pageName="Opdrachtgevers" />
+      <Breadcrumb pageName="Roosters" />
 
       {/* Content Area */}
       <div className="mt-4 p-4">
