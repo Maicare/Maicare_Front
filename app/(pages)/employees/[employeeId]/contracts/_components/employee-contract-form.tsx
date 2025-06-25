@@ -32,8 +32,10 @@ import { contractTypes, createEmployeeContractSchema, EmployeeContract } from "@
 export function EmployeeContractForm({
     onSubmit,
     defaultValues,
+    toggleEdit
 }: {
     onSubmit: (values: EmployeeContract) => void;
+    toggleEdit: () => void;
     defaultValues?: Partial<EmployeeContract>;
 }) {
     const form = useForm<EmployeeContract>({
@@ -214,9 +216,14 @@ export function EmployeeContractForm({
                     />
                 </div>
 
-                <Button type="submit" className="w-full">
+                <div className="grid grid-cols-2 w-full gap-6">
+                <Button type="submit" className="w-full bg-indigo-400 hover:bg-indigo-800 text-white">
                     Submit Contract
                 </Button>
+                <Button type="button" className="w-full bg-red-400 hover:bg-red-600 text-white" onClick={() => toggleEdit()}>
+                    Cancel
+                </Button>
+                </div>
             </form>
         </Form>
     );
