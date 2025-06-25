@@ -33,8 +33,6 @@ const Page = () => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [clientId]);
 
-    console.log("ALLO", client)
-
     return (
         <div className='flex flex-col gap-4'>
             <div className="grid grid-cols-3 gap-4 w-full">

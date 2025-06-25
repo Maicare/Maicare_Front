@@ -23,6 +23,13 @@ const ApiRoutes = {
   ReadEmails: prefix + "/emails",
   Appointmens: {
     ReadAll: prefix + "/{id}/appointments",
+  },
+  WorkingHours:{
+    ReadAll: prefix + "/{id}/working_hours",
+  },
+  Contract:{
+    UpdateOne: prefix + "/{id}/contract_details",
+    ReadOne: prefix + "/{id}/contract_details",
   }
 };
 

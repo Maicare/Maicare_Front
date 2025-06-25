@@ -4,13 +4,9 @@ import ApiRoutes from "@/common/api/routes";
 import { useApi } from "@/common/hooks/use-api";
 import useProgressBar from "@/common/hooks/use-progress-bar";
 import { ApiOptions } from "@/common/types/api.types";
-import { PaginatedResponse } from "@/common/types/pagination.types";
 import { Id } from "@/common/types/types";
 import { useSnackbar } from "notistack";
-import { useState } from "react";
 import useSWR from "swr";
-import { constructUrlSearchParams } from "@/utils/construct-search-params";
-import { stringConstructor } from "@/utils/string-constructor";
 import { CreateShift, Shift } from "@/schemas/shift.schema";
 
 export function useShift({

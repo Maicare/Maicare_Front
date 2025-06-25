@@ -13,6 +13,7 @@ import IntakeForm from "./routes/intake-form"
 import Contract from "./routes/contract";
 import Calendar from "./routes/calendar";
 import Schedule from "./routes/schedule";
+import Registration from "./routes/registration";
 
 const ApiRoutes = {
   Auth,
@@ -29,7 +30,8 @@ const ApiRoutes = {
   IntakeForm,
   Contract,
   Calendar,
-  Schedule
+  Schedule,
+  Registration
 };
 
 export default ApiRoutes;

@@ -65,3 +65,55 @@ export type UpdateEmployeeRequestBody = Omit<CreateEmployee,"role_id"|"location_
     position:null;
     id:Id;
 }
+
+// employee contract 
+
+
+// Define valid contract types
+export const contractTypes = [
+  'full_time', 'part_time', 'temporary', 'subcontractor', 'no_type'
+] as const;
+
+export const createEmployeeContractSchema = z.object({
+  contract_start_date: z.string()
+    .refine((val) => !isNaN(Date.parse(val)), {
+      message: "Invalid start date format",
+    })
+    .transform((val) => new Date(val).toISOString()),
+    
+  contract_end_date: z.string()
+    .refine((val) => !isNaN(Date.parse(val)), {
+      message: "Invalid end date format",
+    })
+    .transform((val) => new Date(val).toISOString()),
+    
+  contract_type: z.enum(contractTypes),
+  
+  fixed_contract_hours: z.number()
+    .int()
+    .nonnegative()
+    .max(168, "Cannot exceed 168 hours per week"),
+    
+  variable_contract_hours: z.number()
+    .int()
+    .nonnegative()
+    .max(60, "Variable hours cannot exceed 60 hours per week"),
+}).superRefine((data, ctx) => {
+  const totalHours = data.fixed_contract_hours + data.variable_contract_hours;
+  if (totalHours > 168) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      message: "Total hours cannot exceed 168 hours per week",
+      path: ["variable_contract_hours"],
+    });
+  }
+});
+export type CreateContractInput = z.infer<typeof createEmployeeContractSchema>;
+export interface EmployeeContract {
+  contract_end_date: string;
+  contract_start_date: string;
+  contract_type:   'full_time'| 'part_time'| 'temporary'| 'subcontractor'| 'no_type';
+  fixed_contract_hours: number;
+  id: number;
+  variable_contract_hours: number;
+}

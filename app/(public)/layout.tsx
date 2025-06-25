@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 
 const PublicLayout: FunctionComponent<PropsWithChildren> = ({ children }) => {
   return (
-    <main className="min-h-screen bg-white dark:bg-boxdark">
+    <main className="min-h-screen bg-[#eff4fb] dark:bg-boxdark">
       <header className="p-4">
         <Link href="/public">
           <div className="flex items-center space-x-2">
