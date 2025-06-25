@@ -65,7 +65,7 @@ const LoginForm = () => {
 
                 {/* Navigation Button to Intake Form */}
                 <div className="mb-5">
-                    <Link href="/intake_form">
+                    <Link href="/registration">
                         <p className="w-full block p-4 text-white text-center transition border rounded-lg cursor-pointer border-secondary bg-secondary hover:bg-secondary-hover">
                             Vul Intakeformulier in
                         </p>
