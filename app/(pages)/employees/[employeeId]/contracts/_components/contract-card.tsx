@@ -3,14 +3,17 @@ import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { formatDateToDutch } from "@/utils/timeFormatting";
 import { EmployeeContract } from "@/schemas/employee.schema";
+import PrimaryButton from "@/common/components/PrimaryButton";
+import { Edit } from "lucide-react";
 
 
 
 interface ContractCardProps {
   contract: EmployeeContract;
+  toggleEdit: () => void;
 }
 
-export function ContractCard({ contract }: ContractCardProps) {
+export function ContractCard({ contract,toggleEdit }: ContractCardProps) {
 
 
   // Determine contract type color 'full_time'| 'part_time'| 'temporary'| 'subcontractor'| 'no_type'
@@ -84,6 +87,12 @@ export function ContractCard({ contract }: ContractCardProps) {
                 ? 'Active contract'
                 : 'Expired contract'}
             </span>
+            <PrimaryButton
+              className="ml-auto"
+              onClick={() => toggleEdit()}
+              text="Edit Contract"
+              icon={Edit}
+              />
           </div>
         </div>
       </CardContent>

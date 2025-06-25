@@ -25,6 +25,7 @@ const Page = () => {
     const [employeeContract, setEmployeeContract] = useState<EmployeeContract | undefined>(undefined);
     const [isLoading, setIsLoading] = useState(true);
     const [refetch,setRefetcg] = useState(false);
+    const [edit,setEdit] = useState(false);
     useEffect(() => {
         const fetchEmployeeContract = async (id: Id) => {
             try {
@@ -45,6 +46,7 @@ const Page = () => {
         try {
             await updateEmployeeContract(values, +employeeId!, { displayProgress: true, displaySuccess: true });
             setRefetcg(v=>!v);
+            setEdit(false);
         } catch (error) {
             console.log(error);
         }
@@ -54,11 +56,12 @@ const Page = () => {
             <Loader />
         </div>
     }
-    if (!employeeContract) {
+    if (!employeeContract || edit) {
         return (
             <EmployeeContractForm
                 onSubmit={onSubmit}
                 defaultValues={employeeContract ?? exampleContract}
+                toggleEdit={() => setEdit(false)}
             />
         )
     }
@@ -69,7 +72,7 @@ const Page = () => {
                     <Handshake size={24} className='text-indigo-400' />  Contracten
                 </h1>
             </div>
-            <ContractCard contract={employeeContract} />
+            <ContractCard contract={employeeContract} toggleEdit={()=>setEdit(true)} />
             {/* Add more contracts as needed */}
         </div>
     )
