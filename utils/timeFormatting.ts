@@ -1,4 +1,6 @@
+import { format, parseISO } from "date-fns";
 import dayjs from "dayjs";
+import { nl } from 'date-fns/locale';
 import "dayjs/locale/nl";
 dayjs.locale("nl");
 
@@ -100,4 +102,21 @@ export function formatTimeFromDate(date: Date): string {
   const minutes = date.getMinutes().toString().padStart(2, '0');
   
   return `${hours}:${minutes}`;
+}
+// Helper function to format the backend date
+export function formatBackendDate(dateString: string) {
+  if (!dateString) return '';
+  const date = new Date(dateString);
+  return date.toISOString().split('T')[0];
+}
+export function formatDutchDateTimeWithAMPM(isoString: string) {
+  const date = parseISO(isoString);
+  
+  const formattedDate = format(date, 'd\'e\' MMM yyyy', { locale: nl });
+  const formattedTime = format(date, 'hh:mm a', { locale: nl }); // 'a' gives AM/PM
+  
+  return {
+    date: formattedDate,
+    time: formattedTime.toLowerCase() // "07:30 am"
+  };
 }

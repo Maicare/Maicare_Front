@@ -78,7 +78,7 @@ const ClientsPage = () => {
                 </p>}
             </div>
 
-            <div className="flex flex-wrap gap-4 mb-6 flex justify-between items-center">
+            <div className="flex flex-wrap gap-4 mb-6 justify-between items-center">
                 <div className="flex items-center">
                     <InputUncontrol
                         placeholder="Zoek cliënten ..."
@@ -121,7 +121,7 @@ const ClientsPage = () => {
                         }
                     /> : ''}
                     {intakes && intakes.results.length > 0 && intakes.results.map(client => (
-                        <div key={client.id} className="bg-white shadow-md flex flex-col border rounded-lg overflow-hidden shadow-sm">
+                        <div key={client.id} className="bg-white flex flex-col border rounded-lg overflow-hidden shadow-sm">
                             <div className="p-4 border-b">
                                 <div className="flex justify-between items-start">
                                     <h3 className="font-bold text-lg">{client.first_name} {client.last_name}</h3>

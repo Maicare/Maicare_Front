@@ -20,7 +20,7 @@ import { EmployeeForm as EmployeeFormType } from "@/types/employee.types";
 import { useMutation } from "@/common/hooks/use-mutate";
 import { AxiosError } from "axios";
 import { useRouter } from "next/navigation";
-import {  CreateEmployeeRequestBody, UpdateEmployeeRequestBody } from "@/schemas/employee.schema";
+import { CreateContractInput, CreateEmployeeRequestBody, EmployeeContract, UpdateEmployeeRequestBody } from "@/schemas/employee.schema";
 
 export function useEmployee({
   search,
@@ -32,8 +32,8 @@ export function useEmployee({
   page: pageParam = 1,
   page_size = 10,
   autoFetch = true,
-  v:_v
-}: Partial<EmployeesSearchParams & { autoFetch?: boolean,v?:string }>) {
+  v: _v
+}: Partial<EmployeesSearchParams & { autoFetch?: boolean, v?: string }>) {
   const [page, setPage] = useState(pageParam);
   const { enqueueSnackbar } = useSnackbar();
   const router = useRouter();
@@ -57,7 +57,7 @@ export function useEmployee({
       })
     ) : null, // Endpoint to fetch Locations
     async (url) => {
-      if (!url){
+      if (!url) {
         return {
           results: [],
           count: 0,
@@ -72,7 +72,7 @@ export function useEmployee({
       }
       return response.data.data; // Assuming API returns data inside a "data" field
     },
-    { shouldRetryOnError: false,dedupingInterval:10000 }
+    { shouldRetryOnError: false, dedupingInterval: 10000 }
   );
   const isLoading = !employees && !error;
   const readOne = async (id: number, options?: ApiOptions) => {
@@ -176,7 +176,7 @@ export function useEmployee({
       if (displayProgress) startProgress();
       const { message, success, data, error } =
         await useApi<EmployeeDetailsResponse>(
-          ApiRoutes.Employee.UpdateOne.replace("{id}",employee.id.toString()),
+          ApiRoutes.Employee.UpdateOne.replace("{id}", employee.id.toString()),
           "PUT",
           {},
           employee
@@ -336,6 +336,69 @@ export function useEmployee({
       throw err;
     }
   };
+  const updateEmployeeContract = async (
+    contract: CreateContractInput,
+    employeeId: number,
+    options?: ApiOptions
+  ) => {
+    const { displayProgress = false, displaySuccess = false } = options || {};
+    try {
+      if (displayProgress) startProgress();
+      const response = await useApi<EmployeeContract>(
+        ApiRoutes.Employee.Contract.UpdateOne.replace("{id}", employeeId.toString()),
+        "PUT",
+        {},
+        contract
+      );
+      if (!response.data) {
+        throw new Error("Failed to update contract");
+      }
+      if (displaySuccess && response.success) {
+        enqueueSnackbar("Contract update successful!", { variant: "success" });
+      }
+      mutate()
+      return response.data;
+    } catch (err: any) {
+      enqueueSnackbar(
+        err?.response?.data?.message || "Failed to update contract",
+        { variant: "error" }
+      );
+      throw err;
+    } finally {
+      if (displayProgress) stopProgress();
+    }
+  };
+  const readEmployeeContract = async (
+    employeeId: number,
+    options?: ApiOptions
+  ) => {
+    const { displayProgress = false, displaySuccess = false } = options || {};
+    try {
+      if (displayProgress) startProgress();
+      const response = await useApi<EmployeeContract>(
+        ApiRoutes.Employee.Contract.ReadOne.replace("{id}", employeeId.toString()),
+        "GET",
+        {},
+        {}
+      );
+      if (!response.data) {
+        throw new Error("Failed to retrieve contract");
+      }
+      if (displaySuccess && response.success) {
+        enqueueSnackbar("Contract retrieve successful!", { variant: "success" });
+      }
+      mutate()
+      return response.data;
+    } catch (err: any) {
+      enqueueSnackbar(
+        err?.response?.data?.message || "Failed to retrieve contract",
+        { variant: "error" }
+      );
+      throw err;
+    } finally {
+      if (displayProgress) stopProgress();
+    }
+  };
 
   const readEmployeesEmails = async (search: string) => {
     try {
@@ -370,6 +433,8 @@ export function useEmployee({
     updateEmployeePicture,
     readEmployeesEmails,
     createOne,
-    updateOne
+    updateOne,
+    updateEmployeeContract,
+    readEmployeeContract
   };
 }

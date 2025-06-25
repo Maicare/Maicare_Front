@@ -61,7 +61,7 @@ const StatisticCard = ({ icon: Icon, title, value, className, colorKey,prefix=""
     }, [value]);
 
     return (
-        <div className={cn("lg:px-6 px-3 py-3 bg-white dark:bg-[#18181b] dark:border-black rounded-md border-2 border-muted flex items-center justify-between lg:w-[230px] w-[205px]", className)}>
+        <div className={cn("lg:px-6 px-3 py-3 bg-white dark:bg-[#18181b] dark:border-black rounded-md border-2 border-muted flex items-center justify-between  w-full", className)}>
             <div className=" flex flex-col gap-4">
                 <h1 className='text-base font-semibold dark:text-white'>{title}</h1>
                 <motion.span className={cn('text-sm font-medium bg-sky-100 rounded-full text-sky-400 py-2 px-4 w-fit', getClassName(colorKey).p)}>{displayValue+" "+prefix}</motion.span>

@@ -1,4 +1,4 @@
-import {  BellRing, BookMarked, BriefcaseBusiness, FileBadge, FilesIcon, FileText, Goal, GraduationCap, Handshake, HeartPulse, Home, Map,  UserCircle, UsersRound, CalendarClock, Users2, Calendar, ClockArrowUp } from "lucide-react";
+import {  BellRing, BookMarked, BriefcaseBusiness, FileBadge, FilesIcon, FileText, Goal, GraduationCap, Handshake, HeartPulse, Home, Map,  UserCircle, UsersRound, CalendarClock, Users2, Calendar, ClockArrowUp, Hourglass } from "lucide-react";
 
 export const sidebarLinks = [
     {
@@ -71,9 +71,19 @@ export const sidebarEmployeeLinks = (employee:{first_name:string,last_name:strin
         icon: BriefcaseBusiness ,
     },
     {
-        title: "CalendarClock",
+        title: "Calendar",
         url: "/employees/" + employee?.id+"/calendar",
         icon: CalendarClock ,
+    },
+    {
+        title: "Working Hours",
+        url: "/employees/" + employee?.id+"/working-hours",
+        icon: Hourglass ,
+    },
+    {
+        title: "Contracten",
+        url: "/employees/" + employee?.id+"/contracts",
+        icon: Handshake ,
     }
 ];
 export const sidebarLocationLinks = (location:{first_name:string,last_name:string,id:number})=> [
