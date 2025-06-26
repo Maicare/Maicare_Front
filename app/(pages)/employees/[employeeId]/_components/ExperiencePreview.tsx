@@ -23,7 +23,7 @@ const ExperiencePreview = ({ employeeId }: Props) => {
         return (
             <div className="w-[32%] h-[287px] rounded-sm shadow-md p-4 bg-white">
                 <div className="flex justify-between items-center">
-                    <h1 className='flex items-center gap-2 m-0 p-0 font-extrabold text-lg text-slate-600'><BriefcaseBusiness size={18} className='text-indigo-400' /> Experiences</h1>
+                    <h1 className='flex items-center gap-2 m-0 p-0 font-extrabold text-lg text-slate-600'><BriefcaseBusiness size={18} className='text-indigo-400' /> Werkervaring</h1>
                     <Button className='bg-indigo-400 text-white text-xs py-1 px-2 rounded-md flex items-center gap-2 '>
                         <span>View All</span>
                         <ArrowRight size={15} className='arrow-animation' />

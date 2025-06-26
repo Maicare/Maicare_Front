@@ -7,7 +7,7 @@ import UpsertEmployeeForm from "../[employeeId]/_components/UpsertEmployeeForm";
 const Page = () => {
     const router = useRouter();
     const onSuccess = (id:number) => {
-        router.push(`/employee/${id}`)
+        router.push(`/employees/${id}`)
     }
     const onCancel = () => {
         router.back();

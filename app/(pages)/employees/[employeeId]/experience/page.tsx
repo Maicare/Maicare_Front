@@ -78,7 +78,7 @@ const Page = () => {
         <div className="w-full flex flex-col gap-4">
             <div className="flex items-center justify-between">
                 <h1 className='flex items-center gap-2 m-0 p-0 font-extrabold text-lg text-slate-600'>
-                    <Briefcase size={24} className='text-indigo-400' />  Experience
+                    <Briefcase size={24} className='text-indigo-400' />  Werkervaring
                 </h1>
                 <PrimaryButton
                     text="Add"

@@ -21,7 +21,7 @@ const WorkInformation = ({source,filenumber,bsn,organisation,legal_measure,infix
     }
     return (
         <div className="w-full h-[287px] rounded-sm shadow-md p-4 bg-white">
-            <h1 className='flex items-center gap-2 m-0 p-0 font-extrabold text-lg text-slate-600'><Briefcase size={18} className='text-indigo-400' /> Work Information</h1>
+            <h1 className='flex items-center gap-2 m-0 p-0 font-extrabold text-lg text-slate-600'><Briefcase size={18} className='text-indigo-400' /> Werkgegevens</h1>
             <div className="mt-4 w-full">
                 <div className="flex items-center w-full py-2 border-b border-slate-200">
                     <p className="w-[40%] text-sm text-slate-600 font-bold">organisation:</p>

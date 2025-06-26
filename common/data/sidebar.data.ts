@@ -2,182 +2,182 @@ import {  BellRing, BookMarked, BriefcaseBusiness, FileBadge, FilesIcon, FileTex
 
 export const sidebarLinks = [
     {
-        title: "Dashboard",
+        title: "Dashboard", // "Dashboard" (commonly used in Dutch)
         url: "/dashboard",
         icon: Home,
         isActive: true,
     },
     {
-        title: "Clients",
+        title: "Klanten", // "Clients"
         url: "/clients",
         icon: Handshake,
     },
     {
-        title: "Employees",
+        title: "Medewerkers", // "Employees"
         url: "/employees",
         icon: Users2,
     },
     {
-        title: "Carecordinators",
+        title: "Zorgcoördinatoren", // "Carecordinators" (context-specific)
         url: "/contacts",
-        icon: HeartPulse ,
+        icon: HeartPulse,
         items: [
             {
-                title: "Contacts",
+                title: "Contactpersonen", // "Contacts"
                 url: "/contacts",
             },
             {
-                title: "Contractors",
+                title: "Uitzendkrachten", // "Contractors" (or "Zzp'ers" for freelancers)
                 url: "/contracts",
             },
             {
-                title: "Registrations",
+                title: "Registraties", // "Registrations"
                 url: "/registrations",
             }
         ],
     },
     {
-        title: "Locations",
+        title: "Locaties", // "Locations"
         url: "/locations",
         icon: Map,
     },
     {
-        title: "Calendar",
+        title: "Agenda", // "Calendar" (time-based)
         url: "/calendar",
         icon: CalendarClock,
     },
     {
-        title: "Schedules",
+        title: "Roosters", // "Schedules" (work shifts)
         url: "/schedules",
         icon: Calendar,
     },
 ];
 export const sidebarEmployeeLinks = (employee:{first_name:string,last_name:string,id:number})=> [
     {
-        title: "Overzicht ("+employee?.first_name + " " + employee?.last_name + ")",
-        url: "/employees/" + employee?.id ,
+        title: "Overzicht ("+employee?.first_name + " " + employee?.last_name + ")", // "Overview"
+        url: "/employees/" + employee?.id,
         icon: Users2,
         isActive: true,
     },
     {
-        title: "Certificaten",
+        title: "Certificaten", // "Certifications"
         url: "/employees/" + employee?.id+"/certification",
         icon: BookMarked,
     },
     {
-        title: "Opleidingen",
+        title: "Opleidingen", // "Education"
         url: "/employees/" + employee?.id+"/education",
         icon: GraduationCap,
     },
     {
-        title: "Ervaringen",
+        title: "Werkervaring", // "Experience" (work context)
         url: "/employees/" + employee?.id+"/experience",
-        icon: BriefcaseBusiness ,
+        icon: BriefcaseBusiness,
     },
     {
-        title: "Calendar",
+        title: "Agenda", // "Calendar"
         url: "/employees/" + employee?.id+"/calendar",
-        icon: CalendarClock ,
+        icon: CalendarClock,
     },
     {
-        title: "Working Hours",
+        title: "Werkuren", // "Working Hours"
         url: "/employees/" + employee?.id+"/working-hours",
-        icon: Hourglass ,
+        icon: Hourglass,
     },
     {
-        title: "Contracten",
+        title: "Contracten", // "Contracts"
         url: "/employees/" + employee?.id+"/contracts",
-        icon: Handshake ,
+        icon: Handshake,
     }
 ];
 export const sidebarLocationLinks = (location:{first_name:string,last_name:string,id:number})=> [
     {
-        title: "Overzicht ("+location?.first_name + " " + location?.last_name + ")",
-        url: "/locations/" + location?.id+"/overview" ,
+        title: "Overzicht ("+location?.first_name + " " + location?.last_name + ")", // "Overview"
+        url: "/locations/" + location?.id+"/overview",
         icon: Users2,
         isActive: true,
     },
     {
-        title: "Shifts",
+        title: "Diensten", // "Shifts" (work shifts)
         url: "/locations/" + location?.id+"/shifts",
         icon: ClockArrowUp,
     },
     {
-        title: "Schedules",
+        title: "Roosters", // "Schedules"
         url: "/locations/" + location?.id+"/schedules",
         icon: Calendar,
     }
 ];
 export const sidebarClientLinks = (client:{first_name:string,last_name:string,id:number})=> [
     {
-        title: "Overzicht ("+client?.first_name + " " + client?.last_name + ")",
+        title: "Overzicht ("+client?.first_name + " " + client?.last_name + ")", // "Overview"
         url: "/clients/" + client?.id + "/overview",
         icon: UserCircle,
         isActive: true,
     },
     {
-        title: "Medisch Dossier",
+        title: "Medisch Dossier", // "Medical Record"
         url: "/clients/" + client?.id+"/medical-record",
         icon: HeartPulse,
     },
     {
-        title: "Afsprakenkaart",
+        title: "Afsprakenkaart", // "Appointment Card"
         url: "/clients/" + client?.id+"/appointment-card",
         icon: CalendarClock,
     },
     {
-        title: "Doelen",
+        title: "Doelen", // "Goals"
         url: "/clients/" + client?.id+"/goals",
-        icon: Goal ,
+        icon: Goal,
     },
     {
-        title: "Incidenten",
+        title: "Incidenten", // "Incidents"
         url: "/clients/" + client?.id+"/incidents",
-        icon: BellRing ,
+        icon: BellRing,
     },
     {
-        title: "Cliëntennetwerk",
+        title: "Cliëntennetwerk", // "Client Network"
         url: "/clients/" + client?.id+"/client-network",
-        icon: UsersRound ,
+        icon: UsersRound,
         items: [
             {
-                title: "Noodcontacten",
+                title: "Noodcontacten", // "Emergency Contacts"
                 url: "/clients/" + client?.id+"/client-network/emergency",
             },
             {
-                title: "Betrokken medewerkers",
+                title: "Betrokken medewerkers", // "Involved Employees"
                 url: "/clients/" + client?.id+"/client-network/involved-employees",
             }
         ],
     },
     {
-        title: "Rapporten",
+        title: "Rapporten", // "Reports"
         url: "/clients/" + client?.id+"/reports",
-        icon: FileBadge ,
+        icon: FileBadge,
         items: [
             {
-                title: "User Reports",
+                title: "Gebruikersrapporten", // "User Reports"
                 url: "/clients/" + client?.id+"/reports/user-reports",
             },
             {
-                title: "Automatic Reports",
+                title: "Automatische rapporten", // "Automatic Reports"
                 url: "/clients/" + client?.id+"/reports/automatic-reports",
             }
         ],
     },
     {
-        title: "Documenten",
+        title: "Documenten", // "Documents"
         url: "/clients/" + client?.id+"/documents",
-        icon: FileText ,
+        icon: FileText,
     },
     {
-        title: "Vragenlijsten",
+        title: "Vragenlijsten", // "Questionnaires"
         url: "/clients/" + client?.id+"/questionnaires",
-        icon: FilesIcon ,
+        icon: FilesIcon,
     },
     {
-        title: "Calendar",
+        title: "Agenda", // "Calendar"
         url: "/clients/" + client?.id+"/calendar",
-        icon: CalendarClock ,
+        icon: CalendarClock,
     }
 ];

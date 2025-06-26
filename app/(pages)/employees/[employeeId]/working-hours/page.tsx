@@ -29,7 +29,7 @@ const WorkingHoursPage = () => {
         <div className="w-full flex flex-col gap-4">
             <div className="flex items-center justify-between">
                 <h1 className='flex items-center gap-2 m-0 p-0 font-extrabold text-lg text-slate-600'>
-                    <Hourglass size={24} className='text-indigo-400' />  Working hours
+                    <Hourglass size={24} className='text-indigo-400' />  Werkuren
                 </h1>
                 <YearMonthSelectors 
                     filters={filters}
