@@ -9,6 +9,10 @@ import { EmployeeContract } from "@/schemas/employee.schema";
 import { Id } from "@/common/types/types";
 import Loader from "@/components/common/loader";
 import { EmployeeContractForm } from "./_components/employee-contract-form";
+import withAuth, { AUTH_MODE } from "@/common/hocs/with-auth";
+import withPermissions from "@/common/hocs/with-permissions";
+import Routes from "@/common/routes";
+import { PermissionsObjects } from "@/common/data/permission.data";
 
 const exampleContract:EmployeeContract = {
     contract_end_date: "2025-12-31",
@@ -78,4 +82,10 @@ const Page = () => {
     )
 }
 
-export default Page
+export default withAuth(
+  withPermissions(Page, {
+    redirectUrl: Routes.Common.NotFound,
+    requiredPermissions: PermissionsObjects.ViewEmployee, // TODO: Add correct permission
+    }),
+    { mode: AUTH_MODE.LOGGED_IN, redirectUrl: Routes.Auth.Login } 
+    );

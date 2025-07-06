@@ -13,6 +13,10 @@ import LargeErrorMessage from "@/components/common/Alerts/LargeErrorMessage";
 import { Education } from "@/types/education.types";
 import PrimaryButton from "@/common/components/PrimaryButton";
 import { useParams } from "next/navigation";
+import withAuth, { AUTH_MODE } from "@/common/hocs/with-auth";
+import withPermissions from "@/common/hocs/with-permissions";
+import Routes from "@/common/routes";
+import { PermissionsObjects } from "@/common/data/permission.data";
 
 const Page = () => {
     const [adding, setAdding] = useState(false);
@@ -119,4 +123,10 @@ const Page = () => {
     )
 }
 
-export default Page
+export default withAuth(
+  withPermissions(Page, {
+    redirectUrl: Routes.Common.NotFound,
+    requiredPermissions: PermissionsObjects.ViewEmployee, // TODO: Add correct permission
+    }),
+    { mode: AUTH_MODE.LOGGED_IN, redirectUrl: Routes.Auth.Login } 
+    );

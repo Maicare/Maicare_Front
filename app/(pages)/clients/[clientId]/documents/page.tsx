@@ -13,6 +13,10 @@ import { DOCUMENT_LABEL_OPTIONS } from "@/consts";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import DeleteDocumentDialog from "./_components/DeleteDocumentDialog";
+import withAuth, { AUTH_MODE } from "@/common/hocs/with-auth";
+import withPermissions from "@/common/hocs/with-permissions";
+import Routes from "@/common/routes";
+import { PermissionsObjects } from "@/common/data/permission.data";
 
 
 const DocumentsPage = () => {
@@ -191,4 +195,10 @@ const DocumentsPage = () => {
     )
 }
 
-export default DocumentsPage
+export default withAuth(
+  withPermissions(DocumentsPage, {
+    redirectUrl: Routes.Common.NotFound,
+    requiredPermissions: PermissionsObjects.ViewEmployee, // TODO: Add correct permission
+    }),
+    { mode: AUTH_MODE.LOGGED_IN, redirectUrl: Routes.Auth.Login } 
+    );

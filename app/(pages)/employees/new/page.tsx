@@ -2,6 +2,10 @@
 
 import { useRouter } from "next/navigation";
 import UpsertEmployeeForm from "../[employeeId]/_components/UpsertEmployeeForm";
+import withAuth, { AUTH_MODE } from "@/common/hocs/with-auth";
+import withPermissions from "@/common/hocs/with-permissions";
+import Routes from "@/common/routes";
+import { PermissionsObjects } from "@/common/data/permission.data";
 
 
 const Page = () => {
@@ -27,4 +31,10 @@ const Page = () => {
     )
 }
 
-export default Page
+export default withAuth(
+    withPermissions(Page, {
+        redirectUrl: Routes.Common.NotFound,
+        requiredPermissions: PermissionsObjects.CreateEmployee, // TODO: Add correct permisssion
+    }),
+    { mode: AUTH_MODE.LOGGED_IN, redirectUrl: Routes.Auth.Login }
+);

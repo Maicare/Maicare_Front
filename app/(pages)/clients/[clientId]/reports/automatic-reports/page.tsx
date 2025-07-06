@@ -9,6 +9,10 @@ import { CreateAutomaticReport, ValidateAutomaticReport } from '@/types/automati
 import Loader from '@/components/common/loader';
 import LargeErrorMessage from '@/components/common/Alerts/LargeErrorMessage';
 import AutomaticReport from './_components/AutomaticReport';
+import withAuth, { AUTH_MODE } from '@/common/hocs/with-auth';
+import withPermissions from '@/common/hocs/with-permissions';
+import Routes from '@/common/routes';
+import { PermissionsObjects } from '@/common/data/permission.data';
 
 const AutomaticReports = () => {
   const { clientId } = useParams();
@@ -104,4 +108,10 @@ const handleNext = () => {
   )
 }
 
-export default AutomaticReports
+export default withAuth(
+  withPermissions(AutomaticReports, {
+    redirectUrl: Routes.Common.NotFound,
+    requiredPermissions: PermissionsObjects.ViewEmployee, // TODO: Add correct permission
+    }),
+    { mode: AUTH_MODE.LOGGED_IN, redirectUrl: Routes.Auth.Login } 
+    );

@@ -10,6 +10,10 @@ import { Report, REPORT_TYPE_RECORD } from '@/types/reports.types';
 import CreateReportSheet from './_components/CreateReportSheet';
 import { CreateReport } from '@/schemas/report.schema';
 import { useState } from 'react';
+import withAuth, { AUTH_MODE } from '@/common/hocs/with-auth';
+import withPermissions from '@/common/hocs/with-permissions';
+import Routes from '@/common/routes';
+import { PermissionsObjects } from '@/common/data/permission.data';
 
 
 const UserReports = () => {
@@ -141,4 +145,10 @@ const UserReports = () => {
     )
 }
 
-export default UserReports
+export default withAuth(
+  withPermissions(UserReports, {
+    redirectUrl: Routes.Common.NotFound,
+    requiredPermissions: PermissionsObjects.ViewEmployee, // TODO: Add correct permission
+    }),
+    { mode: AUTH_MODE.LOGGED_IN, redirectUrl: Routes.Auth.Login } 
+    );

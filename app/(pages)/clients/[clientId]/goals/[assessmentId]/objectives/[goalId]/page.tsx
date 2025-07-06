@@ -15,6 +15,10 @@ import { cn, getTailwindClasses } from '@/utils/cn';
 import { CreateGoal } from '@/schemas/goal.schema';
 import UpsertGoalSheet from '../../_components/UpsertGoalSheet';
 import PrimaryButton from '@/common/components/PrimaryButton';
+import withAuth, { AUTH_MODE } from '@/common/hocs/with-auth';
+import withPermissions from '@/common/hocs/with-permissions';
+import Routes from '@/common/routes';
+import { PermissionsObjects } from '@/common/data/permission.data';
 
 const ObjectivePage = () => {
   const { assessmentId, clientId, goalId } = useParams();
@@ -195,4 +199,10 @@ const ObjectivePage = () => {
   );
 };
 
-export default ObjectivePage;
+export default withAuth(
+  withPermissions(ObjectivePage, {
+    redirectUrl: Routes.Common.NotFound,
+    requiredPermissions: PermissionsObjects.ViewEmployee, // TODO: Add correct permission
+    }),
+    { mode: AUTH_MODE.LOGGED_IN, redirectUrl: Routes.Auth.Login } 
+    );

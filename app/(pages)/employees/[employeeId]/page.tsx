@@ -10,6 +10,10 @@ import ExperiencePreview from './_components/ExperiencePreview';
 import PersonalInformation from './_components/PersonalInformation';
 import WorkInformation from './_components/WorkInformation';
 import ProfileInformation from './_components/ProfileInformation';
+import withAuth, { AUTH_MODE } from '@/common/hocs/with-auth';
+import withPermissions from '@/common/hocs/with-permissions';
+import Routes from '@/common/routes';
+import { PermissionsObjects } from '@/common/data/permission.data';
 
 const Page = () => {
   const { employeeId } = useParams();
@@ -67,4 +71,10 @@ const Page = () => {
   )
 }
 
-export default Page
+export default withAuth(
+  withPermissions(Page, {
+    redirectUrl: Routes.Common.NotFound,
+    requiredPermissions: PermissionsObjects.ViewEmployee, // TODO: Add correct permission
+    }),
+    { mode: AUTH_MODE.LOGGED_IN, redirectUrl: Routes.Auth.Login } 
+    );

@@ -7,6 +7,10 @@ import { useEffect, useState } from "react";
 import { EmployeeDetailsResponse } from "@/types/employee.types";
 import { Id } from "@/common/types/types";
 import EmployeeFormSkeleton from "../_components/UpsertEmployeeFormSkeleton";
+import withPermissions from "@/common/hocs/with-permissions";
+import withAuth, { AUTH_MODE } from "@/common/hocs/with-auth";
+import Routes from "@/common/routes";
+import { PermissionsObjects } from "@/common/data/permission.data";
 
 
 const Page = () => {
@@ -53,4 +57,10 @@ const Page = () => {
     )
 }
 
-export default Page
+export default withAuth(
+  withPermissions(Page, {
+    redirectUrl: Routes.Common.NotFound,
+    requiredPermissions: PermissionsObjects.ViewEmployee, // TODO: Add correct permission
+    }),
+    { mode: AUTH_MODE.LOGGED_IN, redirectUrl: Routes.Auth.Login } 
+    );

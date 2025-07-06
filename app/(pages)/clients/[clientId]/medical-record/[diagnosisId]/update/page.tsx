@@ -6,6 +6,10 @@ import { useDiagnosis } from "@/hooks/diagnosis/use-diagnosis";
 import { useEffect, useState } from "react";
 import { Diagnosis } from "@/types/diagnosis.types";
 import { Id } from "@/common/types/types";
+import withAuth, { AUTH_MODE } from "@/common/hocs/with-auth";
+import withPermissions from "@/common/hocs/with-permissions";
+import Routes from "@/common/routes";
+import { PermissionsObjects } from "@/common/data/permission.data";
 
 const UpdateDiagnosisPage = () => {
     const router = useRouter();
@@ -62,4 +66,10 @@ const UpdateDiagnosisPage = () => {
     )
 }
 
-export default UpdateDiagnosisPage
+export default withAuth(
+  withPermissions(UpdateDiagnosisPage, {
+    redirectUrl: Routes.Common.NotFound,
+    requiredPermissions: PermissionsObjects.ViewEmployee, // TODO: Add correct permission
+    }),
+    { mode: AUTH_MODE.LOGGED_IN, redirectUrl: Routes.Auth.Login } 
+    );
