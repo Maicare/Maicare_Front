@@ -13,6 +13,7 @@ import { useState } from "react";
 import { stringConstructor } from "@/utils/string-constructor";
 import { constructUrlSearchParams } from "@/utils/construct-search-params";
 import { Id } from "@/common/types/types";
+import { transformEmptyStringsToNull } from "@/utils/emptyStringtoNull";
 
 
 export function useRegistration({
@@ -102,11 +103,15 @@ export function useRegistration({
     const { displayProgress = false, displaySuccess = false } = options || {};
     try {
       if (displayProgress) startProgress();
+
+      // Transform empty strings to null in the object
+      const transformedData = transformEmptyStringsToNull(data);
+
       const response = await useApi<Registration>(
         ApiRoutes.Registration.CreateOne,
         "POST",
         {},
-        data
+        transformedData
       );
       if (!response.data) {
         throw new Error("Failed to create registration");
