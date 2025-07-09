@@ -15,6 +15,10 @@ import UpsertMedicationSheet from "./_components/UpsertMedicationSheet";
 import { useMedication } from "@/hooks/medication/use-medication";
 import { CreateMedication } from "@/schemas/medication.schema";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
+import withAuth, { AUTH_MODE } from "@/common/hocs/with-auth";
+import withPermissions from "@/common/hocs/with-permissions";
+import Routes from "@/common/routes";
+import { PermissionsObjects } from "@/common/data/permission.data";
 
 const DiagnosisPAge = () => {
     const { clientId, diagnosisId } = useParams();
@@ -284,4 +288,10 @@ const DiagnosisPAge = () => {
     )
 }
 
-export default DiagnosisPAge
+export default withAuth(
+  withPermissions(DiagnosisPAge, {
+    redirectUrl: Routes.Common.NotFound,
+    requiredPermissions: PermissionsObjects.ViewEmployee, // TODO: Add correct permission
+    }),
+    { mode: AUTH_MODE.LOGGED_IN, redirectUrl: Routes.Auth.Login } 
+    );

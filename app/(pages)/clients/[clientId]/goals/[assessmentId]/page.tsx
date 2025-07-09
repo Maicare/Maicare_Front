@@ -7,6 +7,10 @@ import { useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { AssessmentDetails } from './_components/AssessmentDetails';
 import GoalsDetails from './_components/GoalsDetails';
+import withAuth, { AUTH_MODE } from '@/common/hocs/with-auth';
+import withPermissions from '@/common/hocs/with-permissions';
+import Routes from '@/common/routes';
+import { PermissionsObjects } from '@/common/data/permission.data';
 
 const AssessmentPage = () => {
     const { assessmentId, clientId } = useParams();
@@ -60,4 +64,10 @@ const AssessmentPage = () => {
     )
 }
 
-export default AssessmentPage
+export default withAuth(
+  withPermissions(AssessmentPage, {
+    redirectUrl: Routes.Common.NotFound,
+    requiredPermissions: PermissionsObjects.ViewEmployee, // TODO: Add correct permission
+    }),
+    { mode: AUTH_MODE.LOGGED_IN, redirectUrl: Routes.Auth.Login } 
+    );

@@ -1,9 +1,11 @@
 import Button from '@/components/common/Buttons/Button'
 import { ArrowRight, PlusCircle, Waypoints } from 'lucide-react'
 import React from 'react'
+import { useRouter } from 'next/navigation';
 import InvolvedEmployeeItem from './InvolvedEmployeeItem'
 import { useInvolvedEmployee } from '@/hooks/client-network/use-involved-employee'
 import { ContactPreviewLoader } from './ContactPreviewLoader'
+
 import Image from 'next/image'
 import PrimaryButton from '@/common/components/PrimaryButton'
 import Link from 'next/link'
@@ -14,6 +16,7 @@ type Props = {
 }
 
 const InvolvedEmployeesPreview = ({ clientId, isParentLoading }: Props) => {
+    const router = useRouter();
     const { involvedEmployees, isLoading } = useInvolvedEmployee({ clientId: clientId })
 
     if (isLoading || isParentLoading) {
@@ -39,6 +42,7 @@ const InvolvedEmployeesPreview = ({ clientId, isParentLoading }: Props) => {
                         text='Add Employee'
                         animation='animate-bounce'
                         icon={PlusCircle}
+                        onClick={()=>router.push(`/clients/${clientId}/client-network/involved-employees`)}
 
                     />
                 </div>

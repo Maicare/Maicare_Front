@@ -13,6 +13,10 @@ import {  useState } from "react";
 import TableFilters from "./_components/TableFilters";
 import Statistics from "./_components/Statistics";
 import { columns } from "./_components/columns";
+import withAuth, { AUTH_MODE } from "@/common/hocs/with-auth";
+import withPermissions from "@/common/hocs/with-permissions";
+import Routes from "@/common/routes";
+import { PermissionsObjects } from "@/common/data/permission.data";
 
 
 
@@ -83,4 +87,10 @@ const EmployeesPage = () => {
     </div>
   )
 }
-export default EmployeesPage;
+export default withAuth(
+  withPermissions(EmployeesPage, {
+    redirectUrl: Routes.Common.NotFound,
+    requiredPermissions: PermissionsObjects.ViewEmployee, // TODO: Add correct permisssion
+  }),
+  {mode: AUTH_MODE.LOGGED_IN, redirectUrl: Routes.Auth.Login}
+);

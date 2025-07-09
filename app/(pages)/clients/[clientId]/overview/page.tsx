@@ -86,6 +86,7 @@ const Page = () => {
                     isParentLoading={isLoading}
                 />
                 <ReportsPreview
+                    
                     isParentLoading={isLoading}
                 />
                 <MedicalDossierPreview

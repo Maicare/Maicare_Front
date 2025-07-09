@@ -12,6 +12,10 @@ import UpsertAssessmentSheet from './_components/UpsertAssessmentSheet';
 import { CreateAssessment } from '@/schemas/assessment.schema';
 import { Assessment, AssessmentResponse } from '@/types/assessment.types';
 import { Row } from '@tanstack/table-core';
+import withAuth, { AUTH_MODE } from '@/common/hocs/with-auth';
+import withPermissions from '@/common/hocs/with-permissions';
+import Routes from '@/common/routes';
+import { PermissionsObjects } from '@/common/data/permission.data';
 
 const GoalsPage = () => {
     const { clientId } = useParams();
@@ -123,4 +127,10 @@ const GoalsPage = () => {
     )
 }
 
-export default GoalsPage
+export default withAuth(
+  withPermissions(GoalsPage, {
+    redirectUrl: Routes.Common.NotFound,
+    requiredPermissions: PermissionsObjects.ViewEmployee, // TODO: Add correct permission
+    }),
+    { mode: AUTH_MODE.LOGGED_IN, redirectUrl: Routes.Auth.Login } 
+    );

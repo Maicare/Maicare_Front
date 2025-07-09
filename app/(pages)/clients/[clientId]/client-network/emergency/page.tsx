@@ -11,6 +11,10 @@ import { EmergencyContactList } from '@/types/emergency.types';
 import { CreateEmergencyContact } from '@/schemas/emergencyContact.schema';
 import { DataTable } from '@/components/employee/table/data-table';
 import { getColumns } from './_components/columns';
+import withAuth, { AUTH_MODE } from '@/common/hocs/with-auth';
+import withPermissions from '@/common/hocs/with-permissions';
+import Routes from '@/common/routes';
+import { PermissionsObjects } from '@/common/data/permission.data';
 
 const EmergencyPage = () => {
   const { clientId } = useParams();
@@ -125,4 +129,10 @@ const EmergencyPage = () => {
   )
 }
 
-export default EmergencyPage
+export default withAuth(
+  withPermissions(EmergencyPage, {
+    redirectUrl: Routes.Common.NotFound,
+    requiredPermissions: PermissionsObjects.ViewEmployee, // TODO: Add correct permission
+    }),
+    { mode: AUTH_MODE.LOGGED_IN, redirectUrl: Routes.Auth.Login } 
+    );

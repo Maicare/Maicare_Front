@@ -8,6 +8,10 @@ import { useDiagnosis } from "@/hooks/diagnosis/use-diagnosis";
 import { ArrowBigLeft, ArrowBigRight, HeartPulse, PlusCircle } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
 import { columns } from "./_components/columns";
+import withAuth, { AUTH_MODE } from "@/common/hocs/with-auth";
+import withPermissions from "@/common/hocs/with-permissions";
+import Routes from "@/common/routes";
+import { PermissionsObjects } from "@/common/data/permission.data";
 
 const MedicalPage = () => {
     const {clientId} = useParams();
@@ -85,4 +89,10 @@ const MedicalPage = () => {
     )
 }
 
-export default MedicalPage
+export default withAuth(
+  withPermissions(MedicalPage, {
+    redirectUrl: Routes.Common.NotFound,
+    requiredPermissions: PermissionsObjects.ViewEmployee, // TODO: Add correct permission
+    }),
+    { mode: AUTH_MODE.LOGGED_IN, redirectUrl: Routes.Auth.Login } 
+    );
