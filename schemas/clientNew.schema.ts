@@ -35,12 +35,14 @@ export const CreateClientSchema = z.object({
   departure_reason: z.string().optional(),
   departure_report: z.string().optional(),
   sender_id: z.string().min(1, "Afzender ID is verplicht"),
+  employee_id: z.string().min(1, "Afzender ID is verplicht"),
 });
 
 // Type inference for the schema
 export type CreateClientInput = z.infer<typeof CreateClientSchema>;
-export type UpdateClientRequestBody = Omit<CreateClientInput,"sender_id"|"location_id"|"date_of_birth"> & {
+export type UpdateClientRequestBody = Omit<CreateClientInput,"sender_id"|"location_id"|"date_of_birth"|"employee_id"> & {
     sender_id:number;
+    employee_id:number;
     location_id:number;
     date_of_birth:string;
     id:Id;

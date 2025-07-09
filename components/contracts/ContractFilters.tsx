@@ -5,6 +5,7 @@ import { ContractFilterFormType } from "@/types/contracts.types";
 import { FormProvider, useForm } from "react-hook-form";
 import InputControl from "@/common/components/InputControl";
 import { ControlledSelect } from "@/common/components/ControlledSelect";
+import { Any } from "@/common/types/types";
 
 const ContractFilters: FunctionComponent<{
   onSubmit: (values: ContractFilterFormType) => void;
@@ -18,7 +19,7 @@ const ContractFilters: FunctionComponent<{
     financing_option: ""
   }
 
-  const methods = useForm<ContractFilterFormType>({
+  const methods = useForm<Any>({
     defaultValues: initialValues,
   });
 

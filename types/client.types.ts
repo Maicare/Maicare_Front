@@ -113,6 +113,7 @@ export type Client = {
     departure_report?: string;
     profile_picture?: string;
     sender_id: Id;
+    employee_id: Id;
     identity?: boolean;
     status?: string;
 }

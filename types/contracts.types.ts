@@ -86,12 +86,13 @@ export type ContractsListDto = PaginatedResponse<ContractItem>;
 
 export type ContractFilterFormType = {
     search: string,
-    status: string,
-    care_type: string,
-    financing_act: string,
-    financing_option: string,
+    status: "approved" | "draft" | "terminated" | undefined | "",
+    care_type: "ambulante" | "accommodation" | undefined | "",
+    financing_act: "WMO" | "ZVW" | "WLZ" | "JW" | "WPG" | undefined | "",
+    financing_option: "ZIN" | "PGB" | undefined | "",
     location_id?: string,
     page_size?: number,
+    page?: number,
 };
 
 export type ContractTypeItem = {

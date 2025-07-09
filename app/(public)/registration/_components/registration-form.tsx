@@ -35,20 +35,21 @@ import { formatBackendDate } from "@/utils/timeFormatting";
 import { Any } from "@/common/types/types";
 
 
-const RegistrationForm = ({ mode = "create",registration }: { mode?: "create" | "update",registration:Registration|undefined }) => {
+const RegistrationForm = ({ mode = "create", registration }: { mode?: "create" | "update", registration: Registration | undefined }) => {
     const [isUploading, setIsUploading] = useState<Record<string, boolean>>({});
     const router = useRouter();
-    const { createOne,updateOne } = useRegistration({ autoFetch: false });
+    const { createOne, updateOne } = useRegistration({ autoFetch: false });
     const { createOne: uploadFile } = useAttachment();
 
     const form = useForm<CreateRegistrationType>({
         resolver: zodResolver(createRegistrationSchema),
-        defaultValues: registration ? {...registration,application_date:formatBackendDate(registration.application_date)} : {
+        defaultValues: registration ? { ...registration, application_date: formatBackendDate(registration.application_date) } : {
             care_ambulatory_guidance: false,
             care_assisted_independent_living: false,
             care_protected_living: false,
             care_room_training_center: false,
             education_currently_enrolled: false,
+            work_currently_employed: false,
             referrer_signature: false,
             risk_aggressive_behavior: false,
             risk_criminal_history: false,
@@ -92,9 +93,9 @@ const RegistrationForm = ({ mode = "create",registration }: { mode?: "create" | 
     async function onSubmit(data: CreateRegistrationType) {
         try {
             if (mode === "create") {
-                await createOne({ ...data, application_date: data.application_date + "T00:00:00.000Z" }, { displayProgress:true,displaySuccess: true });
-            }else{
-                await updateOne(registration!.id,{ ...data, application_date: data.application_date + "T00:00:00.000Z" }, { displayProgress: true, displaySuccess: true });
+                await createOne({ ...data, application_date: data.application_date + "T00:00:00.000Z",work_start_date:data.work_start_date ?  data.work_start_date+ "T00:00:00.000Z" : undefined}, { displayProgress: true, displaySuccess: true });
+            } else {
+                await updateOne(registration!.id, { ...data, application_date: data.application_date + "T00:00:00.000Z",work_start_date:data.work_start_date ?  data.work_start_date+ "T00:00:00.000Z" : undefined }, { displayProgress: true, displaySuccess: true });
             }
             form.reset();
             router.back();
@@ -229,7 +230,7 @@ const RegistrationForm = ({ mode = "create",registration }: { mode?: "create" | 
                                         <FormItem>
                                             <FormLabel>Application Date</FormLabel>
                                             <FormControl>
-                                                <Input type="date" {...field}  />
+                                                <Input type="date" {...field} />
                                             </FormControl>
                                             <FormMessage />
                                         </FormItem>
@@ -347,8 +348,8 @@ const RegistrationForm = ({ mode = "create",registration }: { mode?: "create" | 
                     {/* Education Card */}
                     <Card className="bg-white">
                         <CardHeader>
-                            <CardTitle>Education</CardTitle>
-                            <CardDescription>Current education information</CardDescription>
+                            <CardTitle>Work and Education</CardTitle>
+                            <CardDescription>Current work and education information</CardDescription>
                         </CardHeader>
                         <CardContent className="space-y-4">
                             <FormField
@@ -428,6 +429,112 @@ const RegistrationForm = ({ mode = "create",registration }: { mode?: "create" | 
                                     <FormField
                                         control={form.control}
                                         name="education_additional_notes"
+                                        render={({ field }) => (
+                                            <FormItem>
+                                                <FormLabel>Additional Notes</FormLabel>
+                                                <FormControl>
+                                                    <Textarea
+                                                        placeholder="Any additional information about education..."
+                                                        className="resize-none"
+                                                        {...field}
+                                                    />
+                                                </FormControl>
+                                                <FormMessage />
+                                            </FormItem>
+                                        )}
+                                    />
+                                </div>
+                            )}
+                            <FormField
+                                control={form.control}
+                                name="work_currently_employed"
+                                render={({ field }) => (
+                                    <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
+                                        <FormControl>
+                                            <Checkbox
+                                                checked={field.value}
+                                                onCheckedChange={field.onChange}
+                                            />
+                                        </FormControl>
+                                        <FormLabel className="font-normal">
+                                            Currently Employed in work
+                                        </FormLabel>
+                                    </FormItem>
+                                )}
+                            />
+
+                            {form.watch("work_currently_employed") && (
+                                <div className="space-y-4">
+                                    <FormField
+                                        control={form.control}
+                                        name="work_current_employer"
+                                        render={({ field }) => (
+                                            <FormItem>
+                                                <FormLabel>Employer</FormLabel>
+                                                <FormControl>
+                                                    <Input placeholder="Boston Consulting Group" {...field} />
+                                                </FormControl>
+                                                <FormMessage />
+                                            </FormItem>
+                                        )}
+                                    />
+                                    <div className="grid grid-cols-2 gap-4">
+                                        <FormField
+                                            control={form.control}
+                                            name="work_current_position"
+                                            render={({ field }) => (
+                                                <FormItem>
+                                                    <FormLabel>Position Name</FormLabel>
+                                                    <FormControl>
+                                                        <Input placeholder="Developer Fullstack" {...field} />
+                                                    </FormControl>
+                                                    <FormMessage />
+                                                </FormItem>
+                                            )}
+                                        />
+                                        <FormField
+                                            control={form.control}
+                                            name="work_start_date"
+                                            render={({ field }) => (
+                                                <FormItem>
+                                                    <FormLabel>Start Date</FormLabel>
+                                                    <FormControl>
+                                                        <Input type="date" {...field} />
+                                                    </FormControl>
+                                                    <FormMessage />
+                                                </FormItem>
+                                            )}
+                                        />
+                                        <FormField
+                                            control={form.control}
+                                            name="work_employer_email"
+                                            render={({ field }) => (
+                                                <FormItem>
+                                                    <FormLabel>Employer Email</FormLabel>
+                                                    <FormControl>
+                                                        <Input placeholder="employer@example.com" {...field} />
+                                                    </FormControl>
+                                                    <FormMessage />
+                                                </FormItem>
+                                            )}
+                                        />
+                                    <FormField
+                                        control={form.control}
+                                        name="work_employer_phone"
+                                        render={({ field }) => (
+                                            <FormItem>
+                                                <FormLabel>Employer Phone</FormLabel>
+                                                <FormControl>
+                                                    <Input placeholder="+31 6 12345678" {...field} />
+                                                </FormControl>
+                                                <FormMessage />
+                                            </FormItem>
+                                        )}
+                                    />
+                                    </div>
+                                    <FormField
+                                        control={form.control}
+                                        name="work_additional_notes"
                                         render={({ field }) => (
                                             <FormItem>
                                                 <FormLabel>Additional Notes</FormLabel>

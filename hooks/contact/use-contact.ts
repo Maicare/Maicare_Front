@@ -4,12 +4,12 @@ import { useApi } from "@/common/hooks/use-api";
 import useProgressBar from "@/common/hooks/use-progress-bar";
 import { ApiOptions } from "@/common/types/api.types";
 import { PaginatedResponse } from "@/common/types/pagination.types";
-import { Contact } from "@/types/contacts.types";
+import { Contact, CreateContact } from "@/schemas/contact.schema";
 import { enqueueSnackbar } from "notistack";
 import { useState } from "react";
 import useSWR from "swr";
 
-export function useContact(search?: string) {
+export function useContact({search,autoFetch}:{ search?: string,autoFetch: boolean }) {
   const [page, setPage] = useState(1);
   const page_size = 10;
   const { start: startProgress, stop: stopProgress } = useProgressBar();
@@ -20,9 +20,11 @@ export function useContact(search?: string) {
     error,
     mutate,
   } = useSWR<PaginatedResponse<Contact>>(
-    `${ApiRoutes.Contact.ReadAll}?page=${page}&page_size=${page_size}${search ? `&search=${search}` : ""
-    }`,
+    autoFetch ? `${ApiRoutes.Contact.ReadAll}?page=${page}&page_size=${page_size}${search ? `&search=${search}` : ""
+    }`: null,
     async (url) => {
+      if (!url) return null; // Return null if URL is not defined
+      // Fetch data from the API
       const response = await api.get(url);
       if (!response.data.data) {
         return null;
@@ -33,19 +35,25 @@ export function useContact(search?: string) {
   );
   const isLoading = !contacts && !error;
 
-  const addContact = async (contact: Contact) => {
+  const createOne = async (contact: CreateContact, options?: ApiOptions) => {
+    const { displayProgress = false, displaySuccess = false } = options || {};
+
     try {
+      // Display progress bar
+      if (displayProgress) startProgress();
       const { message, success, data, error } = await useApi<Contact>(ApiRoutes.Contact.AddContact, "POST", {}, contact);
 
       if (!data)
         throw new Error(error || message || "An unknown error occurred");
-      else
-        enqueueSnackbar("Contact added successfully", { variant: "success" });
+      if (displaySuccess && success)
+        enqueueSnackbar("Contact created successfully", { variant: "success" });
 
       return data
     } catch (error: any) {
-      enqueueSnackbar(error?.response?.data?.message || "Contact add failed", { variant: "error" });
+      enqueueSnackbar(error?.response?.data?.message || "Contact creation failed", { variant: "error" });
       throw error;
+    }finally {
+      if (displayProgress) stopProgress();
     }
 
   }
@@ -72,19 +80,24 @@ export function useContact(search?: string) {
     }
   }
 
-  const updateContact = async (id: number, contact: Contact) => {
+  const updateOne = async (id: number, contact: CreateContact, options?: ApiOptions) => {
+    const { displayProgress = false, displaySuccess = false } = options || {};
     try {
+      if (displayProgress) startProgress();
+
       const { message, success, data, error } = await useApi<Contact>(ApiRoutes.Contact.UpdateOne.replace("{id}", id.toString()), "PUT", {}, contact);
 
       if (!data)
         throw new Error(error || message || "An unknown error occurred");
-      else
+      if (displaySuccess && success)
         enqueueSnackbar("Employee updated successfully", { variant: "success" });
 
       return data
     } catch (error: any) {
       enqueueSnackbar(error?.response?.data?.message || "Employee update  failed", { variant: "error" });
       throw error;
+    }finally {
+      if (displayProgress) stopProgress();
     }
   }
 
@@ -95,8 +108,8 @@ export function useContact(search?: string) {
     page,
     setPage,
     mutate,
-    addContact,
+    createOne,
     readOne,
-    updateContact
+    updateOne
   };
 }

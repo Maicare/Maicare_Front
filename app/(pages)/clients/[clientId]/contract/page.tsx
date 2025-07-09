@@ -1,22 +1,20 @@
 "use client";
+import { useParams, useRouter } from "next/navigation";
 
-import React, { FunctionComponent } from "react";
-import withAuth, { AUTH_MODE } from "@/common/hocs/with-auth";
-import withPermissions from "@/common/hocs/with-permissions";
-import Routes from "@/common/routes";
-import { PermissionsObjects } from "@/common/data/permission.data";
-import { ArrowBigLeft, ArrowBigRightDash, Contact, PlusCircle } from "lucide-react";
-import { DataTable } from "@/components/employee/table/data-table";
+import { ArrowBigLeft, ArrowBigRight, Contrast, PlusCircle } from "lucide-react";
 import PrimaryButton from "@/common/components/PrimaryButton";
-import { useRouter } from "next/navigation";
-import { useContact } from "@/hooks/contact/use-contact";
+import { DataTable } from "@/components/employee/table/data-table";
+import { useContract } from "@/hooks/contract/use-contract";
 import { columns } from "./_components/columns";
+import { PaginatedResponse } from "@/common/types/pagination.types";
+import { Contract } from "@/schemas/contract.schema";
 
-const Page: FunctionComponent = () => {
-
+const Finances = () => {
   const router = useRouter();
 
-  const { contacts, setPage, page } = useContact({ autoFetch: true });
+  const {clientId} = useParams();
+
+  const { contracts, setPage, page } = useContract({ autoFetch: true,clientId:clientId as string });
 
   const handlePrevious = () => {
     if (page <= 1) {
@@ -26,20 +24,19 @@ const Page: FunctionComponent = () => {
     setPage(page - 1);
   }
   const handleNext = () => {
-    if (contacts?.next) {
+    if (contracts?.next) {
       setPage(page + 1);
       return;
     }
   }
   const handleAdd = () => {
-    router.push(`/contacts/new`);
+    router.push(`contract/create`);
   }
-
   return (
     <div className="w-full flex flex-col gap-4">
       <div className="flex items-center justify-between">
         <h1 className='flex items-center gap-2 m-0 p-0 font-extrabold text-lg text-slate-600'>
-          <Contact size={24} className='text-indigo-400' />  Opdrachtgevers
+          <Contrast size={24} className='text-indigo-400' />  Contracten
         </h1>
         <PrimaryButton
           text="Add"
@@ -53,7 +50,7 @@ const Page: FunctionComponent = () => {
       <div className="grid grid-cols-1 gap-4">
 
         <div className="grid grid-cols-1 gap-4">
-          <DataTable columns={columns} data={contacts?.results ?? []} className="dark:bg-[#18181b] dark:border-black" />
+          <DataTable columns={columns} data={(contracts as PaginatedResponse<Contract>)?.results ?? []} className="dark:bg-[#18181b] dark:border-black" />
           <div className="flex px-2 py-3 bg-white dark:bg-[#18181b] dark:border-black rounded-md mt-5 justify-between border-2 border-muted">
             <PrimaryButton
               disabled={page === 1}
@@ -63,10 +60,10 @@ const Page: FunctionComponent = () => {
               iconSide="left"
             />
             <PrimaryButton
-              disabled={contacts?.next ? false : true}
+              disabled={contracts?.next ? false : true}
               onClick={handleNext}
               text={"Next"}
-              icon={ArrowBigRightDash}
+              icon={ArrowBigRight}
             />
           </div>
         </div>
@@ -75,10 +72,4 @@ const Page: FunctionComponent = () => {
   );
 };
 
-export default withAuth(
-  withPermissions(Page, {
-    redirectUrl: Routes.Common.NotFound,
-    requiredPermissions: PermissionsObjects.ViewEmployee, // TODO: Add correct permisssion
-  }),
-  { mode: AUTH_MODE.LOGGED_IN, redirectUrl: Routes.Auth.Login }
-);
+export default Finances;

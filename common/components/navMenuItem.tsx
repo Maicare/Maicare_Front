@@ -22,6 +22,7 @@ const NavMenuItem = ({ item }: {
     const [open, setOpen] = useState(false);
     const pathname = usePathname();
     const router = useRouter();
+    const regex = new RegExp(`^${item.url}/\\d+(?:/[a-zA-Z]+)?$`);
     if (item.items) {
         return (
             <Collapsible
@@ -58,7 +59,7 @@ const NavMenuItem = ({ item }: {
     }
     return (
         <SidebarMenuItem key={item.title} className=" rounded-md text-white">
-            <SidebarMenuButton onClick={() => router.push(item.url)} tooltip={item.title} className={cn("hover:bg-indigo-400/30 hover:text-white hover:backdrop-blur-sm dark:hover:bg-indigo-800", (pathname === item.url || pathname === item.url+"/new" ) && "bg-white/30 backdrop-blur-sm dark:bg-gray-500")}>
+            <SidebarMenuButton onClick={() => router.push(item.url)} tooltip={item.title} className={cn("hover:bg-indigo-400/30 hover:text-white hover:backdrop-blur-sm dark:hover:bg-indigo-800", (pathname === item.url || pathname === item.url+"/new" || pathname === item.url+"/create" || regex.test(pathname) ) && "bg-white/30 backdrop-blur-sm dark:bg-gray-500")}>
                 {item.icon && <item.icon />}
                 <span>{item.title}</span>
             </SidebarMenuButton>

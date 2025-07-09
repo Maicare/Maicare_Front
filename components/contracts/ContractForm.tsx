@@ -68,8 +68,8 @@ const ContractForm: FunctionComponent<PropsType> = ({ clientId, contract }) => {
   const router = useRouter();
 
   const { readOne: getClientData } = useClient({});
-  const { readOne: getContactData } = useContact();
-  const { readContractTypes, addContractTypes, deleteContractTypes, addContract, updateOne } = useContract({});
+  const { readOne: getContactData } = useContact({autoFetch:false});
+  const { readContractTypes, addContractTypes, deleteContractTypes, updateOne } = useContract({});
 
   const { open } = useModal(ManageContractTypeModal);
 
@@ -163,7 +163,7 @@ const ContractForm: FunctionComponent<PropsType> = ({ clientId, contract }) => {
         router.push(`/contracts`)
       }
       else {
-        await addContract(preparedData, clientId);
+        // await addContract(preparedData, clientId);
         reset();
       }
     } catch (error) {

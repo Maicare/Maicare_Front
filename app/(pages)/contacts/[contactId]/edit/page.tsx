@@ -1,34 +1,63 @@
 "use client";
 
-import React from "react";
-import { useParams } from "next/navigation";
-import ContactForm from "@/components/contacts/ContactForm";
-import Panel from "@/components/common/Panel/Panel";
-import Breadcrumb from "@/components/common/Breadcrumbs/Breadcrumb";
+import React, { useEffect, useState } from "react";
+import { useParams, useRouter } from "next/navigation";
 import withAuth, { AUTH_MODE } from "@/common/hocs/with-auth";
 import withPermissions from "@/common/hocs/with-permissions";
 import Routes from "@/common/routes";
 import { PermissionsObjects } from "@/common/data/permission.data";
+import { useContact } from "@/hooks/contact/use-contact";
+import { Contact } from "@/schemas/contact.schema";
+import { Id } from "@/common/types/types";
+import UpsertContactForm from "../../_components/upsert-contact-form";
 
 const Page: React.FC = () => {
-  const params = useParams();
-  const contactIdParam = params?.contactId;
-  const contactId = contactIdParam ? parseInt(contactIdParam as string, 10) : 0;
+  const router = useRouter();
+  const { contactId } = useParams();
 
+  const { readOne } = useContact({ autoFetch: false });
+
+  const [contact, setContact] = useState<Contact | undefined>(undefined);
+  const [isLoading, setIsLoading] = useState(false);
+  useEffect(() => {
+    const fetchContact = async (id: Id) => {
+      setIsLoading(true);
+      const data = await readOne(id);
+      setContact(data);
+      setIsLoading(false);
+    }
+    if (contactId) fetchContact(+contactId);
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [contactId]);
+
+
+  const onSuccess = (id: number) => {
+    router.push(`/contacts/${id}`)
+  }
+  const onCancel = () => {
+    router.back();
+  }
   return (
-    <>
-      <Breadcrumb pageName={"Bijwerken Opdrachtgevers"} />
-      <div className="">
-        <Panel title={"Bijwerken Opdrachtgevers"}>
-          <ContactForm
-            contactId={contactId}
-            // onSuccess={() => {
-            //   router.replace("/contacts");
-            // }}
-          />
-        </Panel>
+    <div className="container mx-auto">
+      <div className="flex justify-between items-center mb-5">
+        <h1 className="text-xl font-semibold">Opdrachtgevers bijwerken</h1>
+        <p>Dashboard / <span className="font-medium text-indigo-500 hover:cursor-pointer">Opdrachtgevers bijwerken</span></p>
       </div>
-    </>
+      {
+        (!contact || isLoading) ?
+          <div className="flex items-center justify-center h-screen">
+            <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-blue-500"></div>
+          </div>
+          :
+          <UpsertContactForm
+            mode="update"
+            onSuccess={onSuccess}
+            defaultValues={contact}
+            onCancel={onCancel}
+          />
+      }
+    </div>
   );
 };
 

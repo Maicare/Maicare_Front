@@ -1,5 +1,5 @@
 "use client"
-import { Card, CardHeader, CardTitle, CardContent, CardFooter } from "@/components/ui/card"
+import { Card, CardHeader, CardTitle, CardContent, CardFooter, CardDescription } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import {
@@ -14,7 +14,9 @@ import {
     User,
     ClipboardList,
     XCircle,
-    Edit
+    Edit,
+    Calendar,
+    AlertCircle
 } from "lucide-react"
 import { Registration } from "@/types/registration.types"
 import { useParams, useRouter } from "next/navigation"
@@ -90,10 +92,10 @@ export default function ReregistrationView() {
         { name: "Training Center", value: registration.care_room_training_center, color: "bg-amber-100 text-amber-800" },
     ].filter(type => type.value)
 
-    const handleUpdateStatus = async (date:string) => {
+    const handleUpdateStatus = async (date: string) => {
         try {
             setStatusIsLoading(true);
-            await updateStatus(registration.id, "approved",date, { displaySuccess: true, displayProgress: true });
+            await updateStatus(registration.id, "approved", date, { displaySuccess: true, displayProgress: true });
         } catch (error) {
             console.log(error);
         } finally {
@@ -130,7 +132,7 @@ export default function ReregistrationView() {
                         onClick={() => router.push(`/registrations/${registration.id}/update`)}
                         animation="animate-bounce"
                     />
-                    <AcceptRegistrationDialog 
+                    <AcceptRegistrationDialog
                         isStatusLoading={isStatusLoading}
                         handleAcceptRegistration={handleUpdateStatus}
                     />
@@ -144,7 +146,7 @@ export default function ReregistrationView() {
                         onClick={async () => {
                             try {
                                 setStatusIsLoading(true);
-                                await updateStatus(registration.id, "rejected","", { displaySuccess: true, displayProgress: true });
+                                await updateStatus(registration.id, "rejected", "", { displaySuccess: true, displayProgress: true });
                             } catch (error) {
                                 console.log(error);
                             } finally {
@@ -273,6 +275,103 @@ export default function ReregistrationView() {
                             </CardContent>
                         </Card>
                     )}
+                    <Card className="border-2 border-purple-100 shadow-sm hover:shadow-md transition-shadow">
+                        <CardHeader className="bg-purple-50 rounded-t-lg">
+                            <CardTitle className="flex items-center gap-2 text-purple-800">
+                                <Shield className="h-5 w-5 text-purple-600" />
+                                Guardian Information
+                            </CardTitle>
+                            <CardDescription className="text-purple-600">
+                                Emergency contacts and legal guardians
+                            </CardDescription>
+                        </CardHeader>
+                        <CardContent className="bg-white grid grid-cols-1 md:grid-cols-2 gap-6 p-6">
+                            {/* Guardian 1 Section */}
+                            <div className="space-y-4 p-4 bg-purple-50 rounded-lg">
+                                <div className="flex items-center gap-2">
+                                    <User className="h-4 w-4 text-purple-600" />
+                                    <h3 className="font-medium text-purple-700">Primary Guardian</h3>
+                                </div>
+
+                                {registration.guardian1_first_name ? (
+                                    <>
+                                        <div className="space-y-1">
+                                            <h4 className="text-xs font-medium text-purple-500">Full Name</h4>
+                                            <p className="font-medium">
+                                                {registration.guardian1_first_name} {registration.guardian1_last_name}
+                                            </p>
+                                        </div>
+
+                                        <div className="space-y-1">
+                                            <h4 className="text-xs font-medium text-purple-500">Relationship</h4>
+                                            <p>{registration.guardian1_relationship || 'Not specified'}</p>
+                                        </div>
+
+                                        <div className="space-y-1">
+                                            <h4 className="text-xs font-medium text-purple-500">Contact</h4>
+                                            <div className="flex items-center gap-2">
+                                                <Phone className="h-4 w-4 text-purple-600" />
+                                                <span>{registration.guardian1_phone_number || 'Not provided'}</span>
+                                            </div>
+                                            <div className="flex items-center gap-2">
+                                                <Mail className="h-4 w-4 text-purple-600" />
+                                                <span>{registration.guardian1_email || 'Not provided'}</span>
+                                            </div>
+                                        </div>
+                                    </>
+                                ) : (
+                                    <p className="text-sm text-purple-500 italic">No primary guardian information provided</p>
+                                )}
+                            </div>
+
+                            {/* Guardian 2 Section */}
+                            <div className="space-y-4 p-4 bg-purple-50 rounded-lg">
+                                <div className="flex items-center gap-2">
+                                    <User className="h-4 w-4 text-purple-600" />
+                                    <h3 className="font-medium text-purple-700">Secondary Guardian</h3>
+                                </div>
+
+                                {registration.guardian2_first_name ? (
+                                    <>
+                                        <div className="space-y-1">
+                                            <h4 className="text-xs font-medium text-purple-500">Full Name</h4>
+                                            <p className="font-medium">
+                                                {registration.guardian2_first_name} {registration.guardian2_last_name}
+                                            </p>
+                                        </div>
+
+                                        <div className="space-y-1">
+                                            <h4 className="text-xs font-medium text-purple-500">Relationship</h4>
+                                            <p>{registration.guardian2_relationship || 'Not specified'}</p>
+                                        </div>
+
+                                        <div className="space-y-1">
+                                            <h4 className="text-xs font-medium text-purple-500">Contact</h4>
+                                            <div className="flex items-center gap-2">
+                                                <Phone className="h-4 w-4 text-purple-600" />
+                                                <span>{registration.guardian2_phone_number || 'Not provided'}</span>
+                                            </div>
+                                            <div className="flex items-center gap-2">
+                                                <Mail className="h-4 w-4 text-purple-600" />
+                                                <span>{registration.guardian2_email || 'Not provided'}</span>
+                                            </div>
+                                        </div>
+                                    </>
+                                ) : (
+                                    <p className="text-sm text-purple-500 italic">No secondary guardian information provided</p>
+                                )}
+                            </div>
+
+                            {/* Emergency Contact Note */}
+                            <div className="md:col-span-2 p-3 bg-purple-100 rounded-lg flex items-start gap-2">
+                                <AlertCircle className="h-4 w-4 text-purple-600 mt-0.5 flex-shrink-0" />
+                                <p className="text-sm text-purple-700">
+                                    In case of emergency, please contact the primary guardian first.
+                                    If unavailable, contact the secondary guardian.
+                                </p>
+                            </div>
+                        </CardContent>
+                    </Card>
                 </div>
 
                 {/* Right Column */}
@@ -362,6 +461,57 @@ export default function ReregistrationView() {
                                 <div className="space-y-1">
                                     <h3 className="text-sm font-medium text-muted-foreground">Additional Notes</h3>
                                     <p className="whitespace-pre-line">{registration.education_additional_notes}</p>
+                                </div>
+                            )}
+                        </CardContent>
+                    </Card>
+                    {/* Work Information */}
+                    <Card className="border-2 border-yellow-100">
+                        <CardHeader className="bg-yellow-50">
+                            <CardTitle className="flex items-center gap-2">
+                                <School className="h-5 w-5 text-yellow-600" />
+                                Work Information
+                            </CardTitle>
+                        </CardHeader>
+                        <CardContent className="bg-white pt-6 space-y-4">
+                            <div className="space-y-1">
+                                <h3 className="text-sm font-medium text-muted-foreground">Current Employed</h3>
+                                <p>
+                                    {registration.work_current_employer ? (
+                                        <Badge className="bg-green-100 text-green-800">Currently Employed</Badge>
+                                    ) : (
+                                        <Badge variant="outline">Not employed</Badge>
+                                    )}
+                                </p>
+                            </div>
+                            {registration.work_current_position && (
+                                <div className="space-y-1">
+                                    <h3 className="text-sm font-medium text-muted-foreground">Position</h3>
+                                    <p>{registration.work_current_position}</p>
+                                </div>
+                            )}
+                            {registration.work_current_employer && (
+                                <div className="space-y-1">
+                                    <h3 className="text-sm font-medium text-muted-foreground">Employer</h3>
+                                    <p>{registration.work_current_employer}</p>
+                                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                                        <Mail className="h-4 w-4" />
+                                        <span>{registration.work_employer_email}</span>
+                                    </div>
+                                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                                        <Phone className="h-4 w-4" />
+                                        <span>{registration.work_employer_phone}</span>
+                                    </div>
+                                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                                        <Calendar className="h-4 w-4" />
+                                        <span>{new Date(registration.work_start_date).toLocaleDateString()}</span>
+                                    </div>
+                                </div>
+                            )}
+                            {registration.work_additional_notes && (
+                                <div className="space-y-1">
+                                    <h3 className="text-sm font-medium text-muted-foreground">Additional Notes</h3>
+                                    <p className="whitespace-pre-line">{registration.work_additional_notes}</p>
                                 </div>
                             )}
                         </CardContent>

@@ -5,10 +5,10 @@ import { useParams } from "next/navigation";
 import Breadcrumb from "@/components/common/Breadcrumbs/Breadcrumb";
 import Panel from "@/components/common/Panel/Panel";
 import { useContract } from "@/hooks/contract/use-contract";
-import { ContractResDto } from "@/types/contracts.types";
 import LargeErrorMessage from "@/components/common/Alerts/LargeErrorMessage";
 import Loader from "@/components/common/loader";
 import ContractForm from "@/components/contracts/ContractForm";
+import { Any } from "@/common/types/types";
 
 const EditContract: FunctionComponent = () => {
   const params = useParams();
@@ -17,7 +17,7 @@ const EditContract: FunctionComponent = () => {
 
   const { readOne } = useContract({});
 
-  const [contract, setContract] = useState<ContractResDto | null>(null);
+  const [contract, setContract] = useState<Any | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {

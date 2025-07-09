@@ -81,4 +81,11 @@ export type RegistrationParamsFilters = {
       risk_weapon_possession: boolean;
       submitted_at: string;
       updated_at: string;
+      work_additional_notes: string,
+      work_current_employer: string,
+      work_current_position: string,
+      work_currently_employed: boolean,
+      work_employer_email: string,
+      work_employer_phone: string,
+      work_start_date: string
   }
