@@ -59,6 +59,13 @@ export interface RegistrationForm {
   risk_substance_abuse: boolean;
   risk_suicidal_selfharm: boolean;
   risk_weapon_possession: boolean;
+  work_additional_notes: string;
+  work_current_employer: string;
+  work_current_position: string;
+  work_currently_employed: boolean;
+  work_employer_email: string;
+  work_employer_phone: string;
+  work_start_date: string;
 }
 
 // Zod schema
@@ -120,6 +127,13 @@ export const createRegistrationSchema = z.object({
   risk_substance_abuse: z.boolean().default(false),
   risk_suicidal_selfharm: z.boolean().default(false),
   risk_weapon_possession: z.boolean().default(false),
+  work_additional_notes: z.string().optional(),
+  work_current_employer: z.string().optional(),
+  work_current_position: z.string().optional(),
+  work_currently_employed: z.boolean().default(false),
+  work_employer_email: z.string().optional(),
+  work_employer_phone: z.string().optional(),
+  work_start_date: z.string().optional()
 });
 
 // Infer TypeScript type from Zod schema

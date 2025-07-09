@@ -2,8 +2,9 @@ import React, { FunctionComponent } from "react";
 // import { useModal } from "@/components/providers/ModalProvider";
 // import ContactModal from "@/components/Modals/ContactModal";
 import InfoIcon from "@/components/icons/InfoIcon";
-import { Contact, OpClientTypeRecord } from "@/types/contacts.types";
+import {  OpClientTypeRecord } from "@/types/contacts.types";
 import DetailCell from "../common/DetailCell";
+import { Contact } from "@/schemas/contact.schema";
 // import Button from "../common/Buttons/Button";
 
 const ContactAssignment: FunctionComponent<{

@@ -7,7 +7,7 @@ import { useFormContext, Controller } from 'react-hook-form';
 export const ControlledSenderSelect: FunctionComponent<Omit<SelectProps, "options">> = ({ name="sender_id" , ...props }) => {
     const { control } = useFormContext();
 
-    const { contacts } = useContact();
+    const { contacts } = useContact({autoFetch: true}); 
 
     const locationOptions = useMemo<SelectionOption[]>(() => {
         if (contacts?.results) {

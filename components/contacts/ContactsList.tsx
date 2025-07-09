@@ -13,7 +13,7 @@ import { useContact } from "@/hooks/contact/use-contact";
 import PaginatedTable from "@/components/common/PaginatedTable/PaginatedTable";
 
 const ContactsList: FunctionComponent = () => {
-  const { contacts: data, page, setPage, isLoading } = useContact();
+  const { contacts: data, page, setPage, isLoading } = useContact({autoFetch:true});
   console.log(isLoading);
   const columns = useMemo<ColumnDef<Contact>[]>(() => {
     return [

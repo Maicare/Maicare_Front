@@ -1,6 +1,5 @@
 "use client";
 
-import FilesUploader from "@/common/components/FilesUploader";
 import PrimaryButton from "@/common/components/PrimaryButton";
 import Tooltip from "@/common/components/Tooltip";
 import { Button } from "@/components/ui/button";
@@ -19,21 +18,22 @@ import { cn } from "@/utils/cn";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { format } from "date-fns";
 import { CalendarIcon, CheckCircle, Info, PlusCircle, XCircle } from "lucide-react";
-import {  useState } from "react";
-import {  useForm } from "react-hook-form";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
 import AddressesForm from "./AdressesForm";
+import EmployeeSelect from "../[clientId]/incidents/_components/EmployeeSelect";
 
 type Props = {
     mode: "create" | "update";
     onSuccess?: (id: number) => void;
-    defaultValues?: UpdateClientRequestBody&{identity_attachment_ids:string[]};
+    defaultValues?: UpdateClientRequestBody & { identity_attachment_ids: string[] };
     onCancel: () => void;
 }
 
 const UpsertClientForm = ({ mode, onCancel, defaultValues, onSuccess }: Props) => {
     const { createOne, updateOne } = useClient({ autoFetch: false });
-    const { locations, } = useLocation({autoFetch:true});
-    const { contacts, } = useContact();
+    const { locations, } = useLocation({ autoFetch: true });
+    const { contacts, } = useContact({ autoFetch: true });
     const [loading, setLoading] = useState(false);
     // 1. Define your form.
 
@@ -44,8 +44,9 @@ const UpsertClientForm = ({ mode, onCancel, defaultValues, onSuccess }: Props) =
             date_of_birth: new Date(defaultValues?.date_of_birth ?? ""),
             location_id: defaultValues?.location_id?.toString() ?? "",
             sender_id: defaultValues?.sender_id?.toString() ?? "",
-            departure_reason:defaultValues?.departure_reason??"",
-            departure_report:defaultValues?.departure_report ? defaultValues.departure_report : undefined,
+            employee_id: defaultValues?.employee_id?.toString() ?? "",
+            departure_reason: defaultValues?.departure_reason ?? "",
+            departure_report: defaultValues?.departure_report ? defaultValues.departure_report : undefined,
 
         } : {
             first_name: "", // Voornaam
@@ -76,7 +77,8 @@ const UpsertClientForm = ({ mode, onCancel, defaultValues, onSuccess }: Props) =
             removed_identity_documents: [], // Verwijderde identiteitsdocumenten (optioneel)
             departure_reason: "", // Vertrekreden (optioneel)
             departure_report: "", // Vertrekrapport (optioneel)
-            sender_id: "", // Afzender ID
+            sender_id: "", // Afzender ID,
+            employee_id: "", // Werknemer ID
         },
     });
     // 2. Define a submit handler.
@@ -108,15 +110,15 @@ const UpsertClientForm = ({ mode, onCancel, defaultValues, onSuccess }: Props) =
                     defaultValues?.id || 0,
                     {
                         ...values,
-                        date_of_birth: values.date_of_birth.toISOString().replace("00:00:00Z","04:00:00Z"),
+                        date_of_birth: values.date_of_birth.toISOString().replace("00:00:00Z", "04:00:00Z"),
                         location_id: Number(values.location_id),
-                        sender_id:Number(values.sender_id),
+                        sender_id: Number(values.sender_id),
                     }, {
                     displaySuccess: true,
                     displayProgress: true
                 }
                 );
-                onSuccess?.(defaultValues?.id||0);
+                onSuccess?.(defaultValues?.id || 0);
             } catch (error) {
                 console.log(error);
             } finally {
@@ -410,10 +412,10 @@ const UpsertClientForm = ({ mode, onCancel, defaultValues, onSuccess }: Props) =
                                     )}
                                 />
                             </div>
-                            <FilesUploader
-                                label={"Identiteitsdocumenten"}
-                                name={"added_identity_documents"}
-                                uploaded={defaultValues?.identity_attachment_ids||undefined}
+                            <EmployeeSelect
+                                name="employee_id"
+                                label="Werknemer"
+                                className="w-full"
                             />
                         </div>
                     </div>
@@ -564,7 +566,7 @@ const UpsertClientForm = ({ mode, onCancel, defaultValues, onSuccess }: Props) =
                                                             <SelectLabel>Contacts</SelectLabel>
                                                             {
                                                                 contacts?.results?.map((item, index) => (
-                                                                    <SelectItem key={index} value={item?.id?.toString()||""} className="hover:bg-slate-100 cursor-pointer">{item.name}</SelectItem>
+                                                                    <SelectItem key={index} value={item?.id?.toString() || ""} className="hover:bg-slate-100 cursor-pointer">{item.name}</SelectItem>
                                                                 ))
                                                             }
                                                         </SelectGroup>

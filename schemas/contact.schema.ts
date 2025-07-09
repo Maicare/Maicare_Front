@@ -1,24 +1,43 @@
-import { OP_CLIENT_TYPE } from "@/types/contacts.types";
-import * as Yup from "yup";
+import { OP_CLIENT_TYPE } from '@/types/contacts.types';
+import { z } from 'zod';
 
-export const OpOrgContactFormSchema = Yup.object().shape({
-    types: Yup.string().oneOf(OP_CLIENT_TYPE).required(),
-    name: Yup.string().required("Naam is verplicht"),
-    address: Yup.string().required("Adres is verplicht"),
-    postal_code: Yup.string().required("Postcode is verplicht"),
-    place: Yup.string().required("Plaats is verplicht"),
-    land: Yup.string().required("Land is verplicht"),
-    contacts: Yup.array()
-        .of(
-            Yup.object().shape({
-                name: Yup.string().required("Naam is verplicht"),
-                email: Yup.string().email("Email is niet geldig").required("Email is verplicht"),
-                phone_number: Yup.string().required("Telefoonnummer is verplicht"),
-            })
-        )
-        .required("Contacten zijn verplicht"),
-    kvknumber: Yup.string().required("KvK nummer is verplicht"),
-    btwnumber: Yup.string().required("BTW nummer is verplicht"),
-    phone_number: Yup.string().required("Telefoonnummer is verplicht"),
-    client_number: Yup.string().required("Clientnummer is verplicht"),
+
+export type OpClientType = typeof OP_CLIENT_TYPE[number];
+
+// Schema for individual contact in the contacts array
+const ContactPersonSchema = z.object({
+  email: z.string().email(),
+  name: z.string(),
+  phone_number: z.string(),
 });
+
+export type ContactPerson = z.infer<typeof ContactPersonSchema>;
+
+// Main Contact schema
+export const ContactSchema = z.object({
+  BTWnumber: z.string(),
+  KVKnumber: z.string(),
+  address: z.string(),
+  client_number: z.string(),
+  contacts: z.array(ContactPersonSchema),
+  created_at: z.string().datetime(), // or z.string() if you don't want datetime validation
+  id: z.number().int(),
+  land: z.string(),
+  name: z.string(),
+  phone_number: z.string(),
+  place: z.string(),
+  postal_code: z.string(),
+  types: z.enum(OP_CLIENT_TYPE), // or z.string() if you want to allow any string
+  updated_at: z.string().datetime(), // or z.string() if you don't want datetime validation
+});
+
+export type Contact = z.infer<typeof ContactSchema>;
+
+// CreateContact schema (without id, created_at, updated_at)
+export const CreateContactSchema = ContactSchema.omit({ 
+  id: true,
+  created_at: true,
+  updated_at: true 
+});
+
+export type CreateContact = z.infer<typeof CreateContactSchema>;

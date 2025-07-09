@@ -9,8 +9,8 @@ import { useParams } from "next/navigation";
 import { useContract } from "@/hooks/contract/use-contract";
 import Loader from "@/components/common/loader";
 import LargeErrorMessage from "@/components/common/Alerts/LargeErrorMessage";
-import {  ContractResDto } from "@/types/contracts.types";
 import ContractDetails from "@/components/contracts/ContractDetails";
+import { Any } from "@/common/types/types";
 
 const Page: FunctionComponent = () => {
 
@@ -20,7 +20,7 @@ const Page: FunctionComponent = () => {
 
   const { readOne } = useContract({});
 
-  const [contract, setContract] = useState<ContractResDto | null>(null);
+  const [contract, setContract] = useState<Any | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {

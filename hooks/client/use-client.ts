@@ -35,12 +35,12 @@ export function useClient({
     error,
     mutate,
   } = useSWR<PaginatedResponse<Client> | null>(
-    stringConstructor(
+    autoFetch ? stringConstructor(
       ApiRoutes.Client.ReadAll,
       constructUrlSearchParams({ search, status, location_id, page, page_size })
-    ), // Endpoint to fetch clients
+    ) : null, // Endpoint to fetch clients
     async (url) => {
-      if (!autoFetch)
+      if (!url)
         return {
           results: [],
           count: 0,

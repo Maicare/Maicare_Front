@@ -10,7 +10,7 @@ const ContactSelector: FunctionComponent<{
 }> = ({ name, className }) => {
   // const [query, setQuery] = useState<string>("");
 
-  const { contacts } = useContact();
+  const { contacts } = useContact({autoFetch: true});
 
   const options = useMemo(() => {
     if (!contacts) return [];

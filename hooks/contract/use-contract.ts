@@ -1,3 +1,4 @@
+import { ContractResults } from "@/app/(pages)/contracts/_components/columns";
 import api from "@/common/api/axios";
 import ApiRoutes from "@/common/api/routes";
 import { useApi } from "@/common/hooks/use-api";
@@ -5,6 +6,7 @@ import useProgressBar from "@/common/hooks/use-progress-bar";
 import { ApiOptions } from "@/common/types/api.types";
 import { PaginatedResponse } from "@/common/types/pagination.types";
 import { Any } from "@/common/types/types";
+import { Contract, CreateContract } from "@/schemas/contract.schema";
 import { ClientsSearchParams } from "@/types/client.types";
 import { ContractFilterFormType, ContractFormType, ContractItem, ContractResDto, ContractTypeItem } from "@/types/contracts.types";
 import { constructUrlSearchParams } from "@/utils/construct-search-params";
@@ -18,11 +20,12 @@ export function useContract({
     status,
     location_id,
     page_size = 10,
-    autoFetch = true,
+    autoFetch = false,
     care_type,
     financing_act,
-    financing_option
-}: Partial<ContractFilterFormType & { autoFetch?: boolean }>) {
+    financing_option,
+    clientId
+}: Partial<ContractFilterFormType & { autoFetch?: boolean;clientId?: string }>) {
     const [page, setPage] = useState(1);
     const { start: startProgress, stop: stopProgress } = useProgressBar();
 
@@ -31,12 +34,29 @@ export function useContract({
         data: contracts,
         error,
         mutate,
-    } = useSWR<PaginatedResponse<ContractItem>>(
-        stringConstructor(
-            ApiRoutes.Contract.ReadAll,
-            constructUrlSearchParams({ search, status, care_type, financing_act, financing_option, page, page_size })
-        ), // Endpoint to fetch clients
+    } = useSWR<PaginatedResponse<ContractResults|Contract>>(
+        autoFetch ? 
+        (
+            clientId ? 
+            stringConstructor(
+                ApiRoutes.Contract.ReadAllClient.replace("{id}", clientId),
+                constructUrlSearchParams({ page, page_size })
+            ) :
+            stringConstructor(
+                ApiRoutes.Contract.ReadAll,
+                constructUrlSearchParams({ search, status, care_type, financing_act, financing_option, page, page_size })
+            ) 
+        )
+        : null, // Endpoint to fetch clients
         async (url) => {
+            if (!url)
+                return {
+                    results: [],
+                    count: 0,
+                    page_size: 0,
+                    next: null,
+                    previous: null,
+                };
             const response = await api.get(url);
             if (!response.data.data) {
                 return null;
@@ -74,7 +94,7 @@ export function useContract({
         try {
             // Display progress bar
             if (displayProgress) startProgress();
-            const { message, success, data, error } = await useApi<ContractTypeItem[]>(ApiRoutes.Contract.READTYPES, "POST", {}, { name });
+            const { message, success, data, error } = await useApi<{id:number;name:string;}>(ApiRoutes.Contract.READTYPES, "POST", {}, { name });
             if (!data)
                 throw new Error(error || message || "An unknown error occurred");
 
@@ -113,12 +133,12 @@ export function useContract({
         }
     }
 
-    const addContract = async (contractData: Any, id: string, options?: ApiOptions) => {
+    const createOne = async (contractData: CreateContract, id: string, options?: ApiOptions) => {
         const { displayProgress = false, displaySuccess = false } = options || {};
         try {
             // Display progress bar
             if (displayProgress) startProgress();
-            const { message, success, data, error } = await useApi<ContractTypeItem[]>(ApiRoutes.Contract.AddOne.replace("{id}", id.toString()), "POST", {}, contractData);
+            const { message, success, data, error } = await useApi<Contract[]>(ApiRoutes.Contract.AddOne.replace("{id}", id.toString()), "POST", {}, contractData);
             if (!data)
                 throw new Error(error || message || "An unknown error occurred");
 
@@ -140,7 +160,7 @@ export function useContract({
         try {
             // Display progress bar
             if (displayProgress) startProgress();
-            const { message, success, data, error } = await useApi<ContractResDto>(ApiRoutes.Contract.ReadOne.replace("{id}", client_id.toString()).replace("{contract_id}", contract_id.toString()), "GET", {});
+            const { message, success, data, error } = await useApi<Contract&{type_name:string;sender_name:string;client_first_name:string;client_last_name:string;}>(ApiRoutes.Contract.ReadOne.replace("{id}", client_id.toString()).replace("{contract_id}", contract_id.toString()), "GET", {});
             if (!data)
                 throw new Error(error || message || "An unknown error occurred");
 
@@ -168,11 +188,11 @@ export function useContract({
 
             // Display success message
             if (displaySuccess && success) {
-                enqueueSnackbar("Contract fetch successful!", { variant: "success" });
+                enqueueSnackbar("Contract updated successful!", { variant: "success" });
             }
             return data;
         } catch (err: any) {
-            enqueueSnackbar(err?.response?.data?.message || "Contract fetch failed", { variant: "error" });
+            enqueueSnackbar(err?.response?.data?.message || "Contract updated failed", { variant: "error" });
             throw err;
         } finally {
             if (displayProgress) stopProgress();
@@ -190,7 +210,7 @@ export function useContract({
         addContractTypes,
         readContractTypes,
         deleteContractTypes,
-        addContract,
+        createOne,
         readOne,
         updateOne
     };

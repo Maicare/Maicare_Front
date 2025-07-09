@@ -28,7 +28,7 @@ type Props = {
 
 const ContractDetails: FunctionComponent<Props> = ({ contractData, clientId }) => {
 
-  const { readOne: getContactData } = useContact();
+  const { readOne: getContactData } = useContact({autoFetch:false});
   const { readOne: getClientData } = useClient({});
 
   const [contact, setContact] = useState<Any>(null);
