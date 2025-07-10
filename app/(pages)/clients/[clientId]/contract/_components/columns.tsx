@@ -97,16 +97,19 @@ export const columns: ColumnDef<Contract>[] = [
       const vat = contract.VAT
       const careType = contract.care_type
 
-      // Default time unit labels based on care type
-      const timeUnitLabel = careType === "ambulante"
-        ? "per period"  // Default for ambulante
-        : "per hour"    // Default for accommodation
+      const timeUnitLabels = {
+        daily: "day",
+        weekly: "week",
+        monthly: "month",
+        minute: "minute",
+        hourly: "hour"
+      }
 
       return (
         <div className="flex flex-col">
           <span className="font-medium">€{price.toFixed(2)}</span>
           <span className="text-xs text-gray-500">
-            {vat}% VAT • {timeUnitLabel}
+            {vat}% VAT • per {timeUnitLabels[contract.price_time_unit as keyof typeof timeUnitLabels]}
           </span>
         </div>
       )
