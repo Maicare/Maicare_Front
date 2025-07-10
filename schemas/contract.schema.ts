@@ -66,6 +66,7 @@ export const CreateContractSchema = BaseContractSchema.extend({
       });
     }
     if (data.hours_type !== null) {
+      console.log("Accommodation care does not require hours type" + data.hours_type);
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
         message: "Hours type must be null for accommodation care",
