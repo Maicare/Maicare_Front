@@ -260,7 +260,7 @@ export function CreateContractForm({
                                                 </SelectTrigger>
                                             </FormControl>
                                             <SelectContent className="bg-white">
-                                                {watchCareType === "ambulante" ? (
+                                                {watchCareType === "accommodation" ? (
                                                     <>
                                                         <SelectItem value="daily">Daily</SelectItem>
                                                         <SelectItem value="weekly">Weekly</SelectItem>

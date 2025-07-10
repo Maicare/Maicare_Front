@@ -12,7 +12,7 @@ import { CreateContract } from "@/schemas/contract.schema";
 import { CreateContractForm } from "@/app/(pages)/clients/[clientId]/contract/_components/create-contract-form";
 import { ContactOverviewSection } from "../_components/contact-overview-section";
 const defaultContractValues: CreateContract = {
-    VAT: 21,
+    VAT: 20,
     attachment_ids: [],
     care_name: "",
     care_type: "ambulante",
