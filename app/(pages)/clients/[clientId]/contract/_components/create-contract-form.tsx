@@ -207,7 +207,7 @@ export function CreateContractForm({
                                         render={({ field }) => (
                                             <FormItem>
                                                 <FormLabel>Hours Type</FormLabel>
-                                                <Select onValueChange={field.onChange} defaultValue={field.value ?? "weekly"}>
+                                                <Select onValueChange={field.onChange} >
                                                     <FormControl>
                                                         <SelectTrigger>
                                                             <SelectValue placeholder="Select hours Type" />

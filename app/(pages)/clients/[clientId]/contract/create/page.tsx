@@ -22,7 +22,7 @@ const defaultContractValues: CreateContract = {
     hours: null,
     hours_type: null,
     price: 0,
-    price_time_unit: "monthly",
+    price_time_unit: "daily",
     reminder_period: 30,
     sender_id: 0,
     start_date: new Date().toISOString(),
