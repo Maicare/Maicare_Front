@@ -19,8 +19,8 @@ const defaultContractValues: CreateContract = {
     end_date: undefined,
     financing_act: "WMO",
     financing_option: "ZIN",
-    hours: 40,
-    hours_type: "weekly",
+    hours: null,
+    hours_type: null,
     price: 0,
     price_time_unit: "monthly",
     reminder_period: 30,
@@ -90,7 +90,7 @@ const Page = () => {
         };
         try {
             await createOne(contractData,clientId+"",{displayProgress: true, displaySuccess: true});
-            router.push(`/clients/${clientId}/contracts`);
+            router.push(`/clients/${clientId}/contract`);
         } catch (error) {
             console.error("Error creating contract:", error);
             // Handle error appropriately, e.g., show a notification
