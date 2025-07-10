@@ -10,8 +10,8 @@ export type FinancingAct = z.infer<typeof FinancingActSchema>;
 export const FinancingOptionSchema = z.enum(["ZIN", "PGB"]);
 export type FinancingOption = z.infer<typeof FinancingOptionSchema>;
 
-export const AmbulantePriceTimeUnitSchema = z.enum(["daily", "weekly", "monthly"]);
-export const AccommodationPriceTimeUnitSchema = z.enum(["minute", "hourly"]);
+export const AmbulantePriceTimeUnitSchema = z.enum(["minute", "hourly"]);
+export const AccommodationPriceTimeUnitSchema = z.enum(["daily", "weekly", "monthly"]);
 
 // Base schema with common fields
 const BaseContractSchema = z.object({
@@ -50,7 +50,7 @@ export const CreateContractSchema = BaseContractSchema.extend({
         path: ["hours_type"],
       });
     }
-    if (!data.price_time_unit || !["daily", "weekly", "monthly"].includes(data.price_time_unit)) {
+    if (!data.price_time_unit || !["minute", "hourly"].includes(data.price_time_unit)) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
         message: "Price time unit must be daily, weekly, or monthly for ambulante care",
@@ -72,7 +72,7 @@ export const CreateContractSchema = BaseContractSchema.extend({
         path: ["hours_type"],
       });
     }
-    if (!data.price_time_unit || !["minute", "hourly"].includes(data.price_time_unit)) {
+    if (!data.price_time_unit || !["daily", "weekly", "monthly"].includes(data.price_time_unit)) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
         message: "Price time unit must be minute or hourly for accommodation care",
