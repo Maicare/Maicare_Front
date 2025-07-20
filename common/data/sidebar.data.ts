@@ -33,6 +33,10 @@ export const sidebarLinks = [
             {
                 title: "Registraties", // "Registrations"
                 url: "/registrations",
+            },
+            {
+                title: "Invoices", // "Registrations"
+                url: "/invoices",
             }
         ],
     },

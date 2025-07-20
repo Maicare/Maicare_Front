@@ -1,4 +1,4 @@
-import React, { FunctionComponent, useEffect, useState } from "react";
+import React, { FunctionComponent,  useState } from "react";
 import Link from "next/link";
 import { shortDateTimeFormat } from "@/utils/timeFormatting";
 import { Any } from "@/common/types/types";
@@ -32,7 +32,7 @@ type Props = {
 };
 
 // Add this helper function above your Notifications component
-const transformNotification = (raw: Any): NotificationItem => {
+export const transformNotification = (raw: Any): NotificationItem => {
   if (raw.type === "employee_assigned") {
     return {
       id: raw.id || Math.floor(Math.random() * 100000), // Fallback: generate an ID if needed
@@ -60,42 +60,42 @@ const transformNotification = (raw: Any): NotificationItem => {
 const Notifications: FunctionComponent<Props> = ({ notifications: initialNotifications }) => {
   const [notifications, setNotifications] = useState<NotificationItem[]>(initialNotifications);
 
-  useEffect(() => {
-    const token = localStorage.getItem("accessToken");
-    // Include the token in the query string with the "Bearer" prefix
-    const wsUrl = token
-      ? `wss://maicare-back.onrender.com/ws?access_token=${encodeURIComponent(`${token}`)}`
-      : "wss://maicare-back.onrender.com/ws";
-    const ws = new WebSocket(wsUrl);
+  // useEffect(() => {
+  //   const token = localStorage.getItem("accessToken");
+  //   // Include the token in the query string with the "Bearer" prefix
+  //   const wsUrl = token
+  //     ? `wss://maicare-back.onrender.com/ws?access_token=${encodeURIComponent(`${token}`)}`
+  //     : "wss://maicare-back.onrender.com/ws";
+  //   const ws = new WebSocket(wsUrl);
 
-    ws.onopen = () => {
-      console.log("WebSocket connected");
-      console.log("TOKEN", token);
-    };
+  //   ws.onopen = () => {
+  //     console.log("WebSocket connected");
+  //     console.log("TOKEN", token);
+  //   };
 
-    ws.onmessage = (event) => {
-      try {
-        const raw = JSON.parse(event.data);
-        const newNotification: NotificationItem = transformNotification(raw);
-        console.log("Received new notification:", newNotification);
-        setNotifications((prev) => [newNotification, ...prev]);
-      } catch (error) {
-        console.error("Error parsing WebSocket message:", error);
-      }
-    };
+  //   ws.onmessage = (event) => {
+  //     try {
+  //       const raw = JSON.parse(event.data);
+  //       const newNotification: NotificationItem = transformNotification(raw);
+  //       console.log("Received new notification:", newNotification);
+  //       setNotifications((prev) => [newNotification, ...prev]);
+  //     } catch (error) {
+  //       console.error("Error parsing WebSocket message:", error);
+  //     }
+  //   };
 
-    ws.onerror = (error) => {
-      console.error("WebSocket error:", error);
-    };
+  //   ws.onerror = (error) => {
+  //     console.error("WebSocket error:", error);
+  //   };
 
-    ws.onclose = () => {
-      console.log("WebSocket closed");
-    };
+  //   ws.onclose = () => {
+  //     console.log("WebSocket closed");
+  //   };
 
-    return () => {
-      ws.close();
-    };
-  }, []);
+  //   return () => {
+  //     ws.close();
+  //   };
+  // }, []);
 
   const handleClear = () => {
     setNotifications([]);
