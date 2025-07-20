@@ -17,7 +17,7 @@ import { PermissionsObjects } from "@/common/data/permission.data";
 const exampleContract:EmployeeContract = {
     contract_end_date: "2025-12-31",
     contract_start_date: "2023-01-15",
-    contract_type: "full_time",
+    contract_type: 'loondienst',
     fixed_contract_hours: 40,
     id: 12345,
     variable_contract_hours: 10

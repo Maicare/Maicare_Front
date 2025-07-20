@@ -71,7 +71,7 @@ export type UpdateEmployeeRequestBody = Omit<CreateEmployee,"role_id"|"location_
 
 // Define valid contract types
 export const contractTypes = [
-  'full_time', 'part_time', 'temporary', 'subcontractor', 'no_type'
+  'loondienst', 'ZZP'
 ] as const;
 
 export const createEmployeeContractSchema = z.object({
@@ -112,7 +112,7 @@ export type CreateContractInput = z.infer<typeof createEmployeeContractSchema>;
 export interface EmployeeContract {
   contract_end_date: string;
   contract_start_date: string;
-  contract_type:   'full_time'| 'part_time'| 'temporary'| 'subcontractor'| 'no_type';
+  contract_type:   'loondienst'| 'ZZP';
   fixed_contract_hours: number;
   id: number;
   variable_contract_hours: number;

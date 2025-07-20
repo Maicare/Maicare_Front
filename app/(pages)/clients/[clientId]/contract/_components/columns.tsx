@@ -95,7 +95,7 @@ export const columns: ColumnDef<Contract>[] = [
       const contract = row.original
       const price = parseFloat(row.getValue("price"))
       const vat = contract.VAT
-      const careType = contract.care_type
+      // const _careType = contract.care_type
 
       const timeUnitLabels = {
         daily: "day",
