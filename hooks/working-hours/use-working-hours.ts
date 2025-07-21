@@ -12,9 +12,9 @@ import { EmployeeWorkingHoursReport } from "@/types/working-hours.types";
 export function useWorkingHours({
   employee_id,
   autoFetch = true,
-  month,
+  week,
   year
-}: { employee_id:number,autoFetch?: boolean,year?: string, month?: string }) {
+}: { employee_id:number,autoFetch?: boolean,year?: string, week?: string }) {
 //   const { enqueueSnackbar } = useSnackbar();
 //   const { start: startProgress, stop: stopProgress } = useProgressBar();
   const {
@@ -22,7 +22,7 @@ export function useWorkingHours({
     error,
     // mutate,
   } = useSWR<EmployeeWorkingHoursReport | null>(
-    autoFetch ? ApiRoutes.Employee.WorkingHours.ReadAll.replace("{id}",employee_id.toString())+`?month=${month}&year=${year}` : null, // Endpoint to fetch clients
+    autoFetch ? ApiRoutes.Employee.WorkingHours.ReadAll.replace("{id}",employee_id.toString())+`?week=${week}&year=${year}` : null, // Endpoint to fetch clients
     async (url) => {
       if (!url)
         return {
