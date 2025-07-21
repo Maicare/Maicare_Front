@@ -14,6 +14,7 @@ export type WorkingHoursSummary = {
     shift_hours: number;
     total_days_worked: number;
     total_hours: number;
+    over_time: number;
 };
 
 export type WorkingHoursEntry = {

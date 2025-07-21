@@ -36,7 +36,11 @@ const StatisticCard = ({ icon: Icon, title, value, className, colorKey,prefix=""
                     p: "bg-teal-100 text-teal-400",
                     button: "bg-teal-400"
                 };
-
+            case "red":
+                return {
+                    p: "bg-red-100 text-red-400",
+                    button: "bg-red-400"
+                };
             default:
                 return {
                     p: "bg-teal-100 text-teal-400",
