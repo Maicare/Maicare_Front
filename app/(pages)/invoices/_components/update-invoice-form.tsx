@@ -12,7 +12,6 @@ import {
     FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -23,6 +22,7 @@ import { cn } from "@/utils/cn";
 import { PlusIcon, TrashIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { useState } from "react";
 
 interface UpdateInvoiceFormProps {
     defaultValues?: Partial<UpdateInvoiceFormValues>;
@@ -39,7 +39,7 @@ export function UpdateInvoiceForm({
         resolver: zodResolver(updateInvoiceSchema),
         defaultValues: {
             due_date: "",
-            extra_content: "",
+            extra_content: {},
             invoice_details: [
                 {
                     contract_id: 0,
@@ -201,6 +201,30 @@ export function UpdateInvoiceForm({
         }
         onSubmit(values);
     }
+    // State for new key-value pair
+    const [newKey, setNewKey] = useState("");
+    const [newValue, setNewValue] = useState("");
+
+    // Add new key-value pair
+    const addExtraContent = () => {
+        if (newKey.trim() && newValue.trim()) {
+            const currentContent = form.getValues("extra_content") || {};
+            form.setValue("extra_content", {
+                ...currentContent,
+                [newKey.trim()]: newValue.trim(),
+            });
+            setNewKey("");
+            setNewValue("");
+        }
+    };
+
+    // Remove key-value pair
+    const removeExtraContent = (key: string) => {
+        const currentContent = form.getValues("extra_content") || {};
+        const newContent = { ...currentContent };
+        delete newContent[key];
+        form.setValue("extra_content", newContent);
+    };
     return (
         <Form {...form}>
             <form onSubmit={form.handleSubmit(submitWithValidation)} className="space-y-8">
@@ -330,23 +354,70 @@ export function UpdateInvoiceForm({
                     {/* Right Column Card - Additional Information */}
                     <Card>
                         <CardHeader>
-                            <CardTitle>Additional Information</CardTitle>
+                            <CardTitle>Extra Content</CardTitle>
                         </CardHeader>
                         <CardContent className="space-y-4">
-                            {/* Extra Content - spans both columns */}
-                            <FormField
-                                control={form.control}
-                                name="extra_content"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel>Extra Content</FormLabel>
-                                        <FormControl>
-                                            <Textarea {...field} value={field.value || ""} rows={4} className="resize-none" />
-                                        </FormControl>
-                                        <FormMessage />
-                                    </FormItem>
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                <div className="space-y-2">
+                                    <FormLabel>Key</FormLabel>
+                                    <Input
+                                        value={newKey}
+                                        onChange={(e) => setNewKey(e.target.value)}
+                                        placeholder="Enter key"
+                                    />
+                                </div>
+                                <div className="space-y-2">
+                                    <FormLabel>Value</FormLabel>
+                                    <Input
+                                        value={newValue}
+                                        onChange={(e) => setNewValue(e.target.value)}
+                                        placeholder="Enter value"
+                                    />
+                                </div>
+                                <div className="flex items-end">
+                                    <Button
+                                        type="button"
+                                        onClick={addExtraContent}
+                                        disabled={!newKey.trim() || !newValue.trim()}
+                                    >
+                                        <PlusIcon className="mr-2 h-4 w-4" />
+                                        Add
+                                    </Button>
+                                </div>
+                            </div>
+
+                            {/* Display existing key-value pairs */}
+                            <div className="border rounded-lg divide-y">
+                                {Object.entries(form.watch("extra_content") || {}).map(([key, value]) => (
+                                    <div key={key} className="p-3 flex justify-between items-center">
+                                        <div className="flex-1 grid grid-cols-2 gap-4">
+                                            <div>
+                                                <p className="text-sm font-medium">{key}</p>
+                                            </div>
+                                            <div>
+                                                <p className="text-sm text-muted-foreground">
+                                                    {String(value)}
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <Button
+                                            type="button"
+                                            variant="ghost"
+                                            size="icon"
+                                            onClick={() => removeExtraContent(key)}
+                                            className="text-destructive"
+                                        >
+                                            <TrashIcon className="h-4 w-4" />
+                                        </Button>
+                                    </div>
+                                ))}
+
+                                {Object.keys(form.watch("extra_content") || {}).length === 0 && (
+                                    <div className="p-4 text-center text-sm text-muted-foreground">
+                                        No extra content added
+                                    </div>
                                 )}
-                            />
+                            </div>
                         </CardContent>
                     </Card>
                 </div>

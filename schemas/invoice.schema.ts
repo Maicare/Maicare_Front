@@ -22,7 +22,7 @@ const invoiceDetailSchema = z.object({
 
 export const updateInvoiceSchema = z.object({
   due_date: z.string(),
-  extra_content: z.string(),
+  extra_content: z.record(z.string(), z.any()).optional(),
   invoice_details: z.array(invoiceDetailSchema),
   issue_date: z.string(),
   status: z.string(),
