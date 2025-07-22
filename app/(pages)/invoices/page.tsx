@@ -3,12 +3,20 @@
 import PrimaryButton from "@/common/components/PrimaryButton";
 import { DataTable } from "@/components/employee/table/data-table";
 import { useInvoice } from "@/hooks/invoice/use-invoive";
-import { ArrowBigLeft, ArrowBigRight, DollarSign } from "lucide-react";
+import { ArrowBigLeft, ArrowBigRight, DollarSign, PlusCircle } from "lucide-react";
 import { columns } from "./_components/columns";
+import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import ClientSelect from "../contracts/_components/client-select";
+import { useState } from "react";
+import { DatePicker } from "./_components/date-picker";
 
 
 const InvoicesPage = () => {
-    const { invoices, setPage, page } = useInvoice({ autoFetch: true });
+    const { invoices, setPage, page,createOne } = useInvoice({ autoFetch: true });
+    const [clientId,setClientId] = useState<string | null>(null);
+    const [startDate,setStartDate] = useState<Date>(new Date());
+    const [endDate,setEndDate] = useState<Date>(new Date());
     const handlePrevious = () => {
         if (page <= 1) {
           setPage(1);
@@ -22,6 +30,27 @@ const InvoicesPage = () => {
           return;
         }
       }
+      const handleAdd = async() => {
+        try {
+          if (!clientId) return;
+          if (!startDate || !endDate) return;
+          if (startDate > endDate) {
+            alert("Start date cannot be after end date");
+            return;
+          }
+          // Call the createOne function with the necessary data
+          await createOne({
+            client_id: parseInt(clientId),
+            start_date: startDate.toISOString(),
+            end_date: endDate.toISOString(),
+          },{
+            displayProgress: true,
+            displaySuccess: true,
+          });
+        } catch (error) {
+          console.error(error);
+        }
+      }
   return (
     <div className="w-full flex flex-col gap-4">
     <div className="flex items-center justify-between">
@@ -29,7 +58,7 @@ const InvoicesPage = () => {
         <DollarSign size={24} className='text-indigo-400' />  Invoices
       </h1>
 
-      {/* <Dialog>
+      <Dialog>
         <DialogTrigger asChild>
           <PrimaryButton
             text="Add"
@@ -47,7 +76,7 @@ const InvoicesPage = () => {
             </DialogDescription>
           </DialogHeader>
           <div className="grid gap-4">
-            <div className="grid gap-3">
+            <div className="grid grid-cols-2 gap-3">
               <ClientSelect
                 label="Client"
                 value={clientId||""}
@@ -55,7 +84,19 @@ const InvoicesPage = () => {
                   setClientId(value);
                   console.log({clientId,value})
                 }}
-                className="w-full"
+                className="w-full col-span-2"
+                modal={true}
+              />
+              <DatePicker
+                date={startDate}
+                handleDateChange={(date) => setStartDate(date)}
+                label="Start Date"
+                modal={true}
+              />
+              <DatePicker
+                date={endDate}
+                handleDateChange={(date) => setEndDate(date)}
+                label="End Date"
                 modal={true}
               />
             </div>
@@ -67,7 +108,7 @@ const InvoicesPage = () => {
             <Button type="button" disabled={!clientId} onClick={()=>handleAdd()}>Save changes</Button>
           </DialogFooter>
         </DialogContent>
-      </Dialog> */}
+      </Dialog>
 
 
     </div>

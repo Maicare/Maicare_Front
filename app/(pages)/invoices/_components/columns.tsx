@@ -20,6 +20,7 @@ import {
 } from "lucide-react"
 import { format } from "date-fns"
 import Link from "next/link"
+import { Any } from "@/common/types/types"
 
 export type InvoicesType = {
   id: number
@@ -37,7 +38,7 @@ export type InvoicesType = {
   updated_at: string
   warning_count: number
   pdf_attachment_id: string
-  extra_content: string
+  extra_content: Any
   invoice_details: {
     contract_id: number
     contract_name: string
