@@ -23,19 +23,19 @@ export const sidebarLinks = [
         icon: HeartPulse,
         items: [
             {
-                title: "Contactpersonen", // "Contacts"
+                title: "Opdrachtgevers", // "Contacts"
                 url: "/contacts",
             },
             {
-                title: "Uitzendkrachten", // "Contractors" (or "Zzp'ers" for freelancers)
+                title: "Contracten", // "Contractors" (or "Zzp'ers" for freelancers)
                 url: "/contracts",
             },
             {
-                title: "Registraties", // "Registrations"
+                title: "Registratie is Aanmeldingen", // "Registrations"
                 url: "/registrations",
             },
             {
-                title: "Invoices", // "Registrations"
+                title: "Facturen", // "Registrations"
                 url: "/invoices",
             }
         ],
