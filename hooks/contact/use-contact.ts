@@ -4,6 +4,7 @@ import { useApi } from "@/common/hooks/use-api";
 import useProgressBar from "@/common/hooks/use-progress-bar";
 import { ApiOptions } from "@/common/types/api.types";
 import { PaginatedResponse } from "@/common/types/pagination.types";
+import { Id } from "@/common/types/types";
 import { Contact, CreateContact } from "@/schemas/contact.schema";
 import { enqueueSnackbar } from "notistack";
 import { useState } from "react";
@@ -51,6 +52,28 @@ export function useContact({search,autoFetch}:{ search?: string,autoFetch: boole
       return data
     } catch (error: any) {
       enqueueSnackbar(error?.response?.data?.message || "Contact creation failed", { variant: "error" });
+      throw error;
+    }finally {
+      if (displayProgress) stopProgress();
+    }
+
+  }
+  const createOneInvoiceTemplate = async (ids: Id[],contactId:string, options?: ApiOptions) => {
+    const { displayProgress = false, displaySuccess = false } = options || {};
+
+    try {
+      // Display progress bar
+      if (displayProgress) startProgress();
+      const { message, success, data, error } = await useApi<Contact>(ApiRoutes.Contact.InvoiceTemplate.CreateOne.replace("{id}",contactId), "POST", {}, {invoice_template:ids});
+
+      if (!data && !success)
+        throw new Error(error || message || "An unknown error occurred");
+      if (displaySuccess && success)
+        enqueueSnackbar("Contact Invoice Template created successfully", { variant: "success" });
+
+      return data
+    } catch (error: any) {
+      enqueueSnackbar(error?.response?.data?.message || "Contact  Invoice Template creation failed", { variant: "error" });
       throw error;
     }finally {
       if (displayProgress) stopProgress();
@@ -110,6 +133,7 @@ export function useContact({search,autoFetch}:{ search?: string,autoFetch: boole
     mutate,
     createOne,
     readOne,
-    updateOne
+    updateOne,
+    createOneInvoiceTemplate
   };
 }

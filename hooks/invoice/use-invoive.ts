@@ -1,3 +1,5 @@
+
+import { InvoiceTemplateItem } from "@/app/(pages)/contacts/_components/multi-select-invoice-items";
 import { InvoicesType } from "@/app/(pages)/invoices/_components/columns";
 import api from "@/common/api/axios";
 import ApiRoutes from "@/common/api/routes";
@@ -71,6 +73,37 @@ export function useInvoice({ autoFetch = false }: { autoFetch?: boolean }) {
             if (displayProgress) stopProgress();
         }
     };
+    const readAllInvoiceTemplate = async (options?: ApiOptions) => {
+        const { displayProgress = false, displaySuccess = false } = options || {};
+        try {
+            // Display progress bar
+            if (displayProgress) startProgress();
+            const { message, success, data, error } =
+                await useApi<InvoiceTemplateItem[]>(
+                    ApiRoutes.Invoice.InvoiceTemplate.ReadAll,
+                    "GET",
+                    {}
+                );
+            if (!data)
+                throw new Error(error || message || "An unknown error occurred");
+
+            // Display success message
+            if (displaySuccess && success) {
+                enqueueSnackbar("Invoice templates fetched successful!", {
+                    variant: "success",
+                });
+            }
+            return data;
+        } catch (err: any) {
+            enqueueSnackbar(
+                err?.response?.data?.message || "Invoice templates fetching failed",
+                { variant: "error" }
+            );
+            throw err;
+        } finally {
+            if (displayProgress) stopProgress();
+        }
+    };
 
     const createOne = async (invoice: CreateInvoice, options?: ApiOptions) => {
         const { displayProgress = false, displaySuccess = false } = options || {};
@@ -114,6 +147,7 @@ export function useInvoice({ autoFetch = false }: { autoFetch?: boolean }) {
             if (displayProgress) stopProgress();
         }
     }
+
     return {
         invoices,
         error,
@@ -122,6 +156,7 @@ export function useInvoice({ autoFetch = false }: { autoFetch?: boolean }) {
         createOne,
         page,
         setPage,
-        updateOne
+        updateOne,
+        readAllInvoiceTemplate
       };
 }

@@ -6,7 +6,9 @@ const ApiRoutes = {
   ReadOne: prefix + '/{id}',
   UpdateOne: prefix + '/{id}',
   DeleteOne: prefix + '/{id}',
-
+  InvoiceTemplate:{
+    ReadAll:prefix+"/template_items"
+  },
   Payment:{
     CreateOne: prefix + '/{id}/payments',
     ReadAll: prefix + '/{id}/payments',
