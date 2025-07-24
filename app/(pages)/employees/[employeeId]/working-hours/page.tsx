@@ -35,7 +35,7 @@ const WorkingHoursPage = () => {
     
     const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined);
     
-    const handleWeekChange = (startDate: Date, endDate: Date) => {
+    const handleWeekChange = (startDate: Date, _endDate: Date) => {
         setSelectedDate(startDate);
         
         // Extract ISO week and year from the selected date

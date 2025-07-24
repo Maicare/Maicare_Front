@@ -30,8 +30,16 @@ export const ContactSchema = z.object({
   types: z.enum(OP_CLIENT_TYPE), // or z.string() if you want to allow any string
   updated_at: z.string().datetime(), // or z.string() if you don't want datetime validation
 });
+// Schema for validation
+const invoiceTemplateItemSchema = z.object({
+  description: z.string().min(1, "Description is required"),
+  item_tag: z.string().min(1, "Tag is required"),
+  source_column: z.string().min(1, "Source column is required"),
+  source_table: z.string().min(1, "Source table is required"),
+});
 
-export type Contact = z.infer<typeof ContactSchema>;
+type InvoiceTemplateItem = z.infer<typeof invoiceTemplateItemSchema> & { id?: number };
+export type Contact = z.infer<typeof ContactSchema> & {invoice_template_items:InvoiceTemplateItem[]};
 
 // CreateContact schema (without id, created_at, updated_at)
 export const CreateContactSchema = ContactSchema.omit({ 

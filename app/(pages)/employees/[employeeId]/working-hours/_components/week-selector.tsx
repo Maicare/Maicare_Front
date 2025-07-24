@@ -16,17 +16,16 @@ interface WeekSelectorProps {
 }
 
 export function WeekSelector({
-  currentDate,
   selectedDate,
   onWeekChange,
   showCurrentWeekIndicator = true,
 }: WeekSelectorProps) {
-  const displayedDate = selectedDate || currentDate
-  
+  // const _displayedDate = selectedDate || currentDate
+
   // Initialize with current year and week
   const currentYear = getISOWeekYear(new Date())
   const currentWeekDate = startOfISOWeek(new Date())
-  
+
   const [selectedYear, setSelectedYear] = useState<number>(currentYear)
   const [selectedWeek, setSelectedWeek] = useState<Date>(currentWeekDate)
   const [yearDropdownOpen, setYearDropdownOpen] = useState(false)
@@ -36,11 +35,12 @@ export function WeekSelector({
   useEffect(() => {
     // Trigger initial callback with current week
     onWeekChange(startOfISOWeek(currentWeekDate), endOfISOWeek(currentWeekDate))
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []) // Empty dependency array to run only on mount
 
   const formatWeekLabel = (date: Date) => {
     const weekNum = getISOWeek(date)
-    const year = getISOWeekYear(date)
+    // const year = getISOWeekYear(date)
     const start = format(startOfISOWeek(date), "MMM dd")
     const end = format(endOfISOWeek(date), "MMM dd")
     return `Week ${weekNum} (${start} - ${end})`
@@ -60,20 +60,20 @@ export function WeekSelector({
     const weeks = []
     const yearStart = startOfISOWeekYear(new Date(year, 0, 1))
     let currentWeek = yearStart
-    
+
     // Generate all ISO weeks for the year
     while (getISOWeekYear(currentWeek) <= year) {
       if (getISOWeekYear(currentWeek) === year) {
         weeks.push(new Date(currentWeek))
       }
       currentWeek = addWeeks(currentWeek, 1)
-      
+
       // Stop if we've moved to the next ISO week year
       if (getISOWeekYear(currentWeek) > year) {
         break
       }
     }
-    
+
     return weeks
   }
 
@@ -126,9 +126,8 @@ export function WeekSelector({
               return (
                 <div
                   key={year}
-                  className={`p-3 text-sm cursor-pointer hover:bg-slate-100 ${
-                    isSelected ? "bg-accent font-medium" : ""
-                  }`}
+                  className={`p-3 text-sm cursor-pointer hover:bg-slate-100 ${isSelected ? "bg-accent font-medium" : ""
+                    }`}
                   onClick={() => handleYearSelect(year)}
                 >
                   {year}
@@ -144,50 +143,49 @@ export function WeekSelector({
 
       {/* Week Selection Dropdown */}
       <Popover open={weekDropdownOpen} onOpenChange={setWeekDropdownOpen}>
-  <PopoverTrigger asChild>
-    <Button
-      variant="outline"
-      className="w-[240px] justify-between text-left font-normal"
-    >
-      <span className="truncate">
-        {formatWeekLabel(selectedWeek)}
-        {isCurrentWeek(selectedWeek) && showCurrentWeekIndicator && (
-          <span className="ml-2 text-muted-foreground">(Current)</span>
-        )}
-      </span>
-      <ChevronDown className="h-4 w-4 opacity-50" />
-    </Button>
-  </PopoverTrigger>
-  <PopoverContent className="w-auto p-0 bg-white" align="start">
-    <div className="max-h-[300px] overflow-y-auto">
-      <div className="p-3 border-b bg-slate-50 font-medium text-sm">
-        Weeks for {selectedYear}
-      </div>
-      {generateWeeksForYear(selectedYear).map((weekDate) => {
-        const current = isCurrentWeek(weekDate)
-        const selected = isSelectedWeek(weekDate) || isSameISOWeek(weekDate, selectedWeek)
-
-        return (
-          <div
-            key={weekDate.toString()}
-            className={`p-2 text-sm cursor-pointer hover:bg-slate-100 ${
-              selected ? "bg-accent font-medium" : ""
-            }`}
-            onClick={() => {
-              handleWeekSelect(weekDate)
-              setWeekDropdownOpen(false) // 👈 Close popover after selection
-            }}
+        <PopoverTrigger asChild>
+          <Button
+            variant="outline"
+            className="w-[240px] justify-between text-left font-normal"
           >
-            {formatWeekLabel(weekDate)}
-            {current && showCurrentWeekIndicator && (
-              <span className="ml-2 text-muted-foreground">(Current Week)</span>
-            )}
+            <span className="truncate">
+              {formatWeekLabel(selectedWeek)}
+              {isCurrentWeek(selectedWeek) && showCurrentWeekIndicator && (
+                <span className="ml-2 text-muted-foreground">(Current)</span>
+              )}
+            </span>
+            <ChevronDown className="h-4 w-4 opacity-50" />
+          </Button>
+        </PopoverTrigger>
+        <PopoverContent className="w-auto p-0 bg-white" align="start">
+          <div className="max-h-[300px] overflow-y-auto">
+            <div className="p-3 border-b bg-slate-50 font-medium text-sm">
+              Weeks for {selectedYear}
+            </div>
+            {generateWeeksForYear(selectedYear).map((weekDate) => {
+              const current = isCurrentWeek(weekDate)
+              const selected = isSelectedWeek(weekDate) || isSameISOWeek(weekDate, selectedWeek)
+
+              return (
+                <div
+                  key={weekDate.toString()}
+                  className={`p-2 text-sm cursor-pointer hover:bg-slate-100 ${selected ? "bg-accent font-medium" : ""
+                    }`}
+                  onClick={() => {
+                    handleWeekSelect(weekDate)
+                    setWeekDropdownOpen(false) // 👈 Close popover after selection
+                  }}
+                >
+                  {formatWeekLabel(weekDate)}
+                  {current && showCurrentWeekIndicator && (
+                    <span className="ml-2 text-muted-foreground">(Current Week)</span>
+                  )}
+                </div>
+              )
+            })}
           </div>
-        )
-      })}
-    </div>
-  </PopoverContent>
-</Popover>
+        </PopoverContent>
+      </Popover>
     </div>
   )
 }

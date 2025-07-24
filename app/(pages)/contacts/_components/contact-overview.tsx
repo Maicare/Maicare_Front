@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button"
 import { Mail, Phone, MapPin, Building, Clipboard, FileText, Calendar, Edit, Globe, Hash, User } from "lucide-react"
 import { Contact } from "@/schemas/contact.schema"
 import { useRouter } from "next/navigation";
+import { InvoiceTemplateItemsCard } from "./invoice-template";
 
 export function ContactOverview({ contact }: { contact: Contact }) {
   const router = useRouter();
@@ -204,6 +205,7 @@ export function ContactOverview({ contact }: { contact: Contact }) {
               )}
             </CardContent>
           </Card>
+          <InvoiceTemplateItemsCard items={contact.invoice_template_items} />
         </div>
 
         {/* Right Column - Address and Metadata */}

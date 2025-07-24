@@ -4,6 +4,9 @@ const ApiRoutes = {
   AddContact: `${prefix}`,
   ReadOne: prefix + '/{id}',
   UpdateOne: prefix + '/{id}',
+  InvoiceTemplate:{
+    CreateOne:prefix + "/{id}/invoice_template"
+  }
 };
 
 export default ApiRoutes;
