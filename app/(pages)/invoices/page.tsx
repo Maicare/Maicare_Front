@@ -10,6 +10,10 @@ import { Button } from "@/components/ui/button";
 import ClientSelect from "../contracts/_components/client-select";
 import { useState } from "react";
 import { DatePicker } from "./_components/date-picker";
+import withAuth, { AUTH_MODE } from "@/common/hocs/with-auth";
+import withPermissions from "@/common/hocs/with-permissions";
+import Routes from "@/common/routes";
+import { PermissionsObjects } from "@/common/data/permission.data";
 
 
 const InvoicesPage = () => {
@@ -141,4 +145,10 @@ const InvoicesPage = () => {
   )
 }
 
-export default InvoicesPage
+export default withAuth(
+  withPermissions(InvoicesPage, {
+      redirectUrl: Routes.Common.NotFound,
+      requiredPermissions: PermissionsObjects.ViewEmployee, // TODO: Add correct permission
+  }),
+  { mode: AUTH_MODE.LOGGED_IN, redirectUrl: Routes.Auth.Login }
+);

@@ -5,6 +5,10 @@ import { useInvoice } from '@/hooks/invoice/use-invoive';
 import { useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { Id } from '@/common/types/types';
+import withAuth, { AUTH_MODE } from '@/common/hocs/with-auth';
+import withPermissions from '@/common/hocs/with-permissions';
+import Routes from '@/common/routes';
+import { PermissionsObjects } from '@/common/data/permission.data';
 
 const InvoiceDetailsPage = () => {
   const { readOne } = useInvoice({ autoFetch: false });
@@ -34,5 +38,10 @@ const InvoiceDetailsPage = () => {
     />
   )
 }
-
-export default InvoiceDetailsPage
+export default withAuth(
+  withPermissions(InvoiceDetailsPage, {
+      redirectUrl: Routes.Common.NotFound,
+      requiredPermissions: PermissionsObjects.ViewEmployee, // TODO: Add correct permission
+  }),
+  { mode: AUTH_MODE.LOGGED_IN, redirectUrl: Routes.Auth.Login }
+);

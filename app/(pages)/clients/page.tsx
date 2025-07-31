@@ -26,8 +26,8 @@ function Page() {
     const [filters, setFilters] = useState<ClientsSearchParams>({
         page: 1,
         page_size: PAGE_SIZE,
-        search:"",
-        status:"On Waiting List"
+        search: "",
+        status: "On Waiting List"
     });
 
     const deboucedFilters = useDebounce(filters, 500);
@@ -70,7 +70,7 @@ function Page() {
             <TableFilters
                 filters={filters}
                 handleAdd={handleAdd}
-                setFilters={(filters)=>setFilters(filters)}
+                setFilters={(filters) => setFilters(filters)}
             />
             <DataTable columns={columns} data={clients?.results ?? []} onRowClick={handleRowClick} className="dark:bg-[#18181b] dark:border-black" />
             <div className="flex px-2 py-3 bg-white dark:bg-[#18181b] dark:border-black rounded-md mt-5 justify-between border-2 border-muted">
@@ -93,9 +93,9 @@ function Page() {
 }
 
 export default withAuth(
-  withPermissions(Page, {
-    redirectUrl: Routes.Common.NotFound,
-    requiredPermissions: PermissionsObjects.ViewEmployee, // TODO: Add correct permission
+    withPermissions(Page, {
+        redirectUrl: Routes.Common.NotFound,
+        requiredPermissions: PermissionsObjects.ViewEmployee, // TODO: Add correct permission
     }),
-    { mode: AUTH_MODE.LOGGED_IN, redirectUrl: Routes.Auth.Login } 
-    );
+    { mode: AUTH_MODE.LOGGED_IN, redirectUrl: Routes.Auth.Login }
+);

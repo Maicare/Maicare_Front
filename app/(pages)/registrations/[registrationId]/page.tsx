@@ -27,13 +27,17 @@ import { ViewRegistrationSkeleton } from "./_components/view-registration-skelet
 import LargeErrorMessage from "@/components/common/Alerts/LargeErrorMessage"
 import PrimaryButton from "@/common/components/PrimaryButton"
 import { AcceptRegistrationDialog } from "./_components/accept-registration-dialog"
+import withAuth, { AUTH_MODE } from "@/common/hocs/with-auth"
+import withPermissions from "@/common/hocs/with-permissions"
+import Routes from "@/common/routes"
+import { PermissionsObjects } from "@/common/data/permission.data"
 
 // interface ReregistrationViewProps {
 //   registration: Registration
 //   onBack?: () => void
 // }
 
-export default function ReregistrationView() {
+function ReregistrationView() {
     const router = useRouter();
     const { registrationId } = useParams();
     const { readOne, updateStatus } = useRegistration({ autoFetch: false });
@@ -595,3 +599,10 @@ export default function ReregistrationView() {
         </div>
     )
 }
+export default withAuth(
+    withPermissions(ReregistrationView, {
+        redirectUrl: Routes.Common.NotFound,
+        requiredPermissions: PermissionsObjects.ViewEmployee, // TODO: Add correct permission
+    }),
+    { mode: AUTH_MODE.LOGGED_IN, redirectUrl: Routes.Auth.Login }
+);

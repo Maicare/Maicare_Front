@@ -1,6 +1,10 @@
 "use client";
 
 import RegistrationForm from "@/app/(public)/registration/_components/registration-form";
+import { PermissionsObjects } from "@/common/data/permission.data";
+import withAuth, { AUTH_MODE } from "@/common/hocs/with-auth";
+import withPermissions from "@/common/hocs/with-permissions";
+import Routes from "@/common/routes";
 
 
 
@@ -18,4 +22,10 @@ const Page = () => {
     )
 }
 
-export default Page
+export default withAuth(
+    withPermissions(Page, {
+        redirectUrl: Routes.Common.NotFound,
+        requiredPermissions: PermissionsObjects.ViewEmployee, // TODO: Add correct permission
+    }),
+    { mode: AUTH_MODE.LOGGED_IN, redirectUrl: Routes.Auth.Login }
+);

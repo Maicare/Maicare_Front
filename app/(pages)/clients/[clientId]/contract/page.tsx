@@ -8,6 +8,10 @@ import { useContract } from "@/hooks/contract/use-contract";
 import { columns } from "./_components/columns";
 import { PaginatedResponse } from "@/common/types/pagination.types";
 import { Contract } from "@/schemas/contract.schema";
+import withAuth, { AUTH_MODE } from "@/common/hocs/with-auth";
+import withPermissions from "@/common/hocs/with-permissions";
+import Routes from "@/common/routes";
+import { PermissionsObjects } from "@/common/data/permission.data";
 
 const Finances = () => {
   const router = useRouter();
@@ -72,4 +76,10 @@ const Finances = () => {
   );
 };
 
-export default Finances;
+export default withAuth(
+  withPermissions(Finances, {
+      redirectUrl: Routes.Common.NotFound,
+      requiredPermissions: PermissionsObjects.ViewEmployee, // TODO: Add correct permission
+  }),
+  { mode: AUTH_MODE.LOGGED_IN, redirectUrl: Routes.Auth.Login }
+);

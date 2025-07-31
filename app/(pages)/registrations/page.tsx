@@ -10,10 +10,14 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { columns } from "./_components/columns";
 import TableFilters from "./_components/table-filters";
+import withAuth, { AUTH_MODE } from "@/common/hocs/with-auth";
+import withPermissions from "@/common/hocs/with-permissions";
+import Routes from "@/common/routes";
+import { PermissionsObjects } from "@/common/data/permission.data";
 
 
 
-export default function Page() {
+function Page() {
 
     const router = useRouter();
 
@@ -89,3 +93,10 @@ export default function Page() {
         </div>
     )
 }
+export default withAuth(
+    withPermissions(Page, {
+        redirectUrl: Routes.Common.NotFound,
+        requiredPermissions: PermissionsObjects.ViewEmployee, // TODO: Add correct permission
+    }),
+    { mode: AUTH_MODE.LOGGED_IN, redirectUrl: Routes.Auth.Login }
+);
