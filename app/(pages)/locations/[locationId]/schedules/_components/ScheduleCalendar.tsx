@@ -425,6 +425,7 @@ const ScheduleCalendar: FunctionComponent<{ locationId: string }> = ({ locationI
             key={calendarKey}
             plugins={[dayGridPlugin]}
             initialView="dayGridMonth"
+            initialDate={new Date(viewDate.year, viewDate.month - 1, 1)}
             fixedWeekCount={false}
             headerToolbar={{
               start: "prev,next today",

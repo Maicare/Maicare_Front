@@ -416,6 +416,7 @@ const ScheduleCalendar: FunctionComponent = () => {
             key={calendarKey}
             plugins={[dayGridPlugin]}
             initialView="dayGridMonth"
+            initialDate={new Date(viewDate.year, viewDate.month - 1, 1)}
             fixedWeekCount={false}
             headerToolbar={{
               start: "prev,next today",
@@ -913,6 +914,7 @@ const ScheduleCalendar: FunctionComponent = () => {
               initialEmployeeId={editEvent?.event.extendedProps.employee_id}
               initialLocationId={editEvent?.event.extendedProps.location_id}
               initialShiftId={editEvent?.event.extendedProps.location_shift_id}
+              locationId={Number(selectedLocation)}
             />
           )}
         </div>
