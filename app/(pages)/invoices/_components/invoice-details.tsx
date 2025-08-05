@@ -147,14 +147,6 @@ export default function InvoiceDetails({ invoice,handleCredit }: { invoice: Invo
                         <Printer className="h-4 w-4 mr-2" />
                         Print
                     </Button>
-                    <Button variant="outline" className="rounded-full hover:bg-indigo-100/50 dark:hover:bg-indigo-900/20 backdrop-blur-sm">
-                        <Share2 className="h-4 w-4 mr-2" />
-                        Share
-                    </Button>
-                    <Button variant="outline" className="rounded-full hover:bg-teal-100/50 dark:hover:bg-teal-900/20 backdrop-blur-sm">
-                        <Mail className="h-4 w-4 mr-2" />
-                        Email
-                    </Button>
                     <Button variant="outline" className="rounded-full hover:bg-teal-100/50 dark:hover:bg-teal-900/20 backdrop-blur-sm" onClick={()=> router.push(`/invoices/${invoice.id}/update`)}>
                         <Edit className="h-4 w-4 mr-2" />
                         Edit
@@ -296,7 +288,7 @@ export default function InvoiceDetails({ invoice,handleCredit }: { invoice: Invo
                                                     }).format(detail.total_price)}
                                                 </div>
                                                 <div className="text-sm text-muted-foreground">
-                                                    {detail.price_time_unit} • {detail.vat}% VAT
+                                                    {detail.price} € {detail.price_time_unit} • {detail.vat}% VAT
                                                 </div>
                                             </div>
                                         </div>
@@ -316,15 +308,19 @@ export default function InvoiceDetails({ invoice,handleCredit }: { invoice: Invo
                                                                     <p className="text-sm font-medium">
                                                                         {format(new Date(period.start_date), "MMM dd")} - {format(new Date(period.end_date), "MMM dd, yyyy")}
                                                                     </p>
-                                                                    <p className="text-xs text-muted-foreground">
-                                                                        {period.accommodation_time_frame}
-                                                                    </p>
                                                                 </div>
-                                                                {period.ambulante_total_minutes > 0 && (
-                                                                    <Badge variant="outline" className="rounded-full">
-                                                                        {period.ambulante_total_minutes} min
-                                                                    </Badge>
-                                                                )}
+                                                                <div className="flex gap-2">
+                                                                    {period.ambulante_total_minutes > 0 && (
+                                                                        <Badge variant="outline" className="rounded-full">
+                                                                            {period.ambulante_total_minutes} min
+                                                                        </Badge>
+                                                                    )}
+                                                                    {period.accommodation_time_frame && period.accommodation_time_frame.trim() !== '' && (
+                                                                        <Badge variant="outline" className="rounded-full">
+                                                                            {period.accommodation_time_frame}
+                                                                        </Badge>
+                                                                    )}
+                                                                </div>
                                                             </div>
                                                         </div>
                                                     ))}
@@ -395,11 +391,11 @@ export default function InvoiceDetails({ invoice,handleCredit }: { invoice: Invo
                                 <div className="flex space-x-2">
                                     <Badge variant="outline" className="rounded-full">
                                         <Sparkles className="h-3 w-3 mr-1 text-amber-500" />
-                                        Verified
+                                        {invoice.sender_kvknumber}
                                     </Badge>
                                     <Badge variant="outline" className="rounded-full">
                                         <BadgePercent className="h-3 w-3 mr-1 text-blue-500" />
-                                        Premium
+                                        {invoice.sender_btwnumber}
                                     </Badge>
                                 </div>
                             </div>

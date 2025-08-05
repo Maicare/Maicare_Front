@@ -30,6 +30,8 @@ export type InvoicesType = {
   client_last_name: string
   sender_id: number
   sender_name: string
+  sender_kvknumber: string
+  sender_btwnumber: string
   status: "outstanding" | "partially_paid" | "paid" | "expired" | "overpaid" | "imported" | "concept"
   total_amount: number
   issue_date: string
