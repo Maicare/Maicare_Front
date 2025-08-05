@@ -1,4 +1,4 @@
-// components/invoice/UpdateInvoiceForm.tsx
+// components/invoice/CreateInvoiceForm.tsx
 "use client";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -21,20 +21,22 @@ import { UpdateInvoiceFormValues, updateInvoiceSchema } from "@/schemas/invoice.
 import { cn } from "@/utils/cn";
 import { PlusIcon, TrashIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import ContractSelect from "../../contracts/_components/contract-select";
+import { ContractCard } from "./contract-card";
+import { ContractResults } from "../../contracts/_components/columns";
 import { useState } from "react";
 
-interface UpdateInvoiceFormProps {
-    defaultValues?: Partial<UpdateInvoiceFormValues>;
+interface CreateInvoiceFormProps {
     onSubmit: (values: UpdateInvoiceFormValues) => void;
     isSubmitting?: boolean;
+    clientId: string;
 }
 
-export function UpdateInvoiceForm({
-    defaultValues,
+export function CreateInvoiceForm({
     onSubmit,
     isSubmitting = false,
-}: UpdateInvoiceFormProps) {
+    clientId
+}: CreateInvoiceFormProps) {
     const form = useForm<UpdateInvoiceFormValues>({
         resolver: zodResolver(updateInvoiceSchema),
         defaultValues: {
@@ -42,7 +44,7 @@ export function UpdateInvoiceForm({
             extra_content: {},
             invoice_details: [
                 {
-                    contract_id: 0,
+                    contract_id: parseInt(clientId),
                     contract_name: "",
                     periods: [
                         {
@@ -64,13 +66,15 @@ export function UpdateInvoiceForm({
             status: "",
             total_amount: 0,
             warning_count: 0,
-            ...defaultValues
         },
     });
+
     const router = useRouter();
+    const [contract, setContract] = useState<ContractResults[]>([]);
     const handleCancel = () => {
         router.back();
     }
+
     // Add a new warning to a specific invoice detail
     const addWarning = (detailIndex: number) => {
         const currentWarnings = form.getValues(`invoice_details.${detailIndex}.warnings`) || [];
@@ -84,6 +88,59 @@ export function UpdateInvoiceForm({
         form.setValue(`invoice_details.${detailIndex}.warnings`, newWarnings);
     };
 
+    // Add a new invoice detail
+    const addInvoiceDetail = () => {
+        const currentDetails = form.getValues("invoice_details") || [];
+        form.setValue("invoice_details", [
+            ...currentDetails,
+            {
+                contract_id: 0,
+                contract_name: "",
+                periods: [
+                    {
+                        accommodation_time_frame: "",
+                        ambulante_total_minutes: 0,
+                        end_date: "",
+                        start_date: "",
+                    },
+                ],
+                pre_vat_total_price: 0,
+                price: 0,
+                price_time_unit: "",
+                total_price: 0,
+                vat: 0,
+                warnings: [],
+            }
+        ]);
+    };
+
+    // Remove an invoice detail
+    const removeInvoiceDetail = (detailIndex: number) => {
+        const currentDetails = form.getValues("invoice_details") || [];
+        const newDetails = currentDetails.filter((_, index) => index !== detailIndex);
+        form.setValue("invoice_details", newDetails);
+    };
+
+    // Add a new period to a specific invoice detail
+    const addPeriod = (detailIndex: number) => {
+        const currentPeriods = form.getValues(`invoice_details.${detailIndex}.periods`) || [];
+        form.setValue(`invoice_details.${detailIndex}.periods`, [
+            ...currentPeriods,
+            {
+                accommodation_time_frame: "",
+                ambulante_total_minutes: 0,
+                end_date: "",
+                start_date: "",
+            }
+        ]);
+    };
+
+    // Remove a period from a specific invoice detail
+    const removePeriod = (detailIndex: number, periodIndex: number) => {
+        const currentPeriods = form.getValues(`invoice_details.${detailIndex}.periods`) || [];
+        const newPeriods = currentPeriods.filter((_, index) => index !== periodIndex);
+        form.setValue(`invoice_details.${detailIndex}.periods`, newPeriods);
+    };
 
     function calculateExpectedPriceFromPeriod(
         unit: string,
@@ -122,7 +179,7 @@ export function UpdateInvoiceForm({
         return 0;
     }
 
-    const validateBusinessLogic = (
+    const _validateBusinessLogic = (
         data: UpdateInvoiceFormValues,
     ): {
         isValid: boolean;
@@ -137,8 +194,8 @@ export function UpdateInvoiceForm({
         clearErrors();
 
         data.invoice_details.forEach((detail, detailIndex) => {
-            const unit = detail.price_time_unit;
-            const rate = detail.price;
+            const unit = contract?.[detailIndex]?.price_time_unit;
+            const rate = contract?.[detailIndex]?.price;
 
             const expectedPreVat = detail.periods.reduce((sum, period) => {
                 return sum + calculateExpectedPriceFromPeriod(unit, rate, {
@@ -191,16 +248,22 @@ export function UpdateInvoiceForm({
 
         return { isValid, correctedPrices, expectedTotalAmount };
     };
-    const submitWithValidation = (values: UpdateInvoiceFormValues) => {
-        const { isValid, correctedPrices } = validateBusinessLogic(values);
 
-        if (!isValid) {
-            // Optional: show corrected values in a toast, UI message, or inline
-            console.warn("🟡 Corrected Values Suggestion:", correctedPrices);
-            return;
-        }
-        onSubmit(values);
+    const submitWithValidation = (values: UpdateInvoiceFormValues) => {
+        onSubmit({
+            ...values,
+            client_id: parseInt(clientId),
+            invoice_type:"standard",
+            invoice_details:values.invoice_details.map((detail, index) => ({
+                ...detail,
+                contract_id:contract?.[index]?.id,
+                contract_name:contract?.[index]?.care_name,
+                price:contract?.[index]?.price,
+                price_time_unit:contract?.[index]?.price_time_unit,
+            }),
+        )});
     }
+
     // State for new key-value pair
     const [newKey, setNewKey] = useState("");
     const [newValue, setNewValue] = useState("");
@@ -225,6 +288,7 @@ export function UpdateInvoiceForm({
         delete newContent[key];
         form.setValue("extra_content", newContent);
     };
+
     return (
         <Form {...form}>
             <form onSubmit={form.handleSubmit(submitWithValidation)} className="space-y-8">
@@ -261,7 +325,7 @@ export function UpdateInvoiceForm({
                                                     </Button>
                                                 </FormControl>
                                             </PopoverTrigger>
-                                            <PopoverContent className="w-auto p-0" align="start">
+                                            <PopoverContent className="w-auto p-0 bg-white" align="start">
                                                 <Calendar
                                                     mode="single"
                                                     selected={field.value ? new Date(field.value) : undefined}
@@ -303,7 +367,7 @@ export function UpdateInvoiceForm({
                                                     </Button>
                                                 </FormControl>
                                             </PopoverTrigger>
-                                            <PopoverContent className="w-auto p-0" align="start">
+                                            <PopoverContent className="w-auto p-0 bg-white" align="start">
                                                 <Calendar
                                                     mode="single"
                                                     selected={field.value ? new Date(field.value) : undefined}
@@ -426,104 +490,76 @@ export function UpdateInvoiceForm({
                 {/* Invoice Details Section - Full width card */}
                 <Card>
                     <CardHeader>
-                        <CardTitle>Invoice Details</CardTitle>
+                        <CardTitle className="flex justify-between items-center">
+                            <span>Invoice Details</span>
+                            <Button
+                                type="button"
+                                variant="outline"
+                                size="sm"
+                                onClick={addInvoiceDetail}
+                            >
+                                <PlusIcon className="mr-2 h-4 w-4" />
+                                Add Invoice Detail
+                            </Button>
+                        </CardTitle>
                     </CardHeader>
                     <CardContent className="space-y-6">
                         {form.watch("invoice_details").map((detail, detailIndex) => (
                             <Card key={detailIndex} className="p-4">
+                                <div className="flex justify-between items-center mb-4">
+                                    <h3 className="font-medium">Invoice Detail #{detailIndex + 1}</h3>
+                                    <Button
+                                        type="button"
+                                        variant="ghost"
+                                        size="sm"
+                                        className="text-destructive"
+                                        onClick={() => removeInvoiceDetail(detailIndex)}
+                                    >
+                                        <TrashIcon className="mr-2 h-4 w-4" />
+                                        Remove
+                                    </Button>
+                                </div>
+
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                    {/* Contract Information */}
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div className="grid grid-cols-1 gap-2">
                                         <FormField
                                             control={form.control}
                                             name={`invoice_details.${detailIndex}.contract_id`}
                                             render={({ field }) => (
                                                 <FormItem>
-                                                    <FormLabel>Contract ID</FormLabel>
                                                     <FormControl>
-                                                        <Input type="number" {...field} onChange={(e) => field.onChange(parseInt(e.target.value))} />
+                                                        <ContractSelect
+                                                            value={field.value.toString()}
+                                                            onChange={(value) => field.onChange(parseInt(value))}
+                                                            label="Select Contract"
+                                                            className="w-full"
+                                                            modal={false}
+                                                            clientId={clientId} // Pass clientId to filter contracts
+                                                            getSelectedItem={(item: ContractResults) => {
+                                                                setContract((prevItems) => {
+                                                                    const updatedItems = [...prevItems]; // clone the array
+                                                                    updatedItems[detailIndex] = item; // update the specific index
+                                                                    return updatedItems; // set the new array
+                                                                  });
+                                                            }}
+                                                        />
                                                     </FormControl>
                                                     <FormMessage />
                                                 </FormItem>
                                             )}
                                         />
-
-                                        <FormField
-                                            control={form.control}
-                                            name={`invoice_details.${detailIndex}.contract_name`}
-                                            render={({ field }) => (
-                                                <FormItem>
-                                                    <FormLabel>Care Name</FormLabel>
-                                                    <FormControl>
-                                                        <Select onValueChange={field.onChange} defaultValue={field.value} >
-                                                            <SelectTrigger className="w-full">
-                                                                <SelectValue placeholder="Relatie" />
-                                                            </SelectTrigger>
-                                                            <SelectContent className="bg-white">
-                                                                <SelectGroup>
-                                                                    {
-                                                                        [{ value: "ambulante", label: "Ambulante" }, { value: "accommodation", label: "Accommodation" }].filter(v => v.value !== "").map((item, index) => (
-                                                                            <SelectItem key={index} value={item.value} className="hover:bg-slate-100 cursor-pointer">{item.label}</SelectItem>
-                                                                        ))
-                                                                    }
-                                                                </SelectGroup>
-                                                            </SelectContent>
-                                                        </Select>
-                                                    </FormControl>
-                                                    <FormMessage />
-                                                </FormItem>
-                                            )}
-                                        />
-                                    </div>
-
-                                    {/* Pricing Information */}
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                        <FormField
-                                            control={form.control}
-                                            name={`invoice_details.${detailIndex}.price`}
-                                            render={({ field }) => (
-                                                <FormItem>
-                                                    <FormLabel>Price</FormLabel>
-                                                    <FormControl>
-                                                        <Input type="number" {...field} onChange={(e) => field.onChange(parseInt(e.target.value))} />
-                                                    </FormControl>
-                                                    <FormMessage />
-                                                </FormItem>
-                                            )}
-                                        />
-
-                                        <FormField
-                                            control={form.control}
-                                            name={`invoice_details.${detailIndex}.price_time_unit`}
-                                            render={({ field }) => (
-                                                <FormItem>
-                                                    <FormLabel>Price Time Unit</FormLabel>
-                                                    <FormControl>
-                                                        <Input {...field} />
-                                                    </FormControl>
-                                                    <FormMessage />
-                                                </FormItem>
-                                            )}
-                                        />
-                                    </div>
-
-                                    {/* VAT and Totals */}
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                         <FormField
                                             control={form.control}
                                             name={`invoice_details.${detailIndex}.pre_vat_total_price`}
-                                            render={({ field }) => {
-                                                // const error = form.formState.errors?.invoice_details?.[detailIndex]?.pre_vat_total_price;
-                                                return (
-                                                    <FormItem>
-                                                        <FormLabel>Pre VAT Total</FormLabel>
-                                                        <FormControl>
-                                                            <Input type="number" {...field} onChange={(e) => field.onChange(parseInt(e.target.value))} />
-                                                        </FormControl>
-                                                        <FormMessage />
-                                                    </FormItem>
-                                                )
-                                            }}
+                                            render={({ field }) => (
+                                                <FormItem>
+                                                    <FormLabel>Pre VAT Total</FormLabel>
+                                                    <FormControl>
+                                                        <Input type="number" {...field} onChange={(e) => field.onChange(parseInt(e.target.value))} />
+                                                    </FormControl>
+                                                    <FormMessage />
+                                                </FormItem>
+                                            )}
                                         />
 
                                         <FormField
@@ -539,28 +575,61 @@ export function UpdateInvoiceForm({
                                                 </FormItem>
                                             )}
                                         />
+
+                                        <FormField
+                                            control={form.control}
+                                            name={`invoice_details.${detailIndex}.total_price`}
+                                            render={({ field }) => (
+                                                <FormItem>
+                                                    <FormLabel>Total Price</FormLabel>
+                                                    <FormControl>
+                                                        <Input type="number" {...field} onChange={(e) => field.onChange(parseInt(e.target.value))} />
+                                                    </FormControl>
+                                                    <FormMessage />
+                                                </FormItem>
+                                            )}
+                                        />
+                                    </div>
+                                    <div className="">
+                                        <ContractCard contract={contract?.[detailIndex]||null} />
                                     </div>
 
-                                    <FormField
-                                        control={form.control}
-                                        name={`invoice_details.${detailIndex}.total_price`}
-                                        render={({ field }) => (
-                                            <FormItem>
-                                                <FormLabel>Total Price</FormLabel>
-                                                <FormControl>
-                                                    <Input type="number" {...field} onChange={(e) => field.onChange(parseInt(e.target.value))} />
-                                                </FormControl>
-                                                <FormMessage />
-                                            </FormItem>
-                                        )}
-                                    />
+
+
+
                                 </div>
 
                                 {/* Periods Section */}
                                 <div className="mt-6 space-y-4">
-                                    <h4 className="text-sm font-medium">Periods</h4>
+                                    <div className="flex justify-between items-center">
+                                        <h4 className="text-sm font-medium">Periods</h4>
+                                        <Button
+                                            type="button"
+                                            variant="outline"
+                                            size="sm"
+                                            onClick={() => addPeriod(detailIndex)}
+                                        >
+                                            <PlusIcon className="mr-2 h-4 w-4" />
+                                            Add Period
+                                        </Button>
+                                    </div>
+
                                     {detail.periods.map((period, periodIndex) => (
                                         <Card key={periodIndex} className="p-4">
+                                            <div className="flex justify-between items-center mb-4">
+                                                <h4 className="text-sm font-medium">Period #{periodIndex + 1}</h4>
+                                                <Button
+                                                    type="button"
+                                                    variant="ghost"
+                                                    size="sm"
+                                                    className="text-destructive"
+                                                    onClick={() => removePeriod(detailIndex, periodIndex)}
+                                                >
+                                                    <TrashIcon className="mr-2 h-4 w-4" />
+                                                    Remove
+                                                </Button>
+                                            </div>
+
                                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                                 {/* Start Date */}
                                                 <FormField
@@ -588,7 +657,7 @@ export function UpdateInvoiceForm({
                                                                         </Button>
                                                                     </FormControl>
                                                                 </PopoverTrigger>
-                                                                <PopoverContent className="w-auto p-0" align="start">
+                                                                <PopoverContent className="w-auto p-0 bg-white" align="start">
                                                                     <Calendar
                                                                         mode="single"
                                                                         selected={field.value ? new Date(field.value) : undefined}
@@ -630,7 +699,7 @@ export function UpdateInvoiceForm({
                                                                         </Button>
                                                                     </FormControl>
                                                                 </PopoverTrigger>
-                                                                <PopoverContent className="w-auto p-0" align="start">
+                                                                <PopoverContent className="w-auto p-0 bg-white" align="start">
                                                                     <Calendar
                                                                         mode="single"
                                                                         selected={field.value ? new Date(field.value) : undefined}
@@ -647,50 +716,54 @@ export function UpdateInvoiceForm({
                                                 />
 
                                                 {/* Accommodation Time Frame */}
-
-                                                <FormField
-                                                    control={form.control}
-                                                    name={`invoice_details.${detailIndex}.periods.${periodIndex}.accommodation_time_frame`}
-                                                    render={({ field }) => (
-                                                        <FormItem className={defaultValues?.invoice_details?.[detailIndex]?.periods?.[periodIndex]?.accommodation_time_frame ? "" : "hidden"}>
-                                                            <FormLabel>Accommodation Time Frame</FormLabel>
-                                                            <FormControl>
-                                                                <Input
-                                                                    placeholder="e.g., 28 days"
-                                                                    {...field}
-                                                                    value={field.value || ""}
-                                                                />
-                                                            </FormControl>
-                                                            <FormMessage />
-                                                        </FormItem>
-                                                    )}
-                                                />
-
+                                                {
+                                                    contract?.[detailIndex]?.care_type === "accommodation" && (
+                                                        <FormField
+                                                            control={form.control}
+                                                            name={`invoice_details.${detailIndex}.periods.${periodIndex}.accommodation_time_frame`}
+                                                            render={({ field }) => (
+                                                                <FormItem>
+                                                                    <FormLabel>Accommodation Time Frame</FormLabel>
+                                                                    <FormControl>
+                                                                        <Input
+                                                                            placeholder="e.g., 28 days"
+                                                                            {...field}
+                                                                            value={field.value || ""}
+                                                                        />
+                                                                    </FormControl>
+                                                                    <FormMessage />
+                                                                </FormItem>
+                                                            )}
+                                                        />
+                                                    )
+                                                }
 
                                                 {/* Ambulante Total Minutes */}
-
-                                                <FormField
-                                                    control={form.control}
-                                                    name={`invoice_details.${detailIndex}.periods.${periodIndex}.ambulante_total_minutes`}
-                                                    render={({ field }) => (
-                                                        <FormItem className={defaultValues?.invoice_details?.[detailIndex]?.periods?.[periodIndex]?.ambulante_total_minutes ? "" : "hidden"}>
-                                                            <FormLabel>Ambulante Total Minutes</FormLabel>
-                                                            <FormControl>
-                                                                <Input
-                                                                    type="number"
-                                                                    {...field}
-                                                                    onChange={(e) => {
-                                                                        const value = e.target.value;
-                                                                        field.onChange(value === '' ? undefined : Number(value));
-                                                                    }}
-                                                                    value={field.value || ""}
-                                                                />
-                                                            </FormControl>
-                                                            <FormMessage />
-                                                        </FormItem>
-                                                    )}
-                                                />
-
+                                                {
+                                                    contract?.[detailIndex]?.care_type === "ambulante" && (
+                                                        <FormField
+                                                            control={form.control}
+                                                            name={`invoice_details.${detailIndex}.periods.${periodIndex}.ambulante_total_minutes`}
+                                                            render={({ field }) => (
+                                                                <FormItem>
+                                                                    <FormLabel>Ambulante Total Minutes</FormLabel>
+                                                                    <FormControl>
+                                                                        <Input
+                                                                            type="number"
+                                                                            {...field}
+                                                                            onChange={(e) => {
+                                                                                const value = e.target.value;
+                                                                                field.onChange(value === '' ? undefined : Number(value));
+                                                                            }}
+                                                                            value={field.value || ""}
+                                                                        />
+                                                                    </FormControl>
+                                                                    <FormMessage />
+                                                                </FormItem>
+                                                            )}
+                                                        />
+                                                    )
+                                                }
                                             </div>
                                         </Card>
                                     ))}
@@ -750,7 +823,7 @@ export function UpdateInvoiceForm({
 
                 <div className="flex justify-end gap-4">
                     <Button type="submit" disabled={isSubmitting}>
-                        {isSubmitting ? "Saving..." : "Update Invoice"}
+                        {isSubmitting ? "Creating..." : "Create Invoice"}
                     </Button>
                     <Button type="button" className='bg-red-200 text-red-600 hover:text-white hover:bg-red-600 transition-colors' disabled={isSubmitting} onClick={handleCancel}>
                         Cancel

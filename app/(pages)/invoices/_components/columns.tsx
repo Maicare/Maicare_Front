@@ -65,6 +65,15 @@ const statusConfig = {
     bgColor: "bg-red-50 dark:bg-red-900/20",
     textColor: "text-red-600 dark:text-red-400"
   },
+  canceled: {
+    variant: "destructive",
+    text: "Canceled",
+    icon: <AlertCircle className="h-5 w-5" />,
+    bgColor: "bg-gradient-to-br from-red-100 to-red-200 dark:from-red-900/40 dark:to-red-800/60",
+    textColor: "text-red-700 dark:text-red-300",
+    borderColor: "border-red-200 dark:border-red-800",
+    progressColor: "bg-red-500"
+},
   partially_paid: {
     variant: "warning",
     text: "Partial",

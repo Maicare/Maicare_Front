@@ -1,7 +1,9 @@
 
 const prefix = '/invoices';
 const ApiRoutes = {
-  CreateOne: prefix+"/generate",
+  CreateOne: prefix,
+  CreditOne: prefix+"/{id}/credit",
+  GenerateOne: prefix+"/generate",
   ReadAll: prefix,
   ReadOne: prefix + '/{id}',
   UpdateOne: prefix + '/{id}',

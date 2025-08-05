@@ -27,7 +27,6 @@ import {
   FormControl,
   FormMessage,
 } from "@/components/ui/form";
-import { LocationSelect } from "@/components/employee/LocationSelect";
 import { useSchedule } from "@/hooks/schedule/use-schedule";
 import {
   scheduleSchema,
@@ -51,6 +50,7 @@ export interface SchedulePopupProps {
   initialEmployeeId?: number;
   initialLocationId?: number;
   initialShiftId?: number;
+  locationId: number;
 }
 
 export type SchedulePayload = {
@@ -91,8 +91,8 @@ const SchedulePopup: FunctionComponent<SchedulePopupProps> = ({
   onUpsert,
   onDelete,
   initialEmployeeId,
-  initialLocationId,
   initialShiftId,
+  locationId,
 }) => {
 
   const { createSchedule, updateSchedule } = useSchedule();
@@ -107,12 +107,11 @@ const SchedulePopup: FunctionComponent<SchedulePopupProps> = ({
     defaultValues: {
       employee_id:
         editEvent?.event.extendedProps.employee_id ?? initialEmployeeId ?? 0,
-      location_id:
-        editEvent?.event.extendedProps.location_id ?? initialLocationId ?? 0,
+      location_id: locationId,
       is_custom:
         editEvent
           ? !(editEvent.event.extendedProps?.location_shift_id > 0)
-          : true,
+          : false,
       start_datetime: new Date(computedStart),
       end_datetime: new Date(computedEnd),
       location_shift_id:
@@ -133,6 +132,7 @@ const SchedulePopup: FunctionComponent<SchedulePopupProps> = ({
 
   const isCustom = watch("is_custom");
   const currentLocationId = watch("location_id");
+  // const location_shift_qid = watch("location_shift_id")
 
   useEffect(() => {
     const baseStart =
@@ -143,12 +143,11 @@ const SchedulePopup: FunctionComponent<SchedulePopupProps> = ({
     reset({
       employee_id:
         editEvent?.event.extendedProps.employee_id ?? initialEmployeeId ?? 0,
-      location_id:
-        editEvent?.event.extendedProps.location_id ?? initialLocationId ?? 0,
+      location_id: locationId,
       is_custom:
         editEvent
           ? !(editEvent.event.extendedProps?.location_shift_id > 0)
-          : true,
+          : false,
       start_datetime: new Date(baseStart),
       end_datetime: new Date(baseEnd),
       location_shift_id:
@@ -157,14 +156,14 @@ const SchedulePopup: FunctionComponent<SchedulePopupProps> = ({
         0,
       shift_date: format(baseStart, "yyyy-MM-dd"),
     });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     createRange,
     editEvent,
     eventStart,
     eventEnd,
     initialEmployeeId,
-    initialLocationId,
+    initialShiftId,
+    locationId,
     reset,
   ]);
 
@@ -175,14 +174,14 @@ const SchedulePopup: FunctionComponent<SchedulePopupProps> = ({
         ? ({
           is_custom: true as const,
           employee_id: data.employee_id,
-          location_id: data.location_id,
+          location_id: locationId,
           start_datetime: data.start_datetime,
           end_datetime: data.end_datetime,
         })
         : ({
           is_custom: false as const,
           employee_id: data.employee_id,
-          location_id: data.location_id,
+          location_id: locationId,
           location_shift_id: data.location_shift_id,
           shift_date: data.shift_date,
         });
@@ -276,24 +275,6 @@ const SchedulePopup: FunctionComponent<SchedulePopupProps> = ({
                 </FormItem>
               )}
             />
-
-            <FormField
-              control={control}
-              name="location_id"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Location</FormLabel>
-                  <FormControl>
-                    <LocationSelect
-                      value={field.value}
-                      onChange={field.onChange}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
             <FormField
               control={control}
               name="is_custom"

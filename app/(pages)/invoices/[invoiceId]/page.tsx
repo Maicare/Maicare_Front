@@ -2,7 +2,7 @@
 import InvoiceDetails from '../_components/invoice-details'
 import { InvoicesType } from '../_components/columns';
 import { useInvoice } from '@/hooks/invoice/use-invoive';
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { Id } from '@/common/types/types';
 import withAuth, { AUTH_MODE } from '@/common/hocs/with-auth';
@@ -11,7 +11,8 @@ import Routes from '@/common/routes';
 import { PermissionsObjects } from '@/common/data/permission.data';
 
 const InvoiceDetailsPage = () => {
-  const { readOne } = useInvoice({ autoFetch: false });
+  const { readOne,creditOne } = useInvoice({ autoFetch: false });
+  const router = useRouter();
   const { invoiceId } = useParams();
   const [invoice, setInvoice] = useState<InvoicesType | undefined>(undefined);
   const [isLoading, setIsLoading] = useState(true);
@@ -32,9 +33,21 @@ const InvoiceDetailsPage = () => {
       </div>
     );
   }
+  const handleCredit = async() => {
+    try {
+      const data = await creditOne(invoiceId as string,{
+        displayProgress:true,
+        displaySuccess:true
+      });
+      router.push(data!.id.toString())
+    } catch (error) {
+      console.error(error)
+    }
+  }
   return (
     <InvoiceDetails
       invoice={invoice}
+      handleCredit={handleCredit}
     />
   )
 }

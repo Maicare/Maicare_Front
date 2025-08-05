@@ -1,3 +1,4 @@
+"use client"
 import { PermissionsObjects } from '@/common/data/permission.data';
 import withAuth, { AUTH_MODE } from '@/common/hocs/with-auth';
 import withPermissions from '@/common/hocs/with-permissions';
