@@ -10,10 +10,16 @@ import { Button } from "@/components/ui/button";
 import ClientSelect from "../contracts/_components/client-select";
 import { useState } from "react";
 import { DatePicker } from "./_components/date-picker";
+import withAuth, { AUTH_MODE } from "@/common/hocs/with-auth";
+import withPermissions from "@/common/hocs/with-permissions";
+import Routes from "@/common/routes";
+import { PermissionsObjects } from "@/common/data/permission.data";
+import { useRouter } from "next/navigation";
 
 
 const InvoicesPage = () => {
-    const { invoices, setPage, page,createOne } = useInvoice({ autoFetch: true });
+    const { invoices, setPage, page,generateOne } = useInvoice({ autoFetch: true });
+    const router = useRouter();
     const [clientId,setClientId] = useState<string | null>(null);
     const [startDate,setStartDate] = useState<Date>(new Date());
     const [endDate,setEndDate] = useState<Date>(new Date());
@@ -30,6 +36,10 @@ const InvoicesPage = () => {
           return;
         }
       }
+      const handleCreate = () => {
+        if (!clientId) return;
+        router.push(`/invoices/create?clientId=${clientId}`);
+      }
       const handleAdd = async() => {
         try {
           if (!clientId) return;
@@ -39,7 +49,7 @@ const InvoicesPage = () => {
             return;
           }
           // Call the createOne function with the necessary data
-          await createOne({
+          await generateOne({
             client_id: parseInt(clientId),
             start_date: startDate.toISOString(),
             end_date: endDate.toISOString(),
@@ -57,11 +67,50 @@ const InvoicesPage = () => {
       <h1 className='flex items-center gap-2 m-0 p-0 font-extrabold text-lg text-slate-600'>
         <DollarSign size={24} className='text-indigo-400' />  Facturen
       </h1>
-
+<div className="flex items-center gap-4">
       <Dialog>
         <DialogTrigger asChild>
           <PrimaryButton
-            text="Add"
+            text="Create"
+            disabled={false}
+            icon={PlusCircle}
+            animation="animate-bounce"
+            className="ml-auto dark:bg-indigo-800 dark:text-white dark:hover:bg-indigo-500"
+          />
+        </DialogTrigger>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle>Select a Client</DialogTitle>
+            <DialogDescription>
+              Please select a client to create a contract for. You can also add a new client if needed.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="grid gap-4">
+            <div className="grid grid-cols-2 gap-3">
+              <ClientSelect
+                label="Client"
+                value={clientId||""}
+                onChange={(value) => {
+                  setClientId(value);
+                  console.log({clientId,value})
+                }}
+                className="w-full col-span-2"
+                modal={true}
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <DialogClose asChild>
+              <Button variant="outline">Cancel</Button>
+            </DialogClose>
+            <Button type="button" disabled={!clientId} onClick={()=>handleCreate()}>Save changes</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+      <Dialog>
+        <DialogTrigger asChild>
+          <PrimaryButton
+            text="Generate"
             disabled={false}
             icon={PlusCircle}
             animation="animate-bounce"
@@ -110,6 +159,8 @@ const InvoicesPage = () => {
         </DialogContent>
       </Dialog>
 
+</div>
+
 
     </div>
     <div className="grid grid-cols-1 gap-4">
@@ -141,4 +192,10 @@ const InvoicesPage = () => {
   )
 }
 
-export default InvoicesPage
+export default withAuth(
+  withPermissions(InvoicesPage, {
+      redirectUrl: Routes.Common.NotFound,
+      requiredPermissions: PermissionsObjects.ViewEmployee, // TODO: Add correct permission
+  }),
+  { mode: AUTH_MODE.LOGGED_IN, redirectUrl: Routes.Auth.Login }
+);

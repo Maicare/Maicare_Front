@@ -33,7 +33,7 @@ export interface Invoice {
     total_amount: number;
     updated_at: string;
 }
-export type CreateInvoice = {
+export type GenerateInvoice = {
     client_id:Id;
     end_date:string;
     start_date:string;

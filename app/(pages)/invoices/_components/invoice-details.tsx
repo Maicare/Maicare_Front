@@ -24,7 +24,8 @@ import {
     BadgePercent,
     FileBarChart,
     Receipt,
-    Edit
+    Edit,
+    Trash
 } from "lucide-react"
 import { format } from "date-fns"
 import Link from "next/link"
@@ -41,6 +42,15 @@ const statusConfig = {
     outstanding: {
         variant: "destructive",
         text: "Outstanding",
+        icon: <AlertCircle className="h-5 w-5" />,
+        bgColor: "bg-gradient-to-br from-red-100 to-red-200 dark:from-red-900/40 dark:to-red-800/60",
+        textColor: "text-red-700 dark:text-red-300",
+        borderColor: "border-red-200 dark:border-red-800",
+        progressColor: "bg-red-500"
+    },
+    canceled: {
+        variant: "destructive",
+        text: "Canceled",
         icon: <AlertCircle className="h-5 w-5" />,
         bgColor: "bg-gradient-to-br from-red-100 to-red-200 dark:from-red-900/40 dark:to-red-800/60",
         textColor: "text-red-700 dark:text-red-300",
@@ -103,7 +113,7 @@ const statusConfig = {
     }
 }
 
-export default function InvoiceDetails({ invoice }: { invoice: InvoicesType }) {
+export default function InvoiceDetails({ invoice,handleCredit }: { invoice: InvoicesType,handleCredit:()=>void }) {
     const router = useRouter();
     const status = invoice.status
     const config = statusConfig[status]
@@ -147,6 +157,10 @@ export default function InvoiceDetails({ invoice }: { invoice: InvoicesType }) {
                             Download PDF
                         </Button>
                     )}
+                    <Button variant="outline" className="rounded-full hover:bg-red-100/50 dark:hover:bg-red-900/20 backdrop-blur-sm" onClick={()=> handleCredit()}>
+                        <Trash className="h-4 w-4 mr-2" />
+                        Credit
+                    </Button>
                 </div>
             </div>
 
@@ -165,7 +179,7 @@ export default function InvoiceDetails({ invoice }: { invoice: InvoicesType }) {
                                 <div className="flex items-center mt-2">
                                     <div className={`inline-flex items-center ${config.bgColor} ${config.textColor} px-4 py-1.5 rounded-full border ${config.borderColor} backdrop-blur-sm`}>
                                         {config.icon}
-                                        <span className="ml-2 font-medium">{config.text}</span>
+                                        <span className="ml-2 font-medium">{invoice.status}</span>
                                     </div>
                                     {isOverdue && (
                                         <Badge variant="destructive" className="ml-3 animate-pulse">

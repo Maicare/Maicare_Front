@@ -5,6 +5,10 @@ import { Contract } from "@/schemas/contract.schema";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { ContractOverview } from "../_components/contract-overview";
+import withAuth, { AUTH_MODE } from "@/common/hocs/with-auth";
+import withPermissions from "@/common/hocs/with-permissions";
+import Routes from "@/common/routes";
+import { PermissionsObjects } from "@/common/data/permission.data";
 
 const Page = () => {
     const { clientId, contractId } = useParams();
@@ -36,4 +40,10 @@ const Page = () => {
     )
 }
 
-export default Page
+export default withAuth(
+    withPermissions(Page, {
+        redirectUrl: Routes.Common.NotFound,
+        requiredPermissions: PermissionsObjects.ViewEmployee, // TODO: Add correct permission
+    }),
+    { mode: AUTH_MODE.LOGGED_IN, redirectUrl: Routes.Auth.Login }
+);

@@ -12,6 +12,10 @@ import { useShift } from "@/hooks/shift/use-shift";
 import { CreateShift, Shift } from "@/schemas/shift.schema";
 import CreateShiftSheet from "./_components/CreateShiftSheet";
 import { Id } from "@/common/types/types";
+import withAuth, { AUTH_MODE } from "@/common/hocs/with-auth";
+import withPermissions from "@/common/hocs/with-permissions";
+import Routes from "@/common/routes";
+import { PermissionsObjects } from "@/common/data/permission.data";
 
 
 
@@ -119,4 +123,10 @@ const ShiftPage = () => {
     </div>
   )
 }
-export default ShiftPage;
+export default withAuth(
+  withPermissions(ShiftPage, {
+      redirectUrl: Routes.Common.NotFound,
+      requiredPermissions: PermissionsObjects.ViewEmployee, // TODO: Add correct permission
+  }),
+  { mode: AUTH_MODE.LOGGED_IN, redirectUrl: Routes.Auth.Login }
+);

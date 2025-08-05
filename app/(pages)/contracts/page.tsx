@@ -14,6 +14,10 @@ import { useState } from "react";
 import TableFilters from "./_components/table-filters";
 import { ContractFilterFormType } from "@/types/contracts.types";
 import { useDebounce } from "@/hooks/common/useDebounce";
+import withAuth, { AUTH_MODE } from "@/common/hocs/with-auth";
+import withPermissions from "@/common/hocs/with-permissions";
+import Routes from "@/common/routes";
+import { PermissionsObjects } from "@/common/data/permission.data";
 
 const Finances = () => {
   const router = useRouter();
@@ -128,4 +132,10 @@ const [filters, setFilters] = useState<ContractFilterFormType>({
   );
 };
 
-export default Finances;
+export default withAuth(
+  withPermissions(Finances, {
+      redirectUrl: Routes.Common.NotFound,
+      requiredPermissions: PermissionsObjects.ViewEmployee, // TODO: Add correct permission
+  }),
+  { mode: AUTH_MODE.LOGGED_IN, redirectUrl: Routes.Auth.Login }
+);

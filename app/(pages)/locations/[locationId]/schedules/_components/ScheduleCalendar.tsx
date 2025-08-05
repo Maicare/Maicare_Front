@@ -425,6 +425,7 @@ const ScheduleCalendar: FunctionComponent<{ locationId: string }> = ({ locationI
           <FullCalendar
             ref={calendarRef}
             key={calendarKey}
+            initialDate={new Date(viewDate.year, viewDate.month - 1, 1)}
             plugins={[dayGridPlugin]}
             initialView="dayGridMonth"
             fixedWeekCount={false}

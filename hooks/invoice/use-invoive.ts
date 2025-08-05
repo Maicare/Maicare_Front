@@ -9,7 +9,7 @@ import { ApiOptions } from "@/common/types/api.types";
 import { PaginatedResponse } from "@/common/types/pagination.types";
 import { PAGE_SIZE } from "@/consts";
 import { UpdateInvoiceFormValues } from "@/schemas/invoice.schema";
-import { CreateInvoice, Invoice } from "@/types/invoice.types";
+import {  GenerateInvoice, Invoice } from "@/types/invoice.types";
 import { constructUrlSearchParams } from "@/utils/construct-search-params";
 import { useSnackbar } from "notistack";
 import { useState } from "react";
@@ -105,7 +105,28 @@ export function useInvoice({ autoFetch = false }: { autoFetch?: boolean }) {
         }
     };
 
-    const createOne = async (invoice: CreateInvoice, options?: ApiOptions) => {
+    const generateOne = async (invoice: GenerateInvoice, options?: ApiOptions) => {
+        const { displayProgress = false, displaySuccess = false } = options || {};
+        try {
+            if (displayProgress) startProgress();
+            const { message, success, data, error } = await useApi<Invoice>(ApiRoutes.Invoice.GenerateOne, "POST", {}, { ...invoice });
+            if (!data)
+                throw new Error(error || message || "An unknown error occurred");
+
+            // Display success message
+            if (displaySuccess && success) {
+                enqueueSnackbar("invoice ganarated successful!", { variant: "success" });
+            }
+            mutate()
+            return data;
+        } catch (err: any) {
+            enqueueSnackbar(err?.response?.data?.message || "invoice generation failed", { variant: "error" });
+            throw err;
+        } finally {
+            if (displayProgress) stopProgress();
+        }
+    }
+    const createOne = async (invoice: UpdateInvoiceFormValues, options?: ApiOptions) => {
         const { displayProgress = false, displaySuccess = false } = options || {};
         try {
             if (displayProgress) startProgress();
@@ -115,12 +136,12 @@ export function useInvoice({ autoFetch = false }: { autoFetch?: boolean }) {
 
             // Display success message
             if (displaySuccess && success) {
-                enqueueSnackbar("Location created successful!", { variant: "success" });
+                enqueueSnackbar("invoice created successful!", { variant: "success" });
             }
             mutate()
             return data;
         } catch (err: any) {
-            enqueueSnackbar(err?.response?.data?.message || "Location creationg failed", { variant: "error" });
+            enqueueSnackbar(err?.response?.data?.message || "invoice creation failed", { variant: "error" });
             throw err;
         } finally {
             if (displayProgress) stopProgress();
@@ -147,16 +168,39 @@ export function useInvoice({ autoFetch = false }: { autoFetch?: boolean }) {
             if (displayProgress) stopProgress();
         }
     }
+    const creditOne = async (id:string, options?: ApiOptions) => {
+        const { displayProgress = false, displaySuccess = false } = options || {};
+        try {
+            if (displayProgress) startProgress();
+            const { message, success, data, error } = await useApi<Invoice>(ApiRoutes.Invoice.CreditOne.replace("{id}",id), "POST", {}, { });
+            if (!success)
+                throw new Error(error || message || "An unknown error occurred");
+
+            // Display success message
+            if (displaySuccess && success) {
+                enqueueSnackbar("Invoice Credited successful!", { variant: "success" });
+            }
+            mutate()
+            return data;
+        } catch (err: any) {
+            enqueueSnackbar(err?.response?.data?.message || "Invoice Credition failed", { variant: "error" });
+            throw err;
+        } finally {
+            if (displayProgress) stopProgress();
+        }
+    }
 
     return {
         invoices,
         error,
         isLoading,
         readOne,
+        generateOne,
         createOne,
         page,
         setPage,
         updateOne,
-        readAllInvoiceTemplate
+        readAllInvoiceTemplate,
+        creditOne
       };
 }

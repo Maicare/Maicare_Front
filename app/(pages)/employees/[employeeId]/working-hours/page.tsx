@@ -12,6 +12,10 @@ import Statistics from "./_components/Statistics";
 import { Separator } from "@/components/ui/separator";
 import { WeekSelector } from "./_components/week-selector";
 import { getISOWeek, getISOWeekYear } from "date-fns";
+import withAuth, { AUTH_MODE } from "@/common/hocs/with-auth";
+import withPermissions from "@/common/hocs/with-permissions";
+import Routes from "@/common/routes";
+import { PermissionsObjects } from "@/common/data/permission.data";
 
 const WorkingHoursPage = () => {
     const { employeeId } = useParams();
@@ -103,4 +107,10 @@ const WorkingHoursPage = () => {
     );
 };
 
-export default WorkingHoursPage;
+export default withAuth(
+    withPermissions(WorkingHoursPage, {
+        redirectUrl: Routes.Common.NotFound,
+        requiredPermissions: PermissionsObjects.ViewEmployee, // TODO: Add correct permission
+    }),
+    { mode: AUTH_MODE.LOGGED_IN, redirectUrl: Routes.Auth.Login }
+);

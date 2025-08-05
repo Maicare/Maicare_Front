@@ -11,6 +11,10 @@ import { Contact } from "@/schemas/contact.schema";
 import { Contract, CreateContract } from "@/schemas/contract.schema";
 import { CreateContractForm } from "@/app/(pages)/clients/[clientId]/contract/_components/create-contract-form";
 import { ContactOverviewSection } from "../../_components/contact-overview-section";
+import withAuth, { AUTH_MODE } from "@/common/hocs/with-auth";
+import withPermissions from "@/common/hocs/with-permissions";
+import Routes from "@/common/routes";
+import { PermissionsObjects } from "@/common/data/permission.data";
 
 const Page = () => {
     const router = useRouter();
@@ -145,4 +149,10 @@ const Page = () => {
     )
 }
 
-export default Page
+export default withAuth(
+    withPermissions(Page, {
+        redirectUrl: Routes.Common.NotFound,
+        requiredPermissions: PermissionsObjects.ViewEmployee, // TODO: Add correct permission
+    }),
+    { mode: AUTH_MODE.LOGGED_IN, redirectUrl: Routes.Auth.Login }
+);

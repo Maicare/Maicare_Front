@@ -8,8 +8,12 @@ import { useEffect, useState } from "react";
 import { InvoicesType } from "../../_components/columns";
 import { Id } from "@/common/types/types";
 import { UpdateInvoiceFormValues } from "@/schemas/invoice.schema";
+import withAuth, { AUTH_MODE } from "@/common/hocs/with-auth";
+import withPermissions from "@/common/hocs/with-permissions";
+import Routes from "@/common/routes";
+import { PermissionsObjects } from "@/common/data/permission.data";
 
-export default function UpdateInvoicePage() {
+function UpdateInvoicePage() {
   const { invoiceId } = useParams();
   const router = useRouter();
   const {readOne,updateOne} = useInvoice({autoFetch:false});
@@ -64,3 +68,11 @@ const [invoice, setInvoice] = useState<InvoicesType | undefined>(undefined);
     </div>
   );
 }
+
+export default withAuth(
+  withPermissions(UpdateInvoicePage, {
+      redirectUrl: Routes.Common.NotFound,
+      requiredPermissions: PermissionsObjects.ViewEmployee, // TODO: Add correct permission
+  }),
+  { mode: AUTH_MODE.LOGGED_IN, redirectUrl: Routes.Auth.Login }
+);

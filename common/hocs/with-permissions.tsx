@@ -1,3 +1,4 @@
+"use client";
 import { ComponentType, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import usePermissions from '../hooks/use-permissions';

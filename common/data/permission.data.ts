@@ -6,6 +6,7 @@ export const PermissionsEnum = {
   UpdateEmployee: "EMPLOYEE.UPDATE",
   DeleteEmployee: "EMPLOYEE.DELETE",
   ViewEmployee: "EMPLOYEE.VIEW",
+  ViewCalendar: "CALENDAR.VIEW",
   ViewDashboard: "DASHBOARD.VIEW",
   ViewProfile: "PROFILE.VIEW",
   ViewClient: "CLIENT.VIEW",
@@ -73,6 +74,12 @@ export const PermissionsObjects: {
     id: 8,
     name: "LOCATION.VIEW",
     resource: "/locations",
+    method: "GET",
+  },
+  ViewCalendar: {
+    id: 8,
+    name: "CALENDAR.VIEW",
+    resource: "/appointments",
     method: "GET",
   },
   ViewTask: {

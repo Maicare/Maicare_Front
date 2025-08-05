@@ -28,6 +28,8 @@ export const updateInvoiceSchema = z.object({
   status: z.string(),
   total_amount: z.number(),
   warning_count: z.number().optional(),
+  client_id: z.number().optional(),
+  invoice_type: z.string().optional(),
 });
 
 export type UpdateInvoiceFormValues = z.infer<typeof updateInvoiceSchema>;

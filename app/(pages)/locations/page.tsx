@@ -11,6 +11,10 @@ import { ArrowBigLeft, ArrowBigRight, Locate } from "lucide-react";
 import { useState } from "react";
 import { getColumns } from "./_components/columns";
 import CreateLocationSheet from "./_components/CreateLocationSheet";
+import withAuth, { AUTH_MODE } from "@/common/hocs/with-auth";
+import withPermissions from "@/common/hocs/with-permissions";
+import Routes from "@/common/routes";
+import { PermissionsObjects } from "@/common/data/permission.data";
 
 
 const LocationsPage = () => {
@@ -118,4 +122,10 @@ const LocationsPage = () => {
   )
 }
 
-export default LocationsPage
+export default withAuth(
+  withPermissions(LocationsPage, {
+      redirectUrl: Routes.Common.NotFound,
+      requiredPermissions: PermissionsObjects.ViewEmployee, // TODO: Add correct permission
+  }),
+  { mode: AUTH_MODE.LOGGED_IN, redirectUrl: Routes.Auth.Login }
+);
