@@ -14,6 +14,8 @@ import RisksTab from './components/risks-tab';
 import SupportNetworkTab from './components/support-network-tab';
 import ResourcesTab from './components/resources-tab';
 import { CarePlanOverview } from '@/types/care-plan.types';
+import { ReportCard } from './components/report-card';
+import ReportsTab from './components/reports-tab';
 const mockClient = {
     id: 1,
     firstName: "Emma",
@@ -32,8 +34,8 @@ const levelColors = {
 };
 
 const GoalPage = () => {
-    const {carePlanId} = useParams();
-    const {isLoading,data} = useCarePlan({
+    const { carePlanId } = useParams();
+    const { isLoading, data } = useCarePlan({
         carePlanId: carePlanId as string,
         overview: true,
     });
@@ -138,6 +140,10 @@ const GoalPage = () => {
                                     <Users className="w-4 h-4" />
                                     <span>Ondersteuning</span>
                                 </TabsTrigger>
+                                <TabsTrigger value="reports" className="flex items-center space-x-2 text-orange-300 data-[state=active]:bg-orange-100 data-[state=active]:text-orange-800">
+                                    <Users className="w-4 h-4" />
+                                    <span>Reporten</span>
+                                </TabsTrigger>
                             </TabsList>
                         </CardHeader>
 
@@ -163,8 +169,11 @@ const GoalPage = () => {
                             </TabsContent>
 
                             <TabsContent value="support">
-                            <SupportNetworkTab />
-                            <ResourcesTab />
+                                <SupportNetworkTab />
+                                <ResourcesTab />
+                            </TabsContent>
+                            <TabsContent value="reports">
+                                <ReportsTab />
                             </TabsContent>
                         </CardContent>
                     </Card>
