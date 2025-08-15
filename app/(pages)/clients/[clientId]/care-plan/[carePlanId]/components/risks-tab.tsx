@@ -35,10 +35,10 @@ const colorMap = {
 };
 
 const RisksTab = () => {
-    const { goalId } = useParams();
+    const { carePlanId } = useParams();
     const { data: risks, createRisk, updateRisk, deleteRisk } = useCarePlan({
         risks: true,
-        carePlanId: goalId as string
+        carePlanId: carePlanId as string
     });
     const [openId, setOpenId] = useState<Id | null>(null);
 

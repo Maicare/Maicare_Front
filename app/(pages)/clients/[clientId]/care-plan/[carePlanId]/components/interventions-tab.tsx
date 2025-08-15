@@ -11,10 +11,10 @@ import { CreateIntervention } from '@/schemas/plan-care.schema';
 import PrimaryButton from '@/common/components/PrimaryButton';
 
 const InterventionsTab = () => {
-    const { goalId } = useParams();
+    const { carePlanId } = useParams();
     const { data: interventions, createIntervention, updateIntervention, deleteIntervention } = useCarePlan({
         interventions: true,
-        carePlanId: goalId as string
+        carePlanId: carePlanId as string
     });
     const [openId, setOpenId] = useState<Id | null>(null);
 

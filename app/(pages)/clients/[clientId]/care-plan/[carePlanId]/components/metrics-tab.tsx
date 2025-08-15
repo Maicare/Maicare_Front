@@ -12,10 +12,10 @@ import { CreateSuccessMetric } from '@/schemas/plan-care.schema';
 import PrimaryButton from '@/common/components/PrimaryButton';
 
 const MetricsTab = () => {
-    const { goalId } = useParams();
+    const { carePlanId } = useParams();
     const { data: successMetrics, createSuccessMetric, updateSuccessMetric, deleteSuccessMetric } = useCarePlan({
         successMetrics: true,
-        carePlanId: goalId as string
+        carePlanId: carePlanId as string
     });
     const [openId, setOpenId] = useState<Id | null>(null);
 

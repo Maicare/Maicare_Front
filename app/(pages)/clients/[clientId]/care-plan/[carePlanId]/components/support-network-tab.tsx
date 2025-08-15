@@ -13,10 +13,10 @@ import { Trash2 } from 'lucide-react';
 
 
 const SupportNetworkTab = () => {
-    const { goalId } = useParams();
+    const { carePlanId } = useParams();
     const { data: supportNetwork, createSupportNetwork, deleteSupportNetwork, updateSupportNetwork } = useCarePlan({
         supportNetwork: true,
-        carePlanId: goalId as string
+        carePlanId: carePlanId as string
     });
     const [openId, setOpenId] = useState<Id | null>(null);
 

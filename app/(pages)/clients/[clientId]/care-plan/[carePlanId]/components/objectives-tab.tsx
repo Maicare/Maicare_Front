@@ -38,10 +38,10 @@ const termColors = {
 };
 
 const ObjectivesTab = () => {
-    const { goalId } = useParams();
+    const { carePlanId } = useParams();
     const { data: objectives,createObjective,updateObjective,deleteObjective,createAction,updateAction,deleteAction } = useCarePlan({
         objectives: true,
-        carePlanId: goalId as string
+        carePlanId: carePlanId as string
     });
 
     const [openId, setOpenId] = useState<Id | null>(null);
