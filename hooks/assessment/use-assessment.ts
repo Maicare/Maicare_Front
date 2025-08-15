@@ -68,6 +68,35 @@ export function useAssessment({ autoFetch = true, clientId, page: pageParam = 1,
         if (displayProgress) stopProgress();
     }
 }
+  const generateOne = async(assessment: {
+    maturity_matrix_id: number;
+    initial_level: number;
+    target_level: number;
+  }, options?: ApiOptions) => {
+    const { displayProgress = false, displaySuccess = false } = options || {};
+    try {
+        // Display progress bar
+        if (displayProgress) startProgress();
+        const { message, success, data, error } = await useApi<{
+          care_plan_id: number;
+          client_id: number;
+        }>(ApiRoutes.Client.Assessment.GenerateOne.replace("{id}", clientId.toString()), "POST", {}, {...assessment});
+        if (!data)
+            throw new Error(error || message || "An unknown error occurred");
+
+        // Display success message
+        if (displaySuccess && success) {
+            enqueueSnackbar("Client Assessment created successful!", { variant: "success" });
+        }
+        mutate();
+        return data;
+    } catch (err: any) {
+        enqueueSnackbar(err?.response?.data?.message || "Client Assessment creation failed", { variant: "error" });
+        throw err;
+    } finally {
+        if (displayProgress) stopProgress();
+    }
+}
   const readOne = async (id: Id, options?: ApiOptions) => {
     const { displayProgress = false } = options || {};
     try {
@@ -98,6 +127,7 @@ export function useAssessment({ autoFetch = true, clientId, page: pageParam = 1,
     readOne,
     page,
     setPage,
-    createOne
+    createOne,
+    generateOne
   };
 }

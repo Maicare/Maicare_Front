@@ -34,6 +34,7 @@ export const LocationSelect: FunctionComponent<Omit<SelectProps, "options">> = (
       } as React.ChangeEvent<HTMLSelectElement>;
       props.onChange?.(syntheticEvent);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [locations, props.value, props.onChange]);
 
   return <Select {...props} options={locationOptions} />;

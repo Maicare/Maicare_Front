@@ -17,7 +17,6 @@ import {
     Database,
     ChevronLeft,
     Printer,
-    Share2,
     Mail,
     MoreVertical,
     Sparkles,
