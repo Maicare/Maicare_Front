@@ -15,6 +15,7 @@ import Calendar from "./routes/calendar";
 import Schedule from "./routes/schedule";
 import Registration from "./routes/registration";
 import Invoice from "./routes/invoice";
+import CarePlan from "./routes/care-plan";
 
 const ApiRoutes = {
   Auth,
@@ -33,7 +34,8 @@ const ApiRoutes = {
   Calendar,
   Schedule,
   Registration,
-  Invoice
+  Invoice,
+  CarePlan,
 };
 
 export default ApiRoutes;
