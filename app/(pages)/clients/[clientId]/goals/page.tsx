@@ -104,7 +104,7 @@ const GoalsPage = () => {
                             </div>
                             :
                             <div className="grid grid-cols-1 gap-4">
-                                <DataTable columns={columns} data={assessments?.results ?? []} onRowClick={handleRowClick} className="dark:bg-[#18181b] dark:border-black" />
+                                <DataTable columns={columns} data={[]} onRowClick={handleRowClick} className="dark:bg-[#18181b] dark:border-black" />
                                 <div className="flex px-2 py-3 bg-white dark:bg-[#18181b] dark:border-black rounded-md mt-5 justify-between border-2 border-muted">
                                     <PrimaryButton
                                         disabled={page === 1}

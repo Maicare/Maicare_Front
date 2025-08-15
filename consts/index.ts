@@ -473,3 +473,97 @@ export const AGREEMENT_FILES_TAGS_RECORD = {
   decision: "Besluit",
   other: "Overige",
 };
+
+export const DOMAINS = {
+    "Financiën": {
+        1: "groeiende complexe schulden",
+        2: "beschikt niet over vrij besteedbaar inkomen of groeiende schulden door spontaan of ongepast uitgeven",
+        3: "beschikt over vrij besteedbaar inkomen van ouders zonder verantwoordelijkheid voor noodzakelijke behoeften (zakgeld). Eventuele schulden zijn stabiel en onder beheer",
+        4: "beschikt over vrij besteedbaar inkomen van ouders met enige verantwoordelijkheid voor noodzakelijke behoeften (zakgeld, en kleed-/lunchgeld). Gepast uitgeven. Eventuele schulden verminderen",
+        5: "beschikt over vrij besteedbaar inkomen (uit klusjes of (bij)baan) met enige verantwoordelijkheid voor noodzakelijke behoeften. Aan het eind van de maand is geld over. Geen schulden"
+    },
+    "Werk & Opleiding": {
+        1: "geen (traject naar) opleiding/werk of werk zonder adequate toerusting/verzekering. Geen zoekactiviteiten naar opleiding/werk",
+        2: "geen (traject naar) opleiding/werk, maar wel zoekactiviteiten gericht op opleiding/werk of ‘papieren’ opleiding of veel schoolverzuim/dreigend ontslag",
+        3: "volgt opleiding maar loopt achter of heeft geregeld verzuim van opleiding/werk of volgt traject naar opleiding",
+        4: "op schema met opleiding of heeft startkwalificatie met tijdelijke baan/traject naar opleiding/traject naar werk",
+        5: "presteert zeer goed op opleiding of heeft startkwalificatie met vaste baan. Geen ongeoorloofd verzuim"
+    },
+    "Tijdsbesteding": {
+        1: "afwezigheid van activiteiten die plezierig/nuttig zijn. Geen structuur in de dag. Onregelmatig dag-nacht ritme",
+        2: "nauwelijks activiteiten die plezierig/nuttig zijn. Nauwelijks structuur in de dag. Afwijkend dag-nacht ritme",
+        3: "onvoldoende activiteiten die plezierig/nuttig zijn, maar voldoende structuur in de dag",
+        4: "voldoende activiteiten die plezierig/nuttig zijn. Dag-nacht ritme heeft geen negatieve invloed",
+        5: "tijd is overwegend gevuld met plezierige/nuttige activiteiten. Gezond dag-nacht ritme"
+    },
+    "Huisvesting": {
+        1: "dakloos of in crisisopvang",
+        2: "voor wonen ongeschikte huisvesting of dreigende huisuitzetting",
+        3: "veilige, stabiele huisvesting maar slechts marginaal toereikend of verblijft in niet-autonome huisvesting",
+        4: "veilige, stabiele en toereikende huisvesting, gedeeltelijk autonome huisvesting",
+        5: "veilige, stabiele en toereikende huisvesting, autonome huisvesting of woont bij ouders/verzorgers"
+    },
+    "Huishoudelijke Relaties": {
+        1: "geweld in huiselijke kring, kindermishandeling, misbruik of verwaarlozing",
+        2: "relationele problemen met leden van het huishouden of dreigend geweld in huiselijke kring",
+        3: "spanningen in relaties met leden van het huishouden, probeert eigen negatief gedrag te veranderen",
+        4: "relationele problemen of spanningen binnen het huishouden zijn niet meer aanwezig",
+        5: "wordt gesteund en steunt binnen het huishouden, communicatie is open"
+    },
+    "Geestelijke Gezondheid": {
+        1: "geestelijke noodsituatie, een gevaar voor zichzelf of anderen",
+        2: "chronische geestelijke aandoening, functioneren ernstig beperkt, geen behandeling",
+        3: "geestelijke aandoening, functioneren beperkt, minimale behandeltrouw of beperking ondanks behandeling",
+        4: "minimale tekenen van geestelijke onrust, functioneren marginaal beperkt, goede behandeltrouw of geen behandeling nodig",
+        5: "geestelijk gezond, niet meer dan dagelijkse zorgen"
+    },
+    "Lichamelijke Gezondheid": {
+        1: "kritieke situatie, direct medische aandacht nodig",
+        2: "chronische lichamelijke aandoening, functioneren ernstig beperkt, geen behandeling",
+        3: "lichamelijke aandoening, functioneren beperkt, minimale behandeltrouw of beperking ondanks behandeling",
+        4: "minimaal lichamelijk ongemak, functioneren marginaal beperkt, goede behandeltrouw of geen behandeling nodig",
+        5: "lichamelijk gezond, gezonde leefstijl"
+    },
+    "Middelengebruik": {
+        1: "verslaving of stoornis, gebruik verergert lichamelijke/geestelijke problemen die behandeling vereisen",
+        2: "problematisch gebruik van middelen, games, gokken, seks of internet, geen behandeling",
+        3: "gebruik van middelen zonder gerelateerde problemen, minimale behandeltrouw of beperking ondanks behandeling",
+        4: "geen middelengebruik ondanks drang, of behandeling met potentieel verslavende middelen zonder bijgebruik",
+        5: "geen middelengebruik, geen drang naar gebruik"
+    },
+    "Basale ADL": {
+        1: "een gebied van de basale ADL wordt niet uitgevoerd, verhongering of uitdroging of vervuiling",
+        2: "meerdere gebieden van de basale ADL worden beperkt uitgevoerd",
+        3: "alle gebieden van de basale ADL worden uitgevoerd maar een enkel gebied wordt beperkt uitgevoerd",
+        4: "geen beperkingen in de uitvoering van de basale ADL, krijgt hulp of gebruikt hulpmiddel",
+        5: "geen beperkingen in de uitvoering van de basale ADL, zoals eten, wassen en aankleden"
+    },
+    "Instrumentele ADL": {
+        1: "meerdere gebieden van de instrumentele ADL worden niet uitgevoerd, ernstige verwaarlozing",
+        2: "een enkel gebied wordt niet uitgevoerd of meerdere gebieden beperkt, onvoldoende kennis van instanties",
+        3: "alle gebieden uitgevoerd, maar een enkel gebied beperkt, beperkte kennis van instanties",
+        4: "geen beperkingen, krijgt enige hulp bij contact met instanties",
+        5: "geen beperkingen, geen hulp nodig, gebruikt instanties leeftijdsadequaat"
+    },
+    "Sociaal Netwerk": {
+        1: "ernstig sociaal isolement, geen steunend contact met familie of leeftijdgenoten",
+        2: "geen steunend contact met familie of volwassen steunfiguur, weinig steunend contact met leeftijdgenoten",
+        3: "enig steunend contact met familie of steunfiguur, enig contact met leeftijdgenoten",
+        4: "voldoende steunend contact met familie, steunfiguren en leeftijdgenoten",
+        5: "gezond sociaal netwerk, veel steunend contact, geen belemmerend contact"
+    },
+    "Sociale Participatie": {
+        1: "geen participatie door crisissituatie of veroorzaakt ernstige overlast",
+        2: "geen maatschappelijke participatie of veroorzaakt overlast",
+        3: "nauwelijks participatie, hindernissen om meer te participeren",
+        4: "enige participatie, persoonlijke hindernis om meer te participeren",
+        5: "actief participerend in de maatschappij"
+    },
+    "Justitie": {
+        1: "zeer regelmatig contact met politie of openstaande zaken bij justitie",
+        2: "regelmatig contact met politie of lopende zaken bij justitie",
+        3: "incidenteel contact met politie of voorwaardelijke straf",
+        4: "zelden contact met politie of strafblad",
+        5: "geen contact met politie, geen strafblad"
+    }
+};

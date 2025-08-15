@@ -1,5 +1,14 @@
 import { Id } from "@/common/types/types"
-
+export type CarePlan = {
+    care_plan_id: Id,
+    client_id: Id,
+    current_level: number,
+    end_date: string,
+    initial_level: number,
+    is_active: boolean,
+    start_date: string,
+    topic_name: string
+}
 export type Resource = {
     id: Id;
     resource_description: string,

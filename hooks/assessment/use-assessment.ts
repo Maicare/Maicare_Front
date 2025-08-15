@@ -7,6 +7,7 @@ import { PaginatedResponse } from "@/common/types/pagination.types";
 import { Id } from "@/common/types/types";
 import { CreateAssessment } from "@/schemas/assessment.schema";
 import {  Assessment, AssessmentResponse } from "@/types/assessment.types";
+import { CarePlan } from "@/types/care-plan.types";
 import { constructUrlSearchParams } from "@/utils/construct-search-params";
 import { stringConstructor } from "@/utils/string-constructor";
 import { useSnackbar } from "notistack";
@@ -23,8 +24,8 @@ export function useAssessment({ autoFetch = true, clientId, page: pageParam = 1,
     error,
     isLoading,
     mutate,
-  } = useSWR<PaginatedResponse<AssessmentResponse> | null>(
-    autoFetch ? stringConstructor(ApiRoutes.Client.Assessment.ReadAll.replace("{id}", clientId.toString()), constructUrlSearchParams({ page, page_size })) : null, // Endpoint to fetch Assessments
+  } = useSWR<PaginatedResponse<CarePlan> | null>(
+    autoFetch ? stringConstructor(ApiRoutes.Client.CarePlan.ReadAll.replace("{id}", clientId.toString()), constructUrlSearchParams({ page, page_size })) : null, // Endpoint to fetch Assessments
     async (url) => {
       if (!url) return {
         results: [],
