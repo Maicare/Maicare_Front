@@ -8,6 +8,7 @@ import { Progress } from '@/components/ui/progress';
 import { Label } from '@/components/ui/label';
 import { cn } from '@/utils/cn';
 import { useAssessment } from '@/hooks/assessment/use-assessment';
+import { useParams, useRouter } from 'next/navigation';
 
 // Mock data (same as before)
 const mockClient = {
@@ -114,11 +115,13 @@ const mockDomains = {
 };
 
 function CareplanUI() {
+    const {clientId} = useParams();
+    const router = useRouter();
     const [selectedDomain, setSelectedDomain] = useState("");
     const [selectedLevel, setSelectedLevel] = useState("");
     const [selectedTargetLevel, setSelectedTargetLevel] = useState("");
     const [isGenerating, setIsGenerating] = useState(false);
-    const {generateOne} = useAssessment({autoFetch:false,clientId:25});
+    const {generateOne} = useAssessment({autoFetch:false,clientId:parseInt(clientId as string)});
     const handleGeneratePlan = async () => {
         if (!selectedDomain || !selectedLevel || !selectedTargetLevel) return;
         try {
@@ -131,7 +134,7 @@ function CareplanUI() {
                 displayProgress:true,
                 displaySuccess:true
             });
-            console.log("Generated Plan:", plan);
+            router.push(`/clients/${clientId}/care-plan/${plan.care_plan_id}`);
 
         } catch (error) {
             console.error(error);

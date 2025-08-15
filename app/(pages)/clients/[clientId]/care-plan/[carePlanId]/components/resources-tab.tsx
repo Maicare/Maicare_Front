@@ -15,11 +15,11 @@ import PrimaryButton from '@/common/components/PrimaryButton';
 
 
 const ResourcesTab = () => {
-    const { goalId } = useParams();
+    const { carePlanId } = useParams();
     const [openId, setOpenId] = useState<Id | null>(null);
     const { data: resources, createResource, deleteResource, updateResource } = useCarePlan({
         resources: true,
-        carePlanId: goalId as string
+        carePlanId: carePlanId as string
     });
 
     const hadleCreate = async (values: CreateResource) => {
