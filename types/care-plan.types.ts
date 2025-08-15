@@ -73,3 +73,14 @@ export type SupportNetwork = {
     role_title: string,
     support_network_id: Id
 }
+
+export type Report = {
+    care_plan_id: Id,
+    created_at: string,
+    created_by_first_name: string,
+    created_by_last_name: string,
+    id: Id,
+    is_critical: boolean,
+    report_content: string,
+    report_type: 'progress' | 'concern' | 'achievement' | 'modification';
+}

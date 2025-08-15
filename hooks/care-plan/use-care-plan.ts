@@ -3,10 +3,12 @@ import ApiRoutes from "@/common/api/routes";
 import { useApi } from "@/common/hooks/use-api";
 import useProgressBar from "@/common/hooks/use-progress-bar";
 import { ApiOptions } from "@/common/types/api.types";
+import { PaginatedResponse } from "@/common/types/pagination.types";
 import { Any, Id } from "@/common/types/types";
-import { CreateAction, CreateIntervention, CreateObjective, CreateResource, CreateRisk, CreateSuccessMetric, CreateSupportNetwork, UpdateOverview } from "@/schemas/plan-care.schema";
-import { CarePlanOverview, Intervention, Objective, Resource, Risk, SuccessMetric, SupportNetwork } from "@/types/care-plan.types";
+import { CreateAction, CreateIntervention, CreateObjective, CreateReport, CreateResource, CreateRisk, CreateSuccessMetric, CreateSupportNetwork, UpdateOverview } from "@/schemas/plan-care.schema";
+import { CarePlanOverview, Intervention, Objective, Report, Resource, Risk, SuccessMetric, SupportNetwork } from "@/types/care-plan.types";
 import { enqueueSnackbar } from "notistack";
+import { useState } from "react";
 import useSWR from "swr";
 
 export function useCarePlan({
@@ -17,7 +19,10 @@ export function useCarePlan({
     successMetrics = false,
     overview = false,
     carePlanId,
-    supportNetwork = false
+    supportNetwork = false,
+    reports = false,
+    page = 1,
+    pageSize = 12,
 }: {
     resources?: boolean;
     risks?: boolean;
@@ -27,12 +32,15 @@ export function useCarePlan({
     overview?: boolean;
     supportNetwork?: boolean;
     carePlanId: string;
+    reports?: boolean;
+    page?: number;
+    pageSize?: number;
 }) {
     const { start: startProgress, stop: stopProgress } = useProgressBar();
-
-    const autoFetch = resources || risks || interventions || objectives || successMetrics || overview || supportNetwork;
+    const [pageState, setPageState] = useState(page);
+    const autoFetch = resources || risks || interventions || objectives || successMetrics || overview || supportNetwork || reports;
     const getUrl = () => {
-        const type = resources ? "resources" : risks ? "risks" : interventions ? "interventions" : objectives ? "objectives" : successMetrics ? "successMetrics" : overview ? "overview" : supportNetwork ? "supportNetwork" : "";
+        const type = resources ? "resources" : risks ? "risks" : interventions ? "interventions" : objectives ? "objectives" : successMetrics ? "successMetrics" : overview ? "overview" : supportNetwork ? "supportNetwork" : reports ? "reports" : "";
         switch (type) {
             case "resources":
                 return ApiRoutes.CarePlan.ReadResources.replace("{id}", carePlanId!);
@@ -48,6 +56,8 @@ export function useCarePlan({
                 return ApiRoutes.CarePlan.ReadOverview.replace("{id}", carePlanId!);
             case "supportNetwork":
                 return ApiRoutes.CarePlan.ReadSupportNetwork.replace("{id}", carePlanId!);
+            case "reports":
+                return ApiRoutes.CarePlan.ReadReports.replace("{id}", carePlanId!)+ `?page=${pageState}&page_size=${pageSize}`;
             default:
                 return "";
         }
@@ -56,7 +66,7 @@ export function useCarePlan({
         data,
         error,
         mutate,
-    } = useSWR<Resource[] | Risk[] | Intervention | Objective | SuccessMetric[] | CarePlanOverview | SupportNetwork[]>(
+    } = useSWR<Resource[] | Risk[] | Intervention | Objective | SuccessMetric[] | CarePlanOverview | SupportNetwork[] | PaginatedResponse<Report|null>>(
         autoFetch ?
             getUrl()
             : null, // Endpoint to fetch clients
@@ -497,6 +507,63 @@ export function useCarePlan({
         }
     };
 
+    const createReport = async (report: CreateReport, options?: ApiOptions) => {
+        if (!carePlanId) {
+            enqueueSnackbar("Care Plan ID is required", { variant: "error" });
+            return;
+        }
+        options?.displayProgress && startProgress();
+        try {
+            const { message, success, data } = await useApi<Report>(ApiRoutes.CarePlan.CreateReports.replace("{id}", carePlanId), "POST", {}, report);
+            if (success) {
+                options?.displaySuccess && enqueueSnackbar("Report created successfully", { variant: "success" });
+                mutate(); // Re-fetch data after creating a report
+                return data;
+            } else {
+                enqueueSnackbar(message || "Failed to create report", { variant: "error" });
+            }
+        } catch (error: Any) {
+            enqueueSnackbar(error?.response?.data?.message || "Failed to create report", { variant: "error" });
+        } finally {
+            options?.displayProgress && stopProgress();
+        }
+    };
+
+    const updateReport = async (report: CreateReport, reportId: Id, options?: ApiOptions) => {
+        options?.displayProgress && startProgress();
+        try {
+            const { message, success, data } = await useApi<Report>(ApiRoutes.CarePlan.UpdateReports.replace("{reportId}", reportId.toString()), "PUT", {}, report);
+            if (success) {
+                options?.displaySuccess && enqueueSnackbar("Report updated successfully", { variant: "success" });
+                mutate(); // Re-fetch data after updating a report
+                return data;
+            } else {
+                enqueueSnackbar(message || "Failed to update report", { variant: "error" });
+            }
+        } catch (error: Any) {
+            enqueueSnackbar(error?.response?.data?.message || "Failed to update report", { variant: "error" });
+        } finally {
+            options?.displayProgress && stopProgress();
+        }
+    };
+
+    const deleteReport = async (reportId: Id, options?: ApiOptions) => {
+        options?.displayProgress && startProgress();
+        try {
+            const { message, success } = await useApi(ApiRoutes.CarePlan.DeleteReports.replace("{reportId}", reportId.toString()), "DELETE", {}, {});
+            if (success) {
+                options?.displaySuccess && enqueueSnackbar("Report deleted successfully", { variant: "success" });
+                mutate(); // Re-fetch data after deleting a report
+            } else {
+                enqueueSnackbar(message || "Failed to delete report", { variant: "error" });
+            }
+        } catch (error: Any) {
+            enqueueSnackbar(error?.response?.data?.message || "Failed to delete report", { variant: "error" });
+        } finally {
+            options?.displayProgress && stopProgress();
+        }
+    };
+
     return {
         data,
         isLoading,
@@ -523,5 +590,10 @@ export function useCarePlan({
         deleteAction,
         updateOverview,
         error,
+        page:pageState,
+        setPage: setPageState,
+        createReport,
+        updateReport,
+        deleteReport,
     };
 }

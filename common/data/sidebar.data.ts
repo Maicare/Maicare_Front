@@ -1,4 +1,4 @@
-import {  BellRing, BookMarked, BriefcaseBusiness, FileBadge, FilesIcon, FileText, Goal, GraduationCap, Handshake, HeartPulse, Home, Map,  UserCircle, UsersRound, CalendarClock, Users2, Calendar, ClockArrowUp, Hourglass,  FileArchive, BrainCircuit } from "lucide-react";
+import {  BellRing, BookMarked, BriefcaseBusiness, FileBadge,  FileText, GraduationCap, Handshake, HeartPulse, Home, Map,  UserCircle, UsersRound, CalendarClock, Users2, Calendar, ClockArrowUp, Hourglass,  FileArchive, BrainCircuit } from "lucide-react";
 
 export const sidebarLinks = [
     {
@@ -129,11 +129,11 @@ export const sidebarClientLinks = (client:{first_name:string,last_name:string,id
         url: "/clients/" + client?.id+"/appointment-card",
         icon: CalendarClock,
     },
-    {
-        title: "Doelen", // "Goals"
-        url: "/clients/" + client?.id+"/goals",
-        icon: Goal,
-    },
+    // {
+    //     title: "Doelen", // "Goals"
+    //     url: "/clients/" + client?.id+"/goals",
+    //     icon: Goal,
+    // },
     {
         title: "Zorgplan", // "care-plan"
         url: "/clients/" + client?.id+"/care-plan",
@@ -184,11 +184,11 @@ export const sidebarClientLinks = (client:{first_name:string,last_name:string,id
         url: "/clients/" + client?.id+"/documents",
         icon: FileText,
     },
-    {
-        title: "Vragenlijsten", // "Questionnaires"
-        url: "/clients/" + client?.id+"/questionnaires",
-        icon: FilesIcon,
-    },
+    // {
+    //     title: "Vragenlijsten", // "Questionnaires"
+    //     url: "/clients/" + client?.id+"/questionnaires",
+    //     icon: FilesIcon,
+    // },
     {
         title: "Agenda", // "Calendar"
         url: "/clients/" + client?.id+"/calendar",

@@ -57,6 +57,17 @@ export const updateOverviewSchema = z.object({
     assessment_summary: z.string().min(1, "Samenvatting is verplicht"),
 });
 
+export const createReportSchema = z.object({
+    report_content: z.string().min(1, "Rapport inhoud is verplicht"),
+    report_type: z.enum(['progress', 'concern', 'achievement', 'modification'], {
+        required_error: "Rapport type is verplicht",
+        invalid_type_error: "Rapport type moet een van de volgende zijn: progress, concern, achievement, modification"
+    }),
+    is_critical: z.boolean().default(false),
+});
+
+export type CreateReport = z.infer<typeof createReportSchema>;
+
 export type UpdateOverview = z.infer<typeof updateOverviewSchema>;
 
 export type CreateAction = z.infer<typeof createActionSchema>;

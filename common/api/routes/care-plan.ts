@@ -2,6 +2,10 @@ const prefix = "/care_plans";
 
 const ApiRoutes = {
   ReadOverview: prefix + "/{id}",
+  ReadReports: prefix + "/{id}" + "/reports",///care_plan/{care_plan_id}/reports
+  CreateReports: prefix + "/{id}" + "/reports",///care_plan/{care_plan_id}/reports
+  UpdateReports: prefix + "/reports" + "/{reportId}" ,//care_plan/reports/{report_id}
+  DeleteReports: prefix + "/reports" + "/{reportId}" ,//care_plan/reports/{report_id}
   ReadResources: prefix + "/{id}" + "/resources",
   CreateResource: prefix + "/{id}" + "/resources",
   DeleteResource: "/resources" + "/{resourceId}" ,
