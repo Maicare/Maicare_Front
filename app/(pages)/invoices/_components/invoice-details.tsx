@@ -118,7 +118,7 @@ export default function InvoiceDetails({ invoice,handleCredit }: { invoice: Invo
     const config = statusConfig[status]
     const totalAmount = new Intl.NumberFormat("en-US", {
         style: "currency",
-        currency: "USD",
+        currency: "EUR",
         minimumFractionDigits: 2
     }).format(invoice.total_amount)
 
@@ -283,7 +283,7 @@ export default function InvoiceDetails({ invoice,handleCredit }: { invoice: Invo
                                                 <div className="text-xl font-bold">
                                                     {new Intl.NumberFormat("en-US", {
                                                         style: "currency",
-                                                        currency: "USD"
+                                                        currency: "EUR"
                                                     }).format(detail.total_price)}
                                                 </div>
                                                 <div className="text-sm text-muted-foreground">
@@ -487,7 +487,7 @@ export default function InvoiceDetails({ invoice,handleCredit }: { invoice: Invo
                                     <p className="font-medium">
                                         {new Intl.NumberFormat("en-US", {
                                             style: "currency",
-                                            currency: "USD"
+                                            currency: "EUR"
                                         }).format(invoice.invoice_details.reduce((sum, item) => sum + item.pre_vat_total_price, 0))}
                                     </p>
                                 </div>
@@ -497,7 +497,7 @@ export default function InvoiceDetails({ invoice,handleCredit }: { invoice: Invo
                                     <p className="font-medium">
                                         {new Intl.NumberFormat("en-US", {
                                             style: "currency",
-                                            currency: "USD"
+                                            currency: "EUR"
                                         }).format(invoice.invoice_details.reduce((sum, item) => sum + (item.total_price - item.pre_vat_total_price), 0))}
                                     </p>
                                 </div>

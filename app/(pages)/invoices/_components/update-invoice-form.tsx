@@ -154,7 +154,7 @@ export function UpdateInvoiceForm({
             // Save for display
             correctedPrices[detailIndex] = {
                 expectedPreVat: expectedRounded,
-                expectedTotal: expectedRounded + detail.vat,
+                expectedTotal: expectedRounded + expectedPreVat * (detail.vat / 100),
             };
 
             totalSum += detail.total_price;
@@ -167,12 +167,12 @@ export function UpdateInvoiceForm({
                 });
             }
 
-            const expectedTotal = expectedRounded + detail.vat;
+            const expectedTotal = expectedRounded + (expectedRounded * (detail.vat / 100));
             if (Math.abs(expectedTotal - totalRounded) > 0.01) {
                 isValid = false;
                 setError(`invoice_details.${detailIndex}.total_price` as const, {
                     type: "manual",
-                    message: `Should be ${expectedTotal.toFixed(2)} (pre-VAT + VAT)`,
+                    message: `Should be ${expectedTotal.toFixed(2)} (pre-VAT + pre-VAT* VAT)`,
                 });
             }
         });
