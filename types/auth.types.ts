@@ -5,6 +5,8 @@ export type LoginInput = {
 export type LoginResponse = {
     access: string;
     refresh: string;
+    requires_2fa: boolean;
+    temp_token: string;
 };
 export type RefreshResponse = {
     access: string;

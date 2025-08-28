@@ -1,5 +1,4 @@
 import { Badge } from "@/components/ui/badge";
-import { DOMAINS } from "@/consts";
 import { CarePlan } from "@/types/care-plan.types";
 import { formatDateToDutch } from "@/utils/timeFormatting";
 import { ColumnDef } from "@tanstack/table-core";

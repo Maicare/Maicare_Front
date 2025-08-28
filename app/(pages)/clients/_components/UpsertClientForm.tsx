@@ -22,6 +22,10 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import AddressesForm from "./AdressesForm";
 import EmployeeSelect from "../[clientId]/incidents/_components/EmployeeSelect";
+import { Textarea } from "@/components/ui/textarea";
+import { Checkbox } from "@/components/ui/checkbox";
+import UpsertContactForm from "../../contacts/_components/upsert-contact-form";
+import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 
 type Props = {
     mode: "create" | "update";
@@ -35,6 +39,7 @@ const UpsertClientForm = ({ mode, onCancel, defaultValues, onSuccess }: Props) =
     const { locations, } = useLocation({ autoFetch: true });
     const { contacts, } = useContact({ autoFetch: true });
     const [loading, setLoading] = useState(false);
+    const [openContactSheet, setOpenContactSheet] = useState(false);
     // 1. Define your form.
 
     const form = useForm<CreateClientInput>({
@@ -79,6 +84,20 @@ const UpsertClientForm = ({ mode, onCancel, defaultValues, onSuccess }: Props) =
             departure_report: "", // Vertrekrapport (optioneel)
             sender_id: "", // Afzender ID,
             employee_id: "", // Werknemer ID
+            work_additional_notes: "", // Werk aanvullende notities (optioneel)
+            work_current_employer: "", // Huidige werkgever (optioneel)
+            work_current_position: "", // Huidige functie (optioneel)
+            work_currently_employed: false, // Momenteel in dienst (optioneel)
+            work_employer_email: "", // Werkgever e-mail (optioneel)
+            work_employer_phone: "", // Werkgever telefoon (optioneel)
+            work_start_date: new Date(), // Startdatum werk (optioneel)
+            education_additional_notes: "", // Onderwijs aanvullende notities (optioneel)
+            education_currently_enrolled: false, // Momenteel ingeschreven (optioneel)
+            education_institution: "", // Onderwijsinstelling (optioneel)
+            education_level: "primary", // Onderwijsniveau (optioneel)
+            education_mentor_email: "", // Ouder/mentor e-mail (optioneel)
+            education_mentor_name: "", // Ouder/mentor naam (optioneel)
+            education_mentor_phone: "", // Ouder/mentor telefoon (optioneel)
         },
     });
     // 2. Define a submit handler.
@@ -352,6 +371,62 @@ const UpsertClientForm = ({ mode, onCancel, defaultValues, onSuccess }: Props) =
                                         </FormItem>
                                     )}
                                 />
+                                <FormField
+                                    control={form.control}
+                                    name="living_situation"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel className='flex items-center justify-between'>
+                                                Woon situatie
+                                                <Tooltip text='This is Woon situatie'>
+                                                    <Info className='h-5 w-5 mr-2' />
+                                                </Tooltip>
+                                            </FormLabel>
+                                            <FormControl>
+                                                <Select onValueChange={field.onChange} defaultValue={field.value} >
+                                                    <SelectTrigger className="w-full">
+                                                        <SelectValue placeholder="Woon situatie" />
+                                                    </SelectTrigger>
+                                                    <SelectContent className="bg-white">
+                                                        <SelectGroup>
+                                                            {
+                                                                [
+                                                                    { value: "home", label: "Thuis" },
+                                                                    { value: "foster_care", label: "Pleegzorg" },
+                                                                    { value: "youth_care_institution", label: "Jeugdzorginstelling" },
+                                                                    { value: "other", label: "Overig" },
+                                                                ].map((item, index) => (
+                                                                    <SelectItem key={index} value={item.value} className="hover:bg-slate-100 cursor-pointer">{item.label}</SelectItem>
+                                                                ))
+                                                            }
+                                                        </SelectGroup>
+                                                    </SelectContent>
+                                                </Select>
+                                            </FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+                                <FormField
+                                    control={form.control}
+                                    name="living_situation_notes"
+                                    render={({ field }) => (
+                                        <FormItem className="col-span-2">
+                                            <FormLabel>Woon situatie notities</FormLabel>
+                                            <FormControl>
+                                                <div className="relative">
+                                                    <Textarea rows={4} placeholder="eg: Woon situatie notities" className="resize-none" {...field} />
+                                                    <div className="absolute right-2 top-0 translate-y-1/2 h-5 w-5 ">
+                                                        <Tooltip text='This is Woon situatie notities'>
+                                                            <Info className='h-5 w-5' />
+                                                        </Tooltip>
+                                                    </div>
+                                                </div>
+                                            </FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
                             </div>
                         </div>
                     </div>
@@ -419,8 +494,6 @@ const UpsertClientForm = ({ mode, onCancel, defaultValues, onSuccess }: Props) =
                             />
                         </div>
                     </div>
-                </div>
-                <div className="grid grid-cols-1 gap-2 h-fit">
                     <div className="grid grid-cols-1 gap-4 h-fit">
                         <div className="flex flex-col gap-4 px-6 py-3 bg-white rounded-md border-2 border-muted h-fit">
                             <h1 className='text-base font-semibold text-black'>Locatiegegevens</h1>
@@ -536,12 +609,37 @@ const UpsertClientForm = ({ mode, onCancel, defaultValues, onSuccess }: Props) =
                         <div className="flex flex-col gap-4 px-6 py-3 bg-white rounded-md border-2 border-muted h-fit">
                             <div className="flex items-center justify-between">
                                 <h1 className='text-base font-semibold text-black'>opdrachtgever</h1>
-                                <PrimaryButton
-                                    text="nieuwe opdrachtgever"
-                                    icon={PlusCircle}
-                                    animation="animate-bounce"
-                                    type="button"
-                                />
+                                {/* make a sheet for the upsert-contact-form */}
+                                <Sheet open={openContactSheet}>
+                                    <SheetTrigger asChild>
+                                        <PrimaryButton
+                                            text="nieuwe opdrachtgever"
+                                            icon={PlusCircle}
+                                            animation="animate-bounce"
+                                            type="button"
+                                            onClick={() => setOpenContactSheet(true)}
+                                        />
+                                    </SheetTrigger>
+                                    <SheetContent className="sm:max-w-2xl">
+                                        <SheetHeader className="mb-4">
+                                            <SheetTitle>Nieuwe Opdrachtgever</SheetTitle>
+                                            <SheetDescription>
+                                                Vul de gegevens van de nieuwe opdrachtgever in.
+                                            </SheetDescription>
+                                        </SheetHeader>
+                                        <UpsertContactForm
+                                            mode="create"
+                                            onSuccess={(id) => {
+                                                form.setValue("sender_id", id.toString());
+                                                setOpenContactSheet(false);
+                                            }}
+                                            onCancel={() => {
+                                                form.setValue("sender_id", "");
+                                            }}
+                                            sheet={true}
+                                        />
+                                    </SheetContent>
+                                </Sheet>
                             </div>
                             <Separator className='bg-slate-300' />
                             <div className="grid grid-cols-1">
@@ -580,6 +678,286 @@ const UpsertClientForm = ({ mode, onCancel, defaultValues, onSuccess }: Props) =
                             </div>
                         </div>
                     </div>
+                </div>
+                <div className="grid grid-cols-1 gap-2 h-fit">
+                    {/* education and work */}
+                    <div className="grid grid-cols-1 gap-4 h-fit">
+                        <div className="flex flex-col gap-4 px-6 py-3 bg-white rounded-md border-2 border-muted h-fit">
+                            <h1 className='text-base font-semibold text-black'>Werk</h1>
+                            <Separator className='bg-slate-300' />
+                            <div className="grid grid-cols-1 gap-x-2 gap-y-4">
+                                <FormField
+                                    control={form.control}
+                                    name="work_currently_employed"
+                                    render={({ field }) => (
+                                        <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
+                                            <FormControl>
+                                                <Checkbox
+                                                    checked={field.value}
+                                                    onCheckedChange={field.onChange}
+                                                />
+                                            </FormControl>
+                                            <FormLabel className="font-normal">
+                                                Currently Employed in work
+                                            </FormLabel>
+                                        </FormItem>
+                                    )}
+                                />
+                                {form.watch("work_currently_employed") && (
+                                    <div className="space-y-4">
+                                        <FormField
+                                            control={form.control}
+                                            name="work_current_employer"
+                                            render={({ field }) => (
+                                                <FormItem>
+                                                    <FormLabel>Employer</FormLabel>
+                                                    <FormControl>
+                                                        <Input placeholder="Boston Consulting Group" {...field} />
+                                                    </FormControl>
+                                                    <FormMessage />
+                                                </FormItem>
+                                            )}
+                                        />
+                                        <div className="grid grid-cols-2 gap-4">
+                                            <FormField
+                                                control={form.control}
+                                                name="work_current_position"
+                                                render={({ field }) => (
+                                                    <FormItem>
+                                                        <FormLabel>Position Name</FormLabel>
+                                                        <FormControl>
+                                                            <Input placeholder="Developer Fullstack" {...field} />
+                                                        </FormControl>
+                                                        <FormMessage />
+                                                    </FormItem>
+                                                )}
+                                            />
+                                            <FormField
+                                                control={form.control}
+                                                name="work_start_date"
+                                                render={({ field }) => (
+                                                    <FormItem>
+                                                        <FormLabel>Start Date</FormLabel>
+                                                        <Popover>
+                                                            <PopoverTrigger asChild>
+                                                                <FormControl>
+                                                                    <Button
+                                                                        variant={"outline"}
+                                                                        className={cn(
+                                                                            "w-full pl-3 text-left font-normal",
+                                                                            !field.value && "text-muted-foreground"
+                                                                        )}
+                                                                    >
+                                                                        {field.value ? (
+                                                                            format(field.value, "PPP")
+                                                                        ) : (
+                                                                            <span>Pick a date</span>
+                                                                        )}
+                                                                        <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                                                                    </Button>
+                                                                </FormControl>
+                                                            </PopoverTrigger>
+                                                            <PopoverContent className="w-auto p-0 bg-white" align="start">
+                                                                <Calendar
+                                                                    mode="single"
+                                                                    selected={field.value}
+                                                                    onSelect={field.onChange}
+                                                                    disabled={(date) =>
+                                                                        date > new Date() || date < new Date("1900-01-01")
+                                                                    }
+                                                                    initialFocus
+                                                                />
+                                                            </PopoverContent>
+                                                        </Popover>
+                                                        <FormMessage />
+                                                    </FormItem>
+                                                )}
+                                            />
+                                            <FormField
+                                                control={form.control}
+                                                name="work_employer_email"
+                                                render={({ field }) => (
+                                                    <FormItem>
+                                                        <FormLabel>Employer Email</FormLabel>
+                                                        <FormControl>
+                                                            <Input placeholder="employer@example.com" {...field} />
+                                                        </FormControl>
+                                                        <FormMessage />
+                                                    </FormItem>
+                                                )}
+                                            />
+                                            <FormField
+                                                control={form.control}
+                                                name="work_employer_phone"
+                                                render={({ field }) => (
+                                                    <FormItem>
+                                                        <FormLabel>Employer Phone</FormLabel>
+                                                        <FormControl>
+                                                            <Input placeholder="+31 6 12345678" {...field} />
+                                                        </FormControl>
+                                                        <FormMessage />
+                                                    </FormItem>
+                                                )}
+                                            />
+                                        </div>
+                                        <FormField
+                                            control={form.control}
+                                            name="work_additional_notes"
+                                            render={({ field }) => (
+                                                <FormItem>
+                                                    <FormLabel>Additional Notes</FormLabel>
+                                                    <FormControl>
+                                                        <Textarea
+                                                            placeholder="Any additional information about education..."
+                                                            className="resize-none"
+                                                            {...field}
+                                                        />
+                                                    </FormControl>
+                                                    <FormMessage />
+                                                </FormItem>
+                                            )}
+                                        />
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                        <div className="flex flex-col gap-4 px-6 py-3 bg-white rounded-md border-2 border-muted h-fit">
+                            <h1 className='text-base font-semibold text-black'>Opleiding</h1>
+                            <Separator className='bg-slate-300' />
+                            <div className="grid grid-cols-1 gap-x-2 gap-y-4">
+                                <FormField
+                                    control={form.control}
+                                    name="education_currently_enrolled"
+                                    render={({ field }) => (
+                                        <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
+                                            <FormControl>
+                                                <Checkbox
+                                                    checked={field.value}
+                                                    onCheckedChange={field.onChange}
+                                                />
+                                            </FormControl>
+                                            <FormLabel className="font-normal">
+                                                Currently Enrolled in Education
+                                            </FormLabel>
+                                        </FormItem>
+                                    )}
+                                />
+
+                                {form.watch("education_currently_enrolled") && (
+                                    <div className="space-y-4">
+                                        <FormField
+                                            control={form.control}
+                                            name="education_institution"
+                                            render={({ field }) => (
+                                                <FormItem>
+                                                    <FormLabel>Institution</FormLabel>
+                                                    <FormControl>
+                                                        <Input placeholder="University of Amsterdam" {...field} />
+                                                    </FormControl>
+                                                    <FormMessage />
+                                                </FormItem>
+                                            )}
+                                        />
+                                        <div className="grid grid-cols-2 gap-4">
+                                            <FormField
+                                                control={form.control}
+                                                name="education_mentor_name"
+                                                render={({ field }) => (
+                                                    <FormItem>
+                                                        <FormLabel>Mentor Name</FormLabel>
+                                                        <FormControl>
+                                                            <Input placeholder="Dr. Smith" {...field} />
+                                                        </FormControl>
+                                                        <FormMessage />
+                                                    </FormItem>
+                                                )}
+                                            />
+                                            <FormField
+                                                control={form.control}
+                                                name="education_mentor_email"
+                                                render={({ field }) => (
+                                                    <FormItem>
+                                                        <FormLabel>Mentor Email</FormLabel>
+                                                        <FormControl>
+                                                            <Input placeholder="mentor@example.com" {...field} />
+                                                        </FormControl>
+                                                        <FormMessage />
+                                                    </FormItem>
+                                                )}
+                                            />
+                                        </div>
+                                        <FormField
+                                            control={form.control}
+                                            name="education_mentor_phone"
+                                            render={({ field }) => (
+                                                <FormItem>
+                                                    <FormLabel>Mentor Phone</FormLabel>
+                                                    <FormControl>
+                                                        <Input placeholder="+31 6 12345678" {...field} />
+                                                    </FormControl>
+                                                    <FormMessage />
+                                                </FormItem>
+                                            )}
+                                        />
+                                        <FormField
+                                            control={form.control}
+                                            name="education_additional_notes"
+                                            render={({ field }) => (
+                                                <FormItem>
+                                                    <FormLabel>Additional Notes</FormLabel>
+                                                    <FormControl>
+                                                        <Textarea
+                                                            placeholder="Any additional information about education..."
+                                                            className="resize-none"
+                                                            {...field}
+                                                        />
+                                                    </FormControl>
+                                                    <FormMessage />
+                                                </FormItem>
+                                            )}
+                                        />
+                                        <FormField
+                                            control={form.control}
+                                            name="education_level"
+                                            render={({ field }) => (
+                                                <FormItem>
+                                                    <FormLabel className='flex items-center justify-between'>
+                                                        Opleidingsniveau
+                                                        <Tooltip text='This is Opleidingsniveau'>
+                                                            <Info className='h-5 w-5 mr-2' />
+                                                        </Tooltip>
+                                                    </FormLabel>
+                                                    <FormControl>
+                                                        <Select onValueChange={field.onChange} defaultValue={field.value} >
+                                                            <SelectTrigger className="w-full">
+                                                                <SelectValue placeholder="Select a Level" />
+                                                            </SelectTrigger>
+                                                            <SelectContent className="bg-white">
+                                                                <SelectGroup>
+                                                                    {
+                                                                        [
+                                                                            { value: "primary", label: "Basisonderwijs" },
+                                                                            { value: "secondary", label: "Voortgezet Onderwijs" },
+                                                                            { value: "higher", label: "Hoger Onderwijs" },
+                                                                            { value: "none", label: "Geen Opleiding" }
+                                                                        ].map((item, index) => (
+                                                                            <SelectItem key={index} value={item.value} className="hover:bg-slate-100 cursor-pointer">{item.label}</SelectItem>
+                                                                        ))
+                                                                    }
+                                                                </SelectGroup>
+                                                            </SelectContent>
+                                                        </Select>
+                                                    </FormControl>
+                                                    <FormMessage />
+                                                </FormItem>
+                                            )}
+                                        />
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                    </div>
+                    
                     <div className="grid grid-cols-1 gap-4 h-fit">
                         <div className="flex flex-col gap-4 px-6 py-3 bg-white rounded-md border-2 border-muted h-fit">
                             <h1 className='text-base font-semibold text-black'>Adresgegevens</h1>

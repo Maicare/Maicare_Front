@@ -96,10 +96,10 @@ function ReregistrationView() {
         { name: "Training Center", value: registration.care_room_training_center, color: "bg-amber-100 text-amber-800" },
     ].filter(type => type.value)
 
-    const handleUpdateStatus = async (date: string) => {
+    const handleUpdateStatus = async (date: string,location:string,type:string) => {
         try {
             setStatusIsLoading(true);
-            await updateStatus(registration.id, "approved", date, { displaySuccess: true, displayProgress: true });
+            await updateStatus(registration.id,{status:"approved",date,location,type}, { displaySuccess: true, displayProgress: true });
         } catch (error) {
             console.log(error);
         } finally {
@@ -150,7 +150,7 @@ function ReregistrationView() {
                         onClick={async () => {
                             try {
                                 setStatusIsLoading(true);
-                                await updateStatus(registration.id, "rejected", "", { displaySuccess: true, displayProgress: true });
+                                await updateStatus(registration.id, {status:"rejected"}, { displaySuccess: true, displayProgress: true });
                             } catch (error) {
                                 console.log(error);
                             } finally {
@@ -441,6 +441,12 @@ function ReregistrationView() {
                                     )}
                                 </p>
                             </div>
+                            {registration.education_level && (
+                                <div className="space-y-1">
+                                    <h3 className="text-sm font-medium text-muted-foreground">Level</h3>
+                                    <p>{registration.education_level}</p>
+                                </div>
+                            )}
                             {registration.education_institution && (
                                 <div className="space-y-1">
                                     <h3 className="text-sm font-medium text-muted-foreground">Institution</h3>

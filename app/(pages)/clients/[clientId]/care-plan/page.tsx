@@ -14,9 +14,8 @@ import { columns } from './_components/columns';
 const ListingCarePlans = () => {
     const { clientId } = useParams();
     const router = useRouter();
-    const [open, setOpen] = useState(false);
-    const [carePlan, _setCarePlan] = useState<CarePlan | null>(null);
-    const { isLoading, assessments, page, setPage, createOne } = useAssessment({ autoFetch: true, clientId: parseInt(clientId as string) });
+    const [__, _setCarePlan] = useState<CarePlan | null>(null);
+    const { isLoading, assessments, page, setPage } = useAssessment({ autoFetch: true, clientId: parseInt(clientId as string) });
     const handlePrevious = () => {
         if (page <= 1) {
             setPage(1);
@@ -33,15 +32,11 @@ const ListingCarePlans = () => {
     // const handleAdd = () => {
     //     router.push(`/clients/${clientId}/assessments/create`);
     // }
-    const handleOpen = (bool: boolean) => {
-        setOpen(bool);
-    }
+
     const handleCreate = async () => {
         router.push(`/clients/${clientId}/care-plan/create`);
     }
-    const handleUpdate = async () => {
-        
-    }
+
     const handleRowClick = (row: Row<CarePlan>) => {
         router.push(`/clients/${clientId}/care-plan/${row.original.care_plan_id}`);
     }

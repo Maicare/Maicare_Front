@@ -9,16 +9,8 @@ import {
     User,
     Calendar,
     Trash2,
-    Pencil,
-    MoreVertical
 } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+
 import PrimaryButton from "@/common/components/PrimaryButton";
 import { useParams } from "next/navigation";
 import { useCarePlan } from "@/hooks/care-plan/use-care-plan";

@@ -98,6 +98,7 @@ export const createRegistrationSchema = z.object({
   education_mentor_email: z.string().email("Invalid mentor email").optional(),
   education_mentor_name: z.string().optional(),
   education_mentor_phone: z.string().optional(),
+  education_level: z.enum(["primary", "secondary", "higher", "none"]).optional(),
   guardian1_email: z.string().email("Invalid guardian email").optional(),
   guardian1_first_name: z.string().optional(),
   guardian1_last_name: z.string().optional(),

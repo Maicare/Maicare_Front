@@ -133,27 +133,38 @@ export function useRegistration({
   };
   
   
-  const updateStatus = async (id:Id,status: "approved"|"rejected",date:string="", options?: ApiOptions) => {
+  const updateStatus = async (id:Id,data:{status: "approved"|"rejected",date?:string,type?:string,location?:string}, options?: ApiOptions) => {
     const { displayProgress = false, displaySuccess = false } = options || {};
     try {
       if (displayProgress) startProgress();
+      let body;
+      if (data.status === "rejected") {
+        body = { status: data.status };
+      } else {
+        body = {
+          status: data.status,
+          intake_appointment_date: data.date, // Assuming the date is in YYYY-MM-DD format
+          admission_type: data.type,
+          intake_appointment_location: data.location,
+        };
+      }
       const response = await useApi<Registration>(
-        ApiRoutes.Registration.UpdateStatus.replace("{id}", id.toString())+"?status="+status+"&intake_appointment_date="+date,
+        ApiRoutes.Registration.UpdateStatus.replace("{id}", id.toString()),
         "POST",
         {},
-        {}
+        body
       );
-      if (!response.data) {
-        throw new Error("Failed to "+status+" registration");
+      if (!response.success) {
+        throw new Error("Failed to "+data.status+" registration");
       }
       if (displaySuccess && response.success) {
-        enqueueSnackbar("Registration "+status+" successful!", { variant: "success" });
+        enqueueSnackbar("Registration "+data.status+" successful!", { variant: "success" });
       }
       mutate()
       return response.data;
     } catch (err: any) {
       enqueueSnackbar(
-        err?.response?.data?.message ||"Failed to "+status+" registration",
+        err?.response?.data?.message ||"Failed to "+data.status+" registration",
         { variant: "error" }
       );
       throw err;

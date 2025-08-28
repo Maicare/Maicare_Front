@@ -435,6 +435,7 @@ export function useEmployee({
     createOne,
     updateOne,
     updateEmployeeContract,
-    readEmployeeContract
+    readEmployeeContract,
+    mutate
   };
 }

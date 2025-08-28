@@ -9,6 +9,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Badge } from "@/components/ui/badge"
 import { QrCode, UserIcon } from "lucide-react"
 import { useState } from "react"
+import { useAuth } from "@/common/hooks/use-auth"
 
 export default function EmployeeProfilePage() {
   const [currentPassword, setCurrentPassword] = useState("")
@@ -16,27 +17,57 @@ export default function EmployeeProfilePage() {
   const [confirmPassword, setConfirmPassword] = useState("")
   const [twoFactorEnabled, setTwoFactorEnabled] = useState(false)
   const [verificationCode, setVerificationCode] = useState("")
-
+  const {user,changePassword,setup2FA,enable2FA} = useAuth({});
+  const [qrCode, setQrCode] = useState<string | null>(null);
+  const [_, setSecret] = useState<string | null>(null);
+  const handleSetup2FA = async () => {
+    try {
+      const data = await setup2FA({ displayProgress: true, displaySuccess: true });
+      setQrCode(data.qr_code_base64);
+      setSecret(data.secret);
+    } catch (error) {
+      console.error("2FA setup failed:", error);
+    }
+  };
   // Dummy employee data
   const employee = {
-    name: "Alex Johnson",
-    email: "alex.johnson@company.com",
-    role: "Senior Care Coordinator",
+    name: (user?.first_name && user.last_name)  ? user.first_name + user.last_name : "Alex Johnson",
+    email: user?.email || "alex.johnson@company.com",
+    role:  "Senior Care Coordinator",
     department: "Client Services",
     avatarUrl: "/avatars/employee-1.jpg",
     lastLogin: "2 hours ago",
     status: "active",
   }
 
-  const handlePasswordChange = (e: React.FormEvent) => {
+  const handlePasswordChange = async(e: React.FormEvent) => {
     e.preventDefault()
     // Handle password change logic
-    console.log("Password changed")
+    try {
+      await changePassword(currentPassword, newPassword,confirmPassword,{ displayProgress: true, displaySuccess: true });
+      setCurrentPassword("");
+      setNewPassword("");
+      setConfirmPassword("");
+    } catch (error) {
+      console.error("Password change failed:", error);
+      // Handle error (e.g., show notification)
+    }
   }
 
-  const handleTwoFactorToggle = () => {
-    setTwoFactorEnabled(!twoFactorEnabled)
+  const handleTwoFactorToggle = async() => {
+    setTwoFactorEnabled(!twoFactorEnabled);
+    await handleSetup2FA();
   }
+
+  const handleVerifyCode = async () => {
+    try {
+      await enable2FA(verificationCode, { displayProgress: true, displaySuccess: true });
+      setVerificationCode("");
+    } catch (error) {
+      console.error("2FA verification failed:", error);
+      // Handle error (e.g., show notification)
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-purple-50 p-4 md:p-8">
@@ -226,7 +257,11 @@ export default function EmployeeProfilePage() {
                       <div className="bg-white p-3 rounded-md border">
                         {/* Placeholder for QR code - in a real app, this would be generated */}
                         <div className="h-32 w-32 flex items-center justify-center bg-gray-100 text-gray-400">
-                          QR Code
+                          {qrCode ? (
+                            <img src={qrCode} alt="2FA QR Code" className="h-32 w-32" />
+                          ) : (
+                            <span className="text-sm">QR Code</span>
+                          )}
                         </div>
                       </div>
                       <div className="flex-1">
@@ -249,7 +284,7 @@ export default function EmployeeProfilePage() {
                       </div>
                     </div>
                     <div className="flex justify-end">
-                      <Button variant="outline" className="border-green-300 text-green-600 hover:bg-green-50">
+                      <Button variant="outline" className="border-green-300 text-green-600 hover:bg-green-50" onClick={handleVerifyCode}>
                         Verify Code
                       </Button>
                     </div>

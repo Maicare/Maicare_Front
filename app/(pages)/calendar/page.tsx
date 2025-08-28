@@ -16,7 +16,7 @@ import Routes from "@/common/routes";
 import { PermissionsObjects } from "@/common/data/permission.data";
 
 const Page = () => {
-  const { user } = useAuth();
+  const { user } = useAuth({});
   const employeeId = user?.employee_id;
 
   return (

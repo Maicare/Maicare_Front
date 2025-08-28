@@ -25,7 +25,7 @@ const withAuth = (Component: React.ComponentType<Props>, options: WithAuthOption
     // State to manage redirection check
     const [isAllowed, setIsAllowed] = useState(false);
     const router = useRouter();
-    const { user,isLoading } = useAuth();
+    const { user,isLoading } = useAuth({});
     const mode = options.mode ?? AUTH_MODE.LOGGED_IN;
     useEffect(() => {
       if(isLoading ) return;

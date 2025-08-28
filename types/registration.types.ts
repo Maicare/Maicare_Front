@@ -45,6 +45,7 @@ export type RegistrationParamsFilters = {
       education_mentor_email: string;
       education_mentor_name: string;
       education_mentor_phone: string;
+      education_level: "primary" | "secondary" | "higher" | "none";
       form_status: string;
       guardian1_email: string;
       guardian1_first_name: string;

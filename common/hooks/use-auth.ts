@@ -9,10 +9,14 @@ import { useApi } from "./use-api";
 import { ApiOptions } from "../types/api.types";
 
 
-export function useAuth() {
+export function useAuth({autoFetch=true}:{autoFetch?:boolean}) {
   const { data: user, error, mutate, } = useSWR<Employee | null>(
-    ApiRoutes.Employee.Profile, // Endpoint to fetch Employee details
+    autoFetch ? ApiRoutes.Employee.Profile : null, // Endpoint to fetch Employee details
     async (url) => {
+      if (!url) {
+        return null;
+        
+      }
       const response = await api.get(url);
       if (!response.data.data) {
         return null;
@@ -31,14 +35,16 @@ export function useAuth() {
     try {
       // Display progress bar
       if (displayProgress) startProgress();
-      const {message,success,data,error} = await useApi<LoginResponse>(ApiRoutes.Auth.Login, "POST", {}, credentials);
-      if (!data) 
+      const { message, success, data, error } = await useApi<LoginResponse>(ApiRoutes.Auth.Login, "POST", {}, credentials);
+      if (!data)
         throw new Error(error || message || "An unknown error occurred");
-      const { access, refresh } = data;
+      const { access, refresh, requires_2fa } = data;
 
       // Save token
-      localStorage.setItem("accessToken", access);
-      localStorage.setItem("refreshToken", refresh);
+      if (!requires_2fa) {
+        localStorage.setItem("accessToken", access);
+        localStorage.setItem("refreshToken", refresh);
+      }
 
       // Update user data in SWR cache
       mutate(user);
@@ -46,7 +52,9 @@ export function useAuth() {
       if (displaySuccess && success) {
         enqueueSnackbar("Login successful!", { variant: "success" });
       }
-    } catch (err:any) {
+      return data;
+
+    } catch (err: any) {
       enqueueSnackbar(err?.response?.data?.message || "Login failed", { variant: "error" });
       throw err;
     } finally {
@@ -71,8 +79,129 @@ export function useAuth() {
       if (displaySuccess) {
         enqueueSnackbar("Logout successful!", { variant: "success" });
       }
-    } catch (err:any) {
+    } catch (err: any) {
       enqueueSnackbar(err?.response?.data?.message || "Logout failed", { variant: "error" });
+      throw err;
+    } finally {
+      if (displayProgress) stopProgress();
+    }
+  };
+
+  // changePassword
+  const changePassword = async (oldPassword: string, newPassword: string, confirmPassword: string, options?: ApiOptions) => {
+    const { displayProgress = false, displaySuccess = false } = options || {};
+    try {
+      // Display progress bar
+      if (displayProgress) startProgress();
+      if (!user) {
+        throw new Error("User not authenticated");
+      }
+      if (oldPassword === newPassword) {
+        throw new Error("New password must be different from old password");
+
+      }
+      if (confirmPassword !== newPassword) {
+        throw new Error("New password and confirmation do not match");
+      }
+
+      const { message, success, error } = await useApi(ApiRoutes.Auth.ChangePassword, "POST", {}, { old_password: oldPassword, new_password: newPassword });
+      if (!success)
+        throw new Error(error || message || "An unknown error occurred");
+
+      // Display success message
+      if (displaySuccess) {
+        enqueueSnackbar("Password changed successfully!", { variant: "success" });
+      }
+    } catch (err: any) {
+      enqueueSnackbar(err?.response?.data?.message || "Change password failed", { variant: "error" });
+      throw err;
+    } finally {
+      if (displayProgress) stopProgress();
+    }
+  };
+
+  const setup2FA = async (options?: ApiOptions) => {
+    const { displayProgress = false, displaySuccess = false } = options || {};
+    try {
+      // Display progress bar
+      if (displayProgress) startProgress();
+      if (!user) {
+        throw new Error("User not authenticated");
+      }
+
+      const { message, success, error, data } = await useApi<{
+        secret: string;
+        qr_code_base64: string;
+      }>(ApiRoutes.Auth.Setup2FA, "POST", {}, {});
+      if (!success || !data)
+        throw new Error(error || message || "An unknown error occurred");
+
+      // Display success message
+      if (displaySuccess) {
+        enqueueSnackbar("2FA setup successfully!", { variant: "success" });
+      }
+      return data;
+    } catch (err: any) {
+      enqueueSnackbar(err?.response?.data?.message || "2FA setup failed", { variant: "error" });
+      throw err;
+    } finally {
+      if (displayProgress) stopProgress();
+    }
+  };
+
+  const enable2FA = async (validation_code: string, options?: ApiOptions) => {
+    const { displayProgress = false, displaySuccess = false } = options || {};
+    try {
+      // Display progress bar
+      if (displayProgress) startProgress();
+      if (!user) {
+        throw new Error("User not authenticated");
+      }
+
+      const { message, success, error, data } = await useApi(ApiRoutes.Auth.Enable2FA, "POST", {}, { validation_code });
+      if (!success) {
+        throw new Error(error || message || "An unknown error occurred");
+      }
+
+      // Display success message
+      if (displaySuccess) {
+        enqueueSnackbar("2FA enabled successfully!", { variant: "success" });
+      }
+      return data;
+    } catch (err: any) {
+      enqueueSnackbar(err?.response?.data?.message || "2FA enable failed", { variant: "error" });
+      throw err;
+    } finally {
+      if (displayProgress) stopProgress();
+    }
+  };
+
+  const Verify2FA = async (temp_token: string, validation_code: string, options?: ApiOptions) => {
+    const { displayProgress = false, displaySuccess = false } = options || {};
+    try {
+      // Display progress bar
+      if (displayProgress) startProgress();
+
+      const { message, success, error, data } = await useApi<{
+        "access": string,
+        "refresh": string,
+        "requires_2fa": boolean,
+        "temp_token": string
+      }>(ApiRoutes.Auth.Verify2FA, "POST", {}, { temp_token, validation_code });
+      if (!success || !data) {
+        throw new Error(error || message || "An unknown error occurred");
+      }
+      localStorage.setItem("accessToken", data.access);
+      localStorage.setItem("refreshToken", data.refresh);
+
+      // Display success message
+      if (displaySuccess) {
+        enqueueSnackbar("2FA verified successfully!", { variant: "success" });
+      }
+      mutate(user);
+      return data;
+    } catch (err: any) {
+      enqueueSnackbar(err?.response?.data?.message || "2FA verification failed", { variant: "error" });
       throw err;
     } finally {
       if (displayProgress) stopProgress();
@@ -86,5 +215,9 @@ export function useAuth() {
     login,
     logout,
     error,
+    changePassword,
+    setup2FA,
+    enable2FA,
+    Verify2FA
   };
 }
