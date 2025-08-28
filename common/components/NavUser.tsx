@@ -58,6 +58,13 @@ export function NavUser({
 
         }
     }
+    const handleProfile = async () => {
+        try {
+            router.push("/profile")
+        } catch (error) {
+
+        }
+    }
 
     return (
         <SidebarMenu>
@@ -106,7 +113,7 @@ export function NavUser({
                         </DropdownMenuGroup>
                         <DropdownMenuSeparator className="bg-slate-200" />
                         <DropdownMenuGroup>
-                            <DropdownMenuItem className="hover:bg-slate-200 rounded-md cursor-pointer">
+                            <DropdownMenuItem className="hover:bg-slate-200 rounded-md cursor-pointer" onClick={handleProfile}>
                                 <BadgeCheck />
                                 Account
                             </DropdownMenuItem>
