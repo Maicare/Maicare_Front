@@ -41,7 +41,7 @@ const ProfileInformation = ({date_of_birth,first_name,gender,last_name,profile_p
                     </div>
                     <div className="mt-10">
                         <p className="text-sm font-medium">{first_name + " " + last_name}</p>
-                        <span className='text-xs font-medium text-slate-400'>{role?.name}</span>
+                        <span className='text-xs font-medium text-slate-400'>{role?.role_name}</span>
                     </div>
                 </div>
                 <div className="w-[60%] flex flex-col justify-between">

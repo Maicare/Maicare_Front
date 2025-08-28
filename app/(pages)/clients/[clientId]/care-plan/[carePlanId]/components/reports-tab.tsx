@@ -15,7 +15,7 @@ import UpsertReportSheet from "./upsert-report-sheet";
 const ReportsTab = () => {
     const { carePlanId } = useParams();
 
-    const { data: reports, setPage, page,createReport,updateReport,deleteReport } = useCarePlan({
+    const { data: reports, setPage, page,createReport } = useCarePlan({
         reports: true,
         carePlanId: carePlanId as string
     });

@@ -11,7 +11,7 @@ import { Role } from "@/types/role.types";
 const DropdownUser = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const { can, transformToPermissionName } = usePermissions();
-  const { user, logout } = useAuth();
+  const { user, logout } = useAuth({});
   const { getUserRole } = useRole({ autoFetch: false });
   const [userRole, setUserRole] = useState<Role | null>(null);
 
@@ -49,7 +49,7 @@ const DropdownUser = () => {
   });
 
   if (!userRole) return null;
-  const role = userRole.name;
+  const role = userRole.role_name;
 
   return (
     <div className="relative">

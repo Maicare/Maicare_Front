@@ -9,7 +9,7 @@ interface PermissionsAPI {
 }
 
 const usePermissions = (): PermissionsAPI => {
-  const { user } = useAuth();
+  const { user } = useAuth({});
   const transformToPermissionName = (permission: Permission): PermissionName => {
     const parts = permission.name.split('.');
 

@@ -14,7 +14,6 @@ import RisksTab from './components/risks-tab';
 import SupportNetworkTab from './components/support-network-tab';
 import ResourcesTab from './components/resources-tab';
 import { CarePlanOverview } from '@/types/care-plan.types';
-import { ReportCard } from './components/report-card';
 import ReportsTab from './components/reports-tab';
 const mockClient = {
     id: 1,

@@ -3,5 +3,6 @@ import { Id } from "@/common/types/types";
 
 export interface Role {
     id:Id;
-    name:ROLE;
+    role_name:string;
+    permission_count:number;
 }

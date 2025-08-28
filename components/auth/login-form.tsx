@@ -8,7 +8,7 @@ import { useAuth } from "@/common/hooks/use-auth";
 import Link from "next/link";
 
 const LoginForm = () => {
-    const { login } = useAuth();
+    const { login } = useAuth({});
     const methods = useForm<LoginInput>({
         resolver: yupResolver(loginSchema),
         defaultValues: {

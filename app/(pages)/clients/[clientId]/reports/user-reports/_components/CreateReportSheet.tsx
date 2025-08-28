@@ -30,7 +30,7 @@ type Props = {
 }
 
 const CreateReportSheet = ({ mode,handleCreate,handleUpdate,report,handleOpen,isOpen }: Props) => {
-    const { user } = useAuth();
+    const { user } = useAuth({});
     const [loading, setLoading] = useState(false);
     const form = useForm<CreateReport>({
         resolver: zodResolver(CreateReportSchema),

@@ -24,7 +24,7 @@ type Props = {
     objectiveId?: Id; // Optional, if creating an action for a specific objective
 }
 
-const UpsertReportSheet = ({ mode, handleCreate, handleUpdate, report, handleOpen, isOpen,objectiveId }: Props) => {
+const UpsertReportSheet = ({ mode, handleCreate, handleUpdate, report, handleOpen, isOpen, }: Props) => {
     const [loading, setLoading] = useState(false);
     const form = useForm<CreateReport>({
         resolver: zodResolver(createReportSchema),
@@ -104,7 +104,7 @@ const UpsertReportSheet = ({ mode, handleCreate, handleUpdate, report, handleOpe
                                             <SelectTrigger className="w-full">
                                                 <SelectValue placeholder="Selecteer een type rapport" />
                                             </SelectTrigger>
-                                            <SelectContent>
+                                            <SelectContent className='bg-white'>
                                                 <SelectItem value="progress">Progress</SelectItem>
                                                 <SelectItem value="concern">Concern</SelectItem>
                                                 <SelectItem value="achievement">Achievement</SelectItem>

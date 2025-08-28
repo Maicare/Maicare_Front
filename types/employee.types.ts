@@ -14,6 +14,8 @@ export type Employee = {
 export type EmployeeList = {
     id: Id,
     user_id: Id,
+    role_id: Id,
+    role_name: string,
     first_name: string,
     last_name: string,
     position: string,

@@ -14,7 +14,7 @@ export const ControlledRoleSelect: FunctionComponent<
   if (!roles) return <Loader />;
   const options = roles.map((role) => ({
     value: role.id + "",
-    label: role.name,
+    label: role.role_name,
   }));
   const actualOptions = [
     {

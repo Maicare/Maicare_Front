@@ -29,10 +29,11 @@ import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectVa
 import { useRouter } from "next/navigation";
 import { FileUpload } from "./file-upload";
 import PrimaryButton from "@/common/components/PrimaryButton";
-import { CheckCircle, XCircle } from "lucide-react";
+import { CheckCircle, Info, XCircle } from "lucide-react";
 import { Registration } from "@/types/registration.types";
 import { formatBackendDate } from "@/utils/timeFormatting";
 import { Any } from "@/common/types/types";
+import Tooltip from "@/common/components/Tooltip";
 
 
 const RegistrationForm = ({ mode = "create", registration }: { mode?: "create" | "update", registration: Registration | undefined }) => {
@@ -67,6 +68,7 @@ const RegistrationForm = ({ mode = "create", registration }: { mode?: "create" |
             document_psychiatric_report: '',
             document_referral: '',
             document_safety_plan: '',
+            education_level: "primary", // Onderwijsniveau (optioneel)
 
         },
     });
@@ -93,9 +95,9 @@ const RegistrationForm = ({ mode = "create", registration }: { mode?: "create" |
     async function onSubmit(data: CreateRegistrationType) {
         try {
             if (mode === "create") {
-                await createOne({ ...data, application_date: data.application_date + "T00:00:00.000Z",work_start_date:data.work_start_date ?  data.work_start_date+ "T00:00:00.000Z" : undefined}, { displayProgress: true, displaySuccess: true });
+                await createOne({ ...data, application_date: data.application_date + "T00:00:00.000Z", work_start_date: data.work_start_date ? data.work_start_date + "T00:00:00.000Z" : undefined }, { displayProgress: true, displaySuccess: true });
             } else {
-                await updateOne(registration!.id, { ...data, application_date: data.application_date + "T00:00:00.000Z",work_start_date:data.work_start_date ?  data.work_start_date+ "T00:00:00.000Z" : undefined }, { displayProgress: true, displaySuccess: true });
+                await updateOne(registration!.id, { ...data, application_date: data.application_date + "T00:00:00.000Z", work_start_date: data.work_start_date ? data.work_start_date + "T00:00:00.000Z" : undefined }, { displayProgress: true, displaySuccess: true });
             }
             form.reset();
             router.back();
@@ -374,6 +376,42 @@ const RegistrationForm = ({ mode = "create", registration }: { mode?: "create" |
                                 <div className="space-y-4">
                                     <FormField
                                         control={form.control}
+                                        name="education_level"
+                                        render={({ field }) => (
+                                            <FormItem>
+                                                <FormLabel className='flex items-center justify-between'>
+                                                    Opleidingsniveau
+                                                    <Tooltip text='This is Opleidingsniveau'>
+                                                        <Info className='h-5 w-5 mr-2' />
+                                                    </Tooltip>
+                                                </FormLabel>
+                                                <FormControl>
+                                                    <Select onValueChange={field.onChange} defaultValue={field.value} >
+                                                        <SelectTrigger className="w-full">
+                                                            <SelectValue placeholder="Select a Level" />
+                                                        </SelectTrigger>
+                                                        <SelectContent className="bg-white">
+                                                            <SelectGroup>
+                                                                {
+                                                                    [
+                                                                        { value: "primary", label: "Basisonderwijs" },
+                                                                        { value: "secondary", label: "Voortgezet Onderwijs" },
+                                                                        { value: "higher", label: "Hoger Onderwijs" },
+                                                                        { value: "none", label: "Geen Opleiding" }
+                                                                    ].map((item, index) => (
+                                                                        <SelectItem key={index} value={item.value} className="hover:bg-slate-100 cursor-pointer">{item.label}</SelectItem>
+                                                                    ))
+                                                                }
+                                                            </SelectGroup>
+                                                        </SelectContent>
+                                                    </Select>
+                                                </FormControl>
+                                                <FormMessage />
+                                            </FormItem>
+                                        )}
+                                    />
+                                    <FormField
+                                        control={form.control}
                                         name="education_institution"
                                         render={({ field }) => (
                                             <FormItem>
@@ -518,19 +556,19 @@ const RegistrationForm = ({ mode = "create", registration }: { mode?: "create" |
                                                 </FormItem>
                                             )}
                                         />
-                                    <FormField
-                                        control={form.control}
-                                        name="work_employer_phone"
-                                        render={({ field }) => (
-                                            <FormItem>
-                                                <FormLabel>Employer Phone</FormLabel>
-                                                <FormControl>
-                                                    <Input placeholder="+31 6 12345678" {...field} />
-                                                </FormControl>
-                                                <FormMessage />
-                                            </FormItem>
-                                        )}
-                                    />
+                                        <FormField
+                                            control={form.control}
+                                            name="work_employer_phone"
+                                            render={({ field }) => (
+                                                <FormItem>
+                                                    <FormLabel>Employer Phone</FormLabel>
+                                                    <FormControl>
+                                                        <Input placeholder="+31 6 12345678" {...field} />
+                                                    </FormControl>
+                                                    <FormMessage />
+                                                </FormItem>
+                                            )}
+                                        />
                                     </div>
                                     <FormField
                                         control={form.control}

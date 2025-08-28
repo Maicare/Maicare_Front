@@ -12,6 +12,7 @@ import {  CheckCircle, Info, XCircle } from 'lucide-react'
 import React, { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { ContactsFormSection } from './contacts-form-section'
+import { cn } from '@/utils/cn'
 
 
 type Props = {
@@ -19,9 +20,10 @@ type Props = {
     onSuccess?: (id: number) => void;
     defaultValues?: Contact;
     onCancel: () => void;
+    sheet?: boolean;
 }
 
-const UpsertContactForm = ({ mode, onSuccess, defaultValues, onCancel }: Props) => {
+const UpsertContactForm = ({ mode, onSuccess, defaultValues, onCancel,sheet=false }: Props) => {
     const { createOne, updateOne } = useContact({ autoFetch: false });
     const [loading, setLoading] = useState(false);
     // 1. Define your form.
@@ -91,7 +93,7 @@ const UpsertContactForm = ({ mode, onSuccess, defaultValues, onCancel }: Props) 
     }
     return (
         <Form {...form} >
-            <form onSubmit={form.handleSubmit(onSubmit)} className="grid grid-cols-2 gap-4">
+            <form onSubmit={form.handleSubmit(onSubmit)} className={cn("grid grid-cols-2 gap-4", sheet && "h-[86vh] overflow-y-scroll grid-cols-1")}>
                 <div className="grid grid-cols-1 gap-4 h-fit">
                     <div className="flex flex-col gap-4 px-6 py-3 bg-white rounded-md border-2 border-muted h-fit">
                         <h1 className='text-base font-semibold text-black'>Opdrachtgever</h1>

@@ -44,7 +44,7 @@ export function NavUser({
 
     const router = useRouter();
 
-    const { logout } = useAuth();
+    const { logout } = useAuth({});
 
     const { isMobile } = useSidebar()
 
@@ -54,6 +54,13 @@ export function NavUser({
             await logout()
             router.push("/signin")
 
+        } catch (error) {
+
+        }
+    }
+    const handleProfile = async () => {
+        try {
+            router.push("/profile")
         } catch (error) {
 
         }
@@ -106,7 +113,7 @@ export function NavUser({
                         </DropdownMenuGroup>
                         <DropdownMenuSeparator className="bg-slate-200" />
                         <DropdownMenuGroup>
-                            <DropdownMenuItem className="hover:bg-slate-200 rounded-md cursor-pointer">
+                            <DropdownMenuItem className="hover:bg-slate-200 rounded-md cursor-pointer" onClick={handleProfile}>
                                 <BadgeCheck />
                                 Account
                             </DropdownMenuItem>

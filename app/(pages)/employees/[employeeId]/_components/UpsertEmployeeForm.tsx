@@ -213,7 +213,7 @@ const UpsertEmployeeForm = ({mode,onSuccess,defaultValues,onCancel}:Props) => {
                                                             <SelectLabel>Rolen</SelectLabel>
                                                             {
                                                                 roles?.map((item,index)=>(
-                                                                    <SelectItem value={item.id.toString()} key={index} className="hover:bg-slate-100 cursor-pointer">{item.name}</SelectItem>
+                                                                    <SelectItem value={item.id.toString()} key={index} className="hover:bg-slate-100 cursor-pointer">{item.role_name}</SelectItem>
                                                                 ))
                                                             }
                                                         </SelectGroup>

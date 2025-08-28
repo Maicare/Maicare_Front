@@ -50,7 +50,7 @@ const EmployeeRolesSummary: FunctionComponent<Props> = ({ employeeId }) => {
               ignoreIfEmpty={true}
               label={"Rol"}
               value={
-                role.name ?? "Niet gespecificeerd"
+                role.role_name ?? "Niet gespecificeerd"
               }
             />
             <EditIcon />
