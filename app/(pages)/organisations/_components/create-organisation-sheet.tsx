@@ -3,7 +3,7 @@ import { Sheet, SheetClose, SheetContent, SheetDescription, SheetHeader, SheetTi
 
 import { Button } from '@/components/ui/button';
 import PrimaryButton from '@/common/components/PrimaryButton';
-import { Info, PlusCircle } from 'lucide-react';
+import { Edit2, Info, PlusCircle } from 'lucide-react';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import Tooltip from '@/common/components/Tooltip';
 import { useForm } from 'react-hook-form';
@@ -65,19 +65,19 @@ const CreateOrganisationSheet = ({ mode, handleCreate, handleUpdate, organisatio
         <Sheet open={isOpen} onOpenChange={(o) => handleOpen(o)}>
             <SheetTrigger asChild>
                 <PrimaryButton
-                    text="Add"
+                    text={mode === "create" ? "Nieuwe Organisatie" : "Bewerk Organisatie"}
                     // onClick={handleAdd}
                     disabled={false}
-                    icon={PlusCircle}
+                    icon={mode === "create" ? PlusCircle : Edit2}
                     animation="animate-bounce"
                     className="bg-indigo-400 text-white"
                 />
             </SheetTrigger>
             <SheetContent className='bg-slate-200/50 backdrop-blur-sm overflow-scroll' onPointerDownOutside={(e) => e.preventDefault()} >
                 <SheetHeader>
-                    <SheetTitle>Nieuwe Organisatie</SheetTitle>
+                    <SheetTitle>{mode === "create" ? "Nieuwe Organisatie" : "Bewerk Organisatie"}</SheetTitle>
                     <SheetDescription>
-                        Creëer Nieuwe Organisatie.
+                        {mode === "create" ? "Creëer Nieuwe Organisatie." : "Bewerk Organisatie."}
                     </SheetDescription>
                 </SheetHeader>
                 <Form {...form} >
