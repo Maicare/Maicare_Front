@@ -22,6 +22,8 @@ import { CreateLocation } from "@/schemas/location.schema";
 import { useLocation } from "@/hooks/location/use-location";
 import { useParams, useRouter } from "next/navigation";
 import { useOrganisation } from "@/hooks/organisation/use-organisation";
+import CreateOrganisationSheet from "../_components/create-organisation-sheet";
+import { CreateOrganisation } from "@/schemas/organisation.schema";
 
 interface Location {
   id: number;
@@ -38,10 +40,14 @@ export default function OrganizationDetailsPage() {
   const [organization, setOrganization] = useState<Organization | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [open, setOpen] = useState(false);
+  const [orgOpen, setOrgOpen] = useState(false);
   const { createOneForOrganisation, readAllForOrganisation } = useLocation({ autoFetch: false });
-  const { readOne: readOrganization } = useOrganisation({ autoFetch: false });
+  const { readOne: readOrganization, updateOne } = useOrganisation({ autoFetch: false });
   const handleOpen = (bool: boolean) => {
     setOpen(bool);
+  }
+  const handleOpenOrg = (bool: boolean) => {
+    setOrgOpen(bool);
   }
 
   useEffect(() => {
@@ -58,7 +64,7 @@ export default function OrganizationDetailsPage() {
 
     fetchOrganization();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [organisationId]);
+  }, [organisationId, orgOpen]);
 
   // Mock data for demonstration
   useEffect(() => {
@@ -75,8 +81,7 @@ export default function OrganizationDetailsPage() {
     };
 
     fetchLocations();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [organisationId, open]);
+  }, [organisationId, open, readAllForOrganisation]);
 
   const handleCreate = async (values: CreateLocation) => {
     try {
@@ -87,6 +92,32 @@ export default function OrganizationDetailsPage() {
       }
       );
       setOpen(false);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+  // const handleCreateOrg = async (values: CreateOrganisation) => {
+  //   try {
+  //     await createOne(
+  //       values, {
+  //       displayProgress: true,
+  //       displaySuccess: true
+  //     }
+  //     );
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // }
+  const handleUpdate = async (values: CreateOrganisation) => {
+    try {
+      await updateOne(
+        values,
+        organisationId!.toString(),
+        {
+          displayProgress: true,
+          displaySuccess: true
+        }
+      );
     } catch (error) {
       console.log(error);
     }
@@ -106,7 +137,7 @@ export default function OrganizationDetailsPage() {
       <div className="max-w-6xl mx-auto">
         {/* Header Navigation */}
         <div className="mb-6">
-          <button className="flex items-center text-blue-600 hover:text-blue-800 font-medium">
+          <button className="flex items-center text-blue-600 hover:text-blue-800 font-medium" onClick={() => router.back()}>
             <ArrowLeft className="h-4 w-4 mr-2" />
             Back to Organizations
           </button>
@@ -123,10 +154,14 @@ export default function OrganizationDetailsPage() {
               <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4">
                 <h1 className="text-3xl font-bold text-gray-800">{organization.name}</h1>
                 <div className="flex gap-2">
-                  <button className="flex items-center gap-2 bg-blue-100 text-blue-700 hover:bg-blue-200 py-2 px-4 rounded-lg font-medium transition-colors">
-                    <Edit className="h-4 w-4" />
-                    Edit
-                  </button>
+                  <CreateOrganisationSheet
+                    mode={"update"}
+                    handleCreate={() => { }}
+                    handleUpdate={handleUpdate}
+                    handleOpen={handleOpenOrg}
+                    organisation={organization}
+                    isOpen={orgOpen}
+                  />
                   <button className="flex items-center gap-2 bg-red-100 text-red-700 hover:bg-red-200 py-2 px-4 rounded-lg font-medium transition-colors">
                     <Trash2 className="h-4 w-4" />
                     Delete
