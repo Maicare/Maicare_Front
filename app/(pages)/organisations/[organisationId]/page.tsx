@@ -133,7 +133,7 @@ export default function OrganizationDetailsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-4 md:p-8">
+    <div className="min-h-screen">
       <div className="max-w-6xl mx-auto">
         {/* Header Navigation */}
         <div className="mb-6">
