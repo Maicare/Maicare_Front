@@ -2,8 +2,8 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import BellIcon from "@/components/icons/BellIcon";
 import Ping from "@/common/components/Ping";
-import Notifications from "./Notifications";
 import { Any } from "@/common/types/types";
+import { NotificationsList } from "./Notifications";
 
 const fakeNotifications = {
     results: [
@@ -63,7 +63,7 @@ const DropdownNotification = () => {
         return () => document.removeEventListener("keydown", keyHandler);
     });
 
-    const { data, isLoading:_ } = { data: fakeNotifications, isLoading: false };
+    const { data, isLoading: _ } = { data: fakeNotifications, isLoading: false };
     const hasUnread = useMemo(() => {
         if (!data) return false;
         return data?.results.some((n) => !n.is_read);
@@ -83,15 +83,16 @@ const DropdownNotification = () => {
                 <BellIcon />
             </Link>
 
-            {data && (
-                <div
-                    ref={dropdown}
-                    className={`absolute z-99999 -right-27 mt-2.5 flex h-90 w-75 flex-col rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark sm:right-0 sm:w-80 ${dropdownOpen === true ? "block" : "hidden"
-                        }`}
-                >
-                    <Notifications notifications={[]} />
-                </div>
-            )}
+            {/* {/* {data && ( */}
+            <div
+                ref={dropdown}
+                className={`absolute z-99999 -right-27 mt-2.5 flex h-90 w-75 flex-col rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark sm:right-0 sm:w-80 ${dropdownOpen === true ? "block" : "hidden"
+                    }`}
+            >
+                <NotificationsList />
+
+            </div>
+            {/* )} */} 
         </li>
 
     );

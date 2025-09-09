@@ -11,6 +11,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import Link from "next/link";
 import { useAuth } from "@/common/hooks/use-auth";
+import { useRouter } from "next/navigation";
 
 const SignIn = () => {
   const [is2FAEnabled, setIs2FAEnabled] = useState(false);
@@ -18,7 +19,8 @@ const SignIn = () => {
   const [password, setPassword] = useState("");
   const [twoFactorCode, setTwoFactorCode] = useState("");
   const [temp_token, setTemp_token] = useState("");
-  const { login,Verify2FA } = useAuth({autoFetch:false});
+  const { login, Verify2FA } = useAuth({ autoFetch: false });
+  const router = useRouter();
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -36,6 +38,8 @@ const SignIn = () => {
           setIs2FAEnabled(true);
           setTemp_token(response.temp_token);
         }
+        router.push('/dashboard')
+
       } catch (error) {
         console.error("Login failed:", error);
       }
@@ -57,6 +61,7 @@ const SignIn = () => {
           displayProgress: true,
           displaySuccess: true,
         });
+        router.push('/dashboard')
       } catch (error) {
         console.error("2FA verification failed:", error);
       }

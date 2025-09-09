@@ -2,6 +2,8 @@
 const prefix = '/locations';
 const ApiRoutes = {
   CreateOne: prefix,
+  CreateOneForOrganisation: "organisations" + '/{organisationId}/locations',
+  ReadAllForOrganisation: "organisations" + '/{organisationId}/locations',
   ReadAll: prefix,
   ReadOne: prefix + '/{id}',
   UpdateOne: prefix + '/{id}',
