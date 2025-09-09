@@ -10,6 +10,7 @@ import { Badge } from "@/components/ui/badge"
 import { QrCode, UserIcon } from "lucide-react"
 import { useState } from "react"
 import { useAuth } from "@/common/hooks/use-auth"
+import { TimeAgo } from "./_components/time-ago"
 
 export default function EmployeeProfilePage() {
   const [currentPassword, setCurrentPassword] = useState("")
@@ -36,7 +37,7 @@ export default function EmployeeProfilePage() {
     role:  "Senior Care Coordinator",
     department: "Client Services",
     avatarUrl: "/avatars/employee-1.jpg",
-    lastLogin: "2 hours ago",
+    lastLogin: user?.last_login || "2 hours ago",
     status: "active",
   }
 
@@ -87,7 +88,9 @@ export default function EmployeeProfilePage() {
                 <Badge variant="outline" className="bg-green-100 text-green-800 border-green-200">
                   {employee.status}
                 </Badge>
-                <span className="text-sm text-gray-500">Last login: {employee.lastLogin}</span>
+                <span className="text-sm text-gray-500">Last login: 
+                  <TimeAgo timestamp={employee.lastLogin} />
+                </span>
               </div>
             </div>
           </div>
@@ -231,7 +234,7 @@ export default function EmployeeProfilePage() {
                   <div>
                     <h3 className="font-medium">Status</h3>
                     <p className="text-sm text-gray-500 mt-1">
-                      {twoFactorEnabled ? (
+                      {user?.two_factor_enabled || twoFactorEnabled  ? (
                         <span className="text-green-600">2FA is currently enabled</span>
                       ) : (
                         "Add an extra layer of security to your account"

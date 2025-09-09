@@ -9,7 +9,7 @@ import { Client, ClientsSearchParams } from "@/types/client.types";
 import { Row } from "@tanstack/table-core";
 import { ArrowBigLeft, ArrowBigRight, ListRestart, ListX, SquareActivity, Users } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { columns } from "./_components/columns";
 import TableFilters from "./_components/TableFilters";
 import withAuth, { AUTH_MODE } from "@/common/hocs/with-auth";
@@ -32,7 +32,32 @@ function Page() {
 
     const deboucedFilters = useDebounce(filters, 500);
 
-    const { clients, page, setPage } = useClient(deboucedFilters);
+    const { clients, page, setPage, readClientCounts } = useClient(deboucedFilters);
+    const [clientCounts, setClientCounts] = useState<{
+        clients_in_care: number;
+        clients_on_waiting_list: number;
+        clients_out_of_care: number;
+        total_clients: number;
+    }>({
+        clients_in_care: 0,
+        clients_on_waiting_list: 0,
+        clients_out_of_care: 0,
+        total_clients: 0
+    });
+
+    const fetchClientCounts = async () => {
+        try {
+            const counts = await readClientCounts();
+            setClientCounts(counts);
+        } catch (error) {
+            console.error("Error fetching client counts:", error);
+        }
+    };
+
+    useEffect(() => {
+        fetchClientCounts();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     const handleRowClick = (employeeRow: Row<Client>) => {
         const employee = employeeRow.original;
@@ -62,10 +87,10 @@ function Page() {
                 <p>Dashboard / <span className="font-medium text-indigo-500 hover:cursor-pointer">Clients</span></p>
             </div>
             <div className="w-full grid lg:grid-cols-[repeat(4,230px)] grid-cols-[repeat(3,205px)] md:grid-cols-[repeat(4,205px)] justify-between mb-5 ">
-                <StatisticCard colorKey="teal" icon={Users} title="Clienten" value={800} />
-                <StatisticCard colorKey="sky" icon={ListRestart} title="Wachtlijst" value={32} />
-                <StatisticCard colorKey="pink" icon={SquareActivity} title="In Zorg" value={45} />
-                <StatisticCard colorKey="orange" icon={ListX} title="Uit Zorg" value={94} />
+                <StatisticCard colorKey="teal" icon={Users} title="Clienten" value={clientCounts.total_clients} />
+                <StatisticCard colorKey="sky" icon={ListRestart} title="Wachtlijst" value={clientCounts.clients_on_waiting_list} />
+                <StatisticCard colorKey="pink" icon={SquareActivity} title="In Zorg" value={clientCounts.clients_in_care} />
+                <StatisticCard colorKey="orange" icon={ListX} title="Uit Zorg" value={clientCounts.clients_out_of_care} />
             </div>
             <TableFilters
                 filters={filters}

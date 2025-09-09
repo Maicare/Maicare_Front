@@ -65,6 +65,13 @@ export function NavUser({
 
         }
     }
+    const handleNotifications = async () => {
+        try {
+            router.push("/notifications")
+        } catch (error) {
+
+        }
+    }
 
     return (
         <SidebarMenu>
@@ -121,7 +128,7 @@ export function NavUser({
                                 <CreditCard />
                                 Billing
                             </DropdownMenuItem>
-                            <DropdownMenuItem className="hover:bg-slate-200 rounded-md cursor-pointer">
+                            <DropdownMenuItem className="hover:bg-slate-200 rounded-md cursor-pointer" onClick={handleNotifications}>
                                 <Bell />
                                 Notifications
                             </DropdownMenuItem>

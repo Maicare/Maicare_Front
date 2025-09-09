@@ -2,13 +2,15 @@ import { Permission } from "@/common/types/permission.types"
 import { Id } from "@/common/types/types"
 
 export type Employee = {
-    user_id: Id,
+    email: string,
     employee_id: Id,
     first_name: string,
     last_name: string,
-    email: string,
-    role_id: Id,
     permissions: Permission[],
+    role_id: Id,
+    user_id: Id,
+    two_factor_enabled: boolean,
+    last_login: string,
 }
 
 export type EmployeeList = {

@@ -253,6 +253,34 @@ export function useClient({
     }
   };
 
+  const readClientCounts = async (options?: ApiOptions) => {
+    const { displayProgress = false, displaySuccess = false } = options || {};
+    try {
+      if (displayProgress) startProgress();
+      const response = await useApi<{
+        clients_in_care: number,
+        clients_on_waiting_list: number,
+        clients_out_of_care: number,
+        total_clients: number
+      }>(
+        ApiRoutes.Client.ReadCounts,
+        "GET"
+      );
+      if (!response.data) {
+        throw new Error("error fetching client counts");
+      }
+      if (displaySuccess && response.success) {
+        enqueueSnackbar("Client counts fetched successfully", { variant: "success" });
+      }
+      return response.data;
+    } catch (err: any) {
+      enqueueSnackbar("Failed to get client counts", { variant: "error" });
+      throw err;
+    } finally {
+      if (displayProgress) stopProgress();
+    }
+  };
+
   //TODO: Add logic to CRUD user role
   return {
     clients,
@@ -267,6 +295,7 @@ export function useClient({
     readClientRelatedEmails,
     updateStatus,
     getStatusHistory,
-    updateOne
+    updateOne,
+    readClientCounts
   };
 }

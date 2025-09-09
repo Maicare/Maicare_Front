@@ -4,7 +4,8 @@ import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/s
 import { AppSidebar } from "@/common/components/AppSidebar";
 import { Separator } from "@/components/ui/separator";
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "@/components/ui/breadcrumb";
-import DropdownNotification from "@/components/common/Header/DropdownNotification";
+import NotificationDropdown from "@/components/common/Header/notification-dropdown";
+// import DropdownNotification from "@/components/common/Header/DropdownNotification";
 
 export default function RootLayout({ children }: { children: ReactNode }) {
 
@@ -41,7 +42,8 @@ export default function RootLayout({ children }: { children: ReactNode }) {
                   </Breadcrumb>
                 </div>
                 <div className="mr-8">
-                <DropdownNotification />
+                {/* <DropdownNotification /> */}
+                <NotificationDropdown />
                 </div>
               </header>
               {/* <!-- ===== Header End ===== --> */}

@@ -1,4 +1,4 @@
-import {  BellRing, BookMarked, BriefcaseBusiness, FileBadge,  FileText, GraduationCap, Handshake, HeartPulse, Home, Map,  UserCircle, UsersRound, CalendarClock, Users2, Calendar, ClockArrowUp, Hourglass,  FileArchive, BrainCircuit, Settings } from "lucide-react";
+import {  BellRing, BookMarked, BriefcaseBusiness, FileBadge,  FileText, GraduationCap, Handshake, HeartPulse, Home, Map,  UserCircle, UsersRound, CalendarClock, Users2, Calendar, ClockArrowUp, Hourglass,  FileArchive, BrainCircuit, Settings, Building2 } from "lucide-react";
 
 export const sidebarLinks = [
     {
@@ -44,6 +44,11 @@ export const sidebarLinks = [
         title: "Locaties", // "Locations"
         url: "/locations",
         icon: Map,
+    },
+    {
+        title: "Organisations", // "Locations"
+        url: "/organisations",
+        icon: Building2,
     },
     {
         title: "Agenda", // "Calendar" (time-based)

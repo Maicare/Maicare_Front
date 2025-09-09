@@ -86,6 +86,60 @@ export function useLocation({autoFetch=false}:{autoFetch?:boolean}) {
         if (displayProgress) stopProgress();
       }
     }
+    const createOneForOrganisation = async (location: CreateLocation, organisationId: string, options?: ApiOptions) => {
+      const { displayProgress = false, displaySuccess = false } = options || {};
+      try {
+        if (displayProgress) startProgress();
+        const { message, success, data, error } = await useApi<Location>(ApiRoutes.Location.CreateOneForOrganisation.replace("{organisationId}", organisationId), "POST", {}, {...location});
+        if (!data)
+          throw new Error(error || message || "An unknown error occurred");
+  
+        // Display success message
+        if (displaySuccess && success) {
+          enqueueSnackbar("Location created successful!", { variant: "success" });
+        }
+        mutate()
+        return data;
+      } catch (err: any) {
+        enqueueSnackbar(err?.response?.data?.message || "Location creationg failed", { variant: "error" });
+        throw err;
+      } finally {
+        if (displayProgress) stopProgress();
+      }
+    }
+
+    const readAllForOrganisation = async (organisationId: string, options?: ApiOptions) => {
+      const { displayProgress = false, displaySuccess = false } = options || {};
+      try {
+        // Display progress bar
+        if (displayProgress) startProgress();
+        const { message, success, data, error } =
+          await useApi<Location[]>(
+            ApiRoutes.Location.ReadAllForOrganisation.replace("{organisationId}", organisationId),
+            "GET",
+            {}
+          );
+        if (!data)
+          throw new Error(error || message || "An unknown error occurred");
+  
+        // Display success message
+        if (displaySuccess && success) {
+          enqueueSnackbar("Loaction Details fetched successful!", {
+            variant: "success",
+          });
+        }
+        return data;
+      } catch (err: any) {
+        enqueueSnackbar(
+          err?.response?.data?.message || "Loaction Details fetching failed",
+          { variant: "error" }
+        );
+        throw err;
+      } finally {
+        if (displayProgress) stopProgress();
+      }
+    };
+
     const updateOne = async (location: CreateLocation,id:string, options?: ApiOptions) => {
       const { displayProgress = false, displaySuccess = false } = options || {};
       try {
@@ -114,6 +168,8 @@ export function useLocation({autoFetch=false}:{autoFetch?:boolean}) {
     isLoading,
     readOne,
     createOne,
-    updateOne
+    updateOne,
+    createOneForOrganisation,
+    readAllForOrganisation
   };
 }

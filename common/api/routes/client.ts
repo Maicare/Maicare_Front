@@ -9,6 +9,7 @@ const ApiRoutes = {
   StatusHistory: prefix + "/{id}/status_history",
   CreateOne: prefix,
   addresses: prefix + "/{id}/addresses",
+  ReadCounts: prefix + "/counts",///clients/counts
   Appointment: {
     ReadAll: prefix + "/{id}/appointment_cards",
     Download: prefix + "/{id}/appointment_cards/generate_document",
