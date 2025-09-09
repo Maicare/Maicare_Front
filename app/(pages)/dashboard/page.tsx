@@ -474,7 +474,7 @@ export default function AdminDashboard() {
                           {payment.invoice_number}
                         </p>
                         <p className="text-sm text-muted-foreground mt-1">
-                          €{(payment.amount / 100).toFixed(2)} • {new Date(payment.payment_date).toLocaleDateString()}
+                          €{(payment.amount).toFixed(2)} • {new Date(payment.payment_date).toLocaleDateString()}
                         </p>
                       </div>
                     </div>
