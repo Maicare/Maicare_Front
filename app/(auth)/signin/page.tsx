@@ -37,9 +37,9 @@ const SignIn = () => {
         if (response.requires_2fa) {
           setIs2FAEnabled(true);
           setTemp_token(response.temp_token);
+        }else{
+          router.push('/dashboard')
         }
-        router.push('/dashboard')
-
       } catch (error) {
         console.error("Login failed:", error);
       }
@@ -61,7 +61,7 @@ const SignIn = () => {
           displayProgress: true,
           displaySuccess: true,
         });
-        router.push('/dashboard')
+        router.push('/dashboard');
       } catch (error) {
         console.error("2FA verification failed:", error);
       }

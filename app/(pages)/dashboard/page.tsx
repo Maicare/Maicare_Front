@@ -271,7 +271,7 @@ export default function AdminDashboard() {
             </div>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">€<AnimatedCounter value={totalRevenue / 100} /></div>
+            <div className="text-2xl font-bold">€<AnimatedCounter value={totalRevenue} /></div>
             <p className="text-xs text-muted-foreground">
               From {latestPayments?.length || 0} payments
             </p>
@@ -303,7 +303,7 @@ export default function AdminDashboard() {
           <CardContent>
             <div className="text-2xl font-bold"><AnimatedCounter value={pendingInvoices} /></div>
             <p className="text-xs text-muted-foreground">
-              €{(outstandingAmount / 100).toFixed(2)} outstanding
+              €{(outstandingAmount).toFixed(2)} outstanding
             </p>
           </CardContent>
         </Card>
