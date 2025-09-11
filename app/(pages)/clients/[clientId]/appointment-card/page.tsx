@@ -101,13 +101,13 @@ const EmergencyContactPage: FunctionComponent = () => {
         title={`Afsprakenkaart Chrystal voor cliënt ${clientId}`}
         header={
           <div className="flex w-full justify-end gap-2">
-            <PrimaryButton
+           {appointments && <PrimaryButton
               text="Download"
               icon={Download}
               animation="none"
               onClick={handleDownload}
               className="bg-indigo-200 text-indigo-700 hover:text-white hover:bg-indigo-500"
-            />
+            />}
             <Link href={`/clients/${clientId}/appointment-card/edit`}>
               <PrimaryButton
                 text="Bewerken"

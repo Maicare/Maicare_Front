@@ -30,7 +30,7 @@ const ExperiencePreview = ({ employeeId }: Props) => {
                     </Button>
                 </div>
                 <div className="mt-4 w-full h-max border-slate-200 pl-6 p-2 flex flex-col items-center justify-center gap-4 ">
-                    <Image height={200} width={200} src={"/images/no-data.png"} alt='no data found!' />
+                    <Image height={200} width={200} src={"/images/no-data.webp"} alt='no data found!' />
                     <PrimaryButton
                         text='Add Education'
                         animation='animate-bounce'

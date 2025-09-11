@@ -610,7 +610,7 @@ const UpsertClientForm = ({ mode, onCancel, defaultValues, onSuccess }: Props) =
                             <div className="flex items-center justify-between">
                                 <h1 className='text-base font-semibold text-black'>opdrachtgever</h1>
                                 {/* make a sheet for the upsert-contact-form */}
-                                <Sheet open={openContactSheet}>
+                                <Sheet open={openContactSheet} onOpenChange={(b)=>setOpenContactSheet(b)}>
                                     <SheetTrigger asChild>
                                         <PrimaryButton
                                             text="nieuwe opdrachtgever"
@@ -635,6 +635,7 @@ const UpsertClientForm = ({ mode, onCancel, defaultValues, onSuccess }: Props) =
                                             }}
                                             onCancel={() => {
                                                 form.setValue("sender_id", "");
+                                                setOpenContactSheet(false);
                                             }}
                                             sheet={true}
                                         />
