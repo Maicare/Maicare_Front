@@ -51,12 +51,12 @@ const Page = () => {
                     className="bg-indigo-400 text-white"
                 />
             </div>
-            <div className="w-full grid lg:grid-cols-[repeat(4,280px)] grid-cols-[repeat(3,205px)] md:grid-cols-[repeat(4,205px)] justify-between mb-5 ">
+            {/* <div className="w-full grid lg:grid-cols-[repeat(4,280px)] grid-cols-[repeat(3,205px)] md:grid-cols-[repeat(4,205px)] justify-between mb-5 ">
                 <StatisticCard colorKey="teal" icon={BellRing} title="Incidenten" value={500} className='lg:w-[280px] ' />
                 <StatisticCard colorKey="sky" icon={AlarmClock} title="Avg. Resulution Time" value={3} prefix='Days' className='lg:w-[280px] ' />
                 <StatisticCard colorKey="pink" icon={Timer} title="Avg. Response Time" value={4} prefix='Hours' className='lg:w-[280px] ' />
                 <StatisticCard colorKey="orange" icon={TriangleAlert} title="Ovl. Rate" value={8} prefix='%' className='lg:w-[280px] ' />
-            </div>
+            </div> */}
             <div className="grid grid-cols-1 gap-4">
                 {
                     isLoading ?

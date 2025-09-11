@@ -40,7 +40,7 @@ export const CreateClientSchema = z.object({
   work_current_employer: z.string().optional(),
   work_current_position: z.string().optional(),
   work_currently_employed: z.boolean().optional(),
-  work_employer_email: z.string().email("Ongeldig e-mailadres").optional(),
+  work_employer_email: z.string().optional(),
   work_employer_phone: z.string().optional(),
   work_start_date: z.coerce.date().refine(date => !isNaN(date.getTime()),{
     message: "Startdatum werk is vereist", // Invalid date format
@@ -49,7 +49,7 @@ export const CreateClientSchema = z.object({
   education_currently_enrolled: z.boolean().optional(),
   education_institution: z.string().optional(),
   education_level: z.enum(["primary", "secondary", "higher","none"]).optional(),//(education_level IN ('primary', 'secondary', 'higher', 'none')
-  education_mentor_email: z.string().email("Ongeldig e-mailadres").optional(),
+  education_mentor_email: z.string().optional(),
   education_mentor_name: z.string().optional(),
   education_mentor_phone: z.string().optional(),
   living_situation: z.enum(["home", "foster_care", "youth_care_institution", "other"]).optional(),//(living_situation IN ('home', 'foster_care', 'youth_care_institution', 'other')
