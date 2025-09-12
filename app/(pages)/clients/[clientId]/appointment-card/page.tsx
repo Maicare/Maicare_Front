@@ -84,13 +84,16 @@ const EmergencyContactPage: FunctionComponent = () => {
   );
 
   const handleDownload = async () => {
-    const url = await downloadPDF();
-    const link = document.createElement("a");
-    link.href = url.toString();
-    link.download = `appointment_${clientId}.pdf`;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+    const appointment = await downloadPDF();
+    const response = await fetch(appointment?.file_url||"");
+    const blob = await response.blob();
+    const url = window.URL.createObjectURL(blob);
+    const a = window.document.createElement("a");
+    a.href = url;
+    a.download = `${"appointments-card"}.pdf`;
+    window.document.body.appendChild(a);
+    a.click();
+    window.URL.revokeObjectURL(url);
   };
 
   if (!clientId) return null;
@@ -101,7 +104,7 @@ const EmergencyContactPage: FunctionComponent = () => {
         title={`Afsprakenkaart Chrystal voor cliënt ${clientId}`}
         header={
           <div className="flex w-full justify-end gap-2">
-           {appointments && <PrimaryButton
+            {appointments && <PrimaryButton
               text="Download"
               icon={Download}
               animation="none"
@@ -212,6 +215,6 @@ export default withAuth(
   withPermissions(EmergencyContactPage, {
     redirectUrl: Routes.Common.NotFound,
     requiredPermissions: PermissionsObjects.ViewEmployee, // TODO: Add correct permission
-    }),
-    { mode: AUTH_MODE.LOGGED_IN, redirectUrl: Routes.Auth.Login } 
-    );
+  }),
+  { mode: AUTH_MODE.LOGGED_IN, redirectUrl: Routes.Auth.Login }
+);

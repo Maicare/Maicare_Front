@@ -13,5 +13,6 @@ export type Appointment = {
     treatment_agreements: string[],
     updated_at?: string,
     work: string[],
-    youth_officer_agreements: string[]
+    youth_officer_agreements: string[],
+    file_url?: string;
 };
