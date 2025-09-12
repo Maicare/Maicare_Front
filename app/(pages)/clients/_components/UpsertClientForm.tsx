@@ -26,6 +26,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
 import UpsertContactForm from "../../contacts/_components/upsert-contact-form";
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
+import { se } from "date-fns/locale";
 
 type Props = {
     mode: "create" | "update";
@@ -333,8 +334,34 @@ const UpsertClientForm = ({ mode, onCancel, defaultValues, onSuccess }: Props) =
                                     render={({ field }) => {
                                         "use client"
 
+                                        // State for year view and current year page
+                                        const [yearView, setYearView] = useState(false);
+                                        const [currentYearPage, setCurrentYearPage] = useState(0);
+                                        const [calendarDate, setCalendarDate] = useState(field.value || new Date());
 
-                                        const years = Array.from({ length: 124 }, (_, i) => currentYear - 10 - i);
+                                        const currentYear = new Date().getFullYear();
+                                        const oldestYear = 1900;
+
+                                        // Calculate 10 years per page
+                                        const yearsPerPage = 10;
+                                        const totalYears = currentYear - oldestYear + 1;
+                                        const totalPages = Math.ceil(totalYears / yearsPerPage);
+
+                                        // Get years for current page (most recent years first)
+                                        const getCurrentPageYears = () => {
+                                            const startYear = currentYear - (currentYearPage * yearsPerPage);
+                                            const endYear = Math.max(startYear - yearsPerPage + 1, oldestYear);
+
+                                            const years = [];
+                                            for (let year = startYear; year >= endYear; year--) {
+                                                years.push(year);
+                                            }
+                                            return years;
+                                        };
+
+                                        const currentPageYears = getCurrentPageYears();
+                                        const startYear = currentPageYears[currentPageYears.length - 1];
+                                        const endYear = currentPageYears[0];
 
                                         return (
                                             <FormItem className="flex flex-col">
@@ -364,71 +391,85 @@ const UpsertClientForm = ({ mode, onCancel, defaultValues, onSuccess }: Props) =
                                                         </FormControl>
                                                     </PopoverTrigger>
                                                     <PopoverContent className="w-auto p-0 bg-white" align="start">
-                                                        <div className="flex justify-between items-center p-3 border-b">
-                                                            <Button
-                                                                variant="ghost"
-                                                                size="sm"
-                                                                onClick={() => {
-                                                                    if (yearView) {
-                                                                        setCurrentYear(prev => prev - 12);
-                                                                    }
-                                                                }}
-                                                                disabled={yearView && currentYear - 12 < 1900}
-                                                            >
-                                                                <ChevronLeft className="h-4 w-4" />
-                                                            </Button>
+                                                        <div className="relative p-3 border-b">
+                                                            {yearView && (
+                                                                <div className="absolute left-3 top-1/2 -translate-y-1/2">
+                                                                    <Button
+                                                                        variant="ghost"
+                                                                        size="sm"
+                                                                        onClick={() => {
+                                                                            setCurrentYearPage(prev => Math.min(prev + 1, totalPages - 1));
+                                                                        }}
+                                                                        disabled={currentYearPage >= totalPages - 1}
+                                                                    >
+                                                                        <ChevronLeft className="h-4 w-4" />
+                                                                    </Button>
+                                                                </div>
+                                                            )}
 
-                                                            <Button
-                                                                variant="ghost"
-                                                                className="font-medium"
-                                                                onClick={() => setYearView(!yearView)}
-                                                            >
-                                                                {yearView ? (
-                                                                    <span>{currentYear - 10} - {currentYear - 10 + 11}</span>
-                                                                ) : (
-                                                                    <span>
-                                                                        {format(new Date().setMonth(new Date().getMonth()), 'MMMM yyyy')}
-                                                                    </span>
-                                                                )}
-                                                            </Button>
+                                                            <div className="flex justify-center">
+                                                                <Button
+                                                                    variant="ghost"
+                                                                    className="font-medium"
+                                                                    onClick={() => setYearView(!yearView)}
+                                                                >
+                                                                    {yearView ? (
+                                                                        <span>{startYear} - {endYear}</span>
+                                                                    ) : (
+                                                                        <span>
+                                                                            {format(calendarDate, 'yyyy')}
+                                                                        </span>
+                                                                    )}
+                                                                </Button>
+                                                            </div>
 
-                                                            <Button
-                                                                variant="ghost"
-                                                                size="sm"
-                                                                onClick={() => {
-                                                                    if (yearView) {
-                                                                        setCurrentYear(prev => prev + 12);
-                                                                    }
-                                                                }}
-                                                                disabled={yearView && currentYear + 12 > new Date().getFullYear() + 10}
-                                                            >
-                                                                <ChevronRight className="h-4 w-4" />
-                                                            </Button>
+                                                            {yearView && (
+                                                                <div className="absolute right-3 top-1/2 -translate-y-1/2">
+                                                                    <Button
+                                                                        variant="ghost"
+                                                                        size="sm"
+                                                                        onClick={() => setCurrentYearPage(prev => Math.max(prev - 1, 0))}
+                                                                        disabled={currentYearPage <= 0}
+                                                                    >
+                                                                        <ChevronRight className="h-4 w-4" />
+                                                                    </Button>
+                                                                </div>
+                                                            )}
                                                         </div>
 
                                                         {yearView ? (
-                                                            <div className="grid grid-cols-4 gap-2 p-3">
-                                                                {years.map((year) => (
-                                                                    <Button
-                                                                        key={year}
-                                                                        variant="ghost"
-                                                                        className="h-8 w-full text-sm"
-                                                                        onClick={() => {
-                                                                            setYearView(false);
-                                                                            // Set to January 1st of selected year
-                                                                            const newDate = new Date(year, 0, 1);
-                                                                            field.onChange(newDate);
-                                                                        }}
-                                                                    >
-                                                                        {year}
-                                                                    </Button>
-                                                                ))}
+                                                            <div className="p-3">
+                                                                <div className="grid grid-cols-2 gap-2 mb-3">
+                                                                    {currentPageYears.map((year) => (
+                                                                        <Button
+                                                                            key={year}
+                                                                            variant="ghost"
+                                                                            className="h-10 w-full text-sm"
+                                                                            onClick={() => {
+                                                                                setYearView(false);
+                                                                                // Set to January 1st of selected year
+                                                                                const newDate = new Date(year, 0, 1);
+                                                                                field.onChange(newDate);
+                                                                                setCalendarDate(newDate);
+                                                                            }}
+                                                                        >
+                                                                            {year}
+                                                                        </Button>
+                                                                    ))}
+                                                                </div>
+
+                                                                {/* Page indicator */}
+                                                                <div className="text-center text-xs text-muted-foreground">
+                                                                    Page {currentYearPage + 1} of {totalPages}
+                                                                </div>
                                                             </div>
                                                         ) : (
                                                             <Calendar
                                                                 mode="single"
                                                                 selected={field.value}
                                                                 onSelect={field.onChange}
+                                                                month={calendarDate}
+                                                                onMonthChange={setCalendarDate}
                                                                 disabled={(date) =>
                                                                     date > new Date() || date < new Date("1900-01-01")
                                                                 }
