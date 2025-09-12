@@ -17,7 +17,7 @@ import { CreateClientInput, CreateClientSchema, UpdateClientRequestBody } from "
 import { cn } from "@/utils/cn";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { format } from "date-fns";
-import { CalendarIcon, CheckCircle, Info, PlusCircle, XCircle } from "lucide-react";
+import { CalendarIcon, CheckCircle, ChevronLeft, ChevronRight, Info, PlusCircle, XCircle } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import AddressesForm from "./AdressesForm";
@@ -40,6 +40,8 @@ const UpsertClientForm = ({ mode, onCancel, defaultValues, onSuccess }: Props) =
     const { contacts, } = useContact({ autoFetch: true });
     const [loading, setLoading] = useState(false);
     const [openContactSheet, setOpenContactSheet] = useState(false);
+    const [yearView, setYearView] = useState(false);
+    const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
     // 1. Define your form.
 
     const form = useForm<CreateClientInput>({
@@ -328,48 +330,117 @@ const UpsertClientForm = ({ mode, onCancel, defaultValues, onSuccess }: Props) =
                                 <FormField
                                     control={form.control}
                                     name="date_of_birth"
-                                    render={({ field }) => (
-                                        <FormItem className="flex flex-col">
-                                            <FormLabel className='flex items-center justify-between'>
-                                                Date of birth
-                                                <Tooltip text='This is date of birth. '>
-                                                    <Info className='h-5 w-5 mr-2' />
-                                                </Tooltip>
-                                            </FormLabel>
-                                            <Popover>
-                                                <PopoverTrigger asChild>
-                                                    <FormControl>
-                                                        <Button
-                                                            variant={"outline"}
-                                                            className={cn(
-                                                                "w-full pl-3 text-left font-normal",
-                                                                !field.value && "text-muted-foreground"
-                                                            )}
-                                                        >
-                                                            {field.value ? (
-                                                                format(field.value, "PPP")
-                                                            ) : (
-                                                                <span>Pick a date</span>
-                                                            )}
-                                                            <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                                                        </Button>
-                                                    </FormControl>
-                                                </PopoverTrigger>
-                                                <PopoverContent className="w-auto p-0 bg-white" align="start">
-                                                    <Calendar
-                                                        mode="single"
-                                                        selected={field.value}
-                                                        onSelect={field.onChange}
-                                                        disabled={(date) =>
-                                                            date > new Date() || date < new Date("1900-01-01")
-                                                        }
-                                                        initialFocus
-                                                    />
-                                                </PopoverContent>
-                                            </Popover>
-                                            <FormMessage />
-                                        </FormItem>
-                                    )}
+                                    render={({ field }) => {
+                                        "use client"
+
+
+                                        const years = Array.from({ length: 124 }, (_, i) => currentYear - 10 - i);
+
+                                        return (
+                                            <FormItem className="flex flex-col">
+                                                <FormLabel className='flex items-center justify-between'>
+                                                    Date of birth
+                                                    <Tooltip text='This is date of birth.'>
+                                                        <Info className='h-5 w-5 mr-2' />
+                                                    </Tooltip>
+                                                </FormLabel>
+                                                <Popover>
+                                                    <PopoverTrigger asChild>
+                                                        <FormControl>
+                                                            <Button
+                                                                variant={"outline"}
+                                                                className={cn(
+                                                                    "w-full pl-3 text-left font-normal",
+                                                                    !field.value && "text-muted-foreground"
+                                                                )}
+                                                            >
+                                                                {field.value ? (
+                                                                    format(field.value, "PPP")
+                                                                ) : (
+                                                                    <span>Pick a date</span>
+                                                                )}
+                                                                <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                                                            </Button>
+                                                        </FormControl>
+                                                    </PopoverTrigger>
+                                                    <PopoverContent className="w-auto p-0 bg-white" align="start">
+                                                        <div className="flex justify-between items-center p-3 border-b">
+                                                            <Button
+                                                                variant="ghost"
+                                                                size="sm"
+                                                                onClick={() => {
+                                                                    if (yearView) {
+                                                                        setCurrentYear(prev => prev - 12);
+                                                                    }
+                                                                }}
+                                                                disabled={yearView && currentYear - 12 < 1900}
+                                                            >
+                                                                <ChevronLeft className="h-4 w-4" />
+                                                            </Button>
+
+                                                            <Button
+                                                                variant="ghost"
+                                                                className="font-medium"
+                                                                onClick={() => setYearView(!yearView)}
+                                                            >
+                                                                {yearView ? (
+                                                                    <span>{currentYear - 10} - {currentYear - 10 + 11}</span>
+                                                                ) : (
+                                                                    <span>
+                                                                        {format(new Date().setMonth(new Date().getMonth()), 'MMMM yyyy')}
+                                                                    </span>
+                                                                )}
+                                                            </Button>
+
+                                                            <Button
+                                                                variant="ghost"
+                                                                size="sm"
+                                                                onClick={() => {
+                                                                    if (yearView) {
+                                                                        setCurrentYear(prev => prev + 12);
+                                                                    }
+                                                                }}
+                                                                disabled={yearView && currentYear + 12 > new Date().getFullYear() + 10}
+                                                            >
+                                                                <ChevronRight className="h-4 w-4" />
+                                                            </Button>
+                                                        </div>
+
+                                                        {yearView ? (
+                                                            <div className="grid grid-cols-4 gap-2 p-3">
+                                                                {years.map((year) => (
+                                                                    <Button
+                                                                        key={year}
+                                                                        variant="ghost"
+                                                                        className="h-8 w-full text-sm"
+                                                                        onClick={() => {
+                                                                            setYearView(false);
+                                                                            // Set to January 1st of selected year
+                                                                            const newDate = new Date(year, 0, 1);
+                                                                            field.onChange(newDate);
+                                                                        }}
+                                                                    >
+                                                                        {year}
+                                                                    </Button>
+                                                                ))}
+                                                            </div>
+                                                        ) : (
+                                                            <Calendar
+                                                                mode="single"
+                                                                selected={field.value}
+                                                                onSelect={field.onChange}
+                                                                disabled={(date) =>
+                                                                    date > new Date() || date < new Date("1900-01-01")
+                                                                }
+                                                                initialFocus
+                                                            />
+                                                        )}
+                                                    </PopoverContent>
+                                                </Popover>
+                                                <FormMessage />
+                                            </FormItem>
+                                        );
+                                    }}
                                 />
                                 <FormField
                                     control={form.control}
@@ -610,7 +681,7 @@ const UpsertClientForm = ({ mode, onCancel, defaultValues, onSuccess }: Props) =
                             <div className="flex items-center justify-between">
                                 <h1 className='text-base font-semibold text-black'>opdrachtgever</h1>
                                 {/* make a sheet for the upsert-contact-form */}
-                                <Sheet open={openContactSheet} onOpenChange={(b)=>setOpenContactSheet(b)}>
+                                <Sheet open={openContactSheet} onOpenChange={(b) => setOpenContactSheet(b)}>
                                     <SheetTrigger asChild>
                                         <PrimaryButton
                                             text="nieuwe opdrachtgever"
@@ -958,7 +1029,7 @@ const UpsertClientForm = ({ mode, onCancel, defaultValues, onSuccess }: Props) =
                             </div>
                         </div>
                     </div>
-                    
+
                     <div className="grid grid-cols-1 gap-4 h-fit">
                         <div className="flex flex-col gap-4 px-6 py-3 bg-white rounded-md border-2 border-muted h-fit">
                             <h1 className='text-base font-semibold text-black'>Adresgegevens</h1>

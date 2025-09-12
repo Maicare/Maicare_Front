@@ -1,9 +1,8 @@
 "use client";
 import PrimaryButton from '@/common/components/PrimaryButton'
 import { useIncident } from '@/hooks/incident/use-incident';
-import { AlarmClock, ArrowBigLeft, ArrowBigRight, BellRing, PlusCircle, Timer, TriangleAlert } from 'lucide-react'
+import {  ArrowBigLeft, ArrowBigRight, BellRing, PlusCircle,  } from 'lucide-react'
 import { useParams, useRouter } from 'next/navigation';
-import StatisticCard from '@/common/components/StatisticCard';
 import Loader from '@/components/common/loader';
 import LargeErrorMessage from '@/components/common/Alerts/LargeErrorMessage';
 import { DataTable } from '@/components/employee/table/data-table';

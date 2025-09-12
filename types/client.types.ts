@@ -87,6 +87,7 @@ export const initialClientFormValues: ClientFormType = {
 
 export type Client = {
     id: Id;
+    created_at: string;
     first_name: string;
     last_name: string;
     email: string;

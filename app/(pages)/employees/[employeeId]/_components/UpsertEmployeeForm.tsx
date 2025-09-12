@@ -47,7 +47,6 @@ const UpsertEmployeeForm = ({mode,onSuccess,defaultValues,onCancel}:Props) => {
             employment_number: '',
             location_id: '',
             is_subcontractor: false,
-            out_of_service: false,
             first_name: '',
             last_name: '',
             date_of_birth: new Date(),
@@ -225,29 +224,6 @@ const UpsertEmployeeForm = ({mode,onSuccess,defaultValues,onCancel}:Props) => {
                                     )}
                                 />
                             </div>
-                            <FormField
-                                control={form.control}
-                                name="out_of_service"
-                                render={({ field }) => (
-                                    <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4 shadow">
-                                        <FormControl>
-                                            <Checkbox
-                                                checked={field.value}
-                                                onCheckedChange={field.onChange}
-                                                className=''
-                                            />
-                                        </FormControl>
-                                        <div className="space-y-1 leading-none">
-                                            <FormLabel>
-                                                Uit Dienst
-                                            </FormLabel>
-                                            <FormDescription>
-                                                An Out of service is a person No longer operational or available for use.
-                                            </FormDescription>
-                                        </div>
-                                    </FormItem>
-                                )}
-                            />
                             <FormField
                                 control={form.control}
                                 name="is_subcontractor"

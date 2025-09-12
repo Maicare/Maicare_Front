@@ -7,6 +7,7 @@ import Image from 'next/image';
 import PrimaryButton from '@/common/components/PrimaryButton';
 import { cn } from '@/utils/cn';
 import {  formatDateToDutch } from '@/utils/timeFormatting';
+import { useRouter } from 'next/navigation';
 
 type Props = {
     employeeId: string;
@@ -14,6 +15,7 @@ type Props = {
 
 const ExperiencePreview = ({ employeeId }: Props) => {
     const { isLoading, experiences } = useExperience({ autoFetch: true, employeeId });
+    const router = useRouter(); 
     if (isLoading) {
         return (
             <PreviewLoader />
@@ -24,7 +26,7 @@ const ExperiencePreview = ({ employeeId }: Props) => {
             <div className="w-[32%] h-[287px] rounded-sm shadow-md p-4 bg-white">
                 <div className="flex justify-between items-center">
                     <h1 className='flex items-center gap-2 m-0 p-0 font-extrabold text-lg text-slate-600'><BriefcaseBusiness size={18} className='text-indigo-400' /> Werkervaring</h1>
-                    <Button className='bg-indigo-400 text-white text-xs py-1 px-2 rounded-md flex items-center gap-2 '>
+                    <Button className='bg-indigo-400 text-white text-xs py-1 px-2 rounded-md flex items-center gap-2 ' onClick={() => router.push(`/employees/${employeeId}/experience`)}>
                         <span>View All</span>
                         <ArrowRight size={15} className='arrow-animation' />
                     </Button>
@@ -32,10 +34,10 @@ const ExperiencePreview = ({ employeeId }: Props) => {
                 <div className="mt-4 w-full h-max border-slate-200 pl-6 p-2 flex flex-col items-center justify-center gap-4 ">
                     <Image height={200} width={200} src={"/images/no-data.webp"} alt='no data found!' />
                     <PrimaryButton
-                        text='Add Education'
+                        text='Add Experience'
                         animation='animate-bounce'
                         icon={PlusCircle}
-
+                        onClick={() => router.push(`/employees/${employeeId}/experience`)}
                     />
                 </div>
             </div>
@@ -45,7 +47,7 @@ const ExperiencePreview = ({ employeeId }: Props) => {
         <div className="w-[32%] h-[287px] rounded-sm shadow-md p-4 bg-white">
             <div className="flex justify-between items-center">
                 <h1 className='flex items-center gap-2 m-0 p-0 font-extrabold text-lg text-slate-600'><BriefcaseBusiness size={18} className='text-indigo-400' />Experiences</h1>
-                <Button className='bg-indigo-400 text-white text-xs py-1 px-2 rounded-md flex items-center gap-2 '>
+                <Button className='bg-indigo-400 text-white text-xs py-1 px-2 rounded-md flex items-center gap-2 ' onClick={() => router.push(`/employees/${employeeId}/experience`)}>
                     <span>View All</span>
                     <ArrowRight size={15} className='arrow-animation' />
                 </Button>

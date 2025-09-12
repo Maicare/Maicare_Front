@@ -6,7 +6,6 @@ import {
   Mail,
   Globe,
   Users,
-  Edit,
   Plus,
   Trash2,
   ChevronRight,

@@ -44,7 +44,7 @@ export const employeeSchema = z.object({
   work_phone_number: z.string().min(1, "Werk telefoonnummer is vereist"), // Required string
   private_phone_number: z.string().min(1, "Privé telefoonnummer is vereist"), // Required string
   home_telephone_number: z.string().min(1, "Thuis telefoonnummer is vereist"), // Required string
-  out_of_service: z.boolean(), // Required boolean
+  out_of_service: z.boolean().optional(), // Required boolean
 });
 
 // Infer the type from the schema (optional, for TypeScript)
@@ -88,25 +88,14 @@ export const createEmployeeContractSchema = z.object({
     .transform((val) => new Date(val).toISOString()),
     
   contract_type: z.enum(contractTypes),
+
+  contract_rate: z.number().optional(),
   
   fixed_contract_hours: z.number()
     .int()
     .nonnegative()
     .max(168, "Cannot exceed 168 hours per week"),
     
-  variable_contract_hours: z.number()
-    .int()
-    .nonnegative()
-    .max(60, "Variable hours cannot exceed 60 hours per week"),
-}).superRefine((data, ctx) => {
-  const totalHours = data.fixed_contract_hours + data.variable_contract_hours;
-  if (totalHours > 168) {
-    ctx.addIssue({
-      code: z.ZodIssueCode.custom,
-      message: "Total hours cannot exceed 168 hours per week",
-      path: ["variable_contract_hours"],
-    });
-  }
 });
 export type CreateContractInput = z.infer<typeof createEmployeeContractSchema>;
 export interface EmployeeContract {
@@ -114,6 +103,8 @@ export interface EmployeeContract {
   contract_start_date: string;
   contract_type:   'loondienst'| 'ZZP';
   fixed_contract_hours: number;
+  contract_hours: number;
   id: number;
   variable_contract_hours: number;
+  is_subcontractor: boolean;
 }

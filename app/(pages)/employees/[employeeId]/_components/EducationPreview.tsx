@@ -7,6 +7,7 @@ import Image from 'next/image';
 import PrimaryButton from '@/common/components/PrimaryButton';
 import { cn } from '@/utils/cn';
 import {  formatDateToDutch } from '@/utils/timeFormatting';
+import { useRouter } from 'next/navigation';
 
 type Props = {
     employeeId: string;
@@ -14,6 +15,7 @@ type Props = {
 
 const EducationPreview = ({ employeeId }: Props) => {
     const { educations, isLoading } = useEducation({ autoFetch: true, employeeId });
+    const router = useRouter();
     if (isLoading) {
         return (
             <PreviewLoader />
@@ -24,7 +26,7 @@ const EducationPreview = ({ employeeId }: Props) => {
             <div className="w-[32%] h-[287px] rounded-sm shadow-md p-4 bg-white">
                 <div className="flex justify-between items-center">
                     <h1 className='flex items-center gap-2 m-0 p-0 font-extrabold text-lg text-slate-600'><GraduationCap size={18} className='text-indigo-400' /> Opleidingen</h1>
-                    <Button className='bg-indigo-400 text-white text-xs py-1 px-2 rounded-md flex items-center gap-2 '>
+                    <Button className='bg-indigo-400 text-white text-xs py-1 px-2 rounded-md flex items-center gap-2 ' onClick={() => router.push(`/employees/${employeeId}/education`)}>
                         <span>View All</span>
                         <ArrowRight size={15} className='arrow-animation' />
                     </Button>
@@ -35,7 +37,7 @@ const EducationPreview = ({ employeeId }: Props) => {
                         text='Add Education'
                         animation='animate-bounce'
                         icon={PlusCircle}
-
+                        onClick={() => router.push(`/employees/${employeeId}/education`)}
                     />
                 </div>
             </div>
@@ -47,7 +49,7 @@ const EducationPreview = ({ employeeId }: Props) => {
                 <h1 className='flex items-center gap-2 m-0 p-0 font-extrabold text-lg text-slate-600'>
                     <GraduationCap size={18} className='text-indigo-400' />  Education
                 </h1>
-                <Button className='bg-indigo-400 text-white text-xs py-1 px-2 rounded-md flex items-center gap-2 '>
+                <Button className='bg-indigo-400 text-white text-xs py-1 px-2 rounded-md flex items-center gap-2 ' onClick={() => router.push(`/employees/${employeeId}/education`)}>
                     <span>View All</span>
                     <ArrowRight size={15} className='arrow-animation' />
                 </Button>
