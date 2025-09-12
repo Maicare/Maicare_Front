@@ -2,9 +2,9 @@
 
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { 
-  User, MapPin, Calendar, 
-   FileText ,  
+import {
+  User, MapPin, Calendar,
+  FileText,
   Eye,
   Edit,
   Trash2
@@ -17,10 +17,10 @@ import { Any } from "@/common/types/types"
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
 export type Payment = {
-    id: string
-    amount: number
-    status: "pending" | "processing" | "success" | "failed"
-    email: string
+  id: string
+  amount: number
+  status: "pending" | "processing" | "success" | "failed"
+  email: string
 }
 
 
@@ -32,12 +32,12 @@ export const columns: ColumnDef<Client>[] = [
     cell: ({ row }) => {
       const client = row.original;
       const fullName = `${client.first_name} ${client.infix || ''} ${client.last_name}`.trim();
-      
+
       return (
         <div className="flex items-center gap-3">
           {client.profile_picture ? (
-            <img 
-              src={client.profile_picture} 
+            <img
+              src={client.profile_picture}
               alt={fullName}
               className="h-10 w-10 rounded-full object-cover"
             />
@@ -61,23 +61,23 @@ export const columns: ColumnDef<Client>[] = [
     header: "Age / Gender",
     cell: ({ row }) => {
       const client = row.original;
-      
+
       // Calculate age from date_of_birth
       const calculateAge = (birthDate: string) => {
         const today = new Date();
         const birth = new Date(birthDate);
         let age = today.getFullYear() - birth.getFullYear();
         const monthDiff = today.getMonth() - birth.getMonth();
-        
+
         if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birth.getDate())) {
           age--;
         }
-        
+
         return age;
       };
-      
+
       const age = client.date_of_birth ? calculateAge(client.date_of_birth) : 'N/A';
-      
+
       return (
         <div className="flex flex-col">
           <span className="font-medium text-gray-900">{age} years</span>
@@ -90,7 +90,7 @@ export const columns: ColumnDef<Client>[] = [
     accessorKey: "filenumber",
     header: () => (
       <div className="flex items-center gap-2">
-        <FileText className="h-4 w-4 text-cyan-500" />
+        {/* <FileText className="h-4 w-4 text-cyan-500" /> */}
         <span>File Number</span>
       </div>
     ),
@@ -108,7 +108,7 @@ export const columns: ColumnDef<Client>[] = [
     header: "Status",
     cell: ({ row }) => {
       const status = row.getValue("status") as string;
-      
+
       const statusVariants: Record<string, string> = {
         active: "bg-green-100 text-green-800 border-green-200",
         inactive: "bg-gray-100 text-gray-800 border-gray-200",
@@ -116,9 +116,9 @@ export const columns: ColumnDef<Client>[] = [
         terminated: "bg-red-100 text-red-800 border-red-200",
         completed: "bg-blue-100 text-blue-800 border-blue-200",
       };
-      
+
       const statusClass = statusVariants[status?.toLowerCase()] || statusVariants.inactive;
-      
+
       return (
         <Badge variant="outline" className={`capitalize ${statusClass}`}>
           {status || "inactive"}
@@ -130,7 +130,7 @@ export const columns: ColumnDef<Client>[] = [
     id: "location",
     header: () => (
       <div className="flex items-center gap-2">
-        <MapPin className="h-4 w-4 text-red-500" />
+        {/* <MapPin className="h-4 w-4 text-red-500" /> */}
         <span>Location</span>
       </div>
     ),
@@ -148,14 +148,14 @@ export const columns: ColumnDef<Client>[] = [
     id: "intake_date",
     header: () => (
       <div className="flex items-center gap-2">
-        <Calendar className="h-4 w-4 text-amber-500" />
+        {/* <Calendar className="h-4 w-4 text-amber-500" /> */}
         <span>Intake Date</span>
       </div>
     ),
     cell: ({ row }) => {
       const client = row.original;
       const intakeDate = (client as Any).intake_date || client.created_at;
-      
+
       return (
         <div className="text-gray-700">
           {intakeDate ? new Date(intakeDate).toLocaleDateString() : "N/A"}
@@ -165,29 +165,30 @@ export const columns: ColumnDef<Client>[] = [
   },
   {
     id: "actions",
+    header: "Actions",
     cell: ({ row }) => {
       const client = row.original;
-      
+
       return (
         <div className="flex items-center gap-2">
-          <Button 
-            variant="outline" 
+          <Button
+            variant="outline"
             size="icon"
             className="h-8 w-8 text-blue-600 hover:text-blue-800 hover:bg-blue-50"
             onClick={() => console.log("View client:", client)}
           >
             <Eye className="h-4 w-4" />
           </Button>
-          <Button 
-            variant="outline" 
+          <Button
+            variant="outline"
             size="icon"
             className="h-8 w-8 text-green-600 hover:text-green-800 hover:bg-green-50"
             onClick={() => console.log("Edit client:", client)}
           >
             <Edit className="h-4 w-4" />
           </Button>
-          <Button 
-            variant="outline" 
+          <Button
+            variant="outline"
             size="icon"
             className="h-8 w-8 text-red-600 hover:text-red-800 hover:bg-red-50"
             onClick={() => console.log("Delete client:", client)}

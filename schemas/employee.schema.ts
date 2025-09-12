@@ -3,23 +3,23 @@ import { z } from "zod";
 import * as Yup from 'yup';
 
 export const employeeOldSchema = Yup.object().shape({
-    // id: Yup.number(),
-    employee_number: Yup.string().required("Medewerkernummer Vereist"),
-    employment_number: Yup.string().required("Dienstnummer Vereist"),
-    is_subcontractor: Yup.boolean(),
-    location_id: Yup.string().required("ALLO"),
-    role_id: Yup.string(),
-    first_name: Yup.string().required("Geef alstublieft de voornaam op"),
-    last_name: Yup.string().required("Geef alstublieft de achternaam op"),
-    date_of_birth: Yup.string().required("Geef alstublieft de geboortedatum op"),
-    gender: Yup.string().required("Geef alstublieft het geslacht op"),
-    email: Yup.string().email().required("Geef alstublieft het e-mailadres op"),
-    private_email_address: Yup.string(),
-    authentication_phone_number: Yup.string(),
-    work_phone_number: Yup.string(),
-    private_phone_number: Yup.string(),
-    home_telephone_number: Yup.string(),
-    out_of_service: Yup.boolean().default(false),
+  // id: Yup.number(),
+  employee_number: Yup.string().required("Medewerkernummer Vereist"),
+  employment_number: Yup.string().required("Dienstnummer Vereist"),
+  is_subcontractor: Yup.boolean(),
+  location_id: Yup.string().required("ALLO"),
+  role_id: Yup.string(),
+  first_name: Yup.string().required("Geef alstublieft de voornaam op"),
+  last_name: Yup.string().required("Geef alstublieft de achternaam op"),
+  date_of_birth: Yup.string().required("Geef alstublieft de geboortedatum op"),
+  gender: Yup.string().required("Geef alstublieft het geslacht op"),
+  email: Yup.string().email().required("Geef alstublieft het e-mailadres op"),
+  private_email_address: Yup.string(),
+  authentication_phone_number: Yup.string(),
+  work_phone_number: Yup.string(),
+  private_phone_number: Yup.string(),
+  home_telephone_number: Yup.string(),
+  out_of_service: Yup.boolean().default(false),
 });
 
 // Define the schema
@@ -31,9 +31,9 @@ export const employeeSchema = z.object({
   role_id: z.string().min(1, "Rol is vereist"), // Required string
   first_name: z.string().min(1, "Voornaam is vereist"), // Required string
   last_name: z.string().min(1, "Achternaam is vereist"), // Required string
-  date_of_birth: z.coerce.date().refine(date => !isNaN(date.getTime()),{
-      message: "Geboortedatum is vereist", // Invalid date format
-    }),
+  date_of_birth: z.coerce.date().refine(date => !isNaN(date.getTime()), {
+    message: "Geboortedatum is vereist", // Invalid date format
+  }),
   gender: z.string().min(1, "Geslacht is vereist"), // Required string
   email: z
     .string()
@@ -49,21 +49,21 @@ export const employeeSchema = z.object({
 
 // Infer the type from the schema (optional, for TypeScript)
 export type CreateEmployee = z.infer<typeof employeeSchema>;
-export type CreateEmployeeRequestBody = Omit<CreateEmployee,"role_id"|"location_id"|"date_of_birth"> & {
-    role_id:number;
-    location_id:number;
-    date_of_birth:string;
-    department:null;
-    position:null;
-    id?:Id;
+export type CreateEmployeeRequestBody = Omit<CreateEmployee, "role_id" | "location_id" | "date_of_birth"> & {
+  role_id: number;
+  location_id: number;
+  date_of_birth: string;
+  department: null;
+  position: null;
+  id?: Id;
 }
-export type UpdateEmployeeRequestBody = Omit<CreateEmployee,"role_id"|"location_id"|"date_of_birth"> & {
-    role_id:number;
-    location_id:number;
-    date_of_birth:string;
-    department:null;
-    position:null;
-    id:Id;
+export type UpdateEmployeeRequestBody = Omit<CreateEmployee, "role_id" | "location_id" | "date_of_birth"> & {
+  role_id: number;
+  location_id: number;
+  date_of_birth: string;
+  department: null;
+  position: null;
+  id: Id;
 }
 
 // employee contract 
@@ -80,31 +80,27 @@ export const createEmployeeContractSchema = z.object({
       message: "Invalid start date format",
     })
     .transform((val) => new Date(val).toISOString()),
-    
+
   contract_end_date: z.string()
     .refine((val) => !isNaN(Date.parse(val)), {
       message: "Invalid end date format",
     })
     .transform((val) => new Date(val).toISOString()),
-    
+
   contract_type: z.enum(contractTypes),
 
   contract_rate: z.number().optional(),
-  
-  fixed_contract_hours: z.number()
-    .int()
-    .nonnegative()
-    .max(168, "Cannot exceed 168 hours per week"),
-    
+
+  contract_hours: z.number().min(0, "Contract hours must be a non-negative number"),
+
 });
 export type CreateContractInput = z.infer<typeof createEmployeeContractSchema>;
 export interface EmployeeContract {
   contract_end_date: string;
+  contract_rate?: number;
   contract_start_date: string;
-  contract_type:   'loondienst'| 'ZZP';
-  fixed_contract_hours: number;
+  contract_type: 'loondienst' | 'ZZP';
   contract_hours: number;
-  id: number;
-  variable_contract_hours: number;
   is_subcontractor: boolean;
+  id: number;
 }

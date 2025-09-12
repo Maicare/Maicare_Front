@@ -21,6 +21,7 @@ import { useMutation } from "@/common/hooks/use-mutate";
 import { AxiosError } from "axios";
 import { useRouter } from "next/navigation";
 import { CreateContractInput, CreateEmployeeRequestBody, EmployeeContract, UpdateEmployeeRequestBody } from "@/schemas/employee.schema";
+import { is } from "date-fns/locale";
 
 export function useEmployee({
   search,
@@ -336,6 +337,42 @@ export function useEmployee({
       throw err;
     }
   };
+  const updateEmployeeIsSubcontractor = async (
+    isSubcontractor: boolean,
+    employeeId: number,
+    options?: ApiOptions
+  ) => {
+    const { displayProgress = false, displaySuccess = false } = options || {};
+    try {
+      if (displayProgress) startProgress();
+      const response = await useApi(
+        ApiRoutes.Employee.Contract.UpdateIsSubcontractor.replace("{id}", employeeId.toString()),
+        "PUT",
+        {},
+        { is_subcontractor: isSubcontractor }
+      );
+      if (!response.data) {
+        throw new Error("Failed to update is subcontractor");
+      }
+      if (displaySuccess && response.success) {
+        enqueueSnackbar("Is Subcontractor update successful!", { variant: "success" });
+      }
+      mutate()
+      return response.data;
+    } catch (err: any) {
+      enqueueSnackbar(
+        err?.response?.data?.message || "Failed to update is subcontractor",
+        { variant: "error" }
+      );
+      throw err;
+    } finally {
+      if (displayProgress) stopProgress();
+    }
+  };
+
+
+
+
   const updateEmployeeContract = async (
     contract: CreateContractInput,
     employeeId: number,
@@ -436,6 +473,7 @@ export function useEmployee({
     updateOne,
     updateEmployeeContract,
     readEmployeeContract,
+    updateEmployeeIsSubcontractor,
     mutate
   };
 }

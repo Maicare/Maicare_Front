@@ -41,8 +41,7 @@ export function EmployeeContractForm({
     const form = useForm<EmployeeContract>({
         resolver: zodResolver(createEmployeeContractSchema),
         defaultValues: {
-            fixed_contract_hours: 0,
-            variable_contract_hours: 0,
+
             ...defaultValues,
         },
     });
@@ -110,7 +109,7 @@ export function EmployeeContractForm({
                                         <Calendar
                                             mode="single"
                                             selected={new Date(field.value)}
-                                            onSelect={(date)=>field.onChange(date?.toISOString())}
+                                            onSelect={(date) => field.onChange(date?.toISOString())}
                                             disabled={(date) => date < new Date()}
                                             initialFocus
                                         />
@@ -151,7 +150,7 @@ export function EmployeeContractForm({
                                         <Calendar
                                             mode="single"
                                             selected={new Date(field.value)}
-                                            onSelect={(date)=>field.onChange(date?.toISOString())}
+                                            onSelect={(date) => field.onChange(date?.toISOString())}
                                             disabled={(date) => {
                                                 const startDate = form.getValues("contract_start_date");
                                                 return date < (startDate || new Date());
@@ -167,13 +166,13 @@ export function EmployeeContractForm({
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    {/* Fixed Hours */}
+                    {/* Contract Hours */}
                     <FormField
                         control={form.control}
-                        name="fixed_contract_hours"
+                        name="contract_hours"
                         render={({ field }) => (
                             <FormItem>
-                                <FormLabel>Fixed Hours (weekly)</FormLabel>
+                                <FormLabel>Contract Hours</FormLabel>
                                 <FormControl>
                                     <Input
                                         type="number"
@@ -182,7 +181,7 @@ export function EmployeeContractForm({
                                         {...field}
                                         onChange={(e) => {
                                             field.onChange(e.target.valueAsNumber);
-                                            form.trigger("variable_contract_hours");
+                                            form.trigger("contract_hours");
                                         }}
                                     />
                                 </FormControl>
@@ -191,24 +190,30 @@ export function EmployeeContractForm({
                         )}
                     />
 
-                    {/* Variable Hours */}
+                    {/* Contract Rate */}
                     <FormField
                         control={form.control}
-                        name="variable_contract_hours"
+                        name="contract_rate"
                         render={({ field }) => (
                             <FormItem>
-                                <FormLabel>Variable Hours (weekly)</FormLabel>
+                                <FormLabel>Contract Rate</FormLabel>
                                 <FormControl>
-                                    <Input
-                                        type="number"
-                                        min={0}
-                                        max={60}
-                                        {...field}
-                                        onChange={(e) => {
-                                            field.onChange(e.target.valueAsNumber);
-                                            form.trigger("fixed_contract_hours");
-                                        }}
-                                    />
+                                    <div className="flex items-center">
+                                        <Input
+                                            type="number"
+                                            min={0}
+                                            max={60}
+                                            {...field}
+                                            onChange={(e) => {
+                                                field.onChange(e.target.valueAsNumber);
+                                                form.trigger("contract_rate");
+                                            }}
+                                            className="flex-1"
+                                        />
+                                        <span className="ml-3 text-sm text-muted-foreground" aria-hidden>
+                                            € / hr
+                                        </span>
+                                    </div>
                                 </FormControl>
                                 <FormMessage />
                             </FormItem>
@@ -217,12 +222,12 @@ export function EmployeeContractForm({
                 </div>
 
                 <div className="grid grid-cols-2 w-full gap-6">
-                <Button type="submit" className="w-full bg-indigo-400 hover:bg-indigo-800 text-white">
-                    Submit Contract
-                </Button>
-                <Button type="button" className="w-full bg-red-400 hover:bg-red-600 text-white" onClick={() => toggleEdit()}>
-                    Cancel
-                </Button>
+                    <Button type="submit" className="w-full bg-indigo-400 hover:bg-indigo-800 text-white">
+                        Submit Contract
+                    </Button>
+                    <Button type="button" className="w-full bg-red-400 hover:bg-red-600 text-white" onClick={() => toggleEdit()}>
+                        Cancel
+                    </Button>
                 </div>
             </form>
         </Form>

@@ -23,7 +23,7 @@ import PrimaryButton from "@/common/components/PrimaryButton";
 
 const Page = () => {
   const { employeeId } = useParams();
-  const { readEmployeeContract, updateEmployeeContract } = useEmployee({ autoFetch: false });
+  const { readEmployeeContract, updateEmployeeContract, updateEmployeeIsSubcontractor } = useEmployee({ autoFetch: false });
   const [employeeContract, setEmployeeContract] = useState<EmployeeContract | undefined>(undefined);
   const [isLoading, setIsLoading] = useState(true);
   const [refetch, setRefetcg] = useState(false);
@@ -72,12 +72,12 @@ const Page = () => {
     const updatedContract = { ...employeeContract, is_subcontractor: checked };
     setEmployeeContract(updatedContract);
     try {
-      updateEmployeeContract(updatedContract, +employeeId!, { displayProgress: true, displaySuccess: true });
+      updateEmployeeIsSubcontractor(checked, +employeeId!, { displayProgress: false, displaySuccess: false });
     } catch (error) {
       console.error(error);
     }
   }
-  
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-4 md:p-8">
       <div className="max-w-4xl mx-auto">
@@ -218,13 +218,25 @@ const Page = () => {
                 </div>
 
                 <div className="p-4 bg-white rounded-lg border border-gray-200 shadow-sm">
-                  <h3 className="font-semibold text-gray-700 mb-3">Summary</h3>
-                  <p className="text-gray-600 text-sm">
-                    This contract is for a {employeeContract.is_subcontractor ? 'subcontractor' : 'regular employee'}
-                    with a {employeeContract.contract_type} agreement. The {employeeContract.is_subcontractor ? 'subcontractor' : 'employee'}
-                    is expected to work {employeeContract.fixed_contract_hours || employeeContract.variable_contract_hours} hours per week
-                    {employeeContract.variable_contract_hours > 0 ? ' with variable scheduling' : ' with fixed hours'}.
-                  </p>
+                  <h3 className="font-semibold text-gray-700 mb-3 flex items-center gap-2">
+                    <span className="h-5 w-5 text-blue-600 flex items-center justify-center text-lg">€</span>
+                    Contract Rate
+                  </h3>
+                  <div className="p-3 bg-blue-50 rounded-md">
+                    <div className="flex justify-between items-center">
+                      <span className="text-gray-700">Rate:</span>
+                      <Badge
+                        variant="outline"
+                        className={
+                          employeeContract.contract_type === 'loondienst'
+                            ? "bg-blue-100 text-blue-800 border-blue-300"
+                            : "bg-orange-100 text-orange-800 border-orange-300"
+                        }
+                      >
+                        {employeeContract.contract_rate != null ? `€${employeeContract.contract_rate}/hour` : 'N/A'}
+                      </Badge>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
