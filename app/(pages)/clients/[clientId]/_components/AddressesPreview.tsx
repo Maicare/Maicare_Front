@@ -52,7 +52,7 @@ const AddressesPreview = ({ isParentLoading }: Props) => {
             text='Add Addresses'
             animation='animate-bounce'
             icon={Edit}
-
+            
           />
         </div>
       </div>

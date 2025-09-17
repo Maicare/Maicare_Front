@@ -7,6 +7,7 @@ import { ContactPreviewLoader } from './ContactPreviewLoader'
 import Image from 'next/image'
 import PrimaryButton from '@/common/components/PrimaryButton'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 
 type Props = {
     clientId: string;
@@ -15,7 +16,7 @@ type Props = {
 
 const ContactPreview = ({ clientId, isParentLoading }: Props) => {
     const { emergencyContacts, isLoading } = useEmergencyContact({ clientId: clientId })
-
+    const router = useRouter();
     if (isLoading || isParentLoading) {
         return (
             <ContactPreviewLoader />
@@ -39,7 +40,7 @@ const ContactPreview = ({ clientId, isParentLoading }: Props) => {
                         text='Add Contact'
                         animation='animate-bounce'
                         icon={PlusCircle}
-
+                        onClick={()=>router.push(`/clients/${clientId}/client-network/emergency`)}
                     />
                 </div>
             </div>

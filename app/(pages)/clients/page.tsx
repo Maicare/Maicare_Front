@@ -60,8 +60,8 @@ function Page() {
     }, []);
 
     const handleRowClick = (employeeRow: Row<Client>) => {
-        const employee = employeeRow.original;
-        router.push(`/clients/${employee.id}/overview`);
+        // const employee = employeeRow.original;
+        // router.push(`/clients/${employee.id}/overview`);
     };
 
     const handlePrevious = () => {

@@ -3,6 +3,8 @@ import { ArrowRight } from 'lucide-react'
 import Image from 'next/image'
 import React from 'react'
 import ProfileInformationSkeleton from './ProfileInformationSkeleton'
+import { UpdateStatusButton } from './UpdateStatusButton'
+import { useParams } from 'next/navigation'
 
 type Props = {
     profile_picture:string;
@@ -15,7 +17,7 @@ type Props = {
 }
 
 const ProfileInformation = ({date_of_birth,first_name,gender,last_name,profile_picture,isParentLoading,status}:Props) => {
-
+    const {clientId} = useParams();
     if (isParentLoading) {
         return (
             <ProfileInformationSkeleton />
@@ -52,10 +54,7 @@ const ProfileInformation = ({date_of_birth,first_name,gender,last_name,profile_p
                             <p className="text-sm font-medium">{gender}</p>
                         </div>
                     </div>
-                    <button className='flex items-center justify-center gap-2 bg-indigo-400 text-white rounded-md py-2 text-sm w-[50%]'>
-                        <span>View Details</span>
-                        <ArrowRight size={15} className='arrow-animation' />
-                    </button>
+                    <UpdateStatusButton onConfirm={()=>{}} clientId={clientId as string} status={status} />
                 </div>
             </div>
         </div>
