@@ -18,7 +18,7 @@ const Page = () => {
     const { clientId } = useParams();
 
     const onSuccess = (id: number) => {
-        router.push(`/client/${id}`)
+        router.push(`/clients/${id}/overview`)
     }
     const onCancel = () => {
         router.back();

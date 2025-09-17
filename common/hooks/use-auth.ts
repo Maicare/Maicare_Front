@@ -10,8 +10,12 @@ import { ApiOptions } from "../types/api.types";
 
 
 export function useAuth({autoFetch=true}:{autoFetch?:boolean}) {
-  const { data: user, error, mutate, } = useSWR<Employee | null>(
-    autoFetch ? ApiRoutes.Employee.Profile : null, // Endpoint to fetch Employee details
+  const accessToken =
+    typeof window !== "undefined" ? localStorage.getItem("accessToken") : null;
+
+  const shouldFetch = autoFetch && !!accessToken;
+  const { data: user, error, mutate,isLoading } = useSWR<Employee | null>(
+    shouldFetch ? ApiRoutes.Employee.Profile : null, // Endpoint to fetch Employee details
     async (url) => {
       if (!url) {
         return null;
@@ -28,7 +32,7 @@ export function useAuth({autoFetch=true}:{autoFetch?:boolean}) {
   const { enqueueSnackbar } = useSnackbar();
   const { start: startProgress, stop: stopProgress } = useProgressBar();
 
-  const isLoading = !user && !error;
+  // const isLoading = !user && !error;
 
   const login = async (credentials: LoginInput, options?: ApiOptions) => {
     const { displayProgress = false, displaySuccess = false } = options || {};
@@ -47,7 +51,7 @@ export function useAuth({autoFetch=true}:{autoFetch?:boolean}) {
       }
 
       // Update user data in SWR cache
-      mutate(user);
+      mutate();
       // Display success message
       if (displaySuccess && success) {
         enqueueSnackbar("Login successful!", { variant: "success" });

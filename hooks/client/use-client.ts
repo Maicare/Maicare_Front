@@ -114,7 +114,7 @@ export function useClient({
     try {
       if (displayProgress) startProgress();
       const response = await useApi<Client>(
-        ApiRoutes.Client.ReadOne.replace("{id}", id.toString()),
+        ApiRoutes.Client.UpdateOne.replace("{id}", id.toString()),
         "PUT",
         {},
         data
@@ -137,8 +137,39 @@ export function useClient({
     }
   };
 
+  const deleteOne = async (id: string, options?: ApiOptions) => {
+    const { displayProgress = false, displaySuccess = false } = options || {};
+    try {
+      if (displayProgress) startProgress();
+      const response = await useApi<Client>(
+        ApiRoutes.Client.DeleteOne.replace("{id}", id.toString()),
+        "PUT",
+        {},
+        {}
+      );
+      if (!response.data) {
+        throw new Error("Failed to delete client");
+      }
+      if (displaySuccess && response.success) {
+        enqueueSnackbar("Client deleted successful!", { variant: "success" });
+      }
+      return response.data;
+    } catch (err: any) {
+      enqueueSnackbar(
+        err?.response?.data?.message || "Failed to delete client",
+        { variant: "error" }
+      );
+      throw err;
+    } finally {
+      if (displayProgress) stopProgress();
+    }
+  }
+
   const updateStatus = async (id: string, data: DepartureEntries, options?: ApiOptions) => {
     const { displayProgress = false, displaySuccess = false } = options || {};
+    if (data.schedueled_for){
+      data.schedueled_for = data.schedueled_for + ":00.161Z";
+    }
     try {
       if (displayProgress) startProgress();
       const response = await useApi<Client>(
@@ -296,6 +327,7 @@ export function useClient({
     updateStatus,
     getStatusHistory,
     updateOne,
-    readClientCounts
+    readClientCounts,
+    deleteOne
   };
 }

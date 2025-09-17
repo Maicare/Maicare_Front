@@ -25,15 +25,16 @@ const withAuth = (Component: React.ComponentType<Props>, options: WithAuthOption
     // State to manage redirection check
     const [isAllowed, setIsAllowed] = useState(false);
     const router = useRouter();
-    const { user,isLoading } = useAuth({});
+    const { user,isLoading, } = useAuth({autoFetch:true});
     const mode = options.mode ?? AUTH_MODE.LOGGED_IN;
     useEffect(() => {
       if(isLoading ) return;
+      console.log({user})
       if (authEnabled) {
         if (mode === AUTH_MODE.LOGGED_IN && !user) {
-          router.push(options.redirectUrl ?? Routes.Auth.Login);
+          router.replace(options.redirectUrl ?? Routes.Auth.Login);
         } else if (mode === AUTH_MODE.LOGGED_OUT && user) {
-          router.push(options.redirectUrl ?? Routes.Common.Home);
+          router.replace(options.redirectUrl ?? Routes.Common.Home);
         } else {
           setIsAllowed(true); // Allow rendering if no redirection is needed
         }

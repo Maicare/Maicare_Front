@@ -49,7 +49,7 @@ export type AttachmentItem = {
 export type DepartureEntries = {
     status: string;
     schedueled: boolean;
-    schedueled_for: string;
+    schedueled_for?: string | undefined;
     reason: string;
 };
 
