@@ -125,7 +125,7 @@ const LocationsPage = () => {
 export default withAuth(
   withPermissions(LocationsPage, {
       redirectUrl: Routes.Common.NotFound,
-      requiredPermissions: PermissionsObjects.ViewEmployee, // TODO: Add correct permission
+      requiredPermissions: PermissionsObjects.ViewLocation, // TODO: Add correct permission
   }),
   { mode: AUTH_MODE.LOGGED_IN, redirectUrl: Routes.Auth.Login }
 );

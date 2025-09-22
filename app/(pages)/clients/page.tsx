@@ -59,7 +59,7 @@ function Page() {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
-    const handleRowClick = (employeeRow: Row<Client>) => {
+    const handleRowClick = (_employeeRow: Row<Client>) => {
         // const employee = employeeRow.original;
         // router.push(`/clients/${employee.id}/overview`);
     };
@@ -120,7 +120,7 @@ function Page() {
 export default withAuth(
     withPermissions(Page, {
         redirectUrl: Routes.Common.NotFound,
-        requiredPermissions: PermissionsObjects.ViewEmployee, // TODO: Add correct permission
+        requiredPermissions: PermissionsObjects.ViewClient, // TODO: Add correct permission
     }),
     { mode: AUTH_MODE.LOGGED_IN, redirectUrl: Routes.Auth.Login }
 );

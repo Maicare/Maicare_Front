@@ -167,8 +167,11 @@ export function useClient({
 
   const updateStatus = async (id: string, data: DepartureEntries, options?: ApiOptions) => {
     const { displayProgress = false, displaySuccess = false } = options || {};
-    if (data.schedueled_for){
-      data.schedueled_for = data.schedueled_for + ":00.161Z";
+    const tData = data as any;
+    if (tData.schedueled_for){
+      tData.schedueled_for = tData.schedueled_for + ":00.161Z";
+    }else{
+      tData.schedueled_for = null;
     }
     try {
       if (displayProgress) startProgress();
@@ -176,7 +179,7 @@ export function useClient({
         ApiRoutes.Client.Status.replace("{id}", id),
         "PUT",
         {},
-        data
+        tData
       );
       if (!response.data) {
         throw new Error("Status update failed");

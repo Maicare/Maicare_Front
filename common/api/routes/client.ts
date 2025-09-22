@@ -8,7 +8,7 @@ const ApiRoutes = {
   DeleteOne: prefix + "/{id}",
   UpdateProfilePicture: prefix + "/{id}/profile_picture",
   Status: prefix + "/{id}/status",
-  StatusHistory: prefix + "/{id}/status_history",
+  StatusHistory: prefix + "/{id}/status_history",///clients/{id}/status_history
   CreateOne: prefix,
   addresses: prefix + "/{id}/addresses",
   ReadCounts: prefix + "/counts",///clients/counts

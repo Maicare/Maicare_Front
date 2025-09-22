@@ -6,10 +6,14 @@ import { Plus } from 'lucide-react';
 import RolesCard from './_components/roles-card';
 import PermissionCard from './_components/permission-card';
 import { Id } from '@/common/types/types';
+import Routes from '@/common/routes';
+import withAuth, { AUTH_MODE } from '@/common/hocs/with-auth';
+import withPermissions from '@/common/hocs/with-permissions';
+import { PermissionsObjects } from '@/common/data/permission.data';
 
 
 
-export default function RolePermissionPage() {
+function RolePermissionPage() {
 
   const [selectedRole, setSelectedRole] = useState<{
     id: number;
@@ -48,3 +52,11 @@ export default function RolePermissionPage() {
     </div>
   );
 }
+
+export default withAuth(
+  withPermissions(RolePermissionPage, {
+      redirectUrl: Routes.Common.NotFound,
+      requiredPermissions: PermissionsObjects.ViewRoles, // TODO: Add correct permission
+  }),
+  { mode: AUTH_MODE.LOGGED_IN, redirectUrl: Routes.Auth.Login }
+);

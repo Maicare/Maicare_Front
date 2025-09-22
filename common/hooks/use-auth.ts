@@ -9,17 +9,17 @@ import { useApi } from "./use-api";
 import { ApiOptions } from "../types/api.types";
 
 
-export function useAuth({autoFetch=true}:{autoFetch?:boolean}) {
+export function useAuth({ autoFetch = true }: { autoFetch?: boolean }) {
   const accessToken =
     typeof window !== "undefined" ? localStorage.getItem("accessToken") : null;
 
   const shouldFetch = autoFetch && !!accessToken;
-  const { data: user, error, mutate,isLoading } = useSWR<Employee | null>(
+  const { data: user, error, mutate, isLoading } = useSWR<Employee | null>(
     shouldFetch ? ApiRoutes.Employee.Profile : null, // Endpoint to fetch Employee details
     async (url) => {
       if (!url) {
         return null;
-        
+
       }
       const response = await api.get(url);
       if (!response.data.data) {
@@ -72,7 +72,9 @@ export function useAuth({autoFetch=true}:{autoFetch?:boolean}) {
     try {
       // Display progress bar
       if (displayProgress) startProgress();
-
+      const { message, success, data, error } = await useApi<LoginResponse>(ApiRoutes.Auth.Logout, "POST", {}, {});
+      if (!data)
+        throw new Error(error || message || "An unknown error occurred");
       // Remove token
       localStorage.removeItem("accessToken");
       localStorage.removeItem("refreshToken");

@@ -51,7 +51,7 @@ export function NavUser({
 
     const handleLogout = async () => {
         try {
-            await logout()
+            await logout();
             router.push("/signin")
 
         } catch (error) {
@@ -113,20 +113,9 @@ export function NavUser({
                         </DropdownMenuLabel>
                         <DropdownMenuSeparator className="bg-slate-200" />
                         <DropdownMenuGroup>
-                            <DropdownMenuItem className="hover:bg-slate-200 rounded-md cursor-pointer">
-                                <Sparkles />
-                                Upgrade to Pro
-                            </DropdownMenuItem>
-                        </DropdownMenuGroup>
-                        <DropdownMenuSeparator className="bg-slate-200" />
-                        <DropdownMenuGroup>
                             <DropdownMenuItem className="hover:bg-slate-200 rounded-md cursor-pointer" onClick={handleProfile}>
                                 <BadgeCheck />
                                 Account
-                            </DropdownMenuItem>
-                            <DropdownMenuItem className="hover:bg-slate-200 rounded-md cursor-pointer">
-                                <CreditCard />
-                                Billing
                             </DropdownMenuItem>
                             <DropdownMenuItem className="hover:bg-slate-200 rounded-md cursor-pointer" onClick={handleNotifications}>
                                 <Bell />

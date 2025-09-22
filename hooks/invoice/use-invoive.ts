@@ -9,23 +9,31 @@ import { ApiOptions } from "@/common/types/api.types";
 import { PaginatedResponse } from "@/common/types/pagination.types";
 import { PAGE_SIZE } from "@/consts";
 import { UpdateInvoiceFormValues } from "@/schemas/invoice.schema";
-import {  GenerateInvoice, Invoice } from "@/types/invoice.types";
+import { GenerateInvoice, Invoice } from "@/types/invoice.types";
 import { constructUrlSearchParams } from "@/utils/construct-search-params";
 import { useSnackbar } from "notistack";
 import { useState } from "react";
 import useSWR from "swr";
 
+export type InvoiceSearchParams = {
+    search?: string;
+    client_id?: number;
+    sender_id?: number;
+    status?: string;
+    start_date?: string;
+    end_date?: string;
+}
 
-export function useInvoice({ autoFetch = false }: { autoFetch?: boolean }) {
+export function useInvoice({ autoFetch = false,client_id,end_date,search,sender_id,start_date,status }: { autoFetch?: boolean }&InvoiceSearchParams) {
     const { enqueueSnackbar } = useSnackbar();
-    const [page,setPage] = useState(1)
+    const [page, setPage] = useState(1)
     const { start: startProgress, stop: stopProgress } = useProgressBar();
     const {
         data: invoices,
         error,
         mutate,
     } = useSWR<PaginatedResponse<InvoicesType> | null>(
-        autoFetch ? ApiRoutes.Invoice.ReadAll+constructUrlSearchParams({ page, page_size:PAGE_SIZE }) : null, // Endpoint to fetch Locations
+        autoFetch ? ApiRoutes.Invoice.ReadAll + constructUrlSearchParams({ page, page_size: PAGE_SIZE,client_id,end_date,search,sender_id,start_date,status }) : null, // Endpoint to fetch Locations
         async (url) => {
             if (!url) {
                 return null;
@@ -147,11 +155,11 @@ export function useInvoice({ autoFetch = false }: { autoFetch?: boolean }) {
             if (displayProgress) stopProgress();
         }
     }
-    const updateOne = async (id:string,invoice: UpdateInvoiceFormValues, options?: ApiOptions) => {
+    const updateOne = async (id: string, invoice: UpdateInvoiceFormValues, options?: ApiOptions) => {
         const { displayProgress = false, displaySuccess = false } = options || {};
         try {
             if (displayProgress) startProgress();
-            const { message, success, data, error } = await useApi<Invoice>(ApiRoutes.Invoice.UpdateOne.replace("{id}",id), "PUT", {}, { ...invoice });
+            const { message, success, data, error } = await useApi<Invoice>(ApiRoutes.Invoice.UpdateOne.replace("{id}", id), "PUT", {}, { ...invoice });
             if (!data)
                 throw new Error(error || message || "An unknown error occurred");
 
@@ -168,11 +176,11 @@ export function useInvoice({ autoFetch = false }: { autoFetch?: boolean }) {
             if (displayProgress) stopProgress();
         }
     }
-    const creditOne = async (id:string, options?: ApiOptions) => {
+    const creditOne = async (id: string, options?: ApiOptions) => {
         const { displayProgress = false, displaySuccess = false } = options || {};
         try {
             if (displayProgress) startProgress();
-            const { message, success, data, error } = await useApi<Invoice>(ApiRoutes.Invoice.CreditOne.replace("{id}",id), "POST", {}, { });
+            const { message, success, data, error } = await useApi<Invoice>(ApiRoutes.Invoice.CreditOne.replace("{id}", id), "POST", {}, {});
             if (!success)
                 throw new Error(error || message || "An unknown error occurred");
 
@@ -202,5 +210,5 @@ export function useInvoice({ autoFetch = false }: { autoFetch?: boolean }) {
         updateOne,
         readAllInvoiceTemplate,
         creditOne
-      };
+    };
 }

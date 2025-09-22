@@ -14,7 +14,12 @@ const ClientNetworkPage = () => {
 export default withAuth(
   withPermissions(ClientNetworkPage, {
       redirectUrl: Routes.Common.NotFound,
-      requiredPermissions: PermissionsObjects.ViewEmployee, // TODO: Add correct permission
+      requiredPermissions: {
+        or:[
+          PermissionsObjects.ViewClientEmergencyContact,
+          PermissionsObjects.ViewClientInvolvedEmployee,
+        ]
+      }, // TODO: Add correct permission
   }),
   { mode: AUTH_MODE.LOGGED_IN, redirectUrl: Routes.Auth.Login }
 );

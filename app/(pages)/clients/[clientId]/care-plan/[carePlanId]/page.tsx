@@ -15,6 +15,10 @@ import SupportNetworkTab from './components/support-network-tab';
 import ResourcesTab from './components/resources-tab';
 import { CarePlanOverview } from '@/types/care-plan.types';
 import ReportsTab from './components/reports-tab';
+import withAuth, { AUTH_MODE } from '@/common/hocs/with-auth';
+import withPermissions from '@/common/hocs/with-permissions';
+import Routes from '@/common/routes';
+import { PermissionsObjects } from '@/common/data/permission.data';
 const mockClient = {
     id: 1,
     firstName: "Emma",
@@ -246,4 +250,10 @@ const GoalPage = () => {
     }
 }
 
-export default GoalPage
+export default withAuth(
+  withPermissions(GoalPage, {
+      redirectUrl: Routes.Common.NotFound,
+      requiredPermissions: PermissionsObjects.ViewClientCarePlan, // TODO: Add correct permission
+  }),
+  { mode: AUTH_MODE.LOGGED_IN, redirectUrl: Routes.Auth.Login }
+);

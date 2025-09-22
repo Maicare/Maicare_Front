@@ -72,7 +72,7 @@ const [invoice, setInvoice] = useState<InvoicesType | undefined>(undefined);
 export default withAuth(
   withPermissions(UpdateInvoicePage, {
       redirectUrl: Routes.Common.NotFound,
-      requiredPermissions: PermissionsObjects.ViewEmployee, // TODO: Add correct permission
+      requiredPermissions: PermissionsObjects.UpdateInvoice, // TODO: Add correct permission
   }),
   { mode: AUTH_MODE.LOGGED_IN, redirectUrl: Routes.Auth.Login }
 );

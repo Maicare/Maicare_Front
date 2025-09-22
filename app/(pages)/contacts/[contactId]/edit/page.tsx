@@ -64,7 +64,7 @@ const Page: React.FC = () => {
 export default withAuth(
   withPermissions(Page, {
     redirectUrl: Routes.Common.NotFound,
-    requiredPermissions: PermissionsObjects.ViewEmployee, // TODO: Add correct permisssion
+    requiredPermissions: PermissionsObjects.UpdateSender, // TODO: Add correct permisssion
   }),
   { mode: AUTH_MODE.LOGGED_IN, redirectUrl: Routes.Auth.Login }
 );

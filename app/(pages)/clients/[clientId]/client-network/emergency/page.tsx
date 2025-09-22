@@ -132,7 +132,7 @@ const EmergencyPage = () => {
 export default withAuth(
   withPermissions(EmergencyPage, {
     redirectUrl: Routes.Common.NotFound,
-    requiredPermissions: PermissionsObjects.ViewEmployee, // TODO: Add correct permission
+    requiredPermissions: PermissionsObjects.ViewClientEmergencyContact, // TODO: Add correct permission
     }),
     { mode: AUTH_MODE.LOGGED_IN, redirectUrl: Routes.Auth.Login } 
     );

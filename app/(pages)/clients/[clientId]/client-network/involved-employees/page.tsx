@@ -126,7 +126,7 @@ const InvolvedEmployeesPage = () => {
 export default withAuth(
   withPermissions(InvolvedEmployeesPage, {
     redirectUrl: Routes.Common.NotFound,
-    requiredPermissions: PermissionsObjects.ViewEmployee, // TODO: Add correct permission
+    requiredPermissions: PermissionsObjects.ViewClientInvolvedEmployee, // TODO: Add correct permission
     }),
     { mode: AUTH_MODE.LOGGED_IN, redirectUrl: Routes.Auth.Login } 
     );

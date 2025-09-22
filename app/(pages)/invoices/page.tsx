@@ -2,7 +2,7 @@
 
 import PrimaryButton from "@/common/components/PrimaryButton";
 import { DataTable } from "@/components/employee/table/data-table";
-import { useInvoice } from "@/hooks/invoice/use-invoive";
+import { InvoiceSearchParams, useInvoice } from "@/hooks/invoice/use-invoive";
 import { ArrowBigLeft, ArrowBigRight, DollarSign, PlusCircle } from "lucide-react";
 import { columns } from "./_components/columns";
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
@@ -15,10 +15,21 @@ import withPermissions from "@/common/hocs/with-permissions";
 import Routes from "@/common/routes";
 import { PermissionsObjects } from "@/common/data/permission.data";
 import { useRouter } from "next/navigation";
+import TableFilters from "./_components/table-filters";
+import { useDebounce } from "@/hooks/common/useDebounce";
 
 
 const InvoicesPage = () => {
-  const { invoices, setPage, page, generateOne } = useInvoice({ autoFetch: true });
+  const [filters, setFilters] = useState<InvoiceSearchParams>({
+    search: "",
+    status: undefined,
+    client_id:undefined,
+    end_date:undefined,
+    sender_id:undefined,
+    start_date:undefined
+  });
+  const deboucedFilters = useDebounce(filters, 500);
+  const { invoices, setPage, page, generateOne } = useInvoice({ autoFetch: true,...deboucedFilters });
   const router = useRouter();
   const [clientId, setClientId] = useState<string | null>(null);
   const [startDate, setStartDate] = useState<Date>(new Date());
@@ -166,10 +177,11 @@ const InvoicesPage = () => {
       <div className="grid grid-cols-1 gap-4">
 
         <div className="grid grid-cols-1 gap-4">
-          {/* <TableFilters
-          filters={filters}
-          setFilters={(filters) => setFilters(filters)}
-        /> */}
+          <TableFilters
+            filters={filters}
+            setFilters={(filters) => setFilters(filters)}
+            handleAdd={()=>{}}
+          />
           <DataTable columns={columns} data={invoices?.results ?? []} className="dark:bg-[#18181b] dark:border-black" />
           <div className="flex px-2 py-3 bg-white dark:bg-[#18181b] dark:border-black rounded-md mt-5 justify-between border-2 border-muted">
             <PrimaryButton
@@ -195,7 +207,7 @@ const InvoicesPage = () => {
 export default withAuth(
   withPermissions(InvoicesPage, {
     redirectUrl: Routes.Common.NotFound,
-    requiredPermissions: PermissionsObjects.ViewEmployee, // TODO: Add correct permission
+    requiredPermissions: PermissionsObjects.ViewInvoice, // TODO: Add correct permission
   }),
   { mode: AUTH_MODE.LOGGED_IN, redirectUrl: Routes.Auth.Login }
 );

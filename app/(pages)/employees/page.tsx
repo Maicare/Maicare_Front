@@ -34,7 +34,7 @@ const EmployeesPage = () => {
   const deboucedFilters = useDebounce(filters, 500);
   const { employees, setPage, page } = useEmployee({...deboucedFilters,autoFetch:true});
 
-  const handleRowClick = (employeeRow: Row<EmployeeList>) => {
+  const handleRowClick = (_employeeRow: Row<EmployeeList>) => {
     // const employee = employeeRow.original;
     // router.push(`/employees/${employee.id}`);
   };

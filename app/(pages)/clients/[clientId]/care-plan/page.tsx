@@ -10,6 +10,10 @@ import { ArrowBigLeft, ArrowBigRight, BrainCircuit } from 'lucide-react';
 import { useParams, useRouter } from 'next/navigation';
 import React, { useState } from 'react'
 import { columns } from './_components/columns';
+import withAuth, { AUTH_MODE } from '@/common/hocs/with-auth';
+import withPermissions from '@/common/hocs/with-permissions';
+import Routes from '@/common/routes';
+import { PermissionsObjects } from '@/common/data/permission.data';
 
 const ListingCarePlans = () => {
     const { clientId } = useParams();
@@ -91,4 +95,10 @@ const ListingCarePlans = () => {
     )
 }
 
-export default ListingCarePlans
+export default withAuth(
+  withPermissions(ListingCarePlans, {
+      redirectUrl: Routes.Common.NotFound,
+      requiredPermissions: PermissionsObjects.ViewClientCarePlan, // TODO: Add correct permission
+  }),
+  { mode: AUTH_MODE.LOGGED_IN, redirectUrl: Routes.Auth.Login }
+);

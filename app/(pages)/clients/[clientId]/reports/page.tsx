@@ -14,7 +14,12 @@ const ReportsPage = () => {
 export default withAuth(
   withPermissions(ReportsPage, {
       redirectUrl: Routes.Common.NotFound,
-      requiredPermissions: PermissionsObjects.ViewEmployee, // TODO: Add correct permission
+      requiredPermissions: {
+        or:[
+          PermissionsObjects.ViewClientProgressReport,
+          PermissionsObjects.ViewClientAiProgressReport,
+        ]
+      }, // TODO: Add correct permission
   }),
   { mode: AUTH_MODE.LOGGED_IN, redirectUrl: Routes.Auth.Login }
 );
