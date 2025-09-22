@@ -198,7 +198,7 @@ const DocumentsPage = () => {
 export default withAuth(
   withPermissions(DocumentsPage, {
     redirectUrl: Routes.Common.NotFound,
-    requiredPermissions: PermissionsObjects.ViewEmployee, // TODO: Add correct permission
+    requiredPermissions: PermissionsObjects.ViewClientDocuments, // TODO: Add correct permission
     }),
     { mode: AUTH_MODE.LOGGED_IN, redirectUrl: Routes.Auth.Login } 
     );

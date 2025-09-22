@@ -13,7 +13,6 @@ import { Client } from "@/types/client.types"
 import { ColumnDef, Row } from "@tanstack/react-table"
 import { Any } from "@/common/types/types"
 import { useRouter } from "next/navigation"
-import { useClient } from "@/hooks/client/use-client"
 
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
@@ -232,7 +231,6 @@ export const columns: ColumnDef<Client>[] = [
 const ActionCell = ({ row }:{row:Row<Client>}) => {
   const client = row.original;
   const router = useRouter();
-  const {deleteOne} = useClient({autoFetch:false});
   return (
     <div className="flex items-center gap-2">
       <Button

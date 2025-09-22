@@ -27,6 +27,10 @@ import { useState, useEffect } from "react";
 import { Any, Id } from "@/common/types/types";
 import { useECR } from "@/hooks/ecr/use-ecr";
 import { getTimeLeft } from "@/utils/get-time-left";
+import withAuth, { AUTH_MODE } from "@/common/hocs/with-auth";
+import withPermissions from "@/common/hocs/with-permissions";
+import Routes from "@/common/routes";
+import { PermissionsObjects } from "@/common/data/permission.data";
 
 // Animation variants
 const containerVariants = {
@@ -107,7 +111,7 @@ const AnimatedCounter = ({ value, duration = 2000 }: { value: number; duration?:
 };
 
 
-export default function AdminDashboard() {
+function AdminDashboard() {
   const {
     readDischargeOverview,
     readEmployeeEndingContracts,
@@ -596,3 +600,11 @@ export default function AdminDashboard() {
     </motion.div>
   );
 }
+
+export default withAuth(
+  withPermissions(AdminDashboard, {
+    redirectUrl: Routes.Common.NotFound,
+    requiredPermissions: PermissionsObjects.ViewDashboard, // TODO: Add correct permisssion
+  }),
+  {mode: AUTH_MODE.LOGGED_IN, redirectUrl: Routes.Auth.Login}
+);

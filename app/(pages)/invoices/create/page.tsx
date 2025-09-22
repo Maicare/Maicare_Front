@@ -56,7 +56,7 @@ function CreateInvoicePage() {
 export default withAuth(
     withPermissions(CreateInvoicePage, {
         redirectUrl: Routes.Common.NotFound,
-        requiredPermissions: PermissionsObjects.ViewEmployee, // TODO: Add correct permission
+        requiredPermissions: PermissionsObjects.CreateInvoice, // TODO: Add correct permission
     }),
     { mode: AUTH_MODE.LOGGED_IN, redirectUrl: Routes.Auth.Login }
 );

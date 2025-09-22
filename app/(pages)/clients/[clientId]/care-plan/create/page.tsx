@@ -10,6 +10,10 @@ import { cn } from '@/utils/cn';
 import { useAssessment } from '@/hooks/assessment/use-assessment';
 import { useParams, useRouter } from 'next/navigation';
 import { DOMAINS } from '@/consts';
+import withAuth, { AUTH_MODE } from '@/common/hocs/with-auth';
+import withPermissions from '@/common/hocs/with-permissions';
+import Routes from '@/common/routes';
+import { PermissionsObjects } from '@/common/data/permission.data';
 
 // Mock data (same as before)
 const mockClient = {
@@ -274,4 +278,10 @@ function CareplanUI() {
     );
 }
 
-export default CareplanUI;
+export default withAuth(
+  withPermissions(CareplanUI, {
+      redirectUrl: Routes.Common.NotFound,
+      requiredPermissions: PermissionsObjects.CreateClientCarePlan, // TODO: Add correct permission
+  }),
+  { mode: AUTH_MODE.LOGGED_IN, redirectUrl: Routes.Auth.Login }
+);

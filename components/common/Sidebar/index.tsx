@@ -14,16 +14,12 @@ import ReportIcon from "@/components/svg/ReportIcon";
 import EducationIcon from "@/components/svg/EducationIcon";
 import CertifIcon from "@/components/svg/CertifIcon";
 import ExperienceIcon from "@/components/svg/ExperienceIcon";
-import RoleIcon from "@/components/svg/RoleIcon";
-import CalendarIcon from "@/components/icons/CalendarIcon";
 import clsx from "clsx";
 import ArrowRight from "@/components/icons/ArrowRight";
 import BuildingIcon from "@/components/icons/BuildingIcon";
-import ChatBubblesIcon from "@/components/icons/ChatBubblesIcon";
 import { cn } from "@/utils/cn";
 import ChevronDown from "@/components/icons/ChevronDown";
 import styles from "./styles.module.scss";
-import GearIcon from "@/components/icons/GearIcon";
 import { ArrowLeft, Calendar, Clipboard, Goal } from "lucide-react";
 import BellAlertIcon from "@/components/svg/BellAlertIcon";
 import { Permission } from "@/common/types/permission.types";
@@ -370,11 +366,11 @@ const GlobalMenu: FunctionComponent = () => {
             //   children: "Zorgplannen",
             //   permission: consts.CARE_PLANS_VIEW,
             // },
-            can(transformToPermissionName(PermissionsObjects.ViewIncidentOverview)) && {
+            can(transformToPermissionName(PermissionsObjects.ViewIncident)) && {
               completeHref: "/incident-overview",
               icon: <></>,
               children: "Incidenten overzicht",
-              permission: PermissionsObjects.ViewIncidentOverview,
+              permission: PermissionsObjects.ViewIncident,
             },
           ].filter(Boolean) as SidebarLinkProps[],
         },
@@ -390,39 +386,27 @@ const GlobalMenu: FunctionComponent = () => {
           children: "Intake",
           permission: PermissionsObjects.ViewLocation,
         },
-        {
-          completeHref: "/tasks",
-          icon: <CalendarIcon />,
-          children: "Planning & Taken",
-          permission: PermissionsObjects.ViewTask,
-        },
-        {
-          completeHref: "/conversations",
-          icon: <ChatBubblesIcon className={"w-4.5 h-4.5"} />,
-          children: "Conversaties",
-          permission: PermissionsObjects.ViewConversation,
-        },
-        {
-          isDropdown: true,
-          id: "settings",
-          icon: <GearIcon className="w-4.5 h-4.5" />,
-          children: "Instellingen",
-          permission: PermissionsObjects.ViewSettings,
-          subItems: [
-            can(transformToPermissionName(PermissionsObjects.UpdatePermission)) && {
-              completeHref: "/permissions",
-              icon: <RoleIcon width={18} height={18} />,
-              children: "Permissies",
-              permission: PermissionsObjects.UpdatePermission,
-            },
-            can(transformToPermissionName(PermissionsObjects.ViewActivityLog)) && {
-              completeHref: "/activity_logs",
-              icon: <></>,
-              children: "Activiteitenlogs",
-              permission: PermissionsObjects.ViewActivityLog,
-            },
-          ].filter(Boolean) as SidebarLinkProps[],
-        },
+        // {
+        //   isDropdown: true,
+        //   id: "settings",
+        //   icon: <GearIcon className="w-4.5 h-4.5" />,
+        //   children: "Instellingen",
+        //   permission: PermissionsObjects.ViewSettings,
+        //   subItems: [
+        //     can(transformToPermissionName(PermissionsObjects.UpdatePermission)) && {
+        //       completeHref: "/permissions",
+        //       icon: <RoleIcon width={18} height={18} />,
+        //       children: "Permissies",
+        //       permission: PermissionsObjects.UpdatePermission,
+        //     },
+        //     can(transformToPermissionName(PermissionsObjects.ViewActivityLog)) && {
+        //       completeHref: "/activity_logs",
+        //       icon: <></>,
+        //       children: "Activiteitenlogs",
+        //       permission: PermissionsObjects.ViewActivityLog,
+        //     },
+        //   ].filter(Boolean) as SidebarLinkProps[],
+        // },
       ]}
       title={"MENU"}
     />

@@ -99,7 +99,7 @@ const Page = () => {
 export default withAuth(
     withPermissions(Page, {
         redirectUrl: Routes.Common.NotFound,
-        requiredPermissions: PermissionsObjects.ViewEmployee, // TODO: Add correct permission
+        requiredPermissions: PermissionsObjects.ViewClientIncident, // TODO: Add correct permission
     }),
     { mode: AUTH_MODE.LOGGED_IN, redirectUrl: Routes.Auth.Login }
 );

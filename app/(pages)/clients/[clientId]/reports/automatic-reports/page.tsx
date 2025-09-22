@@ -111,7 +111,7 @@ const handleNext = () => {
 export default withAuth(
   withPermissions(AutomaticReports, {
     redirectUrl: Routes.Common.NotFound,
-    requiredPermissions: PermissionsObjects.ViewEmployee, // TODO: Add correct permission
+    requiredPermissions: PermissionsObjects.ViewClientAiProgressReport, // TODO: Add correct permission
     }),
     { mode: AUTH_MODE.LOGGED_IN, redirectUrl: Routes.Auth.Login } 
     );

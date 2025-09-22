@@ -6,7 +6,7 @@ import { Edit, MapPinned } from 'lucide-react'
 import Image from 'next/image';
 import React from 'react'
 import { AddressesLoaderSkeleton } from './AddressesLoaderSkeleton';
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import { useClient } from '@/hooks/client/use-client';
 
 type Props = {
@@ -21,7 +21,7 @@ const AddressesPreview = ({ isParentLoading }: Props) => {
 
   const [addressesData, setAddressesData] = React.useState<AddressType[]>([]);
   const [isLoading, setIsLoading] = React.useState(true);
-
+  const router = useRouter();
   React.useEffect(() => {
     const fetchAddresses = async () => {
       setIsLoading(true);
@@ -52,7 +52,7 @@ const AddressesPreview = ({ isParentLoading }: Props) => {
             text='Add Addresses'
             animation='animate-bounce'
             icon={Edit}
-            
+            onClick={()=>router.push(`/clients/${clientId}/update`)}
           />
         </div>
       </div>

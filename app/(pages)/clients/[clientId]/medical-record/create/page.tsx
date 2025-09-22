@@ -35,7 +35,7 @@ const CreateDiagnosisPage = () => {
 export default withAuth(
   withPermissions(CreateDiagnosisPage, {
     redirectUrl: Routes.Common.NotFound,
-    requiredPermissions: PermissionsObjects.ViewEmployee, // TODO: Add correct permission
+    requiredPermissions: PermissionsObjects.CreateClientDiagnosis, // TODO: Add correct permission
     }),
     { mode: AUTH_MODE.LOGGED_IN, redirectUrl: Routes.Auth.Login } 
     );
