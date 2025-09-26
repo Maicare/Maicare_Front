@@ -1,6 +1,7 @@
 
-import { InvoiceTemplateItem } from "@/app/(pages)/contacts/_components/multi-select-invoice-items";
-import { InvoicesType } from "@/app/(pages)/invoices/_components/columns";
+
+import { InvoiceTemplateItem } from "@/app/[locale]/(pages)/contacts/_components/multi-select-invoice-items";
+import { InvoicesType } from "@/app/[locale]/(pages)/invoices/_components/columns";
 import api from "@/common/api/axios";
 import ApiRoutes from "@/common/api/routes";
 import { useApi } from "@/common/hooks/use-api";
@@ -197,6 +198,27 @@ export function useInvoice({ autoFetch = false,client_id,end_date,search,sender_
             if (displayProgress) stopProgress();
         }
     }
+    const sendReminder = async (id: string, options?: ApiOptions) => {
+        const { displayProgress = false, displaySuccess = false } = options || {};
+        try {
+            if (displayProgress) startProgress();
+            const { message, success, data, error } = await useApi<Invoice>(ApiRoutes.Invoice.SendReminder.replace("{id}", id), "POST", {}, {});
+            if (!success)
+                throw new Error(error || message || "An unknown error occurred");
+
+            // Display success message
+            if (displaySuccess && success) {
+                enqueueSnackbar("Invoice Reminder Sent Successful!", { variant: "success" });
+            }
+            mutate()
+            return data;
+        } catch (err: any) {
+            enqueueSnackbar(err?.response?.data?.message || "Invoice Reminder failed", { variant: "error" });
+            throw err;
+        } finally {
+            if (displayProgress) stopProgress();
+        }
+    }
 
     return {
         invoices,
@@ -209,6 +231,7 @@ export function useInvoice({ autoFetch = false,client_id,end_date,search,sender_
         setPage,
         updateOne,
         readAllInvoiceTemplate,
-        creditOne
+        creditOne,
+        sendReminder
     };
 }

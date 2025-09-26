@@ -28,7 +28,8 @@ const ApiRoutes = {
     ReadAll: prefix + "/{id}/working_hours",
   },
   Contract:{
-    UpdateOne: prefix + "/{id}/contract_details",
+    UpdateOne: prefix + "/{id}/contract_details",///employees/{id}/is_subcontractor
+    UpdateIsSubContractor: prefix + "/{id}/is_subcontractor",///employees/{id}/is_subcontractor
     ReadOne: prefix + "/{id}/contract_details",
   }
 };

@@ -21,6 +21,7 @@ import { useEmployee } from "@/hooks/employee/use-employee";
 import { useClient } from "@/hooks/client/use-client";
 import { useLocation } from "@/hooks/location/use-location";
 import { useAuth } from "../hooks/use-auth";
+import { LanguageSwitcher } from "./language-switcher";
 
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
@@ -160,6 +161,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                 <NavMain items={isEmployee ? sidebarEmployeeLinks(user) : isClient ? sidebarClientLinks(user) : isLocation ? sidebarLocationLinks(user) : sidebarLinks} label={isEmployee ? "Medewerker" : isClient ? "Clienten" : isLocation ? "Locatie" : "Dashboard"} />
             </SidebarContent>
             <SidebarFooter>
+                <LanguageSwitcher />
                 <ThemeSwitcher />
                 <NavUser user={{ name: authUser?.first_name + " " + authUser?.last_name, email: authUser?.email||"Loading", avatar: (authUser as any)?.profile_picture || "/images/avatar-1.jpg" }} />
             </SidebarFooter>

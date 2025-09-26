@@ -3,10 +3,10 @@ import { Bell} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useNotifications } from "@/hooks/notifications/use-notifications";
-import { useWsNotifications } from "@/app/(pages)/notifications/_components/use-ws-notifications";
 import { NotificationData } from "@/types/notification.types";
-import NotificationItem from "@/app/(pages)/notifications/_components/notification-item";
 import { useRouter } from "next/navigation";
+import { useWsNotifications } from "@/app/[locale]/(pages)/notifications/_components/use-ws-notifications";
+import NotificationItem from "@/app/[locale]/(pages)/notifications/_components/notification-item";
 
 
 
