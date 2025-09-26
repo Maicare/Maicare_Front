@@ -8,6 +8,7 @@ const ApiRoutes = {
   ReadOne: prefix + '/{id}',
   UpdateOne: prefix + '/{id}',
   DeleteOne: prefix + '/{id}',
+  SendReminder: prefix + '/{id}/send_reminder',///invoices/{id}/send_reminder
   InvoiceTemplate:{
     ReadAll:prefix+"/template_items"
   },

@@ -368,6 +368,40 @@ export function useEmployee({
       if (displayProgress) stopProgress();
     }
   };
+  const updateEmployeeIsSubContractor = async (
+    isSubcontractor: boolean,
+    employeeId: number,
+    options?: ApiOptions
+  ) => {
+    const { displayProgress = false, displaySuccess = false } = options || {};
+    try {
+      if (displayProgress) startProgress();
+      const response = await useApi<EmployeeContract>(
+        ApiRoutes.Employee.Contract.UpdateIsSubContractor.replace("{id}", employeeId.toString()),
+        "PUT",
+        {},
+        {
+          is_subcontractor:isSubcontractor
+        }
+      );
+      if (!response.data) {
+        throw new Error("Failed to update contract");
+      }
+      if (displaySuccess && response.success) {
+        enqueueSnackbar("Contract update successful!", { variant: "success" });
+      }
+      mutate()
+      return response.data;
+    } catch (err: any) {
+      enqueueSnackbar(
+        err?.response?.data?.message || "Failed to update contract",
+        { variant: "error" }
+      );
+      throw err;
+    } finally {
+      if (displayProgress) stopProgress();
+    }
+  };
   const readEmployeeContract = async (
     employeeId: number,
     options?: ApiOptions
@@ -436,6 +470,7 @@ export function useEmployee({
     updateOne,
     updateEmployeeContract,
     readEmployeeContract,
-    mutate
+    mutate,
+    updateEmployeeIsSubContractor
   };
 }

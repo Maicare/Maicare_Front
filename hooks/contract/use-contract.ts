@@ -1,4 +1,4 @@
-import { ContractResults } from "@/app/(pages)/contracts/_components/columns";
+import { ContractResults } from "@/app/[locale]/(pages)/contracts/_components/columns";
 import api from "@/common/api/axios";
 import ApiRoutes from "@/common/api/routes";
 import { useApi } from "@/common/hooks/use-api";
@@ -7,8 +7,7 @@ import { ApiOptions } from "@/common/types/api.types";
 import { PaginatedResponse } from "@/common/types/pagination.types";
 import { Any } from "@/common/types/types";
 import { Contract, CreateContract } from "@/schemas/contract.schema";
-import { ClientsSearchParams } from "@/types/client.types";
-import { ContractFilterFormType, ContractFormType, ContractItem, ContractResDto, ContractTypeItem } from "@/types/contracts.types";
+import { ContractFilterFormType,  ContractResDto, ContractTypeItem } from "@/types/contracts.types";
 import { constructUrlSearchParams } from "@/utils/construct-search-params";
 import { stringConstructor } from "@/utils/string-constructor";
 import { enqueueSnackbar } from "notistack";
@@ -18,7 +17,6 @@ import useSWR from "swr";
 export function useContract({
     search,
     status,
-    location_id,
     page_size = 10,
     autoFetch = false,
     care_type,
