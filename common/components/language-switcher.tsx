@@ -33,6 +33,7 @@ export function LanguageSwitcher() {
     const segments = pathname.split('/');
     segments[1] = locale; // Replace the locale segment
     const newPath = segments.join('/');
+    localStorage.setItem("preferred-locale",locale);
     router.push(newPath);
   };
 
