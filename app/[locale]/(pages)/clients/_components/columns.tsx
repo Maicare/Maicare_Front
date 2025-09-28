@@ -13,6 +13,7 @@ import { Client } from "@/types/client.types"
 import { ColumnDef, Row } from "@tanstack/react-table"
 import { Any } from "@/common/types/types"
 import { useRouter } from "next/navigation"
+import { useLocalizedPath } from "@/hooks/common/useLocalizedPath"
 
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
@@ -231,13 +232,15 @@ export const columns: ColumnDef<Client>[] = [
 const ActionCell = ({ row }:{row:Row<Client>}) => {
   const client = row.original;
   const router = useRouter();
+    const { currentLocale } = useLocalizedPath();
+
   return (
     <div className="flex items-center gap-2">
       <Button
         variant="outline"
         size="icon"
         className="h-8 w-8 text-blue-600 hover:text-blue-800 hover:bg-blue-50"
-        onClick={() => router.push(`/clients/${client.id}/overview`)}
+        onClick={() => router.push(`/${currentLocale}/clients/${client.id}/overview`)}
       >
         <Eye className="h-4 w-4" />
       </Button>
@@ -245,7 +248,7 @@ const ActionCell = ({ row }:{row:Row<Client>}) => {
         variant="outline"
         size="icon"
         className="h-8 w-8 text-green-600 hover:text-green-800 hover:bg-green-50"
-        onClick={() => router.push(`/clients/${client.id}/update`)}
+        onClick={() => router.push(`/${currentLocale}/clients/${client.id}/update`)}
       >
         <Edit className="h-4 w-4" />
       </Button>

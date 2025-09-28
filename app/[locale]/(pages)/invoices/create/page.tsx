@@ -10,6 +10,7 @@ import withPermissions from "@/common/hocs/with-permissions";
 import Routes from "@/common/routes";
 import { PermissionsObjects } from "@/common/data/permission.data";
 import { CreateInvoiceForm } from "../_components/create-invoice-form";
+import { useLocalizedPath } from "@/hooks/common/useLocalizedPath";
 
 function CreateInvoicePage() {
     const router = useRouter();
@@ -17,8 +18,10 @@ function CreateInvoicePage() {
     const clientId = searchParams.get("clientId");
     const { createOne } = useInvoice({ autoFetch: false });
     const [isPending, setIsPending] = useState(false);
+      const { currentLocale } = useLocalizedPath();
+    
     if (!clientId) {
-        router.push("/invoices");
+        router.push("/"+currentLocale+"/invoices");
         return null;
     }
 

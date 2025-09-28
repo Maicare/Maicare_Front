@@ -8,6 +8,7 @@ import Image from 'next/image';
 import PrimaryButton from '@/common/components/PrimaryButton';
 import PreviewLoader from './PreviewLoader';
 import { useRouter } from 'next/navigation';
+import { useLocalizedPath } from '@/hooks/common/useLocalizedPath';
 
 
 type Props = {
@@ -17,6 +18,8 @@ type Props = {
 const CertificationPreview = ({ employeeId }: Props) => {
     const { isLoading, certificates } = useCertificate({ autoFetch: true, employeeId });
     const router = useRouter();
+    const { currentLocale } = useLocalizedPath();
+
     if (isLoading) {
         return (
             <PreviewLoader />
@@ -27,7 +30,7 @@ const CertificationPreview = ({ employeeId }: Props) => {
             <div className="w-[32%] h-[287px] rounded-sm shadow-md p-4 bg-white">
                 <div className="flex justify-between items-center">
                     <h1 className='flex items-center gap-2 m-0 p-0 font-extrabold text-lg text-slate-600'><BookMarked size={18} className='text-indigo-400' /> Certificaten</h1>
-                    <Button className='bg-indigo-400 text-white text-xs py-1 px-2 rounded-md flex items-center gap-2 ' onClick={() => router.push(`/employees/${employeeId}/certification`)}   >
+                    <Button className='bg-indigo-400 text-white text-xs py-1 px-2 rounded-md flex items-center gap-2 ' onClick={() => router.push(`/${currentLocale}/employees/${employeeId}/certification`)}   >
                         <span>View All</span>
                         <ArrowRight size={15} className='arrow-animation' />
                     </Button>
@@ -38,7 +41,7 @@ const CertificationPreview = ({ employeeId }: Props) => {
                         text='Add Certificates'
                         animation='animate-bounce'
                         icon={PlusCircle}
-                        onClick={() => router.push(`/employees/${employeeId}/certification`)}
+                        onClick={() => router.push(`/${currentLocale}/employees/${employeeId}/certification`)}
                     />
                 </div>
             </div>
@@ -48,7 +51,7 @@ const CertificationPreview = ({ employeeId }: Props) => {
         <div className="w-[32%] h-[287px] rounded-sm shadow-md p-4 bg-white">
             <div className="flex justify-between items-center">
                 <h1 className='flex items-center gap-2 m-0 p-0 font-extrabold text-lg text-slate-600'><BookMarked size={18} className='text-indigo-400' /> Certifications</h1>
-                <Button className='bg-indigo-400 text-white text-xs py-1 px-2 rounded-md flex items-center gap-2 ' onClick={() => router.push(`/employees/${employeeId}/certification`)}>
+                <Button className='bg-indigo-400 text-white text-xs py-1 px-2 rounded-md flex items-center gap-2 ' onClick={() => router.push(`/${currentLocale}/employees/${employeeId}/certification`)}>
                     <span>View All</span>
                     <ArrowRight size={15} className='arrow-animation' />
                 </Button>

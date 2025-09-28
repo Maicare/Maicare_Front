@@ -14,6 +14,7 @@ import { useRouter } from "next/navigation";
 import UpsertGoalSheet from "./UpsertGoalSheet";
 import { useState } from "react";
 import { CreateGoal } from "@/schemas/goal.schema";
+import { useLocalizedPath } from "@/hooks/common/useLocalizedPath";
 
 const GoalsDetails = ({ assessmentId, clientId }: { clientId: string, assessmentId: string }) => {
     const router = useRouter();
@@ -32,8 +33,10 @@ const GoalsDetails = ({ assessmentId, clientId }: { clientId: string, assessment
             return;
         }
     }
+    const { currentLocale } = useLocalizedPath();
+
     const handleRowClick = (row: Row<Goal>) => {
-        router.push(`/clients/${clientId}/goals/${assessmentId}/objectives/${row.original.id}`);
+        router.push(`/${currentLocale}/clients/${clientId}/goals/${assessmentId}/objectives/${row.original.id}`);
     }
     const handleOpen = (bool: boolean) => {
         setOpen(bool);

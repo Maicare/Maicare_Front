@@ -7,6 +7,7 @@ import { Mail, Phone, MapPin, Building, Clipboard, FileText, Calendar, Edit, Glo
 import { Contact } from "@/schemas/contact.schema"
 import { useRouter } from "next/navigation";
 import { InvoiceTemplateItemsCard } from "./invoice-template";
+import { useLocalizedPath } from "@/hooks/common/useLocalizedPath";
 
 export function ContactOverview({ contact }: { contact: Contact }) {
   const router = useRouter();
@@ -50,6 +51,8 @@ export function ContactOverview({ contact }: { contact: Contact }) {
     navigator.clipboard.writeText(text)
     // Add toast notification here if needed
   }
+    const { currentLocale } = useLocalizedPath();
+
 
   return (
     <div className="space-y-8">
@@ -76,7 +79,7 @@ export function ContactOverview({ contact }: { contact: Contact }) {
               </div>
             </div>
           </div>
-          <Button variant="outline" className="bg-white/10 hover:bg-white/20 border-white/20 backdrop-blur-sm" onClick={()=>router.push(`/contacts/${contact.id}/edit`)}>
+          <Button variant="outline" className="bg-white/10 hover:bg-white/20 border-white/20 backdrop-blur-sm" onClick={()=>router.push(`/${currentLocale}/contacts/${contact.id}/edit`)}>
             <Edit className="h-4 w-4 mr-2" />
             Edit Profile
           </Button>

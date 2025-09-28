@@ -21,6 +21,7 @@ import { useMutation } from "@/common/hooks/use-mutate";
 import { AxiosError } from "axios";
 import { useRouter } from "next/navigation";
 import { CreateContractInput, CreateEmployeeRequestBody, EmployeeContract, UpdateEmployeeRequestBody } from "@/schemas/employee.schema";
+import { useLocalizedPath } from "../common/useLocalizedPath";
 
 export function useEmployee({
   search,
@@ -37,6 +38,8 @@ export function useEmployee({
   const [page, setPage] = useState(pageParam);
   const { enqueueSnackbar } = useSnackbar();
   const router = useRouter();
+    const { currentLocale } = useLocalizedPath();
+
   const { start: startProgress, stop: stopProgress } = useProgressBar();
   const {
     data: employees,
@@ -281,11 +284,12 @@ export function useEmployee({
         newEmployee
       );
       if (created) {
+        
         mutate();
         enqueueSnackbar("Employee added successfully", {
           variant: "success",
         });
-        router.push("/employees");
+        router.back();
         return created;
       } else {
         const error = createEmployeeError as AxiosError;
@@ -319,7 +323,7 @@ export function useEmployee({
         enqueueSnackbar("Employee added successfully", {
           variant: "success",
         });
-        router.push(`/employees/${employeeId}`);
+        router.push(`/${currentLocale}/employees/${employeeId}`);
         return created;
       } else {
         const error = patchEmployeeError as AxiosError;

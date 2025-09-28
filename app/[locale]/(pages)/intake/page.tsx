@@ -11,6 +11,7 @@ import { useRouter } from "next/navigation";
 import Button from "@/components/common/Buttons/Button";
 import LargeErrorMessage from "@/components/common/Alerts/LargeErrorMessage";
 import InputUncontrol from "@/common/components/InputUncontrol";
+import { useLocalizedPath } from "@/hooks/common/useLocalizedPath";
 
 interface Intake {
     id: number;
@@ -34,6 +35,7 @@ const ClientsPage = () => {
     const [search, setSearch] = useState('');
     const [moveLoading, setMoveLoading] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
+    const { currentLocale } = useLocalizedPath();
 
     const { intakes, isLoading, moveToWaitingList } = useIntake({
         autoFetch: true,
@@ -174,7 +176,7 @@ const ClientsPage = () => {
                                     </Button>
                                     <Button
                                         className="px-3 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300 text-sm"
-                                        onClick={() => router.push(`/intake/${client.id}`)}
+                                        onClick={() => router.push(`/${currentLocale}/intake/${client.id}`)}
                                     >
                                         Bekijk details
                                     </Button>

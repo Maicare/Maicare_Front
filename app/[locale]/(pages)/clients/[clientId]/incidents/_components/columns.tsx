@@ -13,6 +13,7 @@ import { useRouter } from "next/navigation"
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog"
 import { useIncident } from "@/hooks/incident/use-incident"
 import { useState } from "react"
+import { useLocalizedPath } from "@/hooks/common/useLocalizedPath"
 
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
@@ -300,6 +301,8 @@ const ActionCell = ({ row }: { row: Row<Incident> }) => {
   const router = useRouter();
   const [type, setType] = useState<"delete" | "confirm">("delete");
   const { confirmOne, generatePdf } = useIncident({ clientId: row.original.client_id, autoFetch: false });
+    const { currentLocale } = useLocalizedPath();
+
   const dialogProps: Record<"delete" | "confirm", { title: string, desc: string, action: string }> = {
     delete: {
       title: "Incident verwijderen",
@@ -342,7 +345,7 @@ const ActionCell = ({ row }: { row: Row<Incident> }) => {
         <DropdownMenuContent align="end" className="bg-white">
           <DropdownMenuLabel>Acties</DropdownMenuLabel>
           <DropdownMenuItem
-            onClick={() => { router.push(`/clients/${row.original.client_id}/incidents/${row.original.id}/update`) }}
+            onClick={() => { router.push(`/${currentLocale}/clients/${row.original.client_id}/incidents/${row.original.id}/update`) }}
             className="hover:bg-indigo-100 hover:text-indigo-500 transition-colors ease-in-out cursor-pointer flex items-center gap-2"
           >
             <Edit2 className="h-4 w-4" />

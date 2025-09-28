@@ -15,6 +15,7 @@ import withPermissions from "@/common/hocs/with-permissions";
 import Routes from "@/common/routes";
 import { PermissionsObjects } from "@/common/data/permission.data";
 import { CreateContractForm } from "../_components/create-contract-form";
+import { useLocalizedPath } from "@/hooks/common/useLocalizedPath";
 const defaultContractValues: CreateContract = {
     VAT: 20,
     attachment_ids: [],
@@ -47,6 +48,7 @@ const Page = () => {
     } | null>(null);
     const [contact, setContact] = useState<Contact | null>(null);
     const [contractTypes, setContractTypes] = useState<Any[]>([]);
+    const { currentLocale } = useLocalizedPath();
 
     useEffect(() => {
         const getClient = async () => {
@@ -94,7 +96,7 @@ const Page = () => {
         };
         try {
             await createOne(contractData,clientId+"",{displayProgress: true, displaySuccess: true});
-            router.push(`/clients/${clientId}/contract`);
+            router.push(`/${currentLocale}/clients/${clientId}/contract`);
         } catch (error) {
             console.error("Error creating contract:", error);
             // Handle error appropriately, e.g., show a notification

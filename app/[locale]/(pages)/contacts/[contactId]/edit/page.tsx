@@ -10,6 +10,7 @@ import { useContact } from "@/hooks/contact/use-contact";
 import { Contact } from "@/schemas/contact.schema";
 import { Id } from "@/common/types/types";
 import UpsertContactForm from "../../_components/upsert-contact-form";
+import { useLocalizedPath } from "@/hooks/common/useLocalizedPath";
 
 const Page: React.FC = () => {
   const router = useRouter();
@@ -31,9 +32,10 @@ const Page: React.FC = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [contactId]);
 
+    const { currentLocale } = useLocalizedPath();
 
   const onSuccess = (id: number) => {
-    router.push(`/contacts/${id}`)
+    router.push(`/${currentLocale}/contacts/${id}`)
   }
   const onCancel = () => {
     router.back();

@@ -11,6 +11,7 @@ import PrimaryButton from "@/common/components/PrimaryButton";
 import { useRouter } from "next/navigation";
 import { useContact } from "@/hooks/contact/use-contact";
 import { columns } from "./_components/columns";
+import { useLocalizedPath } from "@/hooks/common/useLocalizedPath";
 
 const Page: FunctionComponent = () => {
 
@@ -31,8 +32,10 @@ const Page: FunctionComponent = () => {
       return;
     }
   }
+    const { currentLocale } = useLocalizedPath();
+
   const handleAdd = () => {
-    router.push(`/contacts/new`);
+    router.push(`/${currentLocale}/contacts/new`);
   }
 
   return (

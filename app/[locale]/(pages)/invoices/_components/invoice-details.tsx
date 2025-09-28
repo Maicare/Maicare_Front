@@ -35,6 +35,7 @@ import { InvoicesType } from "./columns"
 import PaymentOverview from "./payment-overview"
 import { LogsOverview } from "./logs-overview"
 import { useRouter } from "next/navigation"
+import { useLocalizedPath } from "@/hooks/common/useLocalizedPath";
 
 const statusConfig = {
     outstanding: {
@@ -113,6 +114,8 @@ const statusConfig = {
 
 export default function InvoiceDetails({ invoice, handleCredit, onRefetch, handleReminder }: { invoice: InvoicesType, handleCredit: () => void, onRefetch: () => void, handleReminder: () => void }) {
     const router = useRouter();
+    const { currentLocale } = useLocalizedPath();
+
     const status = invoice.status
     const config = statusConfig[status]
     const totalAmount = new Intl.NumberFormat("en-US", {
@@ -145,7 +148,7 @@ export default function InvoiceDetails({ invoice, handleCredit, onRefetch, handl
                         <Printer className="h-4 w-4 mr-2" />
                         Print
                     </Button>
-                    <Button variant="outline" className="rounded-full hover:bg-teal-100/50 dark:hover:bg-teal-900/20 backdrop-blur-sm" onClick={() => router.push(`/invoices/${invoice.id}/update`)}>
+                    <Button variant="outline" className="rounded-full hover:bg-teal-100/50 dark:hover:bg-teal-900/20 backdrop-blur-sm" onClick={() => router.push(`/${currentLocale}/invoices/${invoice.id}/update`)}>
                         <Edit className="h-4 w-4 mr-2" />
                         Edit
                     </Button>

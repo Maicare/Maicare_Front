@@ -14,6 +14,7 @@ import withAuth, { AUTH_MODE } from "@/common/hocs/with-auth";
 import withPermissions from "@/common/hocs/with-permissions";
 import Routes from "@/common/routes";
 import { PermissionsObjects } from "@/common/data/permission.data";
+import { useLocalizedPath } from "@/hooks/common/useLocalizedPath";
 
 
 
@@ -54,8 +55,10 @@ function Page() {
             return;
         }
     }
+    const { currentLocale } = useLocalizedPath();
+
     const handleAdd = () => {
-        router.push(`/registrations/new`);
+        router.push(`${currentLocale}/registrations/new`);
     }
     return (
         <div className="w-full flex flex-col gap-4">

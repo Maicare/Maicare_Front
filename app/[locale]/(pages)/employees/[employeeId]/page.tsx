@@ -17,12 +17,12 @@ import { PermissionsObjects } from '@/common/data/permission.data';
 
 const Page = () => {
   const { employeeId } = useParams();
-
   const { readOne } = useEmployee({ autoFetch: false });
   const [employee, setEmployee] = useState<EmployeeDetailsResponse | undefined>(undefined);
   const [isLoading, setIsLoading] = useState(true);
   useEffect(() => {
     const fetchEmployee = async (id: Id) => {
+      console.log(id)
       setIsLoading(true);
       const data = await readOne(id);
       setEmployee(data);

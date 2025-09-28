@@ -11,6 +11,7 @@ import { useParams } from "next/navigation";
 import { AlertTriangle } from "lucide-react";
 import Button from "@/components/common/Buttons/Button";
 import { GuardianDetailsType, IntakeFormType } from "@/types/intake.types";
+import { useLocalizedPath } from "@/hooks/common/useLocalizedPath";
 
 const ClientPage = () => {
     const router = useRouter();
@@ -21,6 +22,7 @@ const ClientPage = () => {
     const [intake, setIntake] = useState<IntakeFormType | null>(null);
     const [urgencyScore, setUrgencyScore] = useState<number>(0);
     const [urgencyLoading, setUrgencyLoading] = useState<boolean>(false);
+  const { currentLocale } = useLocalizedPath();
 
     useEffect(() => {
         if (intakeId) {
@@ -57,7 +59,7 @@ const ClientPage = () => {
             {/* Back Button */}
             <Button
                 className="px-4 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300"
-                onClick={() => router.push('/intake')}
+                onClick={() => router.push("/"+currentLocale+'/intake')}
             >
                 Back
             </Button>

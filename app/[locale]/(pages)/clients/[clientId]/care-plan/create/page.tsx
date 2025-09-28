@@ -14,6 +14,7 @@ import withAuth, { AUTH_MODE } from '@/common/hocs/with-auth';
 import withPermissions from '@/common/hocs/with-permissions';
 import Routes from '@/common/routes';
 import { PermissionsObjects } from '@/common/data/permission.data';
+import { useLocalizedPath } from '@/hooks/common/useLocalizedPath';
 
 // Mock data (same as before)
 const mockClient = {
@@ -35,6 +36,8 @@ function CareplanUI() {
     const [selectedTargetLevel, setSelectedTargetLevel] = useState("");
     const [isGenerating, setIsGenerating] = useState(false);
     const {generateOne} = useAssessment({autoFetch:false,clientId:parseInt(clientId as string)});
+      const { currentLocale } = useLocalizedPath();
+    
     const handleGeneratePlan = async () => {
         if (!selectedDomain || !selectedLevel || !selectedTargetLevel) return;
         try {
@@ -47,7 +50,7 @@ function CareplanUI() {
                 displayProgress:true,
                 displaySuccess:true
             });
-            router.push(`/clients/${clientId}/care-plan/${plan.care_plan_id}`);
+            router.push(`/${currentLocale}/clients/${clientId}/care-plan/${plan.care_plan_id}`);
 
         } catch (error) {
             console.error(error);
