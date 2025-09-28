@@ -16,6 +16,7 @@ import withAuth, { AUTH_MODE } from "@/common/hocs/with-auth";
 import withPermissions from "@/common/hocs/with-permissions";
 import Routes from "@/common/routes";
 import { PermissionsObjects } from "@/common/data/permission.data";
+import { useLocalizedPath } from "@/hooks/common/useLocalizedPath";
 
 
 
@@ -36,10 +37,11 @@ const ShiftPage = () => {
 
   const deboucedFilters = useDebounce(filters, 500);
   const { shifts,createOne,updateOne} = useShift({...deboucedFilters,autoFetch:true});
+    const { currentLocale } = useLocalizedPath();
 
   const handleRowClick = (shiftRow: Row<Shift>) => {
     const shift = shiftRow.original;
-    router.push(`/shifts/${shift.id}`);
+    router.push(`/${currentLocale}/shifts/${shift.id}`);
   };
 
   const [open, setOpen] = useState(false);

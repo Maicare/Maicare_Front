@@ -8,6 +8,7 @@ import React from 'react'
 import { AddressesLoaderSkeleton } from './AddressesLoaderSkeleton';
 import { useParams, useRouter } from 'next/navigation';
 import { useClient } from '@/hooks/client/use-client';
+import { useLocalizedPath } from '@/hooks/common/useLocalizedPath';
 
 type Props = {
   isParentLoading: boolean;
@@ -22,6 +23,8 @@ const AddressesPreview = ({ isParentLoading }: Props) => {
   const [addressesData, setAddressesData] = React.useState<AddressType[]>([]);
   const [isLoading, setIsLoading] = React.useState(true);
   const router = useRouter();
+    const { currentLocale } = useLocalizedPath();
+  
   React.useEffect(() => {
     const fetchAddresses = async () => {
       setIsLoading(true);
@@ -52,7 +55,7 @@ const AddressesPreview = ({ isParentLoading }: Props) => {
             text='Add Addresses'
             animation='animate-bounce'
             icon={Edit}
-            onClick={()=>router.push(`/clients/${clientId}/update`)}
+            onClick={()=>router.push(`/${currentLocale}/clients/${clientId}/update`)}
           />
         </div>
       </div>

@@ -6,6 +6,7 @@ import Loader from "../common/loader";
 import DetailCell from "../common/DetailCell";
 import { dateFormat } from "@/utils/timeFormatting";
 import { useCertificate } from "@/hooks/certificate/use-certificate";
+import { useLocalizedPath } from "@/hooks/common/useLocalizedPath";
 
 type Props = {
   employeeId: number;
@@ -14,6 +15,7 @@ type Props = {
 const EmployeeCertificationsSummary: FunctionComponent<Props> = ({ employeeId }) => {
   const {certificates,isLoading} = useCertificate({employeeId:employeeId.toString()});
   const router = useRouter();
+    const { currentLocale } = useLocalizedPath();
 
   if (isLoading) return <Loader />;
 
@@ -24,7 +26,7 @@ const EmployeeCertificationsSummary: FunctionComponent<Props> = ({ employeeId })
         return (
           <li
             key={certificate.id}
-            onClick={() => router.push(`/employees/${employeeId}/certificates`)}
+            onClick={() => router.push(`/${currentLocale}/employees/${employeeId}/certificates`)}
             className="grid grid-cols-3 hover:bg-gray-3 p-4 dark:hover:bg-slate-700 cursor-pointer rounded-xl"
           >
             <DetailCell ignoreIfEmpty={true} label={"Titel"} value={certificate.name} />

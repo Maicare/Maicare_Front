@@ -8,6 +8,7 @@ import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
 import PrimaryButton from '@/common/components/PrimaryButton';
+import { useLocalizedPath } from '@/hooks/common/useLocalizedPath';
 
 type Props = {
     isParentLoading: boolean;
@@ -19,6 +20,7 @@ const ReportsPreview = ({ isParentLoading }: Props) => {
     const router = useRouter();
 
     const { reports, isLoading } = useReport({ autoFetch: true, clientId: parseInt(clientId as string) });
+  const { currentLocale } = useLocalizedPath();
 
     if (isParentLoading || isLoading) {
         return (
@@ -30,7 +32,7 @@ const ReportsPreview = ({ isParentLoading }: Props) => {
             <div className="w-full h-[287px] rounded-sm shadow-md p-4 bg-white overflow-y-scroll">
                 <div className="flex justify-between items-center">
                     <h1 className='flex items-center gap-2 m-0 p-0 font-extrabold text-lg text-slate-600'><FileBadge size={18} className='text-indigo-400' />Rapporten</h1>
-                    <Link href={`/clients/${clientId}/reports/user-reports`}>
+                    <Link href={`/${currentLocale}/clients/${clientId}/reports/user-reports`}>
                         <Button className='bg-indigo-400 text-white text-xs py-1 px-2 rounded-md flex items-center gap-2 '>
                             <span>View All</span>
                             <ArrowRight size={15} className='arrow-animation' />
@@ -43,7 +45,7 @@ const ReportsPreview = ({ isParentLoading }: Props) => {
                         text='Add Report'
                         animation='animate-bounce'
                         icon={PlusCircle}
-                        onClick={()=>router.push(`/clients/${clientId}/reports/user-reports`)}
+                        onClick={()=>router.push(`/${currentLocale}/clients/${clientId}/reports/user-reports`)}
                     />
                 </div>
             </div>
@@ -53,7 +55,7 @@ const ReportsPreview = ({ isParentLoading }: Props) => {
         <div className="w-full h-[287px] rounded-sm shadow-md p-4 bg-white overflow-y-scroll">
             <div className="flex justify-between items-center">
                 <h1 className='flex items-center gap-2 m-0 p-0 font-extrabold text-lg text-slate-600'><FileBadge size={18} className='text-indigo-400' />Rapporten</h1>
-                <Link href={`/clients/${clientId}/reports/user-reports`}>
+                <Link href={`/${currentLocale}/clients/${clientId}/reports/user-reports`}>
                     <Button className='bg-indigo-400 text-white text-xs py-1 px-2 rounded-md flex items-center gap-2 '>
                         <span>View All</span>
                         <ArrowRight size={15} className='arrow-animation' />

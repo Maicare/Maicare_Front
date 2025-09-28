@@ -18,6 +18,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { getDangerActionConfirmationModal } from "../common/Modals/DangerActionConfirmation";
 import { useModal } from "../providers/ModalProvider";
+import { useLocalizedPath } from "@/hooks/common/useLocalizedPath";
 
 interface EmployeeDetailsProps {
   employeeId: number;
@@ -29,11 +30,12 @@ const EmployeeDetails: React.FC<EmployeeDetailsProps> = ({ employeeId, showAsPro
   const { deleteOne } = useEmployee({autoFetch:false})
   const [isLoading,setIsLoading] = useState(false);
   const [isSuccess,setIsSuccess] = useState(false);
+    const { currentLocale } = useLocalizedPath();
 
   useEffect(() => {
     if (isSuccess) {
       setTimeout(() => {
-        router.push(`/employees`);
+        router.push(`/${currentLocale}/employees`);
       }, 700);
     }
   }, [router,isSuccess]);

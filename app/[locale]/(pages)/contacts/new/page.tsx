@@ -7,11 +7,14 @@ import Routes from "@/common/routes";
 import { PermissionsObjects } from "@/common/data/permission.data";
 import UpsertContactForm from "../_components/upsert-contact-form";
 import { useRouter } from "next/navigation";
+import { useLocalizedPath } from "@/hooks/common/useLocalizedPath";
 
 const Page: FunctionComponent = () => {
       const router = useRouter();
+    const { currentLocale } = useLocalizedPath();
+
       const onSuccess = (id:number) => {
-          router.push(`/contacts/${id}`)
+          router.push(`/${currentLocale}/contacts/${id}`)
       }
       const onCancel = () => {
           router.back();

@@ -11,6 +11,7 @@ import withAuth, { AUTH_MODE } from '@/common/hocs/with-auth';
 import withPermissions from '@/common/hocs/with-permissions';
 import Routes from '@/common/routes';
 import { PermissionsObjects } from '@/common/data/permission.data';
+import { useLocalizedPath } from '@/hooks/common/useLocalizedPath';
 const Page = () => {
 
     const { clientId } = useParams();
@@ -31,8 +32,10 @@ const Page = () => {
             return;
         }
     }
+    const { currentLocale } = useLocalizedPath();
+
     const handleAdd = () => {
-        router.push(`/clients/${clientId}/incidents/create`);
+        router.push(`/${currentLocale}/clients/${clientId}/incidents/create`);
     }
 
     return (

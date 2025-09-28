@@ -6,6 +6,7 @@ import { mappingGender } from "@/common/data/gender.data"
 import ProfilePicture from "@/components/common/profilePicture/profile-picture"
 import { Button } from "@/components/ui/button"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
+import { useLocalizedPath } from "@/hooks/common/useLocalizedPath"
 import { EmployeeList } from "@/types/employee.types"
 import { getAge } from "@/utils/get-age"
 import { ColumnDef, Row } from "@tanstack/react-table"
@@ -122,6 +123,8 @@ export const columns: ColumnDef<EmployeeList>[] = [
 const ActionCell = ({ row }: { row: Row<EmployeeList> }) => {
     const employee = row.original
     const router = useRouter();
+    const { currentLocale } = useLocalizedPath();
+
     return (
         <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -133,7 +136,7 @@ const ActionCell = ({ row }: { row: Row<EmployeeList> }) => {
             <DropdownMenuContent align="end" className="bg-white">
                 <DropdownMenuLabel>Actions</DropdownMenuLabel>
                 <DropdownMenuItem
-                    onClick={() => router.push(`/employees/${employee.id}`)}
+                    onClick={() => router.push(`/${currentLocale}/employees/${employee.id}`)}
                     className="hover:bg-indigo-100 hover:text-indigo-500 transition-colors ease-in-out cursor-pointer flex items-center gap-2"
                 >
                     <Eye className="h-4 w-4 " />
@@ -141,7 +144,7 @@ const ActionCell = ({ row }: { row: Row<EmployeeList> }) => {
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem
-                    onClick={() => router.push(`/employees/${employee.id}/update`)}
+                    onClick={() => router.push(`/${currentLocale}/employees/${employee.id}/update`)}
                     className="hover:bg-orange-100 hover:text-orange-500 transition-colors ease-in-out cursor-pointer flex items-center gap-2"
                 >
                     <Edit2 className="h-4 w-4 " />

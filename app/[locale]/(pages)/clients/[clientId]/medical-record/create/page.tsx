@@ -6,12 +6,15 @@ import withAuth, { AUTH_MODE } from "@/common/hocs/with-auth";
 import withPermissions from "@/common/hocs/with-permissions";
 import Routes from "@/common/routes";
 import { PermissionsObjects } from "@/common/data/permission.data";
+import { useLocalizedPath } from "@/hooks/common/useLocalizedPath";
 
 const CreateDiagnosisPage = () => {
     const router = useRouter();
     const { clientId } = useParams();
+    const { currentLocale } = useLocalizedPath();
+
     const onSuccess = () => {
-        router.push(`/clients/${clientId}/medical-record`)
+        router.push(`/${currentLocale}/clients/${clientId}/medical-record`)
     }
     const onCancel = () => {
         router.back();

@@ -6,6 +6,7 @@ import { cn } from "@/utils/cn"
 import { useRouter } from "next/navigation"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { Button } from "@/components/ui/button"
+import { useLocalizedPath } from "@/hooks/common/useLocalizedPath"
 
 export type ContractResults = {
   id: number
@@ -189,6 +190,7 @@ export const columns: ColumnDef<ContractResults>[] = [
 export const ActionColumn = ({cell}:{cell:Row<ContractResults>}) => {
     const router = useRouter();
     const contact = cell.original
+    const { currentLocale } = useLocalizedPath();
 
     return (
       <DropdownMenu>
@@ -201,11 +203,11 @@ export const ActionColumn = ({cell}:{cell:Row<ContractResults>}) => {
         <DropdownMenuContent align="end" className="w-48 bg-white dark:bg-gray-800 shadow-lg">
           <DropdownMenuLabel className="font-semibold">Actions</DropdownMenuLabel>
           <DropdownMenuSeparator />
-          <DropdownMenuItem className="cursor-pointer text-gray-700 hover:bg-gray-100 focus:bg-gray-100" onClick={() => router.push(`/clients/${contact.client_id}/contract/${contact.id}`)}>
+          <DropdownMenuItem className="cursor-pointer text-gray-700 hover:bg-gray-100 focus:bg-gray-100" onClick={() => router.push(`/${currentLocale}/clients/${contact.client_id}/contract/${contact.id}`)}>
             <User className="mr-2 h-4 w-4" />
             View Details
           </DropdownMenuItem>
-          <DropdownMenuItem className="cursor-pointer text-gray-700 hover:bg-gray-100 focus:bg-gray-100" onClick={() => router.push(`/clients/${contact.client_id}/contract/${contact.id}/edit`)}>
+          <DropdownMenuItem className="cursor-pointer text-gray-700 hover:bg-gray-100 focus:bg-gray-100" onClick={() => router.push(`/${currentLocale}/clients/${contact.client_id}/contract/${contact.id}/edit`)}>
             <svg
               xmlns="http://www.w3.org/2000/svg"
               className="mr-2 h-4 w-4"

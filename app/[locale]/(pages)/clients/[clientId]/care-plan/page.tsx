@@ -14,6 +14,7 @@ import withAuth, { AUTH_MODE } from '@/common/hocs/with-auth';
 import withPermissions from '@/common/hocs/with-permissions';
 import Routes from '@/common/routes';
 import { PermissionsObjects } from '@/common/data/permission.data';
+import { useLocalizedPath } from '@/hooks/common/useLocalizedPath';
 
 const ListingCarePlans = () => {
     const { clientId } = useParams();
@@ -27,6 +28,8 @@ const ListingCarePlans = () => {
         }
         setPage(page - 1);
     }
+      const { currentLocale } = useLocalizedPath();
+    
     const handleNext = () => {
         if (assessments?.next) {
             setPage(page + 1);
@@ -38,11 +41,11 @@ const ListingCarePlans = () => {
     // }
 
     const handleCreate = async () => {
-        router.push(`/clients/${clientId}/care-plan/create`);
+        router.push(`/${currentLocale}/clients/${clientId}/care-plan/create`);
     }
 
     const handleRowClick = (row: Row<CarePlan>) => {
-        router.push(`/clients/${clientId}/care-plan/${row.original.care_plan_id}`);
+        router.push(`/${currentLocale}/clients/${clientId}/care-plan/${row.original.care_plan_id}`);
     }
     return (
         <div className="w-full flex flex-col gap-4">

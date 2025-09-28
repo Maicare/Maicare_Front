@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Location } from "@/schemas/location.schema";
 import { useRouter } from "next/navigation";
+import { useLocalizedPath } from "@/hooks/common/useLocalizedPath";
 
 interface ColumnsProps {
   handlePreUpdate: (location: Location) => void;
@@ -75,6 +76,8 @@ export const getColumns = ({ handlePreUpdate }: ColumnsProps): ColumnDef<Locatio
 const ActionCell = ({ row ,handlePreUpdate}: { row: Row<Location>,handlePreUpdate: (location: Location) => void }) => {
     const location = row.original;
     const router = useRouter();
+    const { currentLocale } = useLocalizedPath();
+
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -86,7 +89,7 @@ const ActionCell = ({ row ,handlePreUpdate}: { row: Row<Location>,handlePreUpdat
           <DropdownMenuContent align="end" className="bg-white">
             <DropdownMenuLabel>Location Actions</DropdownMenuLabel>
             <DropdownMenuItem
-              onClick={() => router.push(`/locations/${location.id}/overview`)}
+              onClick={() => router.push(`/${currentLocale}/locations/${location.id}/overview`)}
               className="hover:bg-indigo-100 hover:text-indigo-500 transition-colors ease-in-out cursor-pointer flex items-center gap-2"
             >
               <MapPin className="h-4 w-4" />

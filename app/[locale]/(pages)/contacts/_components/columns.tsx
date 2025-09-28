@@ -13,6 +13,7 @@ import { Badge } from "@/components/ui/badge"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { Contact } from "@/schemas/contact.schema"
 import { useRouter } from "next/navigation"
+import { useLocalizedPath } from "@/hooks/common/useLocalizedPath"
 
 
 const getTypeBadge = (type: Contact["types"]) => {
@@ -153,6 +154,8 @@ export const columns: ColumnDef<Contact>[] = [
 export const ActionColumn = ({cell}:{cell:Row<Contact>}) => {
     const router = useRouter();
     const contact = cell.original
+    const { currentLocale } = useLocalizedPath();
+
 
     return (
       <DropdownMenu>
@@ -172,11 +175,11 @@ export const ActionColumn = ({cell}:{cell:Row<Contact>}) => {
             <Clipboard className="mr-2 h-4 w-4" />
             Copy Client ID
           </DropdownMenuItem>
-          <DropdownMenuItem className="cursor-pointer text-gray-700 hover:bg-gray-100 focus:bg-gray-100" onClick={() => router.push(`/contacts/${contact.id}`)}>
+          <DropdownMenuItem className="cursor-pointer text-gray-700 hover:bg-gray-100 focus:bg-gray-100" onClick={() => router.push(`/${currentLocale}/contacts/${contact.id}`)}>
             <User className="mr-2 h-4 w-4" />
             View Details
           </DropdownMenuItem>
-          <DropdownMenuItem className="cursor-pointer text-gray-700 hover:bg-gray-100 focus:bg-gray-100" onClick={() => router.push(`/contacts/${contact.id}/edit`)}>
+          <DropdownMenuItem className="cursor-pointer text-gray-700 hover:bg-gray-100 focus:bg-gray-100" onClick={() => router.push(`/${currentLocale}/contacts/${contact.id}/edit`)}>
             <svg
               xmlns="http://www.w3.org/2000/svg"
               className="mr-2 h-4 w-4"

@@ -25,6 +25,7 @@ import IconButton from '@/components/common/Buttons/IconButton';
 import { Archive } from 'lucide-react';
 import GroupIcon from '@/components/icons/GroupIcon';
 import BuildingIcon from '@/components/icons/BuildingIcon';
+import { useLocalizedPath } from '@/hooks/common/useLocalizedPath';
 
 const PAGE_SIZE = 10;
 
@@ -39,9 +40,10 @@ const EmployeesPage = () => {
     const deboucedFilters = useDebounce(filters, 500);
 
     const { employees, error, isLoading, page, setPage } = useEmployee(deboucedFilters);
+    const { currentLocale } = useLocalizedPath();
 
     const handleRowClick = (employee: EmployeeList) => {
-        router.push(`/employees/${employee.id}`);
+        router.push(`/${currentLocale}/employees/${employee.id}`);
     };
 
     const columnDef = useMemo<ColumnDef<EmployeeList>[]>(() => {

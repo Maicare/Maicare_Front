@@ -10,6 +10,7 @@ import { useRouter } from "next/navigation";
 import { useSnackbar } from "notistack";
 import { useState } from "react";
 import useSWR from "swr";
+import { useLocalizedPath } from "../common/useLocalizedPath";
 
 export function useAllergy(clientId: Number, params?: PaginationParams) {
 
@@ -17,6 +18,7 @@ export function useAllergy(clientId: Number, params?: PaginationParams) {
 
   const { enqueueSnackbar } = useSnackbar();
   const { start: startProgress, stop: stopProgress } = useProgressBar();
+    const { currentLocale } = useLocalizedPath();
 
   const [page, setPage] = useState(params?.page || 1);
   const page_size = params?.page_size || 10;
@@ -54,7 +56,7 @@ export function useAllergy(clientId: Number, params?: PaginationParams) {
       if (displaySuccess && success) {
         enqueueSnackbar("Allergy created successful!", { variant: "success" });
       }
-      router.push(`/clients/${clientId}/medical-record/allergies`);
+      router.push(`/${currentLocale}/clients/${clientId}/medical-record/allergies`);
       mutate()
       return data;
     } catch (err: any) {
@@ -77,7 +79,7 @@ export function useAllergy(clientId: Number, params?: PaginationParams) {
       if (displaySuccess && success) {
         enqueueSnackbar("Allergy created successful!", { variant: "success" });
       }
-      router.push(`/clients/${clientId}/medical-record/allergies`);
+      router.push(`/${currentLocale}/clients/${clientId}/medical-record/allergies`);
       mutate()
       return data;
     } catch (err: any) {
@@ -122,7 +124,7 @@ export function useAllergy(clientId: Number, params?: PaginationParams) {
       if (displaySuccess && success) {
         enqueueSnackbar("Allergy updated successful!", { variant: "success" });
       }
-      router.push(`/clients/${clientId}/medical-record/allergies`);
+      router.push(`/${currentLocale}/clients/${clientId}/medical-record/allergies`);
       mutate()
       return data;
     } catch (err: any) {

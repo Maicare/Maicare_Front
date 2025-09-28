@@ -12,6 +12,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import Link from "next/link";
 import { useAuth } from "@/common/hooks/use-auth";
 import { useRouter } from "next/navigation";
+import { useLocalizedPath } from "@/hooks/common/useLocalizedPath";
 
 const SignIn = () => {
   const [is2FAEnabled, setIs2FAEnabled] = useState(false);
@@ -21,6 +22,7 @@ const SignIn = () => {
   const [temp_token, setTemp_token] = useState("");
   const { login, Verify2FA } = useAuth({ autoFetch: false });
   const router = useRouter();
+  const { currentLocale } = useLocalizedPath();
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -39,7 +41,7 @@ const SignIn = () => {
           setTemp_token(response.temp_token);
         } else {
           setTimeout(() => {
-            router.push('/dashboard')
+            router.push("/"+currentLocale+'/dashboard')
           }, 3000);
         }
       } catch (error) {
@@ -64,7 +66,7 @@ const SignIn = () => {
           displaySuccess: true,
         });
         setTimeout(() => {
-          router.push('/dashboard')
+          router.push("/"+currentLocale+'/dashboard')
         }, 3000);
       } catch (error) {
         console.error("2FA verification failed:", error);

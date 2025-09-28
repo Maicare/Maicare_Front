@@ -6,12 +6,15 @@ import withAuth, { AUTH_MODE } from "@/common/hocs/with-auth";
 import withPermissions from "@/common/hocs/with-permissions";
 import Routes from "@/common/routes";
 import { PermissionsObjects } from "@/common/data/permission.data";
+import { useLocalizedPath } from "@/hooks/common/useLocalizedPath";
 
 
 const Page = () => {
     const router = useRouter();
+    const { currentLocale } = useLocalizedPath();
+
     const onSuccess = (id:number) => {
-        router.push(`/employee/${id}`)
+        router.push(`/${currentLocale}/employee/${id}`)
     }
     const onCancel = () => {
         router.back();

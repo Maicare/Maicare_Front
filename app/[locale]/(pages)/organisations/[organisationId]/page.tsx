@@ -23,6 +23,7 @@ import { useParams, useRouter } from "next/navigation";
 import { useOrganisation } from "@/hooks/organisation/use-organisation";
 import CreateOrganisationSheet from "../_components/create-organisation-sheet";
 import { CreateOrganisation } from "@/schemas/organisation.schema";
+import { useLocalizedPath } from "@/hooks/common/useLocalizedPath";
 
 interface Location {
   id: number;
@@ -42,6 +43,8 @@ export default function OrganizationDetailsPage() {
   const [orgOpen, setOrgOpen] = useState(false);
   const { createOneForOrganisation, readAllForOrganisation } = useLocation({ autoFetch: false });
   const { readOne: readOrganization, updateOne } = useOrganisation({ autoFetch: false });
+    const { currentLocale } = useLocalizedPath();
+
   const handleOpen = (bool: boolean) => {
     setOpen(bool);
   }
@@ -357,7 +360,7 @@ export default function OrganizationDetailsPage() {
                       <span>•</span>
                       <span>Active</span>
                     </div>
-                    <button className="text-gray-400 hover:text-gray-600" onClick={() => { router.push(`/locations/${location.id}/overview`) }}>
+                    <button className="text-gray-400 hover:text-gray-600" onClick={() => { router.push(`/${currentLocale}/locations/${location.id}/overview`) }}>
                       <ChevronRight className="h-5 w-5" />
                     </button>
                   </div>

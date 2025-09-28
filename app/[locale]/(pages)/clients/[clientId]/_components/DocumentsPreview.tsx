@@ -8,6 +8,7 @@ import { useParams, useRouter } from 'next/navigation';
 import { useDocument } from '@/hooks/document/use-document';
 import Image from 'next/image';
 import PrimaryButton from '@/common/components/PrimaryButton';
+import { useLocalizedPath } from '@/hooks/common/useLocalizedPath';
 
 type Props = {
     isParentLoading: boolean;
@@ -18,6 +19,8 @@ const DocumentsPreview = ({ isParentLoading }: Props) => {
     const { clientId } = useParams();
     const { isLoading, documents } = useDocument({ autoFetch: true, clientId: parseInt(clientId as string) })
     const router = useRouter();
+      const { currentLocale } = useLocalizedPath();
+    
     if (isParentLoading || isLoading) {
         return (
             <DocumentPreviewSkeleton />
@@ -28,8 +31,8 @@ const DocumentsPreview = ({ isParentLoading }: Props) => {
             <div className="w-full h-[287px] rounded-sm shadow-md p-4 bg-white overflow-y-scroll">
                 <div className="flex justify-between items-center">
                     <h1 className='flex items-center gap-2 m-0 p-0 font-extrabold text-lg text-slate-600'><FileText size={18} className='text-indigo-400' />Documenten</h1>
-                    <Link href={`/clients/${clientId}/documents`}>
-                        <Button className='bg-indigo-400 text-white text-xs py-1 px-2 rounded-md flex items-center gap-2 ' onClick={() => router.push(`/clients/${clientId}/documents`)}>
+                    <Link href={`/${currentLocale}/clients/${clientId}/documents`}>
+                        <Button className='bg-indigo-400 text-white text-xs py-1 px-2 rounded-md flex items-center gap-2 ' onClick={() => router.push(`/${currentLocale}/clients/${clientId}/documents`)}>
                             <span>View All</span>
                             <ArrowRight size={15} className='arrow-animation' />
                         </Button>
@@ -46,7 +49,7 @@ const DocumentsPreview = ({ isParentLoading }: Props) => {
                         text='Add Documents'
                         animation='animate-bounce'
                         icon={Edit}
-                        onClick={() => router.push(`/clients/${clientId}/documents`)}
+                        onClick={() => router.push(`/${currentLocale}/clients/${clientId}/documents`)}
                     />
                 </div>
             </div>
@@ -56,8 +59,8 @@ const DocumentsPreview = ({ isParentLoading }: Props) => {
         <div className="w-full h-[287px] rounded-sm shadow-md p-4 bg-white overflow-y-scroll">
             <div className="flex justify-between items-center">
                 <h1 className='flex items-center gap-2 m-0 p-0 font-extrabold text-lg text-slate-600'><FileText size={18} className='text-indigo-400' />Documenten</h1>
-                <Link href={`/clients/${clientId}/documents`}>
-                    <Button className='bg-indigo-400 text-white text-xs py-1 px-2 rounded-md flex items-center gap-2 ' onClick={() => router.push(`/clients/${clientId}/documents`)}>
+                <Link href={`/${currentLocale}/clients/${clientId}/documents`}>
+                    <Button className='bg-indigo-400 text-white text-xs py-1 px-2 rounded-md flex items-center gap-2 ' onClick={() => router.push(`/${currentLocale}/clients/${clientId}/documents`)}>
                         <span>View All</span>
                         <ArrowRight size={15} className='arrow-animation' />
                     </Button>

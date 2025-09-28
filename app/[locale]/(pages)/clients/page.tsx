@@ -16,6 +16,7 @@ import withAuth, { AUTH_MODE } from "@/common/hocs/with-auth";
 import withPermissions from "@/common/hocs/with-permissions";
 import Routes from "@/common/routes";
 import { PermissionsObjects } from "@/common/data/permission.data";
+import { useLocalizedPath } from "@/hooks/common/useLocalizedPath";
 
 
 
@@ -44,6 +45,7 @@ function Page() {
         clients_out_of_care: 0,
         total_clients: 0
     });
+  const { currentLocale } = useLocalizedPath();
 
     const fetchClientCounts = async () => {
         try {
@@ -78,7 +80,7 @@ function Page() {
         }
     }
     const handleAdd = () => {
-        router.push(`/clients/new`);
+        router.push(`/${currentLocale}/clients/new`);
     }
     return (
         <div className="">

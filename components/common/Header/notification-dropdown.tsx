@@ -7,6 +7,7 @@ import { NotificationData } from "@/types/notification.types";
 import { useRouter } from "next/navigation";
 import { useWsNotifications } from "@/app/[locale]/(pages)/notifications/_components/use-ws-notifications";
 import NotificationItem from "@/app/[locale]/(pages)/notifications/_components/notification-item";
+import { useLocalizedPath } from "@/hooks/common/useLocalizedPath";
 
 
 
@@ -15,6 +16,8 @@ import NotificationItem from "@/app/[locale]/(pages)/notifications/_components/n
 const NotificationDropdown = () => {
   const [isOpen, setIsOpen] = useState(false);
   const router = useRouter();
+    const { currentLocale } = useLocalizedPath();
+  
   // Prefer an env var so you can swap staging/prod easily
   const WS_URL = (process.env.NEXT_PUBLIC_WS_URL ?? "wss://api.maicare.online/ws").trim();
   const { notifications:wsNotifications, clear } = useWsNotifications(WS_URL);
@@ -101,7 +104,7 @@ const NotificationDropdown = () => {
           <div className="p-2 border-t border-gray-200 text-center">
             <Button variant="ghost" size="sm" onClick={() => {
               // Navigate to full notifications page
-              router.push("/notifications");
+              router.push("/"+currentLocale+"/notifications");
               setIsOpen(false);
             }}>
               View all notifications

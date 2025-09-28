@@ -17,6 +17,7 @@ import { PermissionsObjects } from "@/common/data/permission.data";
 import { useRouter } from "next/navigation";
 import TableFilters from "./_components/table-filters";
 import { useDebounce } from "@/hooks/common/useDebounce";
+import { useLocalizedPath } from "@/hooks/common/useLocalizedPath";
 
 
 const InvoicesPage = () => {
@@ -47,9 +48,11 @@ const InvoicesPage = () => {
       return;
     }
   }
+    const { currentLocale } = useLocalizedPath();
+
   const handleCreate = () => {
     if (!clientId) return;
-    router.push(`/invoices/create?clientId=${clientId}`);
+    router.push(`/${currentLocale}/invoices/create?clientId=${clientId}`);
   }
   const handleAdd = async () => {
     try {

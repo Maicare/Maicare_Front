@@ -12,6 +12,7 @@ import withAuth, { AUTH_MODE } from "@/common/hocs/with-auth";
 import withPermissions from "@/common/hocs/with-permissions";
 import Routes from "@/common/routes";
 import { PermissionsObjects } from "@/common/data/permission.data";
+import { useLocalizedPath } from "@/hooks/common/useLocalizedPath";
 
 const MedicalPage = () => {
     const {clientId} = useParams();
@@ -30,8 +31,10 @@ const MedicalPage = () => {
             return;
         }
     }
+    const { currentLocale } = useLocalizedPath();
+
     const handleAdd = () => {
-        router.push(`/clients/${clientId}/medical-record/create`);
+        router.push(`/${currentLocale}/clients/${clientId}/medical-record/create`);
     }
 
     return (
