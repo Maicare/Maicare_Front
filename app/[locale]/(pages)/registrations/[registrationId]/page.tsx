@@ -45,6 +45,8 @@ function ReregistrationView() {
     const [registration, setRegistration] = useState<Registration | undefined>(undefined);
     const [isLoading, setIsLoading] = useState(true);
     const [isStatusLoading, setStatusIsLoading] = useState(false);
+    const { currentLocale } = useLocalizedPath();
+
     useEffect(() => {
         const fetchRegistration = async (id: Id) => {
             setIsLoading(true);
@@ -107,7 +109,6 @@ function ReregistrationView() {
             setStatusIsLoading(false);
         }
     }
-    const { currentLocale } = useLocalizedPath();
 
 
     return (
