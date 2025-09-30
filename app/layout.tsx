@@ -5,6 +5,9 @@ import SnackbarProvider from "@/common/contexts/snackbarProvider";
 import Providers from "@/components/Providers";
 import { useParams } from "next/navigation";
 import { I18nProviderClient } from "@/lib/i18n/client";
+import "./globals.css"
+import "./satoshi.css"
+import "./data-tables-css.css"
 
 
 
