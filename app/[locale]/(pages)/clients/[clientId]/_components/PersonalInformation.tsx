@@ -1,6 +1,7 @@
 import CopyTooltip from '@/common/components/CopyTooltip'
 import { InfoIcon } from 'lucide-react'
 import PersonalInformationSkeleton from './PersonalInformationSkeleton';
+import { useI18n } from '@/lib/i18n/client';
 
 type Props = {
     first_name: string;
@@ -12,7 +13,7 @@ type Props = {
 }
 
 const PersonalInformation = ({ email, first_name, last_name, birthplace, private_phone_number, isParentLoading }: Props) => {
-    
+    const t = useI18n();
     if (isParentLoading) {
         return (
             <PersonalInformationSkeleton />
@@ -20,31 +21,31 @@ const PersonalInformation = ({ email, first_name, last_name, birthplace, private
     }
     return (
         <div className="w-full h-[287px] rounded-sm shadow-md p-4 bg-white">
-            <h1 className='flex items-center gap-2 m-0 p-0 font-extrabold text-lg text-slate-600'><InfoIcon size={18} className='text-indigo-400' /> Persoonsgegevens</h1>
+            <h1 className='flex items-center gap-2 m-0 p-0 font-extrabold text-lg text-slate-600'><InfoIcon size={18} className='text-indigo-400' /> {t("clients.profile.personalDetails")}</h1>
             <p className="mt-4 text-slate-400">
                 Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quidem. description text here.
             </p>
             <div className="mt-4 w-full">
                 <div className="flex items-center w-full py-2 border-b border-slate-200">
-                    <p className="w-[40%] text-sm text-slate-600 font-bold">Full Name:</p>
-                    <CopyTooltip text="Bourichi Taha">
+                    <p className="w-[40%] text-sm text-slate-600 font-bold">{t("clients.profile.fullName")}:</p>
+                    <CopyTooltip text={first_name + " " + last_name}>
                         <p className="text-xs bg-indigo-100 text-indigo-800  font-medium px-2.5 py-0.5 rounded-sm dark:bg-indigo-900 dark:text-indigo-300">{first_name + " " + last_name}</p>
                     </CopyTooltip>
                 </div>
                 <div className="flex items-center w-full py-2 border-b border-slate-200">
-                    <p className="w-[40%] text-sm text-slate-600 font-bold">Email:</p>
-                    <CopyTooltip text="bourichi.taha@gmail.com" >
+                    <p className="w-[40%] text-sm text-slate-600 font-bold">{t("clients.profile.email")}:</p>
+                    <CopyTooltip text={email} >
                         <p className="text-xs bg-indigo-100 text-indigo-800  font-medium px-2.5 py-0.5 rounded-sm dark:bg-indigo-900 dark:text-indigo-300">{email}</p>
                     </CopyTooltip>
                 </div>
                 <div className="flex items-center w-full py-2 border-b border-slate-200">
-                    <p className="w-[40%] text-sm text-slate-600 font-bold">Mobile:</p>
+                    <p className="w-[40%] text-sm text-slate-600 font-bold">{t("clients.profile.mobile")}:</p>
                     <CopyTooltip text={private_phone_number} >
                         <p className="text-xs bg-indigo-100 text-indigo-800  font-medium px-2.5 py-0.5 rounded-sm dark:bg-indigo-900 dark:text-indigo-300">{private_phone_number}</p>
                     </CopyTooltip>
                 </div>
                 <div className="flex items-center w-full py-2 border-b border-slate-200">
-                    <p className="w-[40%] text-sm text-slate-600 font-bold">Birthplace:</p>
+                    <p className="w-[40%] text-sm text-slate-600 font-bold">{t("clients.profile.birthplace")}:</p>
                     <CopyTooltip text={birthplace} >
                         <p className="text-xs bg-indigo-100 text-indigo-800  font-medium px-2.5 py-0.5 rounded-sm dark:bg-indigo-900 dark:text-indigo-300">{birthplace}</p>
                     </CopyTooltip>

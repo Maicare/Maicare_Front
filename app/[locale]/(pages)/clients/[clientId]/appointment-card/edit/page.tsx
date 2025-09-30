@@ -30,6 +30,7 @@ import withAuth, { AUTH_MODE } from "@/common/hocs/with-auth";
 import withPermissions from "@/common/hocs/with-permissions";
 import Routes from "@/common/routes";
 import { PermissionsObjects } from "@/common/data/permission.data";
+import { useI18n } from "@/lib/i18n/client";
 
 const defaultAppointment = {
   general_information: [] as string[],
@@ -89,7 +90,7 @@ const FieldArraySection: React.FC<FieldArraySectionProps> = ({
   Icon,
 }) => {
   const { fields, append, remove } = useFieldArray({ control, name });
-
+  const t = useI18n();
   return (
     <section className="rounded-xl border border-gray-200 bg-white/80 backdrop-blur-sm shadow-xs hover:shadow-sm transition p-6">
       <div className="flex items-center gap-3 mb-5">
@@ -121,12 +122,12 @@ const FieldArraySection: React.FC<FieldArraySectionProps> = ({
             </div>
           ))
         ) : (
-          <p className="text-gray-400 italic">Nog geen items</p>
+          <p className="text-gray-400 italic">{t("clients.appointment.noItems")}</p>
         )}
       </div>
 
       <PrimaryButton
-        text="Item toevoegen"
+        text={t("clients.appointment.addItem")}
         icon={Plus}
         type="button"
         onClick={() => append({ content: "" })}
@@ -141,7 +142,7 @@ const FieldArraySection: React.FC<FieldArraySectionProps> = ({
 function AppointmentCardEditPage() {
   const params = useParams();
   const clientId = params?.clientId?.toString() || "0";
-
+  const t = useI18n();
   const { appointments, createAppointment, updateAppointment } = useAppointment(clientId);
   const appointmentData = appointments || defaultAppointment;
   const keysToExclude = ["id", "client_id", "created_at", "updated_at"];
@@ -188,7 +189,7 @@ function AppointmentCardEditPage() {
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
         <div className="flex justify-end">
           <PrimaryButton
-            text="Opslaan"
+            text={t("common.submit")}
             icon={Check}
             type="submit"
             className="bg-blue-600 text-white hover:bg-blue-700 shadow-sm hover:shadow-md focus:ring-4 focus:ring-blue-200 focus:ring-offset-2 transition-all duration-300 transform hover:scale-[1.02]"

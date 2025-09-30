@@ -35,6 +35,7 @@ import {
 } from '@/components/ui/select';
 import { STATUS_OPTIONS } from '@/consts';
 import { useClient } from '@/hooks/client/use-client';
+import { useI18n } from '@/lib/i18n/client';
 
 // Zod schema for form validation
 const formSchema = z.object({
@@ -63,6 +64,7 @@ interface UpdateStatusButtonProps {
 
 export function UpdateStatusButton({ onConfirm, clientId, status }: UpdateStatusButtonProps) {
     const [open, setOpen] = useState(false);
+    const t = useI18n();
     const { updateStatus } = useClient({ autoFetch: false });
     const form = useForm<FormValues>({
         resolver: zodResolver(formSchema),
@@ -99,16 +101,16 @@ export function UpdateStatusButton({ onConfirm, clientId, status }: UpdateStatus
         <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
                 <button className='flex items-center justify-center gap-2 bg-indigo-400 text-white rounded-md py-2 text-sm w-[50%] hover:bg-indigo-500 transition-colors'>
-                    <span>Update Status</span>
+                    <span>{t("clients.profile.updateStatus")}</span>
                     <ArrowRight size={15} className='arrow-animation' />
                 </button>
             </DialogTrigger>
 
             <DialogContent className="sm:max-w-[500px]">
                 <DialogHeader>
-                    <DialogTitle>Update Status</DialogTitle>
+                    <DialogTitle>{t("clients.profile.updateStatus")}</DialogTitle>
                     <DialogDescription>
-                        Please provide the details for updating the status.
+                        {t("clients.profile.statusDesc")}
                     </DialogDescription>
                 </DialogHeader>
 
@@ -119,7 +121,7 @@ export function UpdateStatusButton({ onConfirm, clientId, status }: UpdateStatus
                             name="reason"
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>Reason</FormLabel>
+                                    <FormLabel>{t("clients.profile.reason")}</FormLabel>
                                     <FormControl>
                                         <Input placeholder="Enter reason for update" {...field} />
                                     </FormControl>
@@ -133,17 +135,17 @@ export function UpdateStatusButton({ onConfirm, clientId, status }: UpdateStatus
                             name="status"
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>Status</FormLabel>
+                                    <FormLabel>{t("clients.profile.status")}</FormLabel>
                                     <Select onValueChange={field.onChange} defaultValue={field.value}>
                                         <FormControl>
                                             <SelectTrigger>
-                                                <SelectValue placeholder="Select status" />
+                                                <SelectValue placeholder={t("clients.profile.status")} />
                                             </SelectTrigger>
                                         </FormControl>
                                         <SelectContent className='bg-white'>
                                             {
                                                 STATUS_OPTIONS.map(s => (
-                                                    <SelectItem key={s.value} value={s.value}>{s.label}</SelectItem>
+                                                    <SelectItem key={s.value} value={s.value}>{s.label === "Wachtlijst" ? t("clients.list.waitingList") : s.label === "In Zorg" ? t("clients.list.inCare") : t("clients.list.outOfCare")}</SelectItem>
                                                 ))
                                             }
                                         </SelectContent>
@@ -159,9 +161,9 @@ export function UpdateStatusButton({ onConfirm, clientId, status }: UpdateStatus
                             render={({ field }) => (
                                 <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3">
                                     <div className="space-y-0.5">
-                                        <FormLabel>Scheduled</FormLabel>
+                                        <FormLabel>{t("clients.profile.scheduled")}</FormLabel>
                                         <FormDescription>
-                                            Enable if this update should be scheduled for later
+                                            {t("clients.profile.enableScheduling")}
                                         </FormDescription>
                                     </div>
                                     <FormControl>
@@ -180,7 +182,7 @@ export function UpdateStatusButton({ onConfirm, clientId, status }: UpdateStatus
                                 name="schedueled_for"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel>Scheduled For</FormLabel>
+                                        <FormLabel>{t("clients.profile.scheduledFor")}</FormLabel>
                                         <FormControl>
                                             <Input
                                                 type="datetime-local"
@@ -199,10 +201,10 @@ export function UpdateStatusButton({ onConfirm, clientId, status }: UpdateStatus
                                 variant="outline"
                                 onClick={handleCancel}
                             >
-                                Cancel
+                                {t("common.cancel")}
                             </Button>
                             <Button type="submit" className="bg-indigo-400 hover:bg-indigo-500">
-                                Confirm Update
+                                {t("common.confirm")}
                             </Button>
                         </DialogFooter>
                     </form>

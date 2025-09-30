@@ -9,7 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
-import { GENDER_OPTIONS, LEGAL_MEASURE, SOURCE_OPTIONS } from "@/consts";
+import { GENDER_OPTIONS,  } from "@/consts";
 import { useClient } from "@/hooks/client/use-client";
 import { useContact } from "@/hooks/contact/use-contact";
 import { useLocation } from "@/hooks/location/use-location";
@@ -17,7 +17,7 @@ import { CreateClientInput, CreateClientSchema, UpdateClientRequestBody } from "
 import { cn } from "@/utils/cn";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { format } from "date-fns";
-import { CalendarIcon, CheckCircle,  Info, PlusCircle, XCircle } from "lucide-react";
+import { CalendarIcon, CheckCircle, Info, PlusCircle, XCircle } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import AddressesForm from "./AdressesForm";
@@ -27,6 +27,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import UpsertContactForm from "../../contacts/_components/upsert-contact-form";
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { EnhancedDatePicker } from "./enhanced-date-picker";
+import { useI18n } from "@/lib/i18n/client";
 
 type Props = {
     mode: "create" | "update";
@@ -41,6 +42,7 @@ const UpsertClientForm = ({ mode, onCancel, defaultValues, onSuccess }: Props) =
     const { contacts, } = useContact({ autoFetch: true });
     const [loading, setLoading] = useState(false);
     const [openContactSheet, setOpenContactSheet] = useState(false);
+    const t = useI18n();
     // 1. Define your form.
 
     const form = useForm<CreateClientInput>({
@@ -152,7 +154,7 @@ const UpsertClientForm = ({ mode, onCancel, defaultValues, onSuccess }: Props) =
                 <div className="grid grid-cols-1 gap-2 h-fit">
                     <div className="grid grid-cols-1 gap-4 h-fit">
                         <div className="flex flex-col gap-4 px-6 py-3 bg-white rounded-md border-2 border-muted h-fit">
-                            <h1 className='text-base font-semibold text-black'>Persoonlijke Gegevens</h1>
+                            <h1 className='text-base font-semibold text-black'>{t("clients.create.personalDetails")}</h1>
                             <Separator className='bg-slate-300' />
                             <div className="grid grid-cols-2 gap-x-2 gap-y-4">
                                 <FormField
@@ -160,7 +162,7 @@ const UpsertClientForm = ({ mode, onCancel, defaultValues, onSuccess }: Props) =
                                     name="first_name"
                                     render={({ field }) => (
                                         <FormItem>
-                                            <FormLabel>Voornaam</FormLabel>
+                                            <FormLabel>{t("clients.create.firstName")}</FormLabel>
                                             <FormControl>
                                                 <div className="relative">
                                                     <Input placeholder="eg: John" {...field} />
@@ -180,7 +182,7 @@ const UpsertClientForm = ({ mode, onCancel, defaultValues, onSuccess }: Props) =
                                     name="last_name"
                                     render={({ field }) => (
                                         <FormItem>
-                                            <FormLabel>Achternaam</FormLabel>
+                                            <FormLabel>{t("clients.create.lastName")}</FormLabel>
                                             <FormControl>
                                                 <div className="relative">
                                                     <Input placeholder="eg: Doe" {...field} />
@@ -200,7 +202,7 @@ const UpsertClientForm = ({ mode, onCancel, defaultValues, onSuccess }: Props) =
                                     name="email"
                                     render={({ field }) => (
                                         <FormItem>
-                                            <FormLabel>E-mail</FormLabel>
+                                            <FormLabel>{t("clients.create.email")}</FormLabel>
                                             <FormControl>
                                                 <div className="relative">
                                                     <Input type="email" placeholder="eg: John.doe@example.com" {...field} />
@@ -220,7 +222,7 @@ const UpsertClientForm = ({ mode, onCancel, defaultValues, onSuccess }: Props) =
                                     name="phone_number"
                                     render={({ field }) => (
                                         <FormItem>
-                                            <FormLabel>Telefoonnummer</FormLabel>
+                                            <FormLabel>{t("clients.create.phoneNumber")}</FormLabel>
                                             <FormControl>
                                                 <div className="relative">
                                                     <Input placeholder="eg: +212 626 661 516" {...field} />
@@ -240,7 +242,7 @@ const UpsertClientForm = ({ mode, onCancel, defaultValues, onSuccess }: Props) =
                                     name="infix"
                                     render={({ field }) => (
                                         <FormItem>
-                                            <FormLabel>Tussenvoegsel</FormLabel>
+                                            <FormLabel>{t("clients.create.middleName")}</FormLabel>
                                             <FormControl>
                                                 <div className="relative">
                                                     <Input placeholder="eg: Tussenvoegsel" {...field} />
@@ -260,7 +262,7 @@ const UpsertClientForm = ({ mode, onCancel, defaultValues, onSuccess }: Props) =
                                     name="birthplace"
                                     render={({ field }) => (
                                         <FormItem>
-                                            <FormLabel>Geboorteplaats</FormLabel>
+                                            <FormLabel>{t("clients.create.placeOfBirth")}</FormLabel>
                                             <FormControl>
                                                 <div className="relative">
                                                     <Input placeholder="eg: Tangier" {...field} />
@@ -280,7 +282,7 @@ const UpsertClientForm = ({ mode, onCancel, defaultValues, onSuccess }: Props) =
                                     name="filenumber"
                                     render={({ field }) => (
                                         <FormItem>
-                                            <FormLabel>Dossiernummer</FormLabel>
+                                            <FormLabel>{t("clients.create.fileNumber")}</FormLabel>
                                             <FormControl>
                                                 <div className="relative">
                                                     <Input placeholder="eg: T98UJB590" {...field} />
@@ -301,7 +303,7 @@ const UpsertClientForm = ({ mode, onCancel, defaultValues, onSuccess }: Props) =
                                     render={({ field }) => (
                                         <FormItem>
                                             <FormLabel className='flex items-center justify-between'>
-                                                Geslacht
+                                                {t("clients.create.gender")}
                                                 <Tooltip text='This is gender '>
                                                     <Info className='h-5 w-5 mr-2' />
                                                 </Tooltip>
@@ -309,13 +311,13 @@ const UpsertClientForm = ({ mode, onCancel, defaultValues, onSuccess }: Props) =
                                             <FormControl>
                                                 <Select onValueChange={field.onChange} defaultValue={field.value} >
                                                     <SelectTrigger className="w-full">
-                                                        <SelectValue placeholder="Geslacht" />
+                                                        <SelectValue placeholder={t("clients.create.gender")} />
                                                     </SelectTrigger>
                                                     <SelectContent className="bg-white">
                                                         <SelectGroup>
                                                             {
                                                                 GENDER_OPTIONS.map((item, index) => (
-                                                                    <SelectItem key={index} value={item.value} className="hover:bg-slate-100 cursor-pointer">{item.label}</SelectItem>
+                                                                    <SelectItem key={index} value={item.value} className="hover:bg-slate-100 cursor-pointer">{item.label === "Man" ? t("common.male") : item.label === "Vrouw" ? t("common.female") : t("common.notSpecified")}</SelectItem>
                                                                 ))
                                                             }
                                                         </SelectGroup>
@@ -329,7 +331,7 @@ const UpsertClientForm = ({ mode, onCancel, defaultValues, onSuccess }: Props) =
                                 <EnhancedDatePicker
                                     control={form.control}
                                     name="date_of_birth"
-                                    label="Date of birth"
+                                    label={t("clients.create.dateOfBirth")}
                                     tooltipText="Select your date of birth. Must be after 1950."
                                 />
                                 <FormField
@@ -338,7 +340,7 @@ const UpsertClientForm = ({ mode, onCancel, defaultValues, onSuccess }: Props) =
                                     render={({ field }) => (
                                         <FormItem>
                                             <FormLabel className='flex items-center justify-between'>
-                                                Woon situatie
+                                                {t("clients.create.livingSituation")}
                                                 <Tooltip text='This is Woon situatie'>
                                                     <Info className='h-5 w-5 mr-2' />
                                                 </Tooltip>
@@ -352,10 +354,10 @@ const UpsertClientForm = ({ mode, onCancel, defaultValues, onSuccess }: Props) =
                                                         <SelectGroup>
                                                             {
                                                                 [
-                                                                    { value: "home", label: "Thuis" },
-                                                                    { value: "foster_care", label: "Pleegzorg" },
-                                                                    { value: "youth_care_institution", label: "Jeugdzorginstelling" },
-                                                                    { value: "other", label: "Overig" },
+                                                                    { value: "home", label: t("clients.create.home") },
+                                                                    { value: "foster_care", label: t("clients.create.fosterCare") },
+                                                                    { value: "youth_care_institution", label: t("clients.create.youthCareInstitution") },
+                                                                    { value: "other", label: t("common.other") },
                                                                 ].map((item, index) => (
                                                                     <SelectItem key={index} value={item.value} className="hover:bg-slate-100 cursor-pointer">{item.label}</SelectItem>
                                                                 ))
@@ -373,7 +375,7 @@ const UpsertClientForm = ({ mode, onCancel, defaultValues, onSuccess }: Props) =
                                     name="living_situation_notes"
                                     render={({ field }) => (
                                         <FormItem className="col-span-2">
-                                            <FormLabel>Woon situatie notities</FormLabel>
+                                            <FormLabel>{t("clients.create.livingSituationNotes")}</FormLabel>
                                             <FormControl>
                                                 <div className="relative">
                                                     <Textarea rows={4} placeholder="eg: Woon situatie notities" className="resize-none" {...field} />
@@ -393,7 +395,7 @@ const UpsertClientForm = ({ mode, onCancel, defaultValues, onSuccess }: Props) =
                     </div>
                     <div className="grid grid-cols-1 gap-4 h-fit">
                         <div className="flex flex-col gap-4 px-6 py-3 bg-white rounded-md border-2 border-muted h-fit">
-                            <h1 className='text-base font-semibold text-black'>Identiteitsgegevens</h1>
+                            <h1 className='text-base font-semibold text-black'>{t("clients.create.identityDetails")}</h1>
                             <Separator className='bg-slate-300' />
                             <div className="grid grid-cols-2 gap-x-2 gap-y-4">
                                 <FormField
@@ -401,7 +403,7 @@ const UpsertClientForm = ({ mode, onCancel, defaultValues, onSuccess }: Props) =
                                     name="bsn"
                                     render={({ field }) => (
                                         <FormItem>
-                                            <FormLabel>BSN</FormLabel>
+                                            <FormLabel>{t("clients.create.bsn")}</FormLabel>
                                             <FormControl>
                                                 <div className="relative">
                                                     <Input placeholder="eg: BSN" {...field} />
@@ -422,7 +424,7 @@ const UpsertClientForm = ({ mode, onCancel, defaultValues, onSuccess }: Props) =
                                     render={({ field }) => (
                                         <FormItem>
                                             <FormLabel className='flex items-center justify-between'>
-                                                Bron
+                                                {t("clients.create.source")}
                                                 <Tooltip text='This is Bron'>
                                                     <Info className='h-5 w-5 mr-2' />
                                                 </Tooltip>
@@ -430,12 +432,18 @@ const UpsertClientForm = ({ mode, onCancel, defaultValues, onSuccess }: Props) =
                                             <FormControl>
                                                 <Select onValueChange={field.onChange} defaultValue={field.value} >
                                                     <SelectTrigger className="w-full">
-                                                        <SelectValue placeholder="Bron" />
+                                                        <SelectValue placeholder={t("clients.create.source")} />
                                                     </SelectTrigger>
                                                     <SelectContent className="bg-white">
                                                         <SelectGroup>
                                                             {
-                                                                SOURCE_OPTIONS.map((item, index) => (
+                                                                [
+                                                                    { value: 'policy_card', label: t('clients.create.policyCard') },
+                                                                    { value: 'passport', label: t('clients.create.passport') },
+                                                                    { value: 'ID', label: t('clients.create.id') },
+                                                                    { value: 'BRP', label: t('clients.create.brp') },
+                                                                    { value: 'government_agency_letter', label: t('clients.create.governmentAgencyLetter') }
+                                                                ].map((item, index) => (
                                                                     <SelectItem key={index} value={item.value} className="hover:bg-slate-100 cursor-pointer">{item.label}</SelectItem>
                                                                 ))
                                                             }
@@ -450,14 +458,14 @@ const UpsertClientForm = ({ mode, onCancel, defaultValues, onSuccess }: Props) =
                             </div>
                             <EmployeeSelect
                                 name="employee_id"
-                                label="Werknemer"
+                                label={t("clients.create.employee")}
                                 className="w-full"
                             />
                         </div>
                     </div>
                     <div className="grid grid-cols-1 gap-4 h-fit">
                         <div className="flex flex-col gap-4 px-6 py-3 bg-white rounded-md border-2 border-muted h-fit">
-                            <h1 className='text-base font-semibold text-black'>Locatiegegevens</h1>
+                            <h1 className='text-base font-semibold text-black'>{t("clients.create.locationDetails")}</h1>
                             <Separator className='bg-slate-300' />
                             <div className="grid grid-cols-2 gap-x-2 gap-y-4">
                                 <FormField
@@ -466,7 +474,7 @@ const UpsertClientForm = ({ mode, onCancel, defaultValues, onSuccess }: Props) =
                                     render={({ field }) => (
                                         <FormItem>
                                             <FormLabel className='flex items-center justify-between'>
-                                                Locatie
+                                                {t("clients.create.location")}
                                                 <Tooltip text='This is Locatie '>
                                                     <Info className='h-5 w-5 mr-2' />
                                                 </Tooltip>
@@ -474,11 +482,11 @@ const UpsertClientForm = ({ mode, onCancel, defaultValues, onSuccess }: Props) =
                                             <FormControl>
                                                 <Select onValueChange={field.onChange} defaultValue={field.value} >
                                                     <SelectTrigger className="w-full">
-                                                        <SelectValue placeholder="Select a Location" />
+                                                        <SelectValue placeholder={t("clients.list.selectLocation")} />
                                                     </SelectTrigger>
                                                     <SelectContent className="bg-white">
                                                         <SelectGroup>
-                                                            <SelectLabel>Locations</SelectLabel>
+                                                            <SelectLabel>{t("clients.create.location")}</SelectLabel>
                                                             {
                                                                 locations?.map((item, index) => (
                                                                     <SelectItem key={index} value={item.id.toString()} className="hover:bg-slate-100 cursor-pointer">{item.name}</SelectItem>
@@ -498,7 +506,7 @@ const UpsertClientForm = ({ mode, onCancel, defaultValues, onSuccess }: Props) =
                                     render={({ field }) => (
                                         <FormItem>
                                             <FormLabel className='flex items-center justify-between'>
-                                                Rechtsmaatregel
+                                                {t("clients.create.legalMeasure")}
                                                 <Tooltip text='This is Rechtsmaatregel'>
                                                     <Info className='h-5 w-5 mr-2' />
                                                 </Tooltip>
@@ -506,12 +514,21 @@ const UpsertClientForm = ({ mode, onCancel, defaultValues, onSuccess }: Props) =
                                             <FormControl>
                                                 <Select onValueChange={field.onChange} defaultValue={field.value} >
                                                     <SelectTrigger className="w-full">
-                                                        <SelectValue placeholder="Select a Rechtsmaatregel" />
+                                                        <SelectValue placeholder={t("clients.create.legalMeasure")} />
                                                     </SelectTrigger>
                                                     <SelectContent className="bg-white">
                                                         <SelectGroup>
                                                             {
-                                                                LEGAL_MEASURE.map((item, index) => (
+                                                                [
+                                                                    {
+                                                                        value: "Jeugdreclassering",
+                                                                        label: t("clients.create.youthProbation"),
+                                                                    },
+                                                                    {
+                                                                        value: "Jeugdbescherming",
+                                                                        label: t("clients.create.youthProtection"),
+                                                                    }
+                                                                ].map((item, index) => (
                                                                     <SelectItem key={index} value={item.value} className="hover:bg-slate-100 cursor-pointer">{item.label}</SelectItem>
                                                                 ))
                                                             }
@@ -528,7 +545,7 @@ const UpsertClientForm = ({ mode, onCancel, defaultValues, onSuccess }: Props) =
                                     name="departement"
                                     render={({ field }) => (
                                         <FormItem>
-                                            <FormLabel>Afdeling</FormLabel>
+                                            <FormLabel>{t("clients.create.department")}</FormLabel>
                                             <FormControl>
                                                 <div className="relative">
                                                     <Input placeholder="eg: IT departement" {...field} />
@@ -548,7 +565,7 @@ const UpsertClientForm = ({ mode, onCancel, defaultValues, onSuccess }: Props) =
                                     name="organisation"
                                     render={({ field }) => (
                                         <FormItem>
-                                            <FormLabel>Organisatie</FormLabel>
+                                            <FormLabel>{t("clients.create.organization")}</FormLabel>
                                             <FormControl>
                                                 <div className="relative">
                                                     <Input placeholder="eg: MaiCare" {...field} />
@@ -569,12 +586,12 @@ const UpsertClientForm = ({ mode, onCancel, defaultValues, onSuccess }: Props) =
                     <div className="grid grid-cols-1 gap-4 h-fit">
                         <div className="flex flex-col gap-4 px-6 py-3 bg-white rounded-md border-2 border-muted h-fit">
                             <div className="flex items-center justify-between">
-                                <h1 className='text-base font-semibold text-black'>opdrachtgever</h1>
+                                <h1 className='text-base font-semibold text-black'>{t("clients.create.contact")}</h1>
                                 {/* make a sheet for the upsert-contact-form */}
                                 <Sheet open={openContactSheet} onOpenChange={(b) => setOpenContactSheet(b)}>
                                     <SheetTrigger asChild>
                                         <PrimaryButton
-                                            text="nieuwe opdrachtgever"
+                                            text={t("clients.create.newContact")}
                                             icon={PlusCircle}
                                             animation="animate-bounce"
                                             type="button"
@@ -583,9 +600,10 @@ const UpsertClientForm = ({ mode, onCancel, defaultValues, onSuccess }: Props) =
                                     </SheetTrigger>
                                     <SheetContent className="sm:max-w-2xl">
                                         <SheetHeader className="mb-4">
-                                            <SheetTitle>Nieuwe Opdrachtgever</SheetTitle>
+                                            <SheetTitle>{t("clients.create.newContact")}</SheetTitle>
                                             <SheetDescription>
                                                 Vul de gegevens van de nieuwe opdrachtgever in.
+                                                {/* TODO translate this to eng fr nl */}
                                             </SheetDescription>
                                         </SheetHeader>
                                         <UpsertContactForm
@@ -611,7 +629,7 @@ const UpsertClientForm = ({ mode, onCancel, defaultValues, onSuccess }: Props) =
                                     render={({ field }) => (
                                         <FormItem>
                                             <FormLabel className='flex items-center justify-between'>
-                                                Contact
+                                                {t("clients.create.contact")}
                                                 <Tooltip text='This is Contact'>
                                                     <Info className='h-5 w-5 mr-2' />
                                                 </Tooltip>
@@ -623,7 +641,7 @@ const UpsertClientForm = ({ mode, onCancel, defaultValues, onSuccess }: Props) =
                                                     </SelectTrigger>
                                                     <SelectContent className="bg-white">
                                                         <SelectGroup>
-                                                            <SelectLabel>Contacts</SelectLabel>
+                                                            <SelectLabel>{t("clients.create.contact")}</SelectLabel>
                                                             {
                                                                 contacts?.results?.map((item, index) => (
                                                                     <SelectItem key={index} value={item?.id?.toString() || ""} className="hover:bg-slate-100 cursor-pointer">{item.name}</SelectItem>
@@ -645,7 +663,7 @@ const UpsertClientForm = ({ mode, onCancel, defaultValues, onSuccess }: Props) =
                     {/* education and work */}
                     <div className="grid grid-cols-1 gap-4 h-fit">
                         <div className="flex flex-col gap-4 px-6 py-3 bg-white rounded-md border-2 border-muted h-fit">
-                            <h1 className='text-base font-semibold text-black'>Werk</h1>
+                            <h1 className='text-base font-semibold text-black'>{t("clients.create.work")}</h1>
                             <Separator className='bg-slate-300' />
                             <div className="grid grid-cols-1 gap-x-2 gap-y-4">
                                 <FormField
@@ -660,7 +678,7 @@ const UpsertClientForm = ({ mode, onCancel, defaultValues, onSuccess }: Props) =
                                                 />
                                             </FormControl>
                                             <FormLabel className="font-normal">
-                                                Currently Employed in work
+                                                {t("clients.create.currentlyEmployed")}
                                             </FormLabel>
                                         </FormItem>
                                     )}
@@ -672,7 +690,7 @@ const UpsertClientForm = ({ mode, onCancel, defaultValues, onSuccess }: Props) =
                                             name="work_current_employer"
                                             render={({ field }) => (
                                                 <FormItem>
-                                                    <FormLabel>Employer</FormLabel>
+                                                    <FormLabel>{t("clients.create.employer")}</FormLabel>
                                                     <FormControl>
                                                         <Input placeholder="Boston Consulting Group" {...field} />
                                                     </FormControl>
@@ -686,7 +704,7 @@ const UpsertClientForm = ({ mode, onCancel, defaultValues, onSuccess }: Props) =
                                                 name="work_current_position"
                                                 render={({ field }) => (
                                                     <FormItem>
-                                                        <FormLabel>Position Name</FormLabel>
+                                                        <FormLabel>{t("clients.create.positionName")}</FormLabel>
                                                         <FormControl>
                                                             <Input placeholder="Developer Fullstack" {...field} />
                                                         </FormControl>
@@ -699,7 +717,7 @@ const UpsertClientForm = ({ mode, onCancel, defaultValues, onSuccess }: Props) =
                                                 name="work_start_date"
                                                 render={({ field }) => (
                                                     <FormItem>
-                                                        <FormLabel>Start Date</FormLabel>
+                                                        <FormLabel>{t("clients.create.startDate")}</FormLabel>
                                                         <Popover>
                                                             <PopoverTrigger asChild>
                                                                 <FormControl>
@@ -713,7 +731,7 @@ const UpsertClientForm = ({ mode, onCancel, defaultValues, onSuccess }: Props) =
                                                                         {field.value ? (
                                                                             format(field.value, "PPP")
                                                                         ) : (
-                                                                            <span>Pick a date</span>
+                                                                            <span>{t("clients.create.startDate")}</span>
                                                                         )}
                                                                         <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                                                                     </Button>
@@ -740,7 +758,7 @@ const UpsertClientForm = ({ mode, onCancel, defaultValues, onSuccess }: Props) =
                                                 name="work_employer_email"
                                                 render={({ field }) => (
                                                     <FormItem>
-                                                        <FormLabel>Employer Email</FormLabel>
+                                                        <FormLabel>{t("clients.create.employerEmail")}</FormLabel>
                                                         <FormControl>
                                                             <Input placeholder="employer@example.com" {...field} />
                                                         </FormControl>
@@ -753,7 +771,7 @@ const UpsertClientForm = ({ mode, onCancel, defaultValues, onSuccess }: Props) =
                                                 name="work_employer_phone"
                                                 render={({ field }) => (
                                                     <FormItem>
-                                                        <FormLabel>Employer Phone</FormLabel>
+                                                        <FormLabel>{t("clients.create.employerPhone")}</FormLabel>
                                                         <FormControl>
                                                             <Input placeholder="+31 6 12345678" {...field} />
                                                         </FormControl>
@@ -767,7 +785,7 @@ const UpsertClientForm = ({ mode, onCancel, defaultValues, onSuccess }: Props) =
                                             name="work_additional_notes"
                                             render={({ field }) => (
                                                 <FormItem>
-                                                    <FormLabel>Additional Notes</FormLabel>
+                                                    <FormLabel>{t("clients.create.additionalNotes")}</FormLabel>
                                                     <FormControl>
                                                         <Textarea
                                                             placeholder="Any additional information about education..."
@@ -784,7 +802,7 @@ const UpsertClientForm = ({ mode, onCancel, defaultValues, onSuccess }: Props) =
                             </div>
                         </div>
                         <div className="flex flex-col gap-4 px-6 py-3 bg-white rounded-md border-2 border-muted h-fit">
-                            <h1 className='text-base font-semibold text-black'>Opleiding</h1>
+                            <h1 className='text-base font-semibold text-black'>{t("clients.create.education")}</h1>
                             <Separator className='bg-slate-300' />
                             <div className="grid grid-cols-1 gap-x-2 gap-y-4">
                                 <FormField
@@ -799,7 +817,7 @@ const UpsertClientForm = ({ mode, onCancel, defaultValues, onSuccess }: Props) =
                                                 />
                                             </FormControl>
                                             <FormLabel className="font-normal">
-                                                Currently Enrolled in Education
+                                                {t("clients.create.currentlyEnrolled")}
                                             </FormLabel>
                                         </FormItem>
                                     )}
@@ -812,7 +830,7 @@ const UpsertClientForm = ({ mode, onCancel, defaultValues, onSuccess }: Props) =
                                             name="education_institution"
                                             render={({ field }) => (
                                                 <FormItem>
-                                                    <FormLabel>Institution</FormLabel>
+                                                    <FormLabel>{t("clients.create.institution")}</FormLabel>
                                                     <FormControl>
                                                         <Input placeholder="University of Amsterdam" {...field} />
                                                     </FormControl>
@@ -826,7 +844,7 @@ const UpsertClientForm = ({ mode, onCancel, defaultValues, onSuccess }: Props) =
                                                 name="education_mentor_name"
                                                 render={({ field }) => (
                                                     <FormItem>
-                                                        <FormLabel>Mentor Name</FormLabel>
+                                                        <FormLabel>{t("clients.create.mentorName")}</FormLabel>
                                                         <FormControl>
                                                             <Input placeholder="Dr. Smith" {...field} />
                                                         </FormControl>
@@ -839,7 +857,7 @@ const UpsertClientForm = ({ mode, onCancel, defaultValues, onSuccess }: Props) =
                                                 name="education_mentor_email"
                                                 render={({ field }) => (
                                                     <FormItem>
-                                                        <FormLabel>Mentor Email</FormLabel>
+                                                        <FormLabel>{t("clients.create.mentorEmail")}</FormLabel>
                                                         <FormControl>
                                                             <Input placeholder="mentor@example.com" {...field} />
                                                         </FormControl>
@@ -853,7 +871,7 @@ const UpsertClientForm = ({ mode, onCancel, defaultValues, onSuccess }: Props) =
                                             name="education_mentor_phone"
                                             render={({ field }) => (
                                                 <FormItem>
-                                                    <FormLabel>Mentor Phone</FormLabel>
+                                                    <FormLabel>{t("clients.create.mentorPhone")}</FormLabel>
                                                     <FormControl>
                                                         <Input placeholder="+31 6 12345678" {...field} />
                                                     </FormControl>
@@ -866,7 +884,7 @@ const UpsertClientForm = ({ mode, onCancel, defaultValues, onSuccess }: Props) =
                                             name="education_additional_notes"
                                             render={({ field }) => (
                                                 <FormItem>
-                                                    <FormLabel>Additional Notes</FormLabel>
+                                                    <FormLabel>{t("clients.create.additionalNotes")}</FormLabel>
                                                     <FormControl>
                                                         <Textarea
                                                             placeholder="Any additional information about education..."
@@ -884,7 +902,7 @@ const UpsertClientForm = ({ mode, onCancel, defaultValues, onSuccess }: Props) =
                                             render={({ field }) => (
                                                 <FormItem>
                                                     <FormLabel className='flex items-center justify-between'>
-                                                        Opleidingsniveau
+                                                        {t("clients.create.level")}
                                                         <Tooltip text='This is Opleidingsniveau'>
                                                             <Info className='h-5 w-5 mr-2' />
                                                         </Tooltip>
@@ -898,10 +916,10 @@ const UpsertClientForm = ({ mode, onCancel, defaultValues, onSuccess }: Props) =
                                                                 <SelectGroup>
                                                                     {
                                                                         [
-                                                                            { value: "primary", label: "Basisonderwijs" },
-                                                                            { value: "secondary", label: "Voortgezet Onderwijs" },
-                                                                            { value: "higher", label: "Hoger Onderwijs" },
-                                                                            { value: "none", label: "Geen Opleiding" }
+                                                                            { value: "primary", label: t("clients.create.primary") },
+                                                                            { value: "secondary", label: t("clients.create.secondary") },
+                                                                            { value: "higher", label: t("clients.create.higher") },
+                                                                            { value: "none", label: t("common.other") }
                                                                         ].map((item, index) => (
                                                                             <SelectItem key={index} value={item.value} className="hover:bg-slate-100 cursor-pointer">{item.label}</SelectItem>
                                                                         ))
@@ -922,7 +940,7 @@ const UpsertClientForm = ({ mode, onCancel, defaultValues, onSuccess }: Props) =
 
                     <div className="grid grid-cols-1 gap-4 h-fit">
                         <div className="flex flex-col gap-4 px-6 py-3 bg-white rounded-md border-2 border-muted h-fit">
-                            <h1 className='text-base font-semibold text-black'>Adresgegevens</h1>
+                            <h1 className='text-base font-semibold text-black'>{t("clients.create.addressDetails")}</h1>
                             <Separator className='bg-slate-300' />
                             <div className="grid grid-cols-1">
                                 <AddressesForm />
@@ -931,7 +949,7 @@ const UpsertClientForm = ({ mode, onCancel, defaultValues, onSuccess }: Props) =
                     </div>
                 </div>
                 <PrimaryButton
-                    text='Save'
+                    text={t("common.save")}
                     type='submit'
                     animation='animate-bounce'
                     icon={CheckCircle}
@@ -939,7 +957,7 @@ const UpsertClientForm = ({ mode, onCancel, defaultValues, onSuccess }: Props) =
                     className='bg-indigo-100 text-indigo-500 hover:bg-indigo-500 hover:text-white px-4 py-3 text-sm'
                 />
                 <PrimaryButton
-                    text='Cancel'
+                    text={t("common.cancel")}
                     type='button'
                     animation='animate-bounce'
                     icon={XCircle}

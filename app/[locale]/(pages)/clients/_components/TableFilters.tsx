@@ -6,6 +6,7 @@ import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrig
 import { Switch } from '@/components/ui/switch';
 import { STATUS_OPTIONS } from '@/consts';
 import { useLocation } from '@/hooks/location/use-location'
+import { useI18n } from '@/lib/i18n/client';
 import { ClientsSearchParams } from '@/types/client.types';
 import { PlusCircle } from 'lucide-react'
 import React from 'react'
@@ -18,17 +19,18 @@ type Props = {
 
 const TableFilters = ({ filters, handleAdd, setFilters }: Props) => {
     const { locations } = useLocation({ autoFetch: true });
+    const t = useI18n();
 
     return (
         <div className="flex px-2 py-3 bg-white dark:bg-[#18181b] dark:border-black rounded-md mb-5 gap-2 border-2 border-muted">
-            <Input type="search" placeholder="Search" className="w-60 dark:bg-[#18181b] dark:border-white dark:ring-offset-black focus:ring-indigo-800" value={filters.search} onChange={(e) => setFilters({ ...filters, search: e.target.value })} />
+            <Input type="search" placeholder={t("common.search")} className="w-60 dark:bg-[#18181b] dark:border-white dark:ring-offset-black focus:ring-indigo-800" value={filters.search} onChange={(e) => setFilters({ ...filters, search: e.target.value })} />
             <Select value={filters.location_id?.toString()} onValueChange={(e) => setFilters({ ...filters, location_id: parseInt(e) })} >
                 <SelectTrigger className="w-[180px] dark:bg-[#18181b] dark:ring-offset-black focus:ring-indigo-800">
-                    <SelectValue placeholder="Select a Location" />
+                    <SelectValue placeholder={t("clients.list.selectLocation")} />
                 </SelectTrigger>
                 <SelectContent className="bg-white dark:bg-[#18181b] dark:border-black dark:text-white">
                     <SelectGroup>
-                        <SelectLabel>Locations</SelectLabel>
+                        <SelectLabel>{t("clients.list.location")}</SelectLabel>
                         {
                             locations?.map((item, index) => (
                                 <SelectItem key={index} value={item.id.toString()} className="hover:bg-slate-100 dark:hover:bg-gray-500 cursor-pointer">{item.name}</SelectItem>
@@ -54,13 +56,13 @@ const TableFilters = ({ filters, handleAdd, setFilters }: Props) => {
                             className="data-[state=checked]:bg-indigo-800 dark:data-[state=checked]:bg-indigo-600"
                         />
                         <Label htmlFor={`status-${item.value}`} className="cursor-pointer">
-                            {item.label}
+                            {item.label === "Wachtlijst" ? t("clients.list.waitingList") : item.label === "In Zorg" ? t("clients.list.inCare") : t("clients.list.outOfCare")}
                         </Label>
                     </div>
                 ))}
             </div>
             <PrimaryButton
-                text="Add"
+                text={t("common.add")}
                 onClick={handleAdd}
                 disabled={false}
                 icon={PlusCircle}

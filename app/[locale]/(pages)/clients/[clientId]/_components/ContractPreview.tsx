@@ -7,6 +7,7 @@ import { useContract } from '@/hooks/contract/use-contract'
 import { formatDateToDutch } from '@/utils/timeFormatting'
 import { useParams, useRouter } from 'next/navigation'
 import { useLocalizedPath } from '@/hooks/common/useLocalizedPath'
+import { useI18n } from '@/lib/i18n/client'
 
 type Props = {
     isParentLoading: boolean;
@@ -14,6 +15,7 @@ type Props = {
 
 const ContractPreview = ({ isParentLoading }: Props) => {
     const {clientId} = useParams();
+    const t = useI18n();
     const { contracts } = useContract({autoFetch:true,clientId:clientId as string});
     const router = useRouter();
   const { currentLocale } = useLocalizedPath();
@@ -26,9 +28,9 @@ const ContractPreview = ({ isParentLoading }: Props) => {
     return (
         <div className="w-full h-[287px] rounded-sm shadow-md p-4 bg-white overflow-y-scroll">
             <div className="flex justify-between items-center">
-                <h1 className='flex items-center gap-2 m-0 p-0 font-extrabold text-lg text-slate-600'><Receipt size={18} className='text-indigo-400' />Contracten</h1>
+                <h1 className='flex items-center gap-2 m-0 p-0 font-extrabold text-lg text-slate-600'><Receipt size={18} className='text-indigo-400' />{t("clients.profile.contracts")}</h1>
                 <Button className='bg-indigo-400 text-white text-xs py-1 px-2 rounded-md flex items-center gap-2 ' onClick={()=>router.push(`/${currentLocale}/clients/${clientId}/contract`)}>
-                    <span>View All</span>
+                    <span>{t("common.viewAll")}</span>
                     <ArrowRight size={15} className='arrow-animation' />
                 </Button>
             </div>

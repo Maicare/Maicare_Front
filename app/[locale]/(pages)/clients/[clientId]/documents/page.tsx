@@ -17,6 +17,8 @@ import withAuth, { AUTH_MODE } from "@/common/hocs/with-auth";
 import withPermissions from "@/common/hocs/with-permissions";
 import Routes from "@/common/routes";
 import { PermissionsObjects } from "@/common/data/permission.data";
+import { useI18n } from "@/lib/i18n/client";
+import { useDocumentTypeOptions } from "./_hooks/useDocumentTypeOptions";
 
 
 const DocumentsPage = () => {
@@ -24,7 +26,8 @@ const DocumentsPage = () => {
     const { isLoading, documents, page, setPage, createOne, deleteOne } = useDocument({ autoFetch: true, clientId: parseInt(clientId as string) });
     const [open, setOpen] = useState(false);
     const [defaultSeleted, setDefaultSeleted] = useState("");
-
+    const t = useI18n();
+    const documentTypesOptions = useDocumentTypeOptions();
     const handlePrevious = () => {
         if (page <= 1) {
             setPage(1);
@@ -54,7 +57,7 @@ const DocumentsPage = () => {
 
     ALREADY_UPLOADED_DOCUMENTS = documents.results?.map((doc) => doc.label)
         .filter((label) => label !== "other") || [];
-    CUSTOM_DOCUMENT_LABEL_OPTIONS = DOCUMENT_LABEL_OPTIONS.filter(
+    CUSTOM_DOCUMENT_LABEL_OPTIONS = documentTypesOptions.filter(
         (option) => !ALREADY_UPLOADED_DOCUMENTS.includes(option.value)
     );
     const handleDownload = async (doc: Document) => {
@@ -91,7 +94,7 @@ const DocumentsPage = () => {
         <div className="w-full flex flex-col gap-4">
             <div className="flex items-center justify-between">
                 <h1 className='flex items-center gap-2 m-0 p-0 font-extrabold text-lg text-slate-600'>
-                    <FileArchive size={24} className='text-indigo-400' />  Documenten
+                    <FileArchive size={24} className='text-indigo-400' />  {t("clients.documents.title")}
                 </h1>
                 <AddDocumentDialog
                     handleAdd={handleAdd}
@@ -134,7 +137,7 @@ const DocumentsPage = () => {
                                                     className="bg-indigo-200 text-indigo-600 hover:bg-indigo-500 hover:text-white transition-colors"
                                                 >
                                                     <Download className="h-4 w-4" />
-                                                    Download
+                                                    {t("common.download")}
                                                 </Button>
                                                 <DeleteDocumentDialog
                                                     handleConfirm={(id) => { handleDelete(id) }}
@@ -155,8 +158,8 @@ const DocumentsPage = () => {
                                                         <p className="text-sm text-red-600">{doc.label}</p>
                                                     </div>
                                                     <div className="flex items-center gap-4">
-                                                        <span className="flex items-center gap-1 border-1 border-red-400 bg-red-50 text-red-600 rounded-md p-1 text-xs"><XCircle className="h-3 w-3" />Ontbrekend</span>
-                                                        <span className="flex items-center gap-1 border-1 border-red-400 bg-red-50 text-red-600 rounded-md p-1 text-xs"><XCircle className="h-3 w-3" />verplicht</span>
+                                                        <span className="flex items-center gap-1 border-1 border-red-400 bg-red-50 text-red-600 rounded-md p-1 text-xs"><XCircle className="h-3 w-3" />{t("common.required")}</span>
+                                                        <span className="flex items-center gap-1 border-1 border-red-400 bg-red-50 text-red-600 rounded-md p-1 text-xs"><XCircle className="h-3 w-3" />{t("common.missing")}</span>
                                                     </div>
                                                 </div>
                                             </div>
@@ -166,7 +169,7 @@ const DocumentsPage = () => {
                                                     className="bg-green-200 text-green-600 hover:bg-green-500 hover:text-white transition-colors"
                                                 >
                                                     <Upload className="h-4 w-4" />
-                                                    Upload
+                                                    {t("clients.documents.add")}
                                                 </Button>
                                             </div>
                                         </div>
@@ -177,14 +180,14 @@ const DocumentsPage = () => {
                                 <PrimaryButton
                                     disabled={page === 1}
                                     onClick={handlePrevious}
-                                    text={"Previous"}
+                                    text={t("common.previous")}
                                     icon={ArrowBigLeft}
                                     iconSide="left"
                                 />
                                 <PrimaryButton
                                     disabled={documents?.next ? false : true}
                                     onClick={handleNext}
-                                    text={"Next"}
+                                    text={t("common.next")}
                                     icon={ArrowBigRight}
                                 />
                             </div>

@@ -7,6 +7,7 @@ import { useDiagnosis } from '@/hooks/diagnosis/use-diagnosis';
 import Link from 'next/link';
 import { formatDateToDutch } from '@/utils/timeFormatting';
 import { useLocalizedPath } from '@/hooks/common/useLocalizedPath';
+import { useI18n } from '@/lib/i18n/client';
 
 type Props = {
     isParentLoading: boolean;
@@ -15,7 +16,7 @@ type Props = {
 const MedicalDossierPreview = ({ isParentLoading }: Props) => {
 
     const { clientId } = useParams();
-
+    const t = useI18n();
     const { diagnosis } = useDiagnosis({ autoFetch: true, clientId: parseInt(clientId as string) });
     const router = useRouter();
   const { currentLocale } = useLocalizedPath();
@@ -28,17 +29,17 @@ const MedicalDossierPreview = ({ isParentLoading }: Props) => {
     return (
         <div className="w-full h-[287px] rounded-sm shadow-md p-4 bg-white overflow-y-scroll">
             <div className="flex justify-between items-center">
-                <h1 className='flex items-center gap-2 m-0 p-0 font-extrabold text-lg text-slate-600'><HeartPulse size={18} className='text-indigo-400' />Medisch Dossier</h1>
+                <h1 className='flex items-center gap-2 m-0 p-0 font-extrabold text-lg text-slate-600'><HeartPulse size={18} className='text-indigo-400' />{t("clients.profile.medicalFile")}</h1>
                 <Link href={`/${currentLocale}/clients/${clientId}/medical-record`}>
                     <Button className='bg-indigo-400 text-white text-xs py-1 px-2 rounded-md flex items-center gap-2 ' onClick={() => router.push(`/${currentLocale}/clients/${clientId}/medical-record`)}>
-                        <span>View All</span>
+                        <span>{t("common.viewAll")}</span>
                         <ArrowRight size={15} className='arrow-animation' />
                     </Button>
                 </Link>
             </div>
             {diagnosis?.results.length === 0 ? (
                 <div className="mt-4 w-full h-max border-slate-200 pl-6 p-2 flex flex-col items-center justify-center gap-4 ">
-                    <p className='text-slate-500 font-medium'>Geen Medisch dossier gevonden!</p>
+                    <p className='text-slate-500 font-medium'>{t("clients.profile.noMedicalFileFound")}</p>
                 </div>
             ) : null}
             <div className="mt-4 w-full p-2 flex flex-col gap-4 ">

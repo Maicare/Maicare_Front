@@ -8,10 +8,11 @@ import { Info, PlusCircle, XCircle } from "lucide-react";
 import { cn } from "@/utils/cn";
 import Tooltip from "@/common/components/Tooltip";
 import { Separator } from "@/components/ui/separator";
+import { useI18n } from "@/lib/i18n/client";
 
 const AddressesForm: React.FC<{ className?: string }> = ({ className }) => {
     const { control } = useFormContext<CreateClientInput>(); // Use the form context from the parent form
-
+    const t = useI18n();
     const { fields, append, remove } = useFieldArray({
         control,
         name: "addresses", // Field name for the array of addresses
@@ -27,7 +28,7 @@ const AddressesForm: React.FC<{ className?: string }> = ({ className }) => {
                             name={`addresses.${index}.belongs_to`}
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>Belongs to</FormLabel>
+                                    <FormLabel>{t("clients.create.belongsTo")}</FormLabel>
                                     <FormControl>
                                         <div className="relative">
                                             <Input placeholder="eg: bijv. moeder, broer" {...field} />
@@ -48,7 +49,7 @@ const AddressesForm: React.FC<{ className?: string }> = ({ className }) => {
                             name={`addresses.${index}.city`}
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>City</FormLabel>
+                                    <FormLabel>{t("clients.create.city")}</FormLabel>
                                     <FormControl>
                                         <div className="relative">
                                             <Input placeholder="eg: bijv. moeder, broer" {...field} />
@@ -68,7 +69,7 @@ const AddressesForm: React.FC<{ className?: string }> = ({ className }) => {
                             name={`addresses.${index}.phone_number`}
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>Telefoonnummer</FormLabel>
+                                    <FormLabel>{t("clients.create.phoneNumber")}</FormLabel>
                                     <FormControl>
                                         <div className="relative">
                                             <Input placeholder="eg: bijv. moeder, broer" {...field} />
@@ -88,7 +89,7 @@ const AddressesForm: React.FC<{ className?: string }> = ({ className }) => {
                             name={`addresses.${index}.zip_code`}
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>Postcode</FormLabel>
+                                    <FormLabel>{t("clients.create.postcode")}</FormLabel>
                                     <FormControl>
                                         <div className="relative">
                                             <Input placeholder="eg: bijv. moeder, broer" {...field} />
@@ -108,7 +109,7 @@ const AddressesForm: React.FC<{ className?: string }> = ({ className }) => {
                             name={`addresses.${index}.address`}
                             render={({ field }) => (
                                 <FormItem className="col-span-2">
-                                    <FormLabel>Address</FormLabel>
+                                    <FormLabel>{t("clients.create.address")}</FormLabel>
                                     <FormControl>
                                         <div className="relative">
                                             <Input placeholder="eg: bijv. moeder, broer" {...field} />
@@ -130,7 +131,7 @@ const AddressesForm: React.FC<{ className?: string }> = ({ className }) => {
             }
 
             <PrimaryButton
-                text="Verwijder Adres"
+                text={t("clients.create.addAddress")}
                 icon={XCircle}
                 animation="animate-bounce"
                 type="button"
@@ -140,7 +141,7 @@ const AddressesForm: React.FC<{ className?: string }> = ({ className }) => {
             />
 
             <PrimaryButton
-                text="Voeg Adres Toe"
+                text={t("clients.create.removeAddress")}
                 icon={PlusCircle}
                 animation="animate-bounce"
                 type="button"

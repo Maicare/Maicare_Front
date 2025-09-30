@@ -2,6 +2,7 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { Button } from '@/components/ui/button';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Separator } from '@/components/ui/separator';
+import { useI18n } from '@/lib/i18n/client';
 import { AutomaticReportItem } from '@/types/automatic-report.types'
 import { formatDateToDutch } from '@/utils/timeFormatting';
 import { AlarmClock, AlertTriangle, Edit2, MoreVertical, Sparkle, Trash } from 'lucide-react'
@@ -13,6 +14,7 @@ type Props = {
 }
 
 const AutomaticReport = ({ automaticReport, index }: Props) => {
+    const t = useI18n();
     return (
         <div className={
             "w-full rounded-lg relative bg-white mt-7 shadow-md px-4 py-3 pt-8 flex flex-col justify-between"}>
@@ -29,18 +31,17 @@ const AutomaticReport = ({ automaticReport, index }: Props) => {
                         <DropdownMenu modal={false}>
                             <DropdownMenuTrigger asChild>
                                 <Button variant="ghost" className="h-8 w-8 p-0">
-                                    <span className="sr-only">Open menu</span>
                                     <MoreVertical className="h-4 w-4" />
                                 </Button>
                             </DropdownMenuTrigger>
                             <DropdownMenuContent align="end" className="bg-white">
-                                <DropdownMenuLabel>Acties</DropdownMenuLabel>
+                                <DropdownMenuLabel>{t("common.actions")}</DropdownMenuLabel>
                                 <DropdownMenuItem
                                     onClick={() => { }}
                                     className="hover:bg-indigo-100 hover:text-indigo-500 transition-colors ease-in-out cursor-pointer flex items-center gap-2"
                                 >
                                     <Edit2 className="h-4 w-4" />
-                                    <span className="text-sm font-medium">Bewerken</span>
+                                    <span className="text-sm font-medium">{t("common.edit")}</span>
                                 </DropdownMenuItem>
                                 <DropdownMenuSeparator />
                                 <AlertDialogTrigger asChild>
@@ -49,7 +50,7 @@ const AutomaticReport = ({ automaticReport, index }: Props) => {
                                         className="bg-red-100 hover:bg-red-200 hover:text-red-500 transition-colors ease-in-out cursor-pointer flex items-center gap-2"
                                     >
                                         <Trash className="h-4 w-4" />
-                                        <span className="text-sm font-medium">verwijderen</span>
+                                        <span className="text-sm font-medium">{t("common.delete")}</span>
                                     </DropdownMenuItem>
                                 </AlertDialogTrigger>
 
@@ -61,10 +62,10 @@ const AutomaticReport = ({ automaticReport, index }: Props) => {
                                     <span className="h-12 w-12 rounded-full bg-red-200 flex items-center justify-center">
                                         <AlertTriangle className="text-red-600 h-8 w-8" />
                                     </span>
-                                    <span className="text-lg font-semibold">Rapport verwijderen</span>
+                                    <span className="text-lg font-semibold">{t("clients.reports.deleteReport")}</span>
                                 </AlertDialogTitle>
                                 <AlertDialogDescription className="text-center">
-                                    Weet u zeker dat u dit rapport wilt verwijderen?
+                                    {t("clients.reports.deleteMessage")}
                                 </AlertDialogDescription>
                             </AlertDialogHeader>
                             <AlertDialogFooter className="w-full grid grid-cols-2 gap-2 space-x-0">

@@ -28,6 +28,7 @@ import withAuth, { AUTH_MODE } from "@/common/hocs/with-auth";
 import withPermissions from "@/common/hocs/with-permissions";
 import Routes from "@/common/routes";
 import { PermissionsObjects } from "@/common/data/permission.data";
+import { useI18n } from "@/lib/i18n/client";
 
 const defaultAppointment = {
   general_information: [] as string[],
@@ -46,7 +47,7 @@ const defaultAppointment = {
 const EmergencyContactPage: FunctionComponent = () => {
   const params = useParams();
   const clientId = params?.clientId?.toString();
-
+  const t = useI18n();
   const { appointments, downloadPDF } = useAppointment(clientId || "0");
   const appointmentData = appointments || defaultAppointment;
 
@@ -75,7 +76,7 @@ const EmergencyContactPage: FunctionComponent = () => {
               </li>
             ))
           ) : (
-            <li className="italic text-gray-400">Geen items gevonden</li>
+            <li className="italic text-gray-400">{t("clients.appointment.noItems")}</li>
           )}
         </ul>
       </section>
@@ -101,11 +102,11 @@ const EmergencyContactPage: FunctionComponent = () => {
   if (allSectionsEmpty) {
     return (
       <Panel
-        title={`Afsprakenkaart Chrystal voor cliënt ${clientId}`}
+        title={t("clients.appointment.appointmentCardTitle")}
         header={
           <div className="flex w-full justify-end gap-2">
             {appointments && <PrimaryButton
-              text="Download"
+              text={t("common.download")}
               icon={Download}
               animation="none"
               onClick={handleDownload}
@@ -113,7 +114,7 @@ const EmergencyContactPage: FunctionComponent = () => {
             />}
             <Link href={`/clients/${clientId}/appointment-card/edit`}>
               <PrimaryButton
-                text="Bewerken"
+                text={t("common.edit")}
                 icon={Pencil}
                 animation="animate-bounce"
                 className="bg-blue-500 hover:bg-blue-700 text-white transition-colors duration-300"
@@ -124,8 +125,8 @@ const EmergencyContactPage: FunctionComponent = () => {
       >
         <div className="flex flex-col items-center justify-center py-12">
           <LargeErrorMessage
-            firstLine="Ontbrekende afspraakinformatie"
-            secondLine="Het lijkt erop dat er nog geen gegevens zijn ingevoerd."
+            firstLine={t("clients.appointment.firstLine")}
+            secondLine={t("clients.appointment.secondLine")}
             className="shadow-none bg-transparent px-0 py-0"
           />
           <Link
@@ -133,7 +134,7 @@ const EmergencyContactPage: FunctionComponent = () => {
             className="mt-8 inline-flex items-center gap-2 rounded-full bg-blue-600 px-6 py-3 text-white font-medium shadow hover:bg-blue-700 transition"
           >
             <Pencil className="w-4 h-4" />
-            Afspraakkaart invullen
+            {t("clients.appointment.action")}
           </Link>
         </div>
       </Panel>
@@ -143,7 +144,7 @@ const EmergencyContactPage: FunctionComponent = () => {
   return (<>
     <div className="flex w-full justify-end gap-2 mb-6">
       <PrimaryButton
-        text="Download"
+        text={t("common.download")}
         icon={Download}
         animation="none"
         onClick={handleDownload}
@@ -151,7 +152,7 @@ const EmergencyContactPage: FunctionComponent = () => {
       />
       <Link href={`/clients/${clientId}/appointment-card/edit`}>
         <PrimaryButton
-          text="Bewerken"
+          text={t("common.edit")}
           icon={Pencil}
           animation="animate-bounce"
           className="bg-blue-500 hover:bg-blue-700 text-white transition-colors duration-300"
@@ -160,49 +161,49 @@ const EmergencyContactPage: FunctionComponent = () => {
     </div>
 
     <Panel
-      title={`Afsprakenkaart Chrystal voor cliënt ${clientId}`}
+      title={t("clients.appointment.appointmentCardTitle")}
     >
       <div className="p-6 grid grid-cols-1 md:grid-cols-2 gap-10">
         {renderSection(
-          "Algemeen",
+          t("clients.appointment.general"),
           appointmentData.general_information,
           Info
         )}
         {renderSection(
-          "Belangrijke contacten",
+          t("clients.appointment.importantContacts"),
           appointmentData.important_contacts,
           Users
         )}
         {renderSection(
-          "Huishouden",
+          t("clients.appointment.household"),
           appointmentData.household_info,
           Home
         )}
         {renderSection(
-          "Organisatie afspraken",
+          t("clients.appointment.organizationalAppointments"),
           appointmentData.organization_agreements,
           Building2
         )}
         {renderSection(
-          "Afspraken met betrekking tot behandeling",
+          t("clients.appointment.treatmentAppointments"),
           appointmentData.treatment_agreements,
           Stethoscope
         )}
         {renderSection(
-          "Schoolstage",
+          t("clients.appointment.internship"),
           appointmentData.school_internship,
           GraduationCap
         )}
-        {renderSection("Reizen", appointmentData.travel, Plane)}
-        {renderSection("Verlof", appointmentData.leave, CalendarDays)}
+        {renderSection(t("clients.appointment.travel"), appointmentData.travel, Plane)}
+        {renderSection(t("clients.appointment.leave"), appointmentData.leave, CalendarDays)}
         {renderSection(
-          "Rookbeleid",
+          t("clients.appointment.smokingPolicy"),
           appointmentData.smoking_rules,
           Cigarette
         )}
-        {renderSection("Werk", appointmentData.work, Briefcase)}
+        {renderSection(t("clients.appointment.work"), appointmentData.work, Briefcase)}
         {renderSection(
-          "Jeugdambtenaar Afspraken",
+          t("clients.appointment.youthOfficer"),
           appointmentData.youth_officer_agreements,
           Handshake
         )}

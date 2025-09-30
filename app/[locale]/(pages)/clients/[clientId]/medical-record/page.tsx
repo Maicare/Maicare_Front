@@ -13,6 +13,7 @@ import withPermissions from "@/common/hocs/with-permissions";
 import Routes from "@/common/routes";
 import { PermissionsObjects } from "@/common/data/permission.data";
 import { useLocalizedPath } from "@/hooks/common/useLocalizedPath";
+import { useI18n } from "@/lib/i18n/client";
 
 const MedicalPage = () => {
     const {clientId} = useParams();
@@ -32,7 +33,7 @@ const MedicalPage = () => {
         }
     }
     const { currentLocale } = useLocalizedPath();
-
+    const t = useI18n();
     const handleAdd = () => {
         router.push(`/${currentLocale}/clients/${clientId}/medical-record/create`);
     }
@@ -41,10 +42,10 @@ const MedicalPage = () => {
         <div className="w-full flex flex-col gap-4">
             <div className="flex items-center justify-between">
                 <h1 className='flex items-center gap-2 m-0 p-0 font-extrabold text-lg text-slate-600'>
-                    <HeartPulse size={24} className='text-indigo-400' />  Medisch Dossier
+                    <HeartPulse size={24} className='text-indigo-400' />  {t("clients.medication.medicalFile")}
                 </h1>
                 <PrimaryButton
-                    text="Add"
+                    text={t("common.add")}
                     onClick={handleAdd}
                     disabled={false}
                     icon={PlusCircle}
@@ -74,14 +75,14 @@ const MedicalPage = () => {
                                     <PrimaryButton
                                         disabled={page === 1}
                                         onClick={handlePrevious}
-                                        text={"Previous"}
+                                        text={t("common.previous")}
                                         icon={ArrowBigLeft}
                                         iconSide="left"
                                     />
                                     <PrimaryButton
                                         disabled={diagnosis?.next ? false : true}
                                         onClick={handleNext}
-                                        text={"Next"}
+                                        text={t("common.next")}
                                         icon={ArrowBigRight}
                                     />
                                 </div>

@@ -10,20 +10,22 @@ import { Row } from "@tanstack/table-core";
 import { ArrowBigLeft, ArrowBigRight, ListRestart, ListX, SquareActivity, Users } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { columns } from "./_components/columns";
+import { useClientColumns } from "./_components/columns";
 import TableFilters from "./_components/TableFilters";
 import withAuth, { AUTH_MODE } from "@/common/hocs/with-auth";
 import withPermissions from "@/common/hocs/with-permissions";
 import Routes from "@/common/routes";
 import { PermissionsObjects } from "@/common/data/permission.data";
 import { useLocalizedPath } from "@/hooks/common/useLocalizedPath";
+import { useI18n } from "@/lib/i18n/client";
 
 
 
 function Page() {
 
     const router = useRouter();
-
+    const t = useI18n();
+    const columns = useClientColumns();
     const [filters, setFilters] = useState<ClientsSearchParams>({
         page: 1,
         page_size: PAGE_SIZE,
@@ -86,13 +88,13 @@ function Page() {
         <div className="">
             <div className="flex justify-between items-center mb-5">
                 <h1 className="text-xl font-semibold">Clients</h1>
-                <p>Dashboard / <span className="font-medium text-indigo-500 hover:cursor-pointer">Clients</span></p>
+                <p>{t("dashboard.adminDashboard")} / <span className="font-medium text-indigo-500 hover:cursor-pointer">{t("clients.list.title")}</span></p>
             </div>
             <div className="w-full grid lg:grid-cols-[repeat(4,230px)] grid-cols-[repeat(3,205px)] md:grid-cols-[repeat(4,205px)] justify-between mb-5 ">
-                <StatisticCard colorKey="teal" icon={Users} title="Clienten" value={clientCounts.total_clients} />
-                <StatisticCard colorKey="sky" icon={ListRestart} title="Wachtlijst" value={clientCounts.clients_on_waiting_list} />
-                <StatisticCard colorKey="pink" icon={SquareActivity} title="In Zorg" value={clientCounts.clients_in_care} />
-                <StatisticCard colorKey="orange" icon={ListX} title="Uit Zorg" value={clientCounts.clients_out_of_care} />
+                <StatisticCard colorKey="teal" icon={Users} title={t("clients.list.title")} value={clientCounts.total_clients} />
+                <StatisticCard colorKey="sky" icon={ListRestart} title={t("clients.list.waitingList")} value={clientCounts.clients_on_waiting_list} />
+                <StatisticCard colorKey="pink" icon={SquareActivity} title={t("clients.list.inCare")} value={clientCounts.clients_in_care} />
+                <StatisticCard colorKey="orange" icon={ListX} title={t("clients.list.outOfCare")} value={clientCounts.clients_out_of_care} />
             </div>
             <TableFilters
                 filters={filters}
@@ -104,14 +106,14 @@ function Page() {
                 <PrimaryButton
                     disabled={page === 1}
                     onClick={handlePrevious}
-                    text={"Previous"}
+                    text={t("common.previous")}
                     icon={ArrowBigLeft}
                     iconSide="left"
                 />
                 <PrimaryButton
                     disabled={clients?.next ? false : true}
                     onClick={handleNext}
-                    text={"Next"}
+                    text={t("common.next")}
                     icon={ArrowBigRight}
                 />
             </div>

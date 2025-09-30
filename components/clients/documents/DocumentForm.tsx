@@ -56,7 +56,7 @@ export const DocumentForm: FunctionComponent<PropsType> = ({ clientId }) => {
     formData.append('file', file);
     try {
       const attachment = await createOneAttachment(formData, { displaySuccess: true });
-      await createOne({ attachmentID: attachment.file_id, label }, { displayProgress: true, displaySuccess: true });
+      await createOne({ attachment_id: attachment.file_id, label }, { displayProgress: true, displaySuccess: true });
       router.back();
     } catch (error: unknown) {
       const message = error instanceof Error ? error.message : "Unexpected error";

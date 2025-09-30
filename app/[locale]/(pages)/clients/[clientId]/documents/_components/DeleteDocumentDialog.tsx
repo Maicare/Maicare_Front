@@ -1,5 +1,6 @@
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog'
 import { Button } from '@/components/ui/button'
+import { useI18n } from '@/lib/i18n/client'
 import { AlertTriangle, Trash } from 'lucide-react'
 import React from 'react'
 
@@ -9,13 +10,13 @@ type Props = {
 }
 
 const DeleteDocumentDialog = ({ handleConfirm, id }: Props) => {
-
+    const t = useI18n();
     return (
         <AlertDialog>
             <AlertDialogTrigger asChild>
                 <Button className="bg-red-200 text-red-600 hover:bg-red-500 hover:text-white transition-colors">
                     <Trash className="h-4 w-4" />
-                    Delete
+                    {t("common.delete")}
                 </Button>
             </AlertDialogTrigger>
             <AlertDialogContent>
@@ -24,15 +25,15 @@ const DeleteDocumentDialog = ({ handleConfirm, id }: Props) => {
                         <span className="h-12 w-12 rounded-full bg-red-200 flex items-center justify-center">
                             <AlertTriangle className="text-red-600 h-8 w-8" />
                         </span>
-                        <span className="text-lg font-semibold">Bevestiging Verwijderen</span>
+                        <span className="text-lg font-semibold">{t("clients.documents.deleteConfirmation.title")}</span>
                     </AlertDialogTitle>
                     <AlertDialogDescription className="text-center">
-                        Weet u zeker dat u dit document wilt verwijderen?
+                        {t("clients.documents.deleteConfirmation.description")}
                     </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter className="w-full grid grid-cols-2 gap-2 space-x-0">
-                    <AlertDialogCancel className="w-full border-none ring-0 bg-indigo-200 px-2 py-1 text-indigo-500 hover:bg-indigo-400 hover:text-white transition-colors ml-0 space-x-0">Annuleren</AlertDialogCancel>
-                    <AlertDialogAction onClick={() => handleConfirm(id)} className="w-full border-none ring-0 bg-red-200 px-2 py-1 text-red-500 hover:bg-red-500 hover:text-white transition-colors ml-0 space-x-0">Verwijderen</AlertDialogAction>
+                    <AlertDialogCancel className="w-full border-none ring-0 bg-indigo-200 px-2 py-1 text-indigo-500 hover:bg-indigo-400 hover:text-white transition-colors ml-0 space-x-0">{t("common.cancel")}</AlertDialogCancel>
+                    <AlertDialogAction onClick={() => handleConfirm(id)} className="w-full border-none ring-0 bg-red-200 px-2 py-1 text-red-500 hover:bg-red-500 hover:text-white transition-colors ml-0 space-x-0">{t("common.delete")}</AlertDialogAction>
                 </AlertDialogFooter>
             </AlertDialogContent>
         </AlertDialog>

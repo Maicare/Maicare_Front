@@ -1,4 +1,4 @@
-import { ColumnDef } from "@tanstack/react-table"
+import { ColumnDef, Row } from "@tanstack/react-table"
 import { Button } from "@/components/ui/button"
 import { 
   ArrowUpDown, 
@@ -21,6 +21,7 @@ import {
 import { format } from "date-fns"
 import Link from "next/link"
 import { Any } from "@/common/types/types"
+import { useLocalizedPath } from "@/hooks/common/useLocalizedPath"
 
 export type InvoicesType = {
   id: number
@@ -311,9 +312,13 @@ export const columns: ColumnDef<InvoicesType>[] = [
   },
   {
     id: "actions",
-    cell: ({ row }) => {
+    cell: ({ row }) => <ActionCell row={row} />
+  }
+]
+
+const ActionCell = ({row}:{row:Row<InvoicesType>}) => {
       const invoice = row.original
-      
+      const {currentLocale} = useLocalizedPath();
       return (
         <div className="flex space-x-2">
           <Button
@@ -322,7 +327,7 @@ export const columns: ColumnDef<InvoicesType>[] = [
             className="hover:bg-blue-50 dark:hover:bg-blue-900/20"
             asChild
           >
-            <Link href={`/invoices/${invoice.id}`}>
+            <Link href={`/${currentLocale}/invoices/${invoice.id}`}>
               <FileSearch className="h-4 w-4 mr-2 text-blue-500" />
               View
             </Link>
@@ -343,5 +348,3 @@ export const columns: ColumnDef<InvoicesType>[] = [
         </div>
       )
     }
-  }
-]
