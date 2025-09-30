@@ -261,7 +261,7 @@ export default function EmployeeProfilePage() {
                         {/* Placeholder for QR code - in a real app, this would be generated */}
                         <div className="h-32 w-32 flex items-center justify-center bg-gray-100 text-gray-400">
                           {qrCode ? (
-                            <img src={qrCode} alt="2FA QR Code" className="h-32 w-32" />
+                            <img src={`data:image/png;base64,${qrCode}`} alt="2FA QR Code" className="h-32 w-32" />
                           ) : (
                             <span className="text-sm">QR Code</span>
                           )}
