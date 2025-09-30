@@ -81,6 +81,7 @@ const EmergencyContactPage: FunctionComponent = () => {
         </ul>
       </section>
     ),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     []
   );
 
