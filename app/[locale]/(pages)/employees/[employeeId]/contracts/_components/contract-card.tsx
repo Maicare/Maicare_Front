@@ -63,15 +63,10 @@ export function ContractCard({ contract,toggleEdit }: ContractCardProps) {
           <div className="bg-amber-50 p-4 rounded-lg">
             <p className="text-xs text-amber-500 font-medium">FIXED HOURS</p>
             <p className="text-amber-900 font-bold text-xl">
-              {contract.fixed_contract_hours}h
+              {contract.contract_hours}h
             </p>
           </div>
-          <div className="bg-teal-50 p-4 rounded-lg">
-            <p className="text-xs text-teal-500 font-medium">VARIABLE HOURS</p>
-            <p className="text-teal-900 font-bold text-xl">
-              {contract.variable_contract_hours}h
-            </p>
-          </div>
+
         </div>
 
         {/* Status Indicator */}
