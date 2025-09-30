@@ -91,7 +91,7 @@ export const createEmployeeContractSchema = z.object({
 
   contract_rate: z.number().optional(),
   
-  fixed_contract_hours: z.number()
+  contract_hours: z.number()
     .int()
     .nonnegative()
     .max(168, "Cannot exceed 168 hours per week"),
@@ -102,9 +102,10 @@ export interface EmployeeContract {
   contract_end_date: string;
   contract_start_date: string;
   contract_type:   'loondienst'| 'ZZP';
-  fixed_contract_hours: number;
+  // fixed_contract_hours: number;
   contract_hours: number;
   id: number;
-  variable_contract_hours: number;
+  // variable_contract_hours: number;
   is_subcontractor: boolean;
+  contract_rate:number;
 }
