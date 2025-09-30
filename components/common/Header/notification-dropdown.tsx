@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useMemo } from "react";
-import { Bell} from "lucide-react";
+import { Bell } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useNotifications } from "@/hooks/notifications/use-notifications";
@@ -8,6 +8,7 @@ import { useRouter } from "next/navigation";
 import { useWsNotifications } from "@/app/[locale]/(pages)/notifications/_components/use-ws-notifications";
 import NotificationItem from "@/app/[locale]/(pages)/notifications/_components/notification-item";
 import { useLocalizedPath } from "@/hooks/common/useLocalizedPath";
+import { useI18n } from "@/lib/i18n/client";
 
 
 
@@ -16,12 +17,12 @@ import { useLocalizedPath } from "@/hooks/common/useLocalizedPath";
 const NotificationDropdown = () => {
   const [isOpen, setIsOpen] = useState(false);
   const router = useRouter();
-    const { currentLocale } = useLocalizedPath();
-  
+  const { currentLocale } = useLocalizedPath();
+  const t = useI18n();
   // Prefer an env var so you can swap staging/prod easily
   const WS_URL = (process.env.NEXT_PUBLIC_WS_URL ?? "wss://api.maicare.online/ws").trim();
-  const { notifications:wsNotifications, clear } = useWsNotifications(WS_URL);
-  const { notifications: initialNotifications,markAsRead } = useNotifications({ autoFetch: true });
+  const { notifications: wsNotifications, clear } = useWsNotifications(WS_URL);
+  const { notifications: initialNotifications, markAsRead } = useNotifications({ autoFetch: true });
 
   // Merge initial fetch with WS updates
   const mergedNotifications = useMemo(() => {
@@ -58,7 +59,7 @@ const NotificationDropdown = () => {
         <Bell className="h-5 w-5" />
         {notifications.length > 0 && (
           <span className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-xs text-white">
-            {notifications.filter(n=>!n.is_read).length}
+            {notifications.filter(n => !n.is_read).length}
           </span>
         )}
       </Button>
@@ -69,14 +70,14 @@ const NotificationDropdown = () => {
             <h3 className="font-semibold text-gray-900">Notifications</h3>
             {notifications.length > 0 && (
               <Button variant="ghost" size="sm" onClick={clear}>
-                Clear all
+                {t("notifications.clear")}
               </Button>
             )}
           </div>
 
           <ScrollArea className="h-80">
             {notifications.length === 0 ? (
-              <div className="p-4 text-center text-gray-500">No notifications</div>
+              <div className="p-4 text-center text-gray-500">{t("notifications.empty")}</div>
             ) : (
               notifications.map((n, idx) => (
                 <NotificationItem
@@ -87,7 +88,7 @@ const NotificationDropdown = () => {
                     // (simple inline remove without extra state)
                     notifications.splice(idx, 1);
                   }}
-                  onClick={async() => {
+                  onClick={async () => {
                     try {
                       if (n.is_read) return;
                       await markAsRead(n.notification_id);
@@ -104,10 +105,10 @@ const NotificationDropdown = () => {
           <div className="p-2 border-t border-gray-200 text-center">
             <Button variant="ghost" size="sm" onClick={() => {
               // Navigate to full notifications page
-              router.push("/"+currentLocale+"/notifications");
+              router.push("/" + currentLocale + "/notifications");
               setIsOpen(false);
             }}>
-              View all notifications
+              {t("notifications.viewAll")}
             </Button>
           </div>
         </div>

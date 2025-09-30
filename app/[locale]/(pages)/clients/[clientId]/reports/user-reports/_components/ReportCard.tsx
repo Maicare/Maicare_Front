@@ -5,6 +5,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Separator } from "@/components/ui/separator";
+import { useI18n } from "@/lib/i18n/client";
 import { EMOTIONAL_STATE_OPTIONS, REPORT_TYPE_RECORD } from "@/types/reports.types";
 import { cn } from "@/utils/cn";
 import {
@@ -160,7 +161,39 @@ const REPORT_TYPE_COLORS: Record<keyof typeof REPORT_TYPE_RECORD, ColorKey> = {
 
 type ReportType = keyof typeof REPORT_TYPE_RECORD;
 type EmotionalState = typeof EMOTIONAL_STATE_OPTIONS[number]['value'];
+// Remove these hardcoded constants:
+// export const REPORT_TYPE_RECORD = { ... };
+// export const EMOTIONAL_STATE_OPTIONS = [ ... ];
 
+// Use translation functions directly:
+export function useReportTypeRecord() {
+    const t = useI18n();
+
+    return {
+        morning_report: t('clients.reports.reportTypes.morning_report'),
+        evening_report: t('clients.reports.reportTypes.evening_report'),
+        night_report: t('clients.reports.reportTypes.night_report'),
+        shift_report: t('clients.reports.reportTypes.shift_report'),
+        one_to_one_report: t('clients.reports.reportTypes.one_to_one_report'),
+        process_report: t('clients.reports.reportTypes.process_report'),
+        contact_journal: t('clients.reports.reportTypes.contact_journal'),
+        other: t('clients.reports.reportTypes.other'),
+    };
+}
+
+export function useEmotionalStateOptions() {
+    const t = useI18n();
+
+    return [
+        { label: `${t('clients.reports.emotionalStates.excited')}`, value: "excited" },
+        { label: `${t('clients.reports.emotionalStates.happy')}`, value: "happy" },
+        { label: `${t('clients.reports.emotionalStates.sad')}`, value: "sad" },
+        { label: `${t('clients.reports.emotionalStates.normal')}`, value: "normal" },
+        { label: `${t('clients.reports.emotionalStates.anxious')}`, value: "anxious" },
+        { label: `${t('clients.reports.emotionalStates.depressed')}`, value: "depressed" },
+        { label: `${t('clients.reports.emotionalStates.angry')}`, value: "angry" },
+    ];
+}
 type Props = {
     reportType: ReportType;
     createdAt: Date;
@@ -185,6 +218,9 @@ const ReportCard = ({
     handleDelete,
     handleUpdate
 }: Props) => {
+    const t = useI18n();
+    const reportTypeRecord = useReportTypeRecord();
+    const emotionalStateOptions = useEmotionalStateOptions();
     // Get the appropriate color scheme
     const baseColor = REPORT_TYPE_COLORS[reportType];
     const emotionColor = emotionalState ? EMOTIONAL_STATE_COLORS[emotionalState] : null;
@@ -193,10 +229,10 @@ const ReportCard = ({
 
     // Get related data
     const Icon = REPORT_TYPE_ICONS[reportType];
-    const reportLabel = REPORT_TYPE_RECORD[reportType];
-    const emotionalStateLabel = EMOTIONAL_STATE_OPTIONS.find(
-        state => state.value === emotionalState
-    )?.label;
+    const reportLabel = reportTypeRecord[reportType as keyof typeof reportTypeRecord];
+  const emotionalStateLabel = emotionalStateOptions.find(
+    state => state.value === emotionalState
+  )?.label;
 
     // Format date
     const formattedDate = new Intl.DateTimeFormat('nl-NL', {
@@ -272,18 +308,17 @@ const ReportCard = ({
                         <DropdownMenu modal={false}>
                             <DropdownMenuTrigger asChild>
                                 <Button variant="ghost" className="h-8 w-8 p-0">
-                                    <span className="sr-only">Open menu</span>
                                     <MoreVertical className="h-4 w-4" />
                                 </Button>
                             </DropdownMenuTrigger>
                             <DropdownMenuContent align="end" className="bg-white">
-                                <DropdownMenuLabel>Acties</DropdownMenuLabel>
+                                <DropdownMenuLabel>{t("common.actions")}</DropdownMenuLabel>
                                 <DropdownMenuItem
                                     onClick={handleUpdate}
                                     className="hover:bg-indigo-100 hover:text-indigo-500 transition-colors ease-in-out cursor-pointer flex items-center gap-2"
                                 >
                                     <Edit2 className="h-4 w-4" />
-                                    <span className="text-sm font-medium">Bewerken</span>
+                                    <span className="text-sm font-medium">{t("common.edit")}</span>
                                 </DropdownMenuItem>
                                 <DropdownMenuSeparator />
                                 <AlertDialogTrigger asChild>
@@ -292,7 +327,7 @@ const ReportCard = ({
                                         className="bg-red-100 hover:bg-red-200 hover:text-red-500 transition-colors ease-in-out cursor-pointer flex items-center gap-2"
                                     >
                                         <Trash className="h-4 w-4" />
-                                        <span className="text-sm font-medium">verwijderen</span>
+                                        <span className="text-sm font-medium">{t("common.delete")}</span>
                                     </DropdownMenuItem>
                                 </AlertDialogTrigger>
 
@@ -304,10 +339,10 @@ const ReportCard = ({
                                     <span className="h-12 w-12 rounded-full bg-red-200 flex items-center justify-center">
                                         <AlertTriangle className="text-red-600 h-8 w-8" />
                                     </span>
-                                    <span className="text-lg font-semibold">Rapport verwijderen</span>
+                                    <span className="text-lg font-semibold">{t("clients.reports.deleteReport")}</span>
                                 </AlertDialogTitle>
                                 <AlertDialogDescription className="text-center">
-                                    Weet u zeker dat u dit rapport wilt verwijderen?
+                                    {t("clients.reports.deleteMessage")}
                                 </AlertDialogDescription>
                             </AlertDialogHeader>
                             <AlertDialogFooter className="w-full grid grid-cols-2 gap-2 space-x-0">

@@ -4,11 +4,12 @@ import PrimaryButton from "@/common/components/PrimaryButton";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogClose, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { DOCUMENT_LABEL_OPTIONS } from "@/consts";
 import { useAttachment } from "@/hooks/attachment/use-attachment";
+import { useI18n } from "@/lib/i18n/client";
 import { CreateDocument,  Document } from "@/types/Document.types";
 import { PlusCircle } from "lucide-react";
 import { useEffect, useState } from "react";
+import { useDocumentTypeOptions } from "../_hooks/useDocumentTypeOptions";
 
 type Props = {
     handleAdd: (values: CreateDocument) => Promise<Document | undefined>;
@@ -24,6 +25,8 @@ const AddDocumentDialog = ({ handleAdd, documents,open,setOpen,defaultSelected }
     const [selectedError, setSelectedError] = useState("");
     const [file, setFile] = useState<File | null>(null);
     const { createOne: createOneAttachment } = useAttachment();
+    const documentTypesOptions = useDocumentTypeOptions();
+    
     function checkFileExtension(filename: string) {
         const extension = filename.slice(-4).toLowerCase();
         if (extension === ".pdf" || extension === "docx" || extension === ".txt") {
@@ -32,13 +35,14 @@ const AddDocumentDialog = ({ handleAdd, documents,open,setOpen,defaultSelected }
             return false;
         }
     }
+    const t = useI18n();
     const [selectedOption, setSelectedOption] = useState("")
     let ALREADY_UPLOADED_DOCUMENTS: string[] = [];
     let CUSTOM_DOCUMENT_LABEL_OPTIONS: { label: string, value: string }[] = [];
 
     ALREADY_UPLOADED_DOCUMENTS = documents?.map((doc) => doc.label)
         .filter((label) => label !== "other") || [];
-    CUSTOM_DOCUMENT_LABEL_OPTIONS = DOCUMENT_LABEL_OPTIONS.filter(
+    CUSTOM_DOCUMENT_LABEL_OPTIONS = documentTypesOptions.filter(
         (option) => !ALREADY_UPLOADED_DOCUMENTS.includes(option.value)
     );
     const handleSelectChange = (value: string) => {
@@ -72,7 +76,7 @@ const AddDocumentDialog = ({ handleAdd, documents,open,setOpen,defaultSelected }
         formData.append('file', file);
         try {
             const attachment = await createOneAttachment(formData, { displaySuccess: true });
-            await handleAdd({ attachmentID: attachment.file_id, label: selectedOption });
+            await handleAdd({ attachment_id: attachment.file_id, label: selectedOption });
         } catch (error: unknown) {
             const message = error instanceof Error ? error.message : "Unexpected error";
             setError(`Error: ${message}`);
@@ -89,7 +93,7 @@ const AddDocumentDialog = ({ handleAdd, documents,open,setOpen,defaultSelected }
         <Dialog open={open} onOpenChange={(open) => setOpen(open)}>
             <DialogTrigger asChild>
                 <PrimaryButton
-                    text="Add"
+                    text={t("common.add")}
                     animation="animate-bounce"
                     icon={PlusCircle}
                     type="button"
@@ -98,12 +102,12 @@ const AddDocumentDialog = ({ handleAdd, documents,open,setOpen,defaultSelected }
             </DialogTrigger>
             <DialogContent className="sm:max-w-[425px]">
                 <DialogHeader>
-                    <DialogTitle>Nieuw Document</DialogTitle>
+                    <DialogTitle>{t("clients.documents.add")}</DialogTitle>
                 </DialogHeader>
                 <form onSubmit={onSubmit}>
                     <Select onValueChange={handleSelectChange} defaultValue={selectedOption} >
                         <SelectTrigger className="w-full">
-                            <SelectValue placeholder="Betrokenheid melder" />
+                            <SelectValue placeholder={t("clients.documents.types.selectDocument")} />
                         </SelectTrigger>
                         <SelectContent className="bg-white">
                             <SelectGroup>
@@ -162,10 +166,10 @@ const AddDocumentDialog = ({ handleAdd, documents,open,setOpen,defaultSelected }
                                 </svg>
                             </span>
                             <p className="text-center">
-                                <span className="text-primary">Klik om te uploaden</span> of sleep het bestand hierheen
+                                <span className="text-primary">{t("clients.documents.upload.clickToUpload")}</span> {t("clients.documents.upload.dragAndDrop")}
                             </p>
-                            <p className="mt-1.5">PDF, DOCX or TXT</p>
-                            <p>(maximaal, 20mb)</p>
+                            <p className="mt-1.5">{t("clients.documents.upload.supportedFormats")}</p>
+                            <p>{t("clients.documents.upload.maxSize")}</p>
                         </div>
                     </div>
                     {file ? <div className="mb-3 px-2 w-full p-1 border-2 border-indigo-600 text-indigo-600 bg-indigo-100 rounded-md"> {file.name} </div> : <></>}
@@ -180,13 +184,13 @@ const AddDocumentDialog = ({ handleAdd, documents,open,setOpen,defaultSelected }
                             type="button"
                             className="p-2 w-full bg-red-200 text-red-600 hover:bg-red-500 hover:text-white transition-colors rounded-md"
                         >
-                            Annuleer
+                            {t("common.cancel")}
                         </DialogClose>
                         <Button
                             type="submit"
                             className="p-2 w-full bg-indigo-200 text-indigo-600 hover:bg-indigo-500 hover:text-white transition-colors"
                         >
-                            Document Indienen
+                            {t("common.confirm")}
                         </Button>
                     </div>
                 </form>

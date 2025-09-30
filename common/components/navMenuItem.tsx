@@ -48,7 +48,7 @@ const NavMenuItem = ({ item }: {
                             {item.items?.map((subItem) => (
                                 <SidebarMenuSubItem key={subItem.title}>
                                     <SidebarMenuSubButton asChild className={cn("hover:bg-indigo-300 dark:hover:bg-indigo-800 text-white", pathname.includes(subItem.url) && "bg-white/30 backdrop-blur-sm rounded-md text-white")}>
-                                        <a href={subItem.url}>
+                                        <a href={"/"+currentLocale+subItem.url}>
                                             <span>{subItem.title}</span>
                                         </a>
                                     </SidebarMenuSubButton>

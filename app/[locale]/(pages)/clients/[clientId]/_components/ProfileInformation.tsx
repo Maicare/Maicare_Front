@@ -4,6 +4,7 @@ import React from 'react'
 import ProfileInformationSkeleton from './ProfileInformationSkeleton'
 import { UpdateStatusButton } from './UpdateStatusButton'
 import { useParams } from 'next/navigation'
+import { useI18n } from '@/lib/i18n/client'
 
 type Props = {
     profile_picture:string;
@@ -17,6 +18,7 @@ type Props = {
 
 const ProfileInformation = ({date_of_birth,first_name,gender,last_name,profile_picture,isParentLoading,status}:Props) => {
     const {clientId} = useParams();
+    const t = useI18n();
     if (isParentLoading) {
         return (
             <ProfileInformationSkeleton />
@@ -27,8 +29,8 @@ const ProfileInformation = ({date_of_birth,first_name,gender,last_name,profile_p
         <div className="w-full h-[287px] rounded-sm shadow-md bg-white">
             <div className="h-34 bg-indigo-400 text-indigo-600 flex justify-between rounded-sm">
                 <div className="p-4">
-                    <h1 className="">Hello World</h1>
-                    <p className="text-sm">it will like simplified!</p>
+                    <h1 className="">{t("clients.profile.helloWorld")}</h1>
+                    <p className="text-sm">{t("clients.profile.preHeader")}</p>
                 </div>
                 <Image src={"/images/profile-img.png"} width={200} height={100} className="object-cover" alt="profile" />
             </div>
@@ -45,11 +47,11 @@ const ProfileInformation = ({date_of_birth,first_name,gender,last_name,profile_p
                 <div className="w-[60%] flex flex-col justify-between">
                     <div className="flex">
                         <div className="w-[50%]">
-                            <p className="text-xs text-slate-400">Geboortedatum</p>
+                            <p className="text-xs text-slate-400">{t("clients.profile.dateOfBirth")}</p>
                             <p className="text-sm font-medium">{dateFormat(date_of_birth ?? "")}</p>
                         </div>
                         <div className="w-[50%]">
-                            <p className="text-xs text-slate-400">Geslacht</p>
+                            <p className="text-xs text-slate-400">{t("clients.profile.gender")}</p>
                             <p className="text-sm font-medium">{gender}</p>
                         </div>
                     </div>

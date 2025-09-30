@@ -12,13 +12,14 @@ import withPermissions from "@/common/hocs/with-permissions";
 import Routes from "@/common/routes";
 import { PermissionsObjects } from "@/common/data/permission.data";
 import { useLocalizedPath } from "@/hooks/common/useLocalizedPath";
+import { useI18n } from "@/lib/i18n/client";
 
 
 const Page = () => {
     const router = useRouter();
     const { clientId } = useParams();
     const { currentLocale } = useLocalizedPath();
-
+    const t = useI18n();
     const onSuccess = (id: number) => {
         router.push(`/${currentLocale}/clients/${id}/overview`)
     }
@@ -47,8 +48,8 @@ const Page = () => {
     return (
         <div className="container mx-auto">
             <div className="flex justify-between items-center mb-5">
-                <h1 className="text-xl font-semibold">Clienten Aanmaken</h1>
-                <p>Dashboard / <span className="font-medium text-indigo-500 hover:cursor-pointer">Clienten Aanmaken</span></p>
+                <h1 className="text-xl font-semibold">{t("clients.update.title")}</h1>
+                <p>{t("dashboard.adminDashboard")} / <span className="font-medium text-indigo-500 hover:cursor-pointer">{t("clients.update.title")}</span></p>
             </div>
             <UpsertClientForm
                 mode="update"

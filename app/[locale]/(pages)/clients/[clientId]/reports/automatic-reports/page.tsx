@@ -13,9 +13,11 @@ import withAuth, { AUTH_MODE } from '@/common/hocs/with-auth';
 import withPermissions from '@/common/hocs/with-permissions';
 import Routes from '@/common/routes';
 import { PermissionsObjects } from '@/common/data/permission.data';
+import { useI18n } from '@/lib/i18n/client';
 
 const AutomaticReports = () => {
   const { clientId } = useParams();
+  const t = useI18n();
   const { automaticReports, isLoading,  page, setPage, generateOne, validateOne } = useAutomaticReport({ clientId: parseInt(clientId as string), autoFetch: true });
   const handleGenerate = async (values:CreateAutomaticReport) => {
     try {
@@ -52,7 +54,7 @@ const handleNext = () => {
     <div className="w-full flex flex-col gap-4">
       <div className="flex items-center justify-between">
         <h1 className='flex items-center gap-2 m-0 p-0 font-extrabold text-lg text-slate-600'>
-          <AtomIcon size={24} className='text-indigo-400' />  Automatische rapporten
+          <AtomIcon size={24} className='text-indigo-400' />  {t("clients.reports.automaticReports")}
         </h1>
         <CreateAutomaticReportDialog
           handleValidate={handleValidate}
@@ -68,7 +70,7 @@ const handleNext = () => {
                 <LargeErrorMessage
                   firstLine={"Oops!"}
                   secondLine={
-                    "Het lijkt erop dat er geen medewerkers zijn die aan uw zoekcriteria voldoen."
+                    t("clients.reports.secondLine")
                   }
                   className="w-full"
                 />
@@ -90,14 +92,14 @@ const handleNext = () => {
                   <PrimaryButton
                     disabled={page === 1}
                     onClick={handlePrevious}
-                    text={"Previous"}
+                    text={t("common.previous")}
                     icon={ArrowBigLeft}
                     iconSide="left"
                   />
                   <PrimaryButton
                     disabled={automaticReports?.next ? false : true}
                     onClick={handleNext}
-                    text={"Next"}
+                    text={t("common.next")}
                     icon={ArrowBigRight}
                   />
                 </div>

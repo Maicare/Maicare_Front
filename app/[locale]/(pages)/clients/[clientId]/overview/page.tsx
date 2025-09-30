@@ -20,10 +20,11 @@ import withPermissions from '@/common/hocs/with-permissions';
 import Routes from '@/common/routes';
 import { PermissionsObjects } from '@/common/data/permission.data';
 import StatusHistoryPreview from '../_components/StatusHistoryPreview';
+import { useI18n } from '@/lib/i18n/client';
 
 const Page = () => {
     const { clientId } = useParams();
-
+    const t = useI18n();
     const { readOne } = useClient({ autoFetch: false });
     const [client, setClient] = useState<Client | undefined>(undefined);
     const [isLoading, setIsLoading] = useState(true);
@@ -42,38 +43,38 @@ const Page = () => {
         <div className='flex flex-col gap-4'>
             <div className="grid grid-cols-3 gap-4 w-full">
                 <ProfileInformation
-                    date_of_birth={client?.date_of_birth || "Niet Beschikbaar"}
-                    first_name={client?.first_name || "Niet Beschikbaar"}
-                    last_name={client?.last_name || "Niet Beschikbaar"}
-                    gender={client?.gender || "Niet Beschikbaar"}
+                    date_of_birth={client?.date_of_birth || t("common.notSpecified")}
+                    first_name={client?.first_name || t("common.notSpecified")}
+                    last_name={client?.last_name || t("common.notSpecified")}
+                    gender={client?.gender || t("common.notSpecified")}
                     isParentLoading={isLoading}
-                    profile_picture={client?.profile_picture || "Niet Beschikbaar"}
+                    profile_picture={client?.profile_picture || t("common.notSpecified")}
                     status={client?.status || "Onbekend"}
                 />
                 <PersonalInformation
-                    email={client?.email || "Niet Beschikbaar"}
-                    first_name={client?.first_name || "Niet Beschikbaar"}
-                    last_name={client?.last_name || "Niet Beschikbaar"}
+                    email={client?.email || t("common.notSpecified")}
+                    first_name={client?.first_name || t("common.notSpecified")}
+                    last_name={client?.last_name || t("common.notSpecified")}
                     isParentLoading={isLoading}
-                    birthplace={client?.birthplace || "Niet Beschikbaar"}
-                    private_phone_number={client?.phone_number || "Niet Beschikbaar"}
+                    birthplace={client?.birthplace || t("common.notSpecified")}
+                    private_phone_number={client?.phone_number || t("common.notSpecified")}
                 />
                 <WorkInformation
-                    source={client?.source || "Niet gespecificeerd"}
-                    organisation={client?.organisation || "Niet gespecificeerd"}
-                    filenumber={client?.filenumber || "Niet gespecificeerd"}
-                    bsn={client?.bsn || "Niet gespecificeerd"}
-                    legal_measure={client?.legal_measure || "Niet gespecificeerd"}
-                    infix={client?.infix || "Niet gespecificeerd"}
+                    source={client?.source || t("common.notSpecified")}
+                    organisation={client?.organisation || t("common.notSpecified")}
+                    filenumber={client?.filenumber || t("common.notSpecified")}
+                    bsn={client?.bsn || t("common.notSpecified")}
+                    legal_measure={client?.legal_measure || t("common.notSpecified")}
+                    infix={client?.infix || t("common.notSpecified")}
                     isParentLoading={isLoading}
                 />
                 <LocationInformation
-                    Zipcode={client?.Zipcode || ""}
-                    departement={client?.departement || ""}
-                    city={client?.birthplace || ""}
-                    street_number={client?.street_number || ""}
-                    streetname={client?.streetname || ""}
-                    location={client?.location || ""}
+                    Zipcode={client?.Zipcode || t("common.notSpecified")}
+                    departement={client?.departement || t("common.notSpecified")}
+                    city={client?.birthplace || t("common.notSpecified")}
+                    street_number={client?.street_number || t("common.notSpecified")}
+                    streetname={client?.streetname || t("common.notSpecified")}
+                    location={client?.location || t("common.notSpecified")}
                     isParentLoading={isLoading}
                 />
                 <AddressesPreview

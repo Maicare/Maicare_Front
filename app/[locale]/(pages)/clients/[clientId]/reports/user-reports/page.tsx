@@ -14,10 +14,12 @@ import withAuth, { AUTH_MODE } from '@/common/hocs/with-auth';
 import withPermissions from '@/common/hocs/with-permissions';
 import Routes from '@/common/routes';
 import { PermissionsObjects } from '@/common/data/permission.data';
+import { useI18n } from '@/lib/i18n/client';
 
 
 const UserReports = () => {
     const { clientId } = useParams();
+    const t = useI18n();
     const { reports, isLoading, page, setPage, createOne, updateOne, } = useReport({ clientId: parseInt(clientId as string), autoFetch: true });
     const [report, setReport] = useState<Report | null>(null);
     const [open, setOpen] = useState(false);
@@ -76,7 +78,7 @@ const UserReports = () => {
         <div className="w-full flex flex-col gap-4">
             <div className="flex items-center justify-between">
                 <h1 className='flex items-center gap-2 m-0 p-0 font-extrabold text-lg text-slate-600'>
-                    <FileUser size={24} className='text-indigo-400' />  Reportten
+                    <FileUser size={24} className='text-indigo-400' />  {t("clients.reports.title")}
                 </h1>
                 <CreateReportSheet
                     mode={report ? "update" : "create"}
@@ -97,7 +99,7 @@ const UserReports = () => {
                                 <LargeErrorMessage
                                     firstLine={"Oops!"}
                                     secondLine={
-                                        "Het lijkt erop dat er geen medewerkers zijn die aan uw zoekcriteria voldoen."
+                                        t("clients.reports.secondLine")
                                     }
                                     className="w-full"
                                 />
@@ -127,14 +129,14 @@ const UserReports = () => {
                                     <PrimaryButton
                                         disabled={page === 1}
                                         onClick={handlePrevious}
-                                        text={"Previous"}
+                                        text={t("common.previous")}
                                         icon={ArrowBigLeft}
                                         iconSide="left"
                                     />
                                     <PrimaryButton
                                         disabled={reports?.next ? false : true}
                                         onClick={handleNext}
-                                        text={"Next"}
+                                        text={t("common.previous")}
                                         icon={ArrowBigRight}
                                     />
                                 </div>

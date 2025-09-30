@@ -10,6 +10,7 @@ import Image from 'next/image'
 import PrimaryButton from '@/common/components/PrimaryButton'
 import Link from 'next/link'
 import { useLocalizedPath } from '@/hooks/common/useLocalizedPath';
+import { useI18n } from '@/lib/i18n/client';
 
 type Props = {
     clientId: string;
@@ -18,6 +19,7 @@ type Props = {
 
 const InvolvedEmployeesPreview = ({ clientId, isParentLoading }: Props) => {
     const router = useRouter();
+    const t = useI18n();
     const { involvedEmployees, isLoading } = useInvolvedEmployee({ clientId: clientId })
   const { currentLocale } = useLocalizedPath();
 
@@ -30,10 +32,10 @@ const InvolvedEmployeesPreview = ({ clientId, isParentLoading }: Props) => {
         return (
             <div className="w-full h-[287px] rounded-sm shadow-md p-4 bg-white">
                 <div className="flex justify-between items-center">
-                    <h1 className='flex items-center gap-2 m-0 p-0 font-extrabold text-lg text-slate-600'><Waypoints size={18} className='text-indigo-400' />Betrokken medewerkers</h1>
+                    <h1 className='flex items-center gap-2 m-0 p-0 font-extrabold text-lg text-slate-600'><Waypoints size={18} className='text-indigo-400' />{t("clients.profile.involvedEmployees")}</h1>
                     <Link href={`/${currentLocale}/clients/${clientId}/client-network/involved-employees`}>
                         <Button className='bg-indigo-400 text-white text-xs py-1 px-2 rounded-md flex items-center gap-2 '>
-                            <span>View All</span>
+                            <span>{t("common.viewAll")}</span>
                             <ArrowRight size={15} className='arrow-animation' />
                         </Button>
                     </Link>
@@ -41,7 +43,7 @@ const InvolvedEmployeesPreview = ({ clientId, isParentLoading }: Props) => {
                 <div className="mt-4 w-full h-max border-slate-200 pl-6 p-2 flex flex-col items-center justify-center gap-4 ">
                     <Image height={200} width={200} src={"/images/no-data.webp"} alt='no data found!' />
                     <PrimaryButton
-                        text='Add Employee'
+                        text={t("clients.profile.addEmployee")}
                         animation='animate-bounce'
                         icon={PlusCircle}
                         onClick={()=>router.push(`/${currentLocale}/clients/${clientId}/client-network/involved-employees`)}
@@ -57,7 +59,7 @@ const InvolvedEmployeesPreview = ({ clientId, isParentLoading }: Props) => {
                 <h1 className='flex items-center gap-2 m-0 p-0 font-extrabold text-lg text-slate-600'><Waypoints size={18} className='text-indigo-400' />Betrokken medewerkers</h1>
                 <Link href={`/clients/${clientId}/client-network/involved-employees`}>
                     <Button className='bg-indigo-400 text-white text-xs py-1 px-2 rounded-md flex items-center gap-2 '>
-                        <span>View All</span>
+                        <span>{t("common.viewAll")}</span>
                         <ArrowRight size={15} className='arrow-animation' />
                     </Button>
                 </Link>

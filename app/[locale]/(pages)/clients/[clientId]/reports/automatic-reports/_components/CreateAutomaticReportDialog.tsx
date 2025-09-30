@@ -7,6 +7,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Label } from "@/components/ui/label";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Textarea } from "@/components/ui/textarea";
+import { useI18n } from "@/lib/i18n/client";
 import { CreateAutomaticReport, ValidateAutomaticReport } from "@/types/automatic-report.types";
 import { cn } from "@/utils/cn";
 import { addDays, addHours, format } from "date-fns";
@@ -27,6 +28,7 @@ const CreateAutomaticReportDialog = ({ handleGenerate, handleValidate: handleVal
         to: addDays(new Date(), 2),
     });
     const [report, setReport] = useState("");
+    const t = useI18n();
 
 
     const handleClick = async () => {
@@ -71,7 +73,7 @@ const CreateAutomaticReportDialog = ({ handleGenerate, handleValidate: handleVal
         <Dialog open={open} onOpenChange={(open) => setOpen(open)}>
             <DialogTrigger asChild>
                 <PrimaryButton
-                    text="Add"
+                    text={t("common.add")}
                     // onClick={handleAdd}
                     disabled={false}
                     icon={PlusCircle}
@@ -81,10 +83,10 @@ const CreateAutomaticReportDialog = ({ handleGenerate, handleValidate: handleVal
             </DialogTrigger>
             <DialogContent className="sm:max-w-[425px]" onInteractOutside={(e) => e.preventDefault()} onPointerDownOutside={(e) => e.preventDefault()}>
                 <DialogHeader>
-                    <DialogTitle>Nieuwe Automatische Rapporten Toevoegen</DialogTitle>
+                    <DialogTitle>{t("clients.reports.addNewAutomaticReports")}</DialogTitle>
                 </DialogHeader>
                 <Popover modal>
-                    <Label>Datumbereik</Label>
+                    <Label>{t("clients.reports.dateRange")}</Label>
                     <PopoverTrigger asChild>
                         <Button
                             id="date"
@@ -105,7 +107,7 @@ const CreateAutomaticReportDialog = ({ handleGenerate, handleValidate: handleVal
                                     format(date.from, "LLL dd, y")
                                 )
                             ) : (
-                                <span>Pick a date</span>
+                                <span>{t("clients.reports.selectDateRange")}</span>
                             )}
                         </Button>
                     </PopoverTrigger>
@@ -130,10 +132,10 @@ const CreateAutomaticReportDialog = ({ handleGenerate, handleValidate: handleVal
                             />
                             <div className="grid grid-cols-2 gap-2">
                                 <Button disabled={!date?.from || !date.to || loading} className="w-full p-2 text-center bg-indigo-300 text-indigo-600 hover:text-white hover:bg-indigo-700" onClick={handleClick}>
-                                    Rapport Genereren
+                                    {loading ? t("clients.reports.generatingReport") : t("clients.reports.generateReport")}
                                 </Button>
                                 <Button disabled={!date?.from || !date.to || !report || loading} className="w-full p-2 text-center bg-indigo-300 text-indigo-600 hover:text-white hover:bg-indigo-700" onClick={handleValidate}>
-                                    Valideren & Opslaan
+                                    {t("clients.reports.validateAndSave")}
                                 </Button>
                             </div>
                         </>
@@ -143,7 +145,7 @@ const CreateAutomaticReportDialog = ({ handleGenerate, handleValidate: handleVal
                 {
                     !report && (
                         <Button disabled={!date?.from || !date.to || loading} className="w-full p-2 text-center bg-indigo-300 text-indigo-600 hover:text-white hover:bg-indigo-700" onClick={handleClick}>
-                            Rapport Genereren
+                            {t("clients.reports.generateReport")}
                         </Button>
                     )
                 }

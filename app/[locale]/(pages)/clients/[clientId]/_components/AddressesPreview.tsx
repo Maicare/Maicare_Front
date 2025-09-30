@@ -9,6 +9,7 @@ import { AddressesLoaderSkeleton } from './AddressesLoaderSkeleton';
 import { useParams, useRouter } from 'next/navigation';
 import { useClient } from '@/hooks/client/use-client';
 import { useLocalizedPath } from '@/hooks/common/useLocalizedPath';
+import { useI18n } from '@/lib/i18n/client';
 
 type Props = {
   isParentLoading: boolean;
@@ -17,7 +18,7 @@ type Props = {
 const AddressesPreview = ({ isParentLoading }: Props) => {
 
   const { clientId } = useParams();
-
+  const t = useI18n();
   const { readClientAddresses } = useClient({});
 
   const [addressesData, setAddressesData] = React.useState<AddressType[]>([]);
@@ -48,11 +49,11 @@ const AddressesPreview = ({ isParentLoading }: Props) => {
   if (addressesData?.length === 0) {
     return (
       <div className="w-full h-[287px] rounded-sm shadow-md p-4 bg-white">
-        <h1 className='flex items-center gap-2 m-0 p-0 font-extrabold text-lg text-slate-600'><MapPinned size={18} className='text-indigo-400' /> Adresgegevens</h1>
+        <h1 className='flex items-center gap-2 m-0 p-0 font-extrabold text-lg text-slate-600'><MapPinned size={18} className='text-indigo-400' /> {t("clients.create.addressDetails")}</h1>
         <div className="mt-4 w-full h-max border-slate-200 pl-6 p-2 flex flex-col items-center justify-center gap-4 ">
           <Image height={200} width={200} src={"/images/no-data.webp"} alt='no data found!' />
           <PrimaryButton
-            text='Add Addresses'
+            text={t("clients.profile.addAddress")}
             animation='animate-bounce'
             icon={Edit}
             onClick={()=>router.push(`/${currentLocale}/clients/${clientId}/update`)}
@@ -64,7 +65,7 @@ const AddressesPreview = ({ isParentLoading }: Props) => {
 
   return (
     <div className="w-full h-[287px] rounded-sm shadow-md p-4 bg-white overflow-y-scroll">
-      <h1 className='flex items-center gap-2 m-0 p-0 font-extrabold text-lg text-slate-600'><MapPinned size={18} className='text-indigo-400' /> Addresses Information</h1>
+      <h1 className='flex items-center gap-2 m-0 p-0 font-extrabold text-lg text-slate-600'><MapPinned size={18} className='text-indigo-400' /> {t("clients.create.addressDetails")}</h1>
       <div className="mt-2 w-full">
         <Accordion type="single" collapsible className="w-full" defaultValue='item-1'>
           {
@@ -73,27 +74,27 @@ const AddressesPreview = ({ isParentLoading }: Props) => {
                 <AccordionTrigger className='text-sm text-slate-600 font-bold'>{address}:</AccordionTrigger>
                 <AccordionContent>
                   <div className="flex items-center w-full py-2 border-b border-slate-200">
-                    <p className="w-[40%] text-sm text-slate-600 font-bold">belongs to:</p>
-                    <CopyTooltip text={belongs_to || "Niet gespecificeerd"}>
-                      <p className="text-sm text-slate-400 ">{belongs_to || "Niet gespecificeerd"}</p>
+                    <p className="w-[40%] text-sm text-slate-600 font-bold">{t("clients.create.belongsTo")}:</p>
+                    <CopyTooltip text={belongs_to || t("common.notSpecified")}>
+                      <p className="text-sm text-slate-400 ">{belongs_to || t("common.notSpecified")}</p>
                     </CopyTooltip>
                   </div>
                   <div className="flex items-center w-full py-2 border-b border-slate-200">
-                    <p className="w-[40%] text-sm text-slate-600 font-bold">city:</p>
-                    <CopyTooltip text={city || "Niet gespecificeerd"}>
-                      <p className="text-sm text-slate-400 ">{city || "Niet gespecificeerd"}</p>
+                    <p className="w-[40%] text-sm text-slate-600 font-bold">{t("clients.profile.city")}:</p>
+                    <CopyTooltip text={city || t("common.notSpecified")}>
+                      <p className="text-sm text-slate-400 ">{city || t("common.notSpecified")}</p>
                     </CopyTooltip>
                   </div>
                   <div className="flex items-center w-full py-2 border-b border-slate-200">
-                    <p className="w-[40%] text-sm text-slate-600 font-bold">Phone number:</p>
-                    <CopyTooltip text={phone_number || "Niet gespecificeerd"}>
-                      <p className="text-sm text-slate-400 ">{phone_number || "Niet gespecificeerd"}</p>
+                    <p className="w-[40%] text-sm text-slate-600 font-bold">{t("clients.create.phoneNumber")}:</p>
+                    <CopyTooltip text={phone_number || t("common.notSpecified")}>
+                      <p className="text-sm text-slate-400 ">{phone_number || t("common.notSpecified")}</p>
                     </CopyTooltip>
                   </div>
                   <div className="flex items-center w-full py-2 border-b border-slate-200">
-                    <p className="w-[40%] text-sm text-slate-600 font-bold">Postal:</p>
-                    <CopyTooltip text={zip_code || "Niet gespecificeerd"}>
-                      <p className="text-sm text-slate-400 ">{zip_code || "Niet gespecificeerd"}</p>
+                    <p className="w-[40%] text-sm text-slate-600 font-bold">{t("clients.profile.postalCode")}:</p>
+                    <CopyTooltip text={zip_code || t("common.notSpecified")}>
+                      <p className="text-sm text-slate-400 ">{zip_code || t("common.notSpecified")}</p>
                     </CopyTooltip>
                   </div>
                 </AccordionContent>

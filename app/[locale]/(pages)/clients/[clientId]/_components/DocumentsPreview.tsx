@@ -9,6 +9,7 @@ import { useDocument } from '@/hooks/document/use-document';
 import Image from 'next/image';
 import PrimaryButton from '@/common/components/PrimaryButton';
 import { useLocalizedPath } from '@/hooks/common/useLocalizedPath';
+import { useI18n } from '@/lib/i18n/client';
 
 type Props = {
     isParentLoading: boolean;
@@ -17,6 +18,7 @@ type Props = {
 const DocumentsPreview = ({ isParentLoading }: Props) => {
 
     const { clientId } = useParams();
+    const t = useI18n();
     const { isLoading, documents } = useDocument({ autoFetch: true, clientId: parseInt(clientId as string) })
     const router = useRouter();
       const { currentLocale } = useLocalizedPath();
@@ -30,10 +32,10 @@ const DocumentsPreview = ({ isParentLoading }: Props) => {
         return (
             <div className="w-full h-[287px] rounded-sm shadow-md p-4 bg-white overflow-y-scroll">
                 <div className="flex justify-between items-center">
-                    <h1 className='flex items-center gap-2 m-0 p-0 font-extrabold text-lg text-slate-600'><FileText size={18} className='text-indigo-400' />Documenten</h1>
+                    <h1 className='flex items-center gap-2 m-0 p-0 font-extrabold text-lg text-slate-600'><FileText size={18} className='text-indigo-400' />{t("clients.profile.documents")}</h1>
                     <Link href={`/${currentLocale}/clients/${clientId}/documents`}>
                         <Button className='bg-indigo-400 text-white text-xs py-1 px-2 rounded-md flex items-center gap-2 ' onClick={() => router.push(`/${currentLocale}/clients/${clientId}/documents`)}>
-                            <span>View All</span>
+                            <span>{t("common.viewAll")}</span>
                             <ArrowRight size={15} className='arrow-animation' />
                         </Button>
                     </Link>
@@ -46,7 +48,7 @@ const DocumentsPreview = ({ isParentLoading }: Props) => {
                         alt="no data found!"
                     />
                     <PrimaryButton
-                        text='Add Documents'
+                        text={t("clients.profile.addDocuments")}
                         animation='animate-bounce'
                         icon={Edit}
                         onClick={() => router.push(`/${currentLocale}/clients/${clientId}/documents`)}
@@ -58,10 +60,10 @@ const DocumentsPreview = ({ isParentLoading }: Props) => {
     return (
         <div className="w-full h-[287px] rounded-sm shadow-md p-4 bg-white overflow-y-scroll">
             <div className="flex justify-between items-center">
-                <h1 className='flex items-center gap-2 m-0 p-0 font-extrabold text-lg text-slate-600'><FileText size={18} className='text-indigo-400' />Documenten</h1>
+                <h1 className='flex items-center gap-2 m-0 p-0 font-extrabold text-lg text-slate-600'><FileText size={18} className='text-indigo-400' />{t("clients.profile.documents")}</h1>
                 <Link href={`/${currentLocale}/clients/${clientId}/documents`}>
                     <Button className='bg-indigo-400 text-white text-xs py-1 px-2 rounded-md flex items-center gap-2 ' onClick={() => router.push(`/${currentLocale}/clients/${clientId}/documents`)}>
-                        <span>View All</span>
+                        <span>{t("common.viewAll")}</span>
                         <ArrowRight size={15} className='arrow-animation' />
                     </Button>
                 </Link>

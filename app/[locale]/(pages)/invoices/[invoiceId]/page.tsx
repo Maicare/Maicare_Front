@@ -26,7 +26,8 @@ const InvoiceDetailsPage = () => {
       setIsLoading(false);
     }
     if (invoiceId) fetchInvoice(+invoiceId);
-  }, [invoiceId,refetch,readOne]);
+    
+  }, [invoiceId,refetch]);
   if (!invoice || isLoading) {
     return (
       <div className="flex items-center justify-center h-screen">

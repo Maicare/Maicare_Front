@@ -15,7 +15,7 @@ export type Document = {
     uuid: string
 }
 export type CreateDocument = {
-    attachmentID: string,
+    attachment_id: string,
     label: string
 }
 export type CreateDocumentResponse = {
