@@ -103,7 +103,7 @@ const EmergencyContactPage: FunctionComponent = () => {
   if (allSectionsEmpty) {
     return (
       <Panel
-        title={t("clients.appointment.appointmentCardTitle")}
+        title={t("clients.appointment.appointmentCardTitle",)}
         header={
           <div className="flex w-full justify-end gap-2">
             {appointments && <PrimaryButton

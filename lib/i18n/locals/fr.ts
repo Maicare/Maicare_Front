@@ -286,6 +286,7 @@ export default {
       treatmentAppointments: "Rendez-vous de traitement",
       work: "Travail",
       youthOfficer: "Agent de jeunesse",
+      appointmentCardTitle: "Carte de rendez-vous pour le client",
       firstLine: "Informations de rendez-vous manquantes",
       secondLine: "Il semble qu'aucune donnée n'a encore été saisie.",
       description: "Commencez par ajouter des détails de rendez-vous pour voir les informations ici.",
