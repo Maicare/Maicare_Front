@@ -216,16 +216,37 @@ const Page = () => {
                     </div>
                   </div>
                 </div>
-
                 <div className="p-4 bg-white rounded-lg border border-gray-200 shadow-sm">
+                  <h3 className="font-semibold text-gray-700 mb-3 flex items-center gap-2">
+                    <FileText className="h-5 w-5 text-blue-600" />
+                    Contract Rate
+                  </h3>
+                  <div className="p-3 bg-blue-50 rounded-md">
+                    <div className="flex justify-between items-center">
+                      <span className="text-gray-700">Employment Rate:</span>
+                      <Badge
+                        variant="outline"
+                        className={
+                          employeeContract.contract_rate > 40
+                            ? "bg-blue-100 text-blue-800 border-blue-300"
+                            : "bg-orange-100 text-orange-800 border-orange-300"
+                        }
+                      >
+                        {employeeContract.contract_rate}
+                      </Badge>
+                    </div>
+                  </div>
+                </div>
+
+                {/* <div className="p-4 bg-white rounded-lg border border-gray-200 shadow-sm">
                   <h3 className="font-semibold text-gray-700 mb-3">Summary</h3>
                   <p className="text-gray-600 text-sm">
                     This contract is for a {employeeContract.is_subcontractor ? 'subcontractor' : 'regular employee'}
                     with a {employeeContract.contract_type} agreement. The {employeeContract.is_subcontractor ? 'subcontractor' : 'employee'}
-                    is expected to work {employeeContract.fixed_contract_hours || employeeContract.variable_contract_hours} hours per week
-                    {employeeContract.variable_contract_hours > 0 ? ' with variable scheduling' : ' with fixed hours'}.
+                    is expected to work {employeeContract.contract_hours} hours per week
+                    {employeeContract.contract_hours > 0 ? ' with variable scheduling' : ' with fixed hours'}.
                   </p>
-                </div>
+                </div> */}
               </div>
             </div>
           </CardContent>

@@ -341,7 +341,7 @@ export function useEmployee({
     }
   };
   const updateEmployeeContract = async (
-    contract: CreateContractInput,
+    contract: EmployeeContract,
     employeeId: number,
     options?: ApiOptions
   ) => {
@@ -352,7 +352,7 @@ export function useEmployee({
         ApiRoutes.Employee.Contract.UpdateOne.replace("{id}", employeeId.toString()),
         "PUT",
         {},
-        contract
+        {...contract}
       );
       if (!response.data) {
         throw new Error("Failed to update contract");

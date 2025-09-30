@@ -41,12 +41,10 @@ export function EmployeeContractForm({
     const form = useForm<EmployeeContract>({
         resolver: zodResolver(createEmployeeContractSchema),
         defaultValues: {
-            fixed_contract_hours: 0,
-            variable_contract_hours: 0,
             ...defaultValues,
         },
     });
-
+    console.log(form.formState.errors)
     return (
         <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 bg-white p-4 rounded-md">
@@ -170,10 +168,10 @@ export function EmployeeContractForm({
                     {/* Fixed Hours */}
                     <FormField
                         control={form.control}
-                        name="fixed_contract_hours"
+                        name="contract_hours"
                         render={({ field }) => (
                             <FormItem>
-                                <FormLabel>Fixed Hours (weekly)</FormLabel>
+                                <FormLabel>Hours</FormLabel>
                                 <FormControl>
                                     <Input
                                         type="number"
@@ -182,31 +180,7 @@ export function EmployeeContractForm({
                                         {...field}
                                         onChange={(e) => {
                                             field.onChange(e.target.valueAsNumber);
-                                            form.trigger("variable_contract_hours");
-                                        }}
-                                    />
-                                </FormControl>
-                                <FormMessage />
-                            </FormItem>
-                        )}
-                    />
-
-                    {/* Variable Hours */}
-                    <FormField
-                        control={form.control}
-                        name="variable_contract_hours"
-                        render={({ field }) => (
-                            <FormItem>
-                                <FormLabel>Variable Hours (weekly)</FormLabel>
-                                <FormControl>
-                                    <Input
-                                        type="number"
-                                        min={0}
-                                        max={60}
-                                        {...field}
-                                        onChange={(e) => {
-                                            field.onChange(e.target.valueAsNumber);
-                                            form.trigger("fixed_contract_hours");
+                                            form.trigger("contract_hours");
                                         }}
                                     />
                                 </FormControl>
