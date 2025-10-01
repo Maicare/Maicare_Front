@@ -142,8 +142,8 @@ export function useClientColumns() {
         const client = row.original;
         return (
           <div className="flex flex-col">
-            <span className="text-gray-800">{client.city || t('common.na')}</span>
-            <span className="text-sm text-gray-500">{client.Zipcode || ""}</span>
+            <span className="text-gray-800">{client.location_name || t('common.na')}</span>
+            <span className="text-sm text-gray-500">{client.organisation || ""}</span>
           </div>
         );
       },

@@ -72,8 +72,8 @@ export function useAuth({ autoFetch = true }: { autoFetch?: boolean }) {
     try {
       // Display progress bar
       if (displayProgress) startProgress();
-      const { message, success, data, error } = await useApi<LoginResponse>(ApiRoutes.Auth.Logout, "POST", {}, {});
-      if (!data)
+      const { message, success,  error } = await useApi<LoginResponse>(ApiRoutes.Auth.Logout, "POST", {}, {});
+      if (!success)
         throw new Error(error || message || "An unknown error occurred");
       // Remove token
       localStorage.removeItem("accessToken");

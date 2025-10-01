@@ -1,6 +1,6 @@
 'use client';
-import React, { useState } from 'react';
-import { User, Brain, CheckCircle,  ArrowRight, Sparkles } from 'lucide-react';
+import React, { useEffect, useState } from 'react';
+import { User, Brain, CheckCircle, ArrowRight, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -15,29 +15,35 @@ import withPermissions from '@/common/hocs/with-permissions';
 import Routes from '@/common/routes';
 import { PermissionsObjects } from '@/common/data/permission.data';
 import { useLocalizedPath } from '@/hooks/common/useLocalizedPath';
-
-// Mock data (same as before)
-const mockClient = {
-    id: 1,
-    firstName: "Emma",
-    lastName: "van Berg",
-    age: 16,
-    livingSituation: "Foster care placement",
-    educationLevel: "VMBO level"
-};
+import { useClient } from '@/hooks/client/use-client';
+import { Client } from '@/types/client.types';
+import { Id } from '@/common/types/types';
+import { getAge } from '@/utils/get-age';
 
 
 
 function CareplanUI() {
-    const {clientId} = useParams();
+    const { clientId } = useParams();
     const router = useRouter();
+    const { readOne } = useClient({ autoFetch: false, });
+    const [client, setClient] = useState<Client | undefined>(undefined);
+    const [isLoading, setIsLoading] = useState(true);
     const [selectedDomain, setSelectedDomain] = useState("");
     const [selectedLevel, setSelectedLevel] = useState("");
     const [selectedTargetLevel, setSelectedTargetLevel] = useState("");
     const [isGenerating, setIsGenerating] = useState(false);
-    const {generateOne} = useAssessment({autoFetch:false,clientId:parseInt(clientId as string)});
-      const { currentLocale } = useLocalizedPath();
-    
+    const { generateOne } = useAssessment({ autoFetch: false, clientId: parseInt(clientId as string) });
+    const { currentLocale } = useLocalizedPath();
+    useEffect(() => {
+        const fetchClient = async (id: Id) => {
+            setIsLoading(true);
+            const data = await readOne(id);
+            setClient(data);
+            setIsLoading(false);
+        }
+        if (clientId) fetchClient(+clientId);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [clientId]);
     const handleGeneratePlan = async () => {
         if (!selectedDomain || !selectedLevel || !selectedTargetLevel) return;
         try {
@@ -46,15 +52,15 @@ function CareplanUI() {
                 maturity_matrix_id: Object.keys(DOMAINS).indexOf(selectedDomain) + 1,
                 initial_level: parseInt(selectedLevel),
                 target_level: parseInt(selectedTargetLevel),
-            },{
-                displayProgress:true,
-                displaySuccess:true
+            }, {
+                displayProgress: true,
+                displaySuccess: true
             });
             router.push(`/${currentLocale}/clients/${clientId}/care-plan/${plan.care_plan_id}`);
 
         } catch (error) {
             console.error(error);
-        }finally{
+        } finally {
             setIsGenerating(false);
         }
     };
@@ -69,7 +75,13 @@ function CareplanUI() {
     const getLevelColor = (level: keyof typeof levelColors) => {
         return levelColors[level] || "bg-gray-100 text-gray-800 border-gray-200";
     };
-
+    if (isLoading || !client) {
+        return (
+            <div className="flex items-center justify-center h-screen">
+                <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-blue-500"></div>
+            </div>
+        );
+    }
     return (
         <div className="w-full mx-auto p-6  min-h-screen space-y-6">
             {/* Header */}
@@ -80,10 +92,10 @@ function CareplanUI() {
                     </div>
                     <div>
                         <CardTitle>
-                            {mockClient.firstName} {mockClient.lastName}
+                            {client?.first_name} {client?.last_name}
                         </CardTitle>
                         <CardDescription>
-                            {mockClient.age} jaar • {mockClient.livingSituation} • {mockClient.educationLevel}
+                            {getAge(client?.date_of_birth)} jaar • {client.living_situation} • {client.education_level}
                         </CardDescription>
                     </div>
                 </CardHeader>
@@ -157,7 +169,7 @@ function CareplanUI() {
                                             key={level}
                                             onClick={() => setSelectedTargetLevel(level)}
                                             // variant={selectedLevel === level ? "default" : "outline"}
-                                            className={cn("w-full p-4 flex items-center justify-center border rounded-lg cursor-pointer hover:bg-gray-50 transition-colors", selectedTargetLevel === level ? "border-blue-500 bg-blue-50" : "border-gray-300",parseInt(level) < parseInt(selectedLevel) && "hidden")}
+                                            className={cn("w-full p-4 flex items-center justify-center border rounded-lg cursor-pointer hover:bg-gray-50 transition-colors", selectedTargetLevel === level ? "border-blue-500 bg-blue-50" : "border-gray-300", parseInt(level) < parseInt(selectedLevel) && "hidden")}
                                         >
                                             <div className="flex items-center justify-start w-full gap-3">
                                                 <Badge variant="outline" className={cn(getLevelColor(parseInt(level) as keyof typeof levelColors), "w-22 flex items-center justify-center")}>
@@ -204,7 +216,7 @@ function CareplanUI() {
                                             <strong>Plan wordt gegenereerd voor:</strong> {selectedDomain}, Niveau {selectedLevel} → Niveau {parseInt(selectedLevel) + 1}
                                         </p>
                                         <p className="text-xs text-blue-600 mt-1">
-                                            AI zal een gepersonaliseerd zorgplan maken op basis van {mockClient.firstName}&apos;s profiel en het geselecteerde niveau.
+                                            AI zal een gepersonaliseerd zorgplan maken op basis van {client.first_name}&apos;s profiel en het geselecteerde niveau.
                                         </p>
                                     </CardContent>
                                 </Card>
@@ -221,7 +233,7 @@ function CareplanUI() {
                                     <div>
                                         <CardTitle>AI Zorgplan Generator Actief</CardTitle>
                                         <CardDescription>
-                                            Het systeem analyseert {mockClient.firstName}&apos;s profiel en creëert een gepersonaliseerd zorgplan...
+                                            Het systeem analyseert {client.first_name}&apos;s profiel en creëert een gepersonaliseerd zorgplan...
                                         </CardDescription>
                                     </div>
                                 </div>
@@ -282,9 +294,9 @@ function CareplanUI() {
 }
 
 export default withAuth(
-  withPermissions(CareplanUI, {
-      redirectUrl: Routes.Common.NotFound,
-      requiredPermissions: PermissionsObjects.CreateClientCarePlan, // TODO: Add correct permission
-  }),
-  { mode: AUTH_MODE.LOGGED_IN, redirectUrl: Routes.Auth.Login }
+    withPermissions(CareplanUI, {
+        redirectUrl: Routes.Common.NotFound,
+        requiredPermissions: PermissionsObjects.CreateClientCarePlan, // TODO: Add correct permission
+    }),
+    { mode: AUTH_MODE.LOGGED_IN, redirectUrl: Routes.Auth.Login }
 );

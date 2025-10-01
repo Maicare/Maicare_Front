@@ -42,7 +42,23 @@ export default {
   dashboard: {
     adminDashboard: "Tableau de bord administrateur",
     welcomeBack: "Bon retour ! Voici ce qui se passe aujourd'hui.",
-
+    payments: {
+      noData: "Aucune donnée de paiement disponible",
+      noUpcoming: "Aucun paiement à venir",
+      latest: "Derniers paiements",
+      recent: "Paiements reçus récemment.",
+    },
+    appointments: {
+      noUpcoming: "Aucun rendez-vous à venir",
+      noAppointments: "Aucun rendez-vous programmé",
+      next: "Prochains rendez-vous programmés.",
+    },
+    contracts: {
+      reviewAll: "Examiner Tous les Contrats",
+      viewAll: "Voir Tous les Contrats",
+      expiringSoon: "Contrats expirant bientôt",
+      noContracts: "Aucun contrat disponible",
+    },
     metrics: {
       totalRevenue: "Revenu total",
       fromPayments: "De {count} paiements",
@@ -68,15 +84,6 @@ export default {
       urgentCases: "Cas urgents",
       contractEnds: "Fin de contrat",
       statusChanges: "Changements de statut",
-    },
-
-    payments: {
-      latest: "Derniers paiements",
-      recent: "Paiements reçus récemment.",
-    },
-
-    appointments: {
-      next: "Prochains rendez-vous programmés.",
     },
 
   },

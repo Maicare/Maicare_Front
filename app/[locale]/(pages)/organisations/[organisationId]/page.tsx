@@ -4,7 +4,6 @@ import {
   Building2,
   MapPin,
   Mail,
-  Globe,
   Users,
   Plus,
   Trash2,
@@ -13,7 +12,8 @@ import {
   Clock,
   CheckCircle2,
   ArrowLeft,
-  Hash
+  Hash,
+  XCircle
 } from "lucide-react";
 import { Organization } from "@/types/organisation";
 import CreateLocationSheet from "../../locations/_components/CreateLocationSheet";
@@ -24,12 +24,16 @@ import { useOrganisation } from "@/hooks/organisation/use-organisation";
 import CreateOrganisationSheet from "../_components/create-organisation-sheet";
 import { CreateOrganisation } from "@/schemas/organisation.schema";
 import { useLocalizedPath } from "@/hooks/common/useLocalizedPath";
+import { Id } from "@/common/types/types";
+import { cn } from "@/utils/cn";
+import { formatDateToDutch } from "@/utils/timeFormatting";
 
 interface Location {
   id: number;
   name: string;
   address: string;
   capacity: number;
+  created_at?:string;
 }
 
 
@@ -38,12 +42,19 @@ export default function OrganizationDetailsPage() {
   const router = useRouter();
   const [locations, setLocations] = useState<Location[]>([]);
   const [organization, setOrganization] = useState<Organization | null>(null);
+  const [count, setCount] = useState<{
+    client_count: number,
+    employee_count: number,
+    location_count: number,
+    organisation_id: Id,
+    organisation_name: string
+  } | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [open, setOpen] = useState(false);
   const [orgOpen, setOrgOpen] = useState(false);
   const { createOneForOrganisation, readAllForOrganisation } = useLocation({ autoFetch: false });
-  const { readOne: readOrganization, updateOne } = useOrganisation({ autoFetch: false });
-    const { currentLocale } = useLocalizedPath();
+  const { readOne: readOrganization, updateOne, readCount } = useOrganisation({ autoFetch: false });
+  const { currentLocale } = useLocalizedPath();
 
   const handleOpen = (bool: boolean) => {
     setOpen(bool);
@@ -56,8 +67,12 @@ export default function OrganizationDetailsPage() {
     const fetchOrganization = async () => {
       try {
         if (organisationId) {
-          const orgRes = await readOrganization(parseInt(organisationId as string, 10), { displayProgress: true });
+          const [orgRes, countRes] = await Promise.all([
+            readOrganization(parseInt(organisationId as string, 10), { displayProgress: true }),
+            readCount(parseInt(organisationId as string))
+          ])
           setOrganization(orgRes);
+          setCount(countRes);
         }
       } catch (error) {
         console.error("Failed to fetch organization:", error);
@@ -83,7 +98,7 @@ export default function OrganizationDetailsPage() {
     };
 
     fetchLocations();
-  }, [organisationId, open, readAllForOrganisation]);
+  }, [organisationId, open]);
 
   const handleCreate = async (values: CreateLocation) => {
     try {
@@ -172,19 +187,17 @@ export default function OrganizationDetailsPage() {
               </div>
 
               <div className="flex items-center gap-2 mb-4">
-                <div className="flex items-center gap-1 bg-green-100 text-green-800 py-1 px-3 rounded-full text-sm font-medium">
-                  <CheckCircle2 className="h-4 w-4" />
-                  Active
+                <div className={cn("flex items-center gap-1 bg-green-100 text-green-800 py-1 px-3 rounded-full text-sm font-medium",organization.location_count <= 0 && "bg-red-100 text-red-800")}>
+                  
+                  {organization.location_count > 0 ? <CheckCircle2 className="h-4 w-4" /> : <XCircle className="h-4 w-4" />}
+                  {organization.location_count > 0 ? "Actief" : "Inactive"}
                 </div>
                 <div className="flex items-center gap-1 bg-blue-100 text-blue-800 py-1 px-3 rounded-full text-sm font-medium">
                   <Clock className="h-4 w-4" />
-                  Member since Jan 2023
+                  Actief sinds {formatDateToDutch(organization.created_at)}
                 </div>
               </div>
 
-              <p className="text-gray-600 mb-6">
-                A leading organization in the business sector with multiple locations and a strong customer base.
-              </p>
             </div>
           </div>
         </div>
@@ -203,15 +216,14 @@ export default function OrganizationDetailsPage() {
                       Contact Information
                     </h3>
                     <p className="text-gray-800">{organization.email}</p>
-                    <p className="text-gray-800 mt-1">+1 (555) 123-4567</p>
                   </div>
-
                   <div>
                     <h3 className="text-sm font-medium text-gray-500 mb-2 flex items-center gap-2">
-                      <Globe className="h-4 w-4" />
-                      Website
+                      <Hash className="h-4 w-4" />
+                      Business Numbers
                     </h3>
-                    <a href="#" className="text-blue-600 hover:underline">www.{organization.name.toLowerCase().replace(/\s/g, '')}.com</a>
+                    <p className="text-gray-800">KVK: {organization.kvk_number}</p>
+                    <p className="text-gray-800 mt-1">BTW: {organization.btw_number}</p>
                   </div>
                 </div>
 
@@ -223,15 +235,6 @@ export default function OrganizationDetailsPage() {
                     </h3>
                     <p className="text-gray-800">{organization.address}</p>
                     <p className="text-gray-800">{organization.postal_code}, {organization.city}</p>
-                  </div>
-
-                  <div>
-                    <h3 className="text-sm font-medium text-gray-500 mb-2 flex items-center gap-2">
-                      <Hash className="h-4 w-4" />
-                      Business Numbers
-                    </h3>
-                    <p className="text-gray-800">KVK: {organization.kvk_number}</p>
-                    <p className="text-gray-800 mt-1">BTW: {organization.btw_number}</p>
                   </div>
                 </div>
               </div>
@@ -245,7 +248,7 @@ export default function OrganizationDetailsPage() {
                     <MapPin className="h-6 w-6 text-blue-600" />
                   </div>
                   <div>
-                    <p className="text-2xl font-bold text-gray-800">{locations.length}</p>
+                    <p className="text-2xl font-bold text-gray-800">{count?.location_count}</p>
                     <p className="text-sm text-gray-600">Locations</p>
                   </div>
                 </div>
@@ -257,7 +260,7 @@ export default function OrganizationDetailsPage() {
                     <Users className="h-6 w-6 text-green-600" />
                   </div>
                   <div>
-                    <p className="text-2xl font-bold text-gray-800">245</p>
+                    <p className="text-2xl font-bold text-gray-800">{count?.employee_count}</p>
                     <p className="text-sm text-gray-600">Employees</p>
                   </div>
                 </div>
@@ -269,8 +272,8 @@ export default function OrganizationDetailsPage() {
                     <Star className="h-6 w-6 text-amber-600" />
                   </div>
                   <div>
-                    <p className="text-2xl font-bold text-gray-800">4.8</p>
-                    <p className="text-sm text-gray-600">Average Rating</p>
+                    <p className="text-2xl font-bold text-gray-800">{count?.client_count}</p>
+                    <p className="text-sm text-gray-600">Clients</p>
                   </div>
                 </div>
               </div>
@@ -283,20 +286,25 @@ export default function OrganizationDetailsPage() {
 
             <div className="space-y-4">
               {[
-                { action: "Location added", date: "2 hours ago", location: "Warehouse" },
-                { action: "Details updated", date: "1 day ago", location: "Main Office" },
-                { action: "New employee assigned", date: "2 days ago", location: "Retail Store" },
-              ].map((activity, index) => (
+                { action: "Activated at", date: formatDateToDutch(locations[0].created_at!,true), location: "Warehouse" },
+                { action: "Updated at", date: formatDateToDutch(organization.updated_at,true), location: "Main Office" },
+                { action: "Created at", date: formatDateToDutch(organization.created_at,true), location: "Retail Store" },
+              ].map((activity, index) => {
+                if (index === 0 && locations.length === 0) {
+                  return null;
+                }
+                return (
                 <div key={index} className="flex gap-3">
                   <div className="flex-shrink-0 mt-1">
                     <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
                   </div>
                   <div>
                     <p className="text-sm font-medium text-gray-800">{activity.action}</p>
-                    <p className="text-xs text-gray-500">{activity.location} • {activity.date}</p>
+                    <p className="text-xs text-gray-500">{activity.date}</p>
                   </div>
                 </div>
-              ))}
+              )
+              })}
             </div>
 
             <button className="w-full mt-6 text-center text-blue-600 hover:text-blue-800 font-medium text-sm">

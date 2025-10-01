@@ -1,7 +1,7 @@
 export default {
   common: {
     missing: "Missing",
-      required: "Required",
+    required: "Required",
     actions: "Actions",
     next: "Next",
     previous: "Previous",
@@ -42,7 +42,23 @@ export default {
   dashboard: {
     adminDashboard: "Admin Dashboard",
     welcomeBack: "Welcome back! Here's what's happening today.",
-
+    payments: {
+      noData: "No payment data available",
+      noUpcoming: "No upcoming payments",
+      latest: "Latest Payments",
+      recent: "Recent payments received.",
+    },
+    appointments: {
+      noUpcoming: "No upcoming appointments",
+      noAppointments: "No appointments scheduled",
+      next: "Next appointments scheduled.",
+    },
+    contracts: {
+      reviewAll: "Review All Contracts",
+      viewAll: "View All Contracts",
+      expiringSoon: "Contracts expiring soon",
+      noContracts: "No contracts available",
+    },
     metrics: {
       totalRevenue: "Total Revenue",
       fromPayments: "From {count} payments",
@@ -69,17 +85,6 @@ export default {
       contractEnds: "Contract Ends",
       statusChanges: "Status Changes",
     },
-
-    payments: {
-      latest: "Latest Payments",
-      recent: "Recent payments received.",
-    },
-
-    appointments: {
-      next: "Next appointments scheduled.",
-    },
-
-
   },
   notifications: {
     title: "Notifications",
@@ -121,7 +126,7 @@ export default {
         selectDocument: "Select Document",
         registration_form: "Registration Form",
         intake_form: "Intake Form",
-        consent_form: "Consent Form", 
+        consent_form: "Consent Form",
         risk_assessment: "Risk Assessment",
         self_reliance_matrix: "Self-Reliance Matrix",
         force_inventory: "Force Inventory",
@@ -402,7 +407,7 @@ export default {
         depressed: "😞 Depressed",
         angry: "😡 Angry",
       },
-      
+
     }
   },
 } as const;
