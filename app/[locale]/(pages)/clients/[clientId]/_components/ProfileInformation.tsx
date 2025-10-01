@@ -5,19 +5,20 @@ import ProfileInformationSkeleton from './ProfileInformationSkeleton'
 import { UpdateStatusButton } from './UpdateStatusButton'
 import { useParams } from 'next/navigation'
 import { useI18n } from '@/lib/i18n/client'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 
 type Props = {
-    profile_picture:string;
-    first_name:string;
-    last_name:string;
-    date_of_birth:string;
-    gender:string;
-    status:string;
-    isParentLoading:boolean;
+    profile_picture: string;
+    first_name: string;
+    last_name: string;
+    date_of_birth: string;
+    gender: string;
+    status: string;
+    isParentLoading: boolean;
 }
 
-const ProfileInformation = ({date_of_birth,first_name,gender,last_name,profile_picture,isParentLoading,status}:Props) => {
-    const {clientId} = useParams();
+const ProfileInformation = ({ date_of_birth, first_name, gender, last_name, profile_picture, isParentLoading, status }: Props) => {
+    const { clientId } = useParams();
     const t = useI18n();
     if (isParentLoading) {
         return (
@@ -37,7 +38,11 @@ const ProfileInformation = ({date_of_birth,first_name,gender,last_name,profile_p
             <div className="p-4 h-31 flex justify-between w-full bg-white">
                 <div className="flex flex-col items-start relative w-[40%]">
                     <div className="rounded-full border-2 border-white absolute -top-10 left-0 h-[50px] w-[50px] overflow-hidden">
-                        <Image src={profile_picture || "/images/avatar-1.jpg"} width={"50"} height={"50"} className="rounded-full object-cover h-full w-full" alt="profile" />
+                        {/* <Image src={profile_picture || "/images/avatar-1.jpg"} width={"50"} height={"50"} className="rounded-full object-cover h-full w-full" alt="profile" /> */}
+                        <Avatar className="h-full w-full rounded-full">
+                            <AvatarImage src={profile_picture} alt={first_name} />
+                            <AvatarFallback className="rounded-full bg-indigo-400 text-white">{first_name[0].toUpperCase()+last_name[0].toUpperCase()}</AvatarFallback>
+                        </Avatar>
                     </div>
                     <div className="mt-10">
                         <p className="text-sm font-medium">{first_name + " " + last_name}</p>
@@ -55,7 +60,7 @@ const ProfileInformation = ({date_of_birth,first_name,gender,last_name,profile_p
                             <p className="text-sm font-medium">{gender}</p>
                         </div>
                     </div>
-                    <UpdateStatusButton onConfirm={()=>{}} clientId={clientId as string} status={status} />
+                    <UpdateStatusButton onConfirm={() => { }} clientId={clientId as string} status={status} />
                 </div>
             </div>
         </div>
