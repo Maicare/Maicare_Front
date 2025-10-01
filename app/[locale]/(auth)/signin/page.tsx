@@ -13,6 +13,7 @@ import Link from "next/link";
 import { useAuth } from "@/common/hooks/use-auth";
 import { useRouter } from "next/navigation";
 import { useLocalizedPath } from "@/hooks/common/useLocalizedPath";
+import { Loader } from "lucide-react";
 
 const SignIn = () => {
   const [is2FAEnabled, setIs2FAEnabled] = useState(false);
@@ -23,6 +24,7 @@ const SignIn = () => {
   const { login, Verify2FA } = useAuth({ autoFetch: false });
   const router = useRouter();
   const { currentLocale } = useLocalizedPath();
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -32,6 +34,7 @@ const SignIn = () => {
         return;
       }
       try {
+        setIsLoading(true);
         const response = await login({ email, password }, {
           displayProgress: true,
           displaySuccess: true,
@@ -40,12 +43,12 @@ const SignIn = () => {
           setIs2FAEnabled(true);
           setTemp_token(response.temp_token);
         } else {
-          setTimeout(() => {
-            router.push("/"+currentLocale+'/dashboard')
-          }, 3000);
+          router.push("/" + currentLocale + '/dashboard')
         }
       } catch (error) {
         console.error("Login failed:", error);
+      } finally {
+        setIsLoading(false);
       }
     } else {
       if (!twoFactorCode) {
@@ -61,15 +64,16 @@ const SignIn = () => {
         return;
       }
       try {
+        setIsLoading(true);
         await Verify2FA(temp_token, twoFactorCode, {
           displayProgress: true,
           displaySuccess: true,
         });
-        setTimeout(() => {
-          router.push("/"+currentLocale+'/dashboard')
-        }, 3000);
+        router.push("/" + currentLocale + '/dashboard')
       } catch (error) {
         console.error("2FA verification failed:", error);
+      } finally {
+        setIsLoading(false);
       }
     }
   };
@@ -205,10 +209,13 @@ const SignIn = () => {
                       </div>
 
                       <Button
+                      disabled={isLoading}
                         type="submit"
                         className="w-full h-11 rounded-lg bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-medium"
                       >
-                        Aanmelden
+                        {
+                          isLoading ? <Loader /> : "Aanmelden"
+                        }
                       </Button>
                     </form>
                   ) : (

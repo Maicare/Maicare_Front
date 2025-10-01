@@ -1,7 +1,7 @@
 export default {
   common: {
     missing: "Ontbrekend",
-      required: "Verplicht",
+    required: "Verplicht",
     actions: "Acties",
     next: "Volgende",
     previous: "Vorige",
@@ -42,7 +42,23 @@ export default {
   dashboard: {
     adminDashboard: "Beheerdersdashboard",
     welcomeBack: "Welkom terug! Dit is wat er vandaag gebeurt.",
-
+    payments: {
+      noData: "Geen betalingsgegevens beschikbaar",
+      noUpcoming: "Geen aankomende betalingen",
+      latest: "Laatste Betalingen",
+      recent: "Recent ontvangen betalingen.",
+    },
+    appointments: {
+      noUpcoming: "Geen aankomende afspraken",
+      noAppointments: "Geen afspraken ingepland",
+      next: "Volgende afspraken ingepland.",
+    },
+    contracts: {
+      reviewAll: "Alle Contracten Beoordelen",
+      viewAll: "Alle Contracten Bekijken",
+      expiringSoon: "Contracten die binnenkort verlopen",
+      noContracts: "Geen contracten beschikbaar",
+    },
     metrics: {
       totalRevenue: "Totale Inkomsten",
       fromPayments: "Van {count} betalingen",
@@ -69,16 +85,6 @@ export default {
       contractEnds: "Contracteinde",
       statusChanges: "Statuswijzigingen",
     },
-
-    payments: {
-      latest: "Laatste Betalingen",
-      recent: "Recent ontvangen betalingen.",
-    },
-
-    appointments: {
-      next: "Volgende afspraken ingepland.",
-    },
-
   },
   notifications: {
     title: "Meldingen",

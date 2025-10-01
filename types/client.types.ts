@@ -117,6 +117,9 @@ export type Client = {
     employee_id: Id;
     identity?: boolean;
     status?: string;
+    living_situation:string;
+    education_level:string;
+    location_name:string;
 }
 export type ClientsSearchParams = {
     search?: string;

@@ -1,6 +1,5 @@
 'use client';
-import { User, Brain, Calendar, Target, CheckCircle, AlertTriangle, Users, ArrowRight, Save, Eye } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { User, Brain, Calendar, Target, CheckCircle, AlertTriangle, Users, ArrowRight,  Eye } from 'lucide-react';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
@@ -19,14 +18,12 @@ import withAuth, { AUTH_MODE } from '@/common/hocs/with-auth';
 import withPermissions from '@/common/hocs/with-permissions';
 import Routes from '@/common/routes';
 import { PermissionsObjects } from '@/common/data/permission.data';
-const mockClient = {
-    id: 1,
-    firstName: "Emma",
-    lastName: "van Berg",
-    age: 16,
-    livingSituation: "Foster care placement",
-    educationLevel: "VMBO level"
-};
+import { useClient } from '@/hooks/client/use-client';
+import { useEffect, useState } from 'react';
+import { Client } from '@/types/client.types';
+import { Id } from '@/common/types/types';
+import { getAge } from '@/utils/get-age';
+
 
 const levelColors = {
     1: "bg-red-100 text-red-800 border-red-200",
@@ -37,25 +34,38 @@ const levelColors = {
 };
 
 const GoalPage = () => {
-    const { carePlanId } = useParams();
-    const { isLoading, data } = useCarePlan({
+    const { carePlanId,clientId } = useParams();
+    const { isLoading:carePlaneLoading, data } = useCarePlan({
         carePlanId: carePlanId as string,
         overview: true,
     });
+    const { readOne } = useClient({ autoFetch: false, });
+    const [client, setClient] = useState<Client | undefined>(undefined);
+    const [isLoading, setIsLoading] = useState(true);
+    useEffect(() => {
+        const fetchClient = async (id: Id) => {
+            setIsLoading(true);
+            const data = await readOne(id);
+            setClient(data);
+            setIsLoading(false);
+        }
+        if (clientId) fetchClient(+clientId);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [clientId]);
     const getLevelColor = (level: keyof typeof levelColors) => {
         return levelColors[level] || "bg-gray-100 text-gray-800 border-gray-200";
     };
 
 
 
-    if (isLoading) {
+    if (isLoading||carePlaneLoading) {
         return (
             <div className="flex items-center justify-center h-screen">
                 <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-blue-500"></div>
             </div>
         );
     }
-    if (data) {
+    if (data && client) {
         const overview = data as CarePlanOverview;
         return (
             <div className="w-full mx-auto p-6  min-h-screen space-y-6">
@@ -68,10 +78,10 @@ const GoalPage = () => {
                             </div>
                             <div>
                                 <CardTitle>
-                                    {mockClient.firstName} {mockClient.lastName}
+                                    {client.first_name} {client.last_name}
                                 </CardTitle>
                                 <CardDescription>
-                                    {mockClient.age} jaar • {mockClient.livingSituation} • {mockClient.educationLevel}
+                                    {getAge(client.date_of_birth)} jaar • {client.living_situation} • {client.education_level}
                                 </CardDescription>
                             </div>
                         </div>
@@ -79,10 +89,6 @@ const GoalPage = () => {
                             <Badge variant={overview.status === 'draft' ? 'secondary' : 'default'}>
                                 {overview.status === 'draft' ? 'Concept' : overview.status}
                             </Badge>
-                            <Button>
-                                <Save className="w-4 h-4 mr-2" />
-                                Opslaan
-                            </Button>
                         </div>
                     </CardHeader>
                 </Card>
@@ -251,9 +257,9 @@ const GoalPage = () => {
 }
 
 export default withAuth(
-  withPermissions(GoalPage, {
-      redirectUrl: Routes.Common.NotFound,
-      requiredPermissions: PermissionsObjects.ViewClientCarePlan, // TODO: Add correct permission
-  }),
-  { mode: AUTH_MODE.LOGGED_IN, redirectUrl: Routes.Auth.Login }
+    withPermissions(GoalPage, {
+        redirectUrl: Routes.Common.NotFound,
+        requiredPermissions: PermissionsObjects.ViewClientCarePlan, // TODO: Add correct permission
+    }),
+    { mode: AUTH_MODE.LOGGED_IN, redirectUrl: Routes.Auth.Login }
 );

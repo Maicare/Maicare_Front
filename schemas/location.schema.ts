@@ -16,4 +16,4 @@ export const locationSchema = createLocationSchema.extend({
 });
 
 // Type for Location (inferred from the schema)
-export type Location = z.infer<typeof locationSchema>;
+export type Location = z.infer<typeof locationSchema> & {created_at?:string};

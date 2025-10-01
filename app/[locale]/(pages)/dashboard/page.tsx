@@ -443,7 +443,7 @@ function AdminDashboard() {
               </div>
               <div className="border-t p-4">
                 <Button variant="outline" className="w-full bg-rose-50 hover:bg-rose-100 text-rose-700">
-                  Review All Contracts
+                  {t("dashboard.contracts.reviewAll")}
                   <ArrowUpRight className="ml-2 h-4 w-4" />
                 </Button>
               </div>
@@ -492,7 +492,7 @@ function AdminDashboard() {
                 ))}
                 {(!latestPayments || latestPayments.length === 0) && (
                   <div className="text-center py-6 text-muted-foreground">
-                    No payment data available
+                    {t("dashboard.payments.noData")}
                   </div>
                 )}
               </div>
@@ -544,7 +544,7 @@ function AdminDashboard() {
                 ))}
                 {(!upcomingAppointments || upcomingAppointments.length === 0) && (
                   <div className="text-center py-6 text-muted-foreground">
-                    No upcoming appointments
+                    {t("dashboard.appointments.noUpcoming")}
                   </div>
                 )}
               </div>

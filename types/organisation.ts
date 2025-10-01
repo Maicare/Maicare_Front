@@ -9,5 +9,7 @@ export type Organization = {
     kvk_number: string,
     location_count: number,
     name: string,
-    postal_code: string
+    postal_code: string,
+    created_at:string,
+    updated_at:string,
 };
