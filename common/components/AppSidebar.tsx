@@ -127,7 +127,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                 </SidebarContent>
                 <SidebarFooter>
                     <ThemeSwitcher />
-                    <NavUser user={{ name: authUser?.first_name + " " + authUser?.last_name, email: authUser?.email||"Loading", avatar: (authUser as any)?.profile_picture || "/images/avatar-1.jpg" }} />
+                    <NavUser user={{ name: authUser?.first_name + " " + authUser?.last_name, email: authUser?.email||"Loading", avatar: (authUser as any)?.profile_picture }} />
                 </SidebarFooter>
                 <SidebarRail />
             </Sidebar>
@@ -167,7 +167,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             <SidebarFooter>
                 <LanguageSwitcher />
                 <ThemeSwitcher />
-                <NavUser user={{ name: authUser?.first_name + " " + authUser?.last_name, email: authUser?.email||"Loading", avatar: (authUser as any)?.profile_picture || "/images/avatar-1.jpg" }} />
+                <NavUser user={{ name: authUser?.first_name + " " + authUser?.last_name, email: authUser?.email||"Loading", avatar: (authUser as any)?.profile_picture }} />
             </SidebarFooter>
             <SidebarRail />
         </Sidebar>

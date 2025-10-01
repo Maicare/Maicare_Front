@@ -4,6 +4,7 @@ import { ArrowRight } from 'lucide-react'
 import Image from 'next/image'
 import React from 'react'
 import ProfileInformationSkeleton from './ProfileInformationSkeleton'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 
 type Props = {
     profile_picture:string;
@@ -36,8 +37,12 @@ const ProfileInformation = ({date_of_birth,first_name,gender,last_name,profile_p
             </div>
             <div className="p-4 h-31 flex justify-between w-full bg-white">
                 <div className="flex flex-col items-start relative w-[30%]">
-                    <div className="rounded-full border-2 border-white absolute -top-8 left-0">
-                        <Image src={profile_picture || "/images/avatar-1.jpg"} width={50} height={50} className="rounded-full" alt="profile" />
+                    <div className="rounded-full border-2 border-white absolute -top-8 left-0 h-[50px] w-[50px] overflow-hidden">
+                        {/* <Image src={profile_picture || "/images/avatar-1.jpg"} width={50} height={50} className="rounded-full" alt="profile" /> */}
+                        <Avatar className="h-full w-full rounded-full">
+                            <AvatarImage src={profile_picture} alt={first_name} />
+                            <AvatarFallback className="rounded-full bg-indigo-400 text-white">{first_name[0].toUpperCase()+last_name[0].toUpperCase()}</AvatarFallback>
+                        </Avatar>
                     </div>
                     <div className="mt-10">
                         <p className="text-sm font-medium">{first_name + " " + last_name}</p>
