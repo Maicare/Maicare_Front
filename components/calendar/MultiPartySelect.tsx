@@ -82,8 +82,8 @@ const MultiPartySelect = ({
   const buttonText = selectedLabel
     ? selectedLabel
     : label
-      ? `Select ${label.toLowerCase()}…`
-      : `Filter by party...`;
+      ? `Selecteer ${label.toLowerCase()}…`
+      : `Filter op partij...`;
 
   return (
     <div className={cn("w-full" , className)}>
@@ -109,7 +109,7 @@ const MultiPartySelect = ({
         <PopoverContent className="w-full p-0 bg-white border border-slate-200 rounded-lg shadow-xl">
           <Command>
             <CommandInput
-              placeholder="Search clients or employees…"
+              placeholder="Zoek cliënten of medewerkers…"
               className="h-9"
               onValueChange={(search) =>
                 setFilter((prev) => ({ ...prev, search, autoFetch: true }))
@@ -117,10 +117,10 @@ const MultiPartySelect = ({
             />
             <CommandList className="max-h-60 overflow-y-auto">
               <CommandEmpty className="px-4 py-2 text-sm text-slate-500">
-                No results found
+                Geen resultaten gevonden
               </CommandEmpty>
               {clientOptions.length > 0 && (
-                <CommandGroup heading="Clients">
+                <CommandGroup heading="Cliënten">
                   {clientOptions.map((opt) => {
                     const isSelected =
                       value?.type === "client" && value.id === opt.id;
@@ -146,7 +146,7 @@ const MultiPartySelect = ({
                 </CommandGroup>
               )}
               {employeeOptions.length > 0 && (
-                <CommandGroup heading="Employees">
+                <CommandGroup heading="Medewerkers">
                   {employeeOptions.map((opt) => {
                     const isSelected =
                       value?.type === "employee" && value.id === opt.id;

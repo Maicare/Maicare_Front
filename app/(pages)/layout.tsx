@@ -31,19 +31,19 @@ export default function RootLayout({ children }: { children: ReactNode }) {
                     <BreadcrumbList>
                       <BreadcrumbItem className="hidden md:block">
                         <BreadcrumbLink href="#">
-                          Building Your Application
+                          Jouw Applicatie Bouwen
                         </BreadcrumbLink>
                       </BreadcrumbItem>
                       <BreadcrumbSeparator className="hidden md:block" />
                       <BreadcrumbItem>
-                        <BreadcrumbPage className="text-sidebar-foreground text-white">Data Fetching</BreadcrumbPage>
+                        <BreadcrumbPage className="text-sidebar-foreground text-white">Data Ophalen</BreadcrumbPage>
                       </BreadcrumbItem>
                     </BreadcrumbList>
                   </Breadcrumb>
                 </div>
                 <div className="mr-8">
-                {/* <DropdownNotification /> */}
-                <NotificationDropdown />
+                  {/* <DropdownNotification /> */}
+                  <NotificationDropdown />
                 </div>
               </header>
               {/* <!-- ===== Header End ===== --> */}
