@@ -16,7 +16,6 @@ import withAuth, { AUTH_MODE } from '@/common/hocs/with-auth';
 import withPermissions from '@/common/hocs/with-permissions';
 import Routes from '@/common/routes';
 import { PermissionsObjects } from '@/common/data/permission.data';
-import { useLocalizedPath } from '@/hooks/common/useLocalizedPath';
 
 const GoalsPage = () => {
     const { clientId } = useParams();
@@ -37,7 +36,6 @@ const GoalsPage = () => {
             return;
         }
     }
-    const { currentLocale } = useLocalizedPath();
 
     // const handleAdd = () => {
     //     router.push(`/clients/${clientId}/assessments/create`);
@@ -74,7 +72,7 @@ const GoalsPage = () => {
         }
     }
     const handleRowClick = (row:Row<AssessmentResponse> ) => {
-        router.push(`/${currentLocale}/clients/${clientId}/goals/${row.original.id}`);
+        router.push(`/clients/${clientId}/goals/${row.original.id}`);
     }
     return (
         <div className="w-full flex flex-col gap-4">

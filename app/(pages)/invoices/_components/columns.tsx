@@ -21,7 +21,6 @@ import {
 import { format } from "date-fns"
 import Link from "next/link"
 import { Any } from "@/common/types/types"
-import { useLocalizedPath } from "@/hooks/common/useLocalizedPath"
 
 export type InvoicesType = {
   id: number
@@ -318,7 +317,6 @@ export const columns: ColumnDef<InvoicesType>[] = [
 
 const ActionCell = ({row}:{row:Row<InvoicesType>}) => {
       const invoice = row.original
-      const {currentLocale} = useLocalizedPath();
       return (
         <div className="flex space-x-2">
           <Button
@@ -327,7 +325,7 @@ const ActionCell = ({row}:{row:Row<InvoicesType>}) => {
             className="hover:bg-blue-50 dark:hover:bg-blue-900/20"
             asChild
           >
-            <Link href={`/${currentLocale}/invoices/${invoice.id}`}>
+            <Link href={`/invoices/${invoice.id}`}>
               <FileSearch className="h-4 w-4 mr-2 text-blue-500" />
               Bekijken
             </Link>

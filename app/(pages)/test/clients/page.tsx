@@ -21,7 +21,6 @@ import { Client, ClientsSearchParams } from "@/types/client.types";
 import styles from "./styles.module.css";
 import { useDebounce } from "@/hooks/common/useDebounce";
 import ClientFilters from "@/components/clients/ClientFilters";
-import { useLocalizedPath } from "@/hooks/common/useLocalizedPath";
 
 const PAGE_SIZE = 10;
 
@@ -36,10 +35,9 @@ const ClientsPage = () => {
   const deboucedFilters = useDebounce(filters, 500);
 
   const { clients, error, isLoading, page, setPage } = useClient(deboucedFilters);
-    const { currentLocale } = useLocalizedPath();
 
   const handleRowClick = (client: Client) => {
-    router.push(`/${currentLocale}/clients/${client.id}`);
+    router.push(`/clients/${client.id}`);
   };
 
   const columnDef = useMemo<ColumnDef<Client>[]>(() => {

@@ -17,7 +17,6 @@ import {
 import { Organization } from "@/types/organisation";
 import { Badge } from "@/components/ui/badge"; // Aangenomen dat je een Badge component hebt
 import { useRouter } from "next/navigation";
-import { useLocalizedPath } from "@/hooks/common/useLocalizedPath";
 
 // Status badge component voor organisatie verificatiestatus
 export const StatusBadge = ({ status }: { status: "verified" | "pending" | "rejected" }) => {
@@ -52,7 +51,6 @@ export const StatusBadge = ({ status }: { status: "verified" | "pending" | "reje
 // Actie dropdown component voor professionele acties
 const ActionsDropdown = ({ organization, onEditClick }: { organization: Organization, onEditClick: (org: Organization) => void }) => {
   const router = useRouter();
-    const { currentLocale } = useLocalizedPath();
 
   return (
     <div className="relative group">
@@ -60,7 +58,7 @@ const ActionsDropdown = ({ organization, onEditClick }: { organization: Organiza
         <MoreHorizontal className="h-4 w-4 text-gray-600" />
       </button>
       <div className="absolute right-0 top-7 w-40 bg-white rounded-md shadow-lg border border-gray-200 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-10">
-        <button className="w-full text-left px-3 py-2 text-sm flex items-center gap-2 hover:bg-gray-50 text-blue-600" onClick={() => router.push(`/${currentLocale}/organisations/${organization.id}`)}>
+        <button className="w-full text-left px-3 py-2 text-sm flex items-center gap-2 hover:bg-gray-50 text-blue-600" onClick={() => router.push(`/organisations/${organization.id}`)}>
           <Eye className="h-4 w-4" />
           Details Bekijken
         </button>

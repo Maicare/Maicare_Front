@@ -11,7 +11,6 @@ import withAuth, { AUTH_MODE } from "@/common/hocs/with-auth";
 import withPermissions from "@/common/hocs/with-permissions";
 import Routes from "@/common/routes";
 import { PermissionsObjects } from "@/common/data/permission.data";
-import { useLocalizedPath } from "@/hooks/common/useLocalizedPath";
 
 
 const Page = () => {
@@ -19,10 +18,9 @@ const Page = () => {
     const { clientId, incidentId } = useParams();
     const [incident, setIncident] = useState<Incident | null>(null);
     const { readOne } = useIncident({ autoFetch: false, clientId: parseInt(clientId as string) });
-    const { currentLocale } = useLocalizedPath();
 
     const onSuccess = () => {
-        router.push(`/${currentLocale}/clients/${clientId}/incidents`)
+        router.push(`/clients/${clientId}/incidents`)
     }
     const onCancel = () => {
         router.back();

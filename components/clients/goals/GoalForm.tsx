@@ -17,7 +17,6 @@ import { fullDateFormat } from "@/utils/timeFormatting";
 import Panel from "@/components/common/Panel/Panel";
 import IconButton from "@/components/common/Buttons/IconButton";
 import { X } from "lucide-react";
-import { useLocalizedPath } from "@/hooks/common/useLocalizedPath";
 // import { ZRM_MATRIX } from "@/types/goals.types";
 
 type PropsType = {
@@ -45,7 +44,6 @@ export const GoalForm: FunctionComponent<PropsType> = ({ clientId }) => {
   //   // reset
   // } = methods;
   // const {maturity_matrix_id,initial_level} = watch();
-    const { currentLocale } = useLocalizedPath();
 
   const _onSubmit = async (_data: CreateAssessment) => {
     try {
@@ -57,7 +55,7 @@ export const GoalForm: FunctionComponent<PropsType> = ({ clientId }) => {
         end_date:i.end_date+"T15:04:05Z",
       }))
       await createOne(data, +clientId, { displayProgress: true, displaySuccess: true });
-      router.push(`/${currentLocale}/clients/${clientId}/goals`);
+      router.push(`/clients/${clientId}/goals`);
     } catch (error) {
       console.error({ error });
     }

@@ -8,7 +8,6 @@ import { Pencil, Trash } from "lucide-react"
 import Loader from "@/components/common/loader"
 import PrimaryButton from "@/common/components/PrimaryButton"
 import { useRouter } from "next/navigation"
-import { useLocalizedPath } from "@/hooks/common/useLocalizedPath"
 
 export function AssessmentDetails({
   clientId,
@@ -20,7 +19,6 @@ export function AssessmentDetails({
   assessment?: AssessmentResponse
 }) {
   const router = useRouter()
-    const { currentLocale } = useLocalizedPath();
 
   if (!assessment) {
     return (
@@ -35,7 +33,7 @@ export function AssessmentDetails({
           <PrimaryButton
             text="Edit"
             icon={Pencil}
-            onClick={() => router.push(`/${currentLocale}/clients/${clientId}/goals/${assessmentId}/edit`)}
+            onClick={() => router.push(`/clients/${clientId}/goals/${assessmentId}/edit`)}
             animation='none'
             className="bg-indigo-400 text-white hover:bg-indigo-500"
           />

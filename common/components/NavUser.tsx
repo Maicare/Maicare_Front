@@ -31,7 +31,6 @@ import {
 } from "@/components/ui/sidebar"
 import { useAuth } from "../hooks/use-auth"
 import { useRouter } from "next/navigation"
-import { useLocalizedPath } from "@/hooks/common/useLocalizedPath"
 
 export function NavUser({
     user,
@@ -48,13 +47,12 @@ export function NavUser({
     const { logout } = useAuth({});
 
     const { isMobile } = useSidebar()
-  const { currentLocale } = useLocalizedPath();
 
 
     const handleLogout = async () => {
         try {
             await logout();
-            router.push("/"+currentLocale+"/signin")
+            router.push("/signin")
 
         } catch (error) {
 
@@ -62,14 +60,14 @@ export function NavUser({
     }
     const handleProfile = async () => {
         try {
-            router.push("/"+currentLocale+"/profile")
+            router.push("/profile")
         } catch (error) {
 
         }
     }
     const handleNotifications = async () => {
         try {
-            router.push("/"+currentLocale+"/notifications")
+            router.push("/notifications")
         } catch (error) {
 
         }

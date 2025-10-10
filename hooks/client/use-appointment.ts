@@ -1,8 +1,6 @@
 import api from "@/common/api/axios";
-import { PaginatedResponse } from "@/common/types/pagination.types";
 import { useState } from "react";
 import useSWR from "swr";
-import { Diagnosis, DiagnosisForm } from "@/types/diagnosis.types";
 import { PaginationParams } from "@/types/pagination.types";
 import ApiRoutes from "@/common/api/routes";
 import { ApiOptions } from "@/common/types/api.types";
@@ -11,7 +9,6 @@ import useProgressBar from "@/common/hooks/use-progress-bar";
 import { useApi } from "@/common/hooks/use-api";
 import { useRouter } from "next/navigation";
 import { Appointment as AppointmentType } from "@/types/appointment.types";
-import { useLocalizedPath } from "../common/useLocalizedPath";
 
 export function useAppointment(clientId: string, params?: PaginationParams) {
 
@@ -22,8 +19,6 @@ export function useAppointment(clientId: string, params?: PaginationParams) {
     const { start: startProgress, stop: stopProgress } = useProgressBar();
 
     const [page, setPage] = useState(params?.page || 1);
-    const page_size = params?.page_size || 10;
-    const { currentLocale } = useLocalizedPath();
 
     const {
         data: appointments,
@@ -61,7 +56,7 @@ export function useAppointment(clientId: string, params?: PaginationParams) {
             if (displaySuccess && success) {
                 enqueueSnackbar("Appointment created successful!", { variant: "success" });
             }
-            router.push(`/${currentLocale}/clients/${clientId}/appointment-card`);
+            router.push(`/clients/${clientId}/appointment-card`);
             mutate()
             return data;
         } catch (err: any) {
@@ -87,7 +82,7 @@ export function useAppointment(clientId: string, params?: PaginationParams) {
             if (displaySuccess && success) {
                 enqueueSnackbar("Appointment updated successful!", { variant: "success" });
             }
-            router.push(`/${currentLocale}/clients/${clientId}/appointment-card`);
+            router.push(`/clients/${clientId}/appointment-card`);
             mutate()
             return data;
         } catch (err: any) {

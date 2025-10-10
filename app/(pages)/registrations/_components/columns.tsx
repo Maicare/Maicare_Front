@@ -9,7 +9,6 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { Registration } from "@/types/registration.types"
 import { useRouter } from "next/navigation"
-import { useLocalizedPath } from "@/hooks/common/useLocalizedPath"
 
 
 export const columns: ColumnDef<Registration>[] = [
@@ -125,7 +124,6 @@ export const columns: ColumnDef<Registration>[] = [
 const ActionCell = ({ row }: { row: Row<Registration> }) => {
   const registration = row.original;
   const router = useRouter();
-    const { currentLocale } = useLocalizedPath();
 
   return (
     <DropdownMenu>
@@ -136,13 +134,13 @@ const ActionCell = ({ row }: { row: Row<Registration> }) => {
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="bg-white">
         <DropdownMenuItem
-        onClick={() => router.push(`/${currentLocale}/registrations/${registration.id}`)}
+        onClick={() => router.push(`/registrations/${registration.id}`)}
           className="hover:bg-indigo-100 hover:text-indigo-500 transition-colors ease-in-out cursor-pointer flex items-center gap-2"
         >
           Bekijken
         </DropdownMenuItem>
         <DropdownMenuItem
-        onClick={() => router.push(`/${currentLocale}/registrations/${registration.id}/update`)}
+        onClick={() => router.push(`/registrations/${registration.id}/update`)}
           className="hover:bg-indigo-100 hover:text-indigo-500 transition-colors ease-in-out cursor-pointer flex items-center gap-2"
         >
           Bewerken
