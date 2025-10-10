@@ -33,7 +33,7 @@ export default function AppointmentsDetails() {
       ) : (
         <Card>
           <CardContent className="py-6 text-center text-muted-foreground">
-            Select an employee to view their appointments.
+            Selecteer een medewerker om hun afspraken te bekijken.
           </CardContent>
         </Card>
       )}

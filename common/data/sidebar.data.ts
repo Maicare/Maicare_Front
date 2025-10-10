@@ -47,7 +47,7 @@ export const sidebarLinks = [
         icon: Map,
     },
     {
-        title: "Organisations", // "Locations"
+        title: "Organisaties", // "Locations"
         url: "/organisations",
         icon: Building2,
     },
