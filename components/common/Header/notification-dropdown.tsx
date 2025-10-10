@@ -5,20 +5,13 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { useNotifications } from "@/hooks/notifications/use-notifications";
 import { NotificationData } from "@/types/notification.types";
 import { useRouter } from "next/navigation";
-import { useWsNotifications } from "@/app/[locale]/(pages)/notifications/_components/use-ws-notifications";
-import NotificationItem from "@/app/[locale]/(pages)/notifications/_components/notification-item";
-import { useLocalizedPath } from "@/hooks/common/useLocalizedPath";
-import { useI18n } from "@/lib/i18n/client";
-
-
-
+import { useWsNotifications } from "@/app/(pages)/notifications/_components/use-ws-notifications";
+import NotificationItem from "@/app/(pages)/notifications/_components/notification-item";
 
 /** ====== Your dropdown (hook integrated) ====== */
 const NotificationDropdown = () => {
   const [isOpen, setIsOpen] = useState(false);
   const router = useRouter();
-  const { currentLocale } = useLocalizedPath();
-  const t = useI18n();
   // Prefer an env var so you can swap staging/prod easily
   const WS_URL = (process.env.NEXT_PUBLIC_WS_URL ?? "wss://api.maicare.online/ws").trim();
   const { notifications: wsNotifications, clear } = useWsNotifications(WS_URL);
@@ -67,17 +60,17 @@ const NotificationDropdown = () => {
       {isOpen && (
         <div className="absolute right-0 top-8 mt-2 w-80 sm:w-96 bg-white rounded-lg shadow-lg border border-gray-200 z-50" ref={dropdownRef}>
           <div className="p-4 border-b border-gray-200 flex justify-between items-center">
-            <h3 className="font-semibold text-gray-900">Notifications</h3>
+            <h3 className="font-semibold text-gray-900">Notificaties</h3>
             {notifications.length > 0 && (
               <Button variant="ghost" size="sm" onClick={clear}>
-                {t("notifications.clear")}
+                Wissen
               </Button>
             )}
           </div>
 
           <ScrollArea className="h-80">
             {notifications.length === 0 ? (
-              <div className="p-4 text-center text-gray-500">{t("notifications.empty")}</div>
+              <div className="p-4 text-center text-gray-500">Geen notificaties</div>
             ) : (
               notifications.map((n, idx) => (
                 <NotificationItem
@@ -105,10 +98,10 @@ const NotificationDropdown = () => {
           <div className="p-2 border-t border-gray-200 text-center">
             <Button variant="ghost" size="sm" onClick={() => {
               // Navigate to full notifications page
-              router.push("/" + currentLocale + "/notifications");
+              router.push("/notifications");
               setIsOpen(false);
             }}>
-              {t("notifications.viewAll")}
+              Alles bekijken
             </Button>
           </div>
         </div>

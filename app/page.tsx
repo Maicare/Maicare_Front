@@ -8,5 +8,5 @@ export const metadata: Metadata = {
 };
 
 export default function Home() {
-  redirect("/nl/signin");
+  redirect("/signin");
 }

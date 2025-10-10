@@ -29,14 +29,14 @@ const EducationItem = ({ first = false,experience,onDelete,onEdit }: Props) => {
             </div>
             <div className={cn("flex flex-col gap-2 transition-all ease-in-out duration-300", visible ? 'opacity-100' : 'opacity-0')}>
                 <PrimaryButton
-                    text="Edit"
+                    text="Bewerken"
                     onClick={onEdit}
                     icon={Edit}
                     animation="animate-bounce"
                     className="bg-indigo-100 text-indigo-500 hover:bg-indigo-500 hover:text-white px-2 py-1 text-sm max-w-[100px]"
                 />
                 <PrimaryButton
-                    text="Delete"
+                    text="Verwijderen"
                     onClick={onDelete}
                     icon={Trash}
                     animation="animate-bounce"
