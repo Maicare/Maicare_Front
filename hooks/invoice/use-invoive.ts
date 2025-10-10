@@ -1,7 +1,7 @@
 
 
-import { InvoiceTemplateItem } from "@/app/[locale]/(pages)/contacts/_components/multi-select-invoice-items";
-import { InvoicesType } from "@/app/[locale]/(pages)/invoices/_components/columns";
+import { InvoiceTemplateItem } from "@/app/(pages)/contacts/_components/multi-select-invoice-items";
+import { InvoicesType } from "@/app/(pages)/invoices/_components/columns";
 import api from "@/common/api/axios";
 import ApiRoutes from "@/common/api/routes";
 import { useApi } from "@/common/hooks/use-api";

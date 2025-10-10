@@ -108,7 +108,7 @@ export default function BookingCalendar({
 
       setEvents(data.map(toEventInput));
     } catch (e) {
-      console.error("Could not fetch appointments", e);
+      console.error("Kon afspraken niet ophalen", e);
     }
   };
 
@@ -130,7 +130,7 @@ export default function BookingCalendar({
       todayBtn.parentElement &&
       !todayBtn.parentElement.contains(dropdownContainerRef.current)
     ) {
-      // insert dropdown immediately after the Today button
+      // voeg dropdown toe direct na de Vandaag knop
       todayBtn.parentElement.insertBefore(
         dropdownContainerRef.current,
         todayBtn.nextSibling
@@ -164,7 +164,7 @@ export default function BookingCalendar({
 
     const full = await readOneAppointment(click.event.id);
     if (full) {
-      /* convert nested arrays into the flat IDs the popup expects */
+      /* converteer geneste arrays naar de platte IDs die de popup verwacht */
       click.event.setExtendedProp(
         "client_ids",
         full.clients_details?.map(c => c.client_id) ?? [],
@@ -174,7 +174,7 @@ export default function BookingCalendar({
         full.participants_details?.map(p => p.employee_id) ?? [],
       );
 
-      /* keep a few other bits in sync with the server response */
+      /* houd een paar andere dingen synchroon met de server response */
       click.event.setExtendedProp("location", full.location);
       click.event.setExtendedProp("description", full.description);
       click.event.setStart(new Date(full.start_time));
@@ -218,7 +218,7 @@ export default function BookingCalendar({
         ev.setProp("title", p.description ?? "");
         Object.entries(p).forEach(([k, v]) => ev.setExtendedProp(k, v));
       }
-      /* update local state array */
+      /* update lokale state array */
       setEvents((prev) =>
         prev.map((e) => (e.id === p.id ? fcEvent : e)),
       );
@@ -230,20 +230,20 @@ export default function BookingCalendar({
   };
 
   const handleDelete = async (id: string) => {
-    // first delete on the server
+    // verwijder eerst op de server
     await deleteAppointment(id);
 
-    // then remove from FullCalendar  local state
+    // verwijder dan uit FullCalendar lokale state
     fcRef.current?.getApi().getEventById(id)?.remove();
     setEvents(prev => prev.filter(e => e.id !== id));
     closePopup();
   };
 
   const formatTime = (date: Date): string => {
-    return date.toLocaleTimeString([], {
+    return date.toLocaleTimeString('nl-NL', {
       hour: 'numeric',
       minute: '2-digit',
-      hour12: true
+      hour12: false
     });
   };
 
@@ -253,7 +253,7 @@ export default function BookingCalendar({
       workWeek: {
         type: "timeGridWeek",
         hiddenDays: [0, 6],
-        buttonText: "Work Week",
+        buttonText: "Werkweek",
       },
     }),
     []
@@ -311,10 +311,10 @@ export default function BookingCalendar({
         }
 
         dayHeaderContent={arg => {
-          const weekday = new Intl.DateTimeFormat("en", { weekday: "short" }).format(arg.date);
+          const weekday = new Intl.DateTimeFormat("nl", { weekday: "short" }).format(arg.date);
           if (arg.view.type === "dayGridMonth") return <span className="text-sm">{weekday}</span>;
 
-          const dayNum = new Intl.DateTimeFormat("en", { day: "numeric" }).format(arg.date);
+          const dayNum = new Intl.DateTimeFormat("nl", { day: "numeric" }).format(arg.date);
           return (
             <div className="flex flex-col items-center">
               <span className="text-sm">{weekday}</span>
@@ -346,7 +346,7 @@ export default function BookingCalendar({
 
         eventContent={(arg) => {
           const event = arg.event;
-          const desc = event.extendedProps.description || "(No description)";
+          const desc = event.extendedProps.description || "(Geen beschrijving)";
           const location = event.extendedProps.location;
           const showTime = arg.view.type.startsWith('timeGrid');
 
@@ -378,44 +378,44 @@ export default function BookingCalendar({
               {(clientIds.length > 0 || employeeIds.length > 0) && (
                 <div className="mt-1.5 flex items-center justify-between border-t border-white/20 pt-1">
                   <div className="flex items-center space-x-2">
-                    {/* Clients count with tooltip */}
+                    {/* Cliënten teller met tooltip */}
                     {clientIds.length > 0 && (
                       <div
                         className="group relative flex items-center text-[0.6rem]"
-                        title={`${clientIds.length} client${clientIds.length !== 1 ? 's' : ''}`}
+                        title={`${clientIds.length} cliënt${clientIds.length !== 1 ? 'en' : ''}`}
                       >
                         <UserIcon className="w-3 h-3 mr-0.5" />
                         <span>{clientIds.length}</span>
 
-                        {/* Tooltip for client names */}
+                        {/* Tooltip voor cliëntnamen */}
                         {clientIds.length > 0 && (
                           <div className="hidden group-hover:block absolute bottom-full left-0 mb-1 px-2 py-1 text-xs rounded bg-black text-white whitespace-nowrap z-50">
-                            {clientIds.length} client{clientIds.length !== 1 ? 's' : ''}
+                            {clientIds.length} cliënt{clientIds.length !== 1 ? 'en' : ''}
                           </div>
                         )}
                       </div>
                     )}
 
-                    {/* Employees count with tooltip */}
+                    {/* Medewerkers teller met tooltip */}
                     {employeeIds.length > 0 && (
                       <div
                         className="group relative flex items-center text-[0.6rem]"
-                        title={`${employeeIds.length} employee${employeeIds.length !== 1 ? 's' : ''}`}
+                        title={`${employeeIds.length} medewerker${employeeIds.length !== 1 ? 's' : ''}`}
                       >
                         <BriefcaseIcon className="w-3 h-3 mr-0.5" />
                         <span>{employeeIds.length}</span>
 
-                        {/* Tooltip for employee names */}
+                        {/* Tooltip voor medewerkernamen */}
                         {employeeIds.length > 0 && (
                           <div className="hidden group-hover:block absolute bottom-full left-0 mb-1 px-2 py-1 text-xs rounded bg-black text-white whitespace-nowrap z-50">
-                            {employeeIds.length} employee{employeeIds.length !== 1 ? 's' : ''}
+                            {employeeIds.length} medewerker{employeeIds.length !== 1 ? 's' : ''}
                           </div>
                         )}
                       </div>
                     )}
                   </div>
 
-                  {/* Total participants indicator */}
+                  {/* Totaal deelnemers indicator */}
                   <div className="text-[0.6rem] opacity-80 flex items-center">
                     <UsersIcon className="w-3 h-3 mr-0.5" />
                     <span>{totalParticipants}</span>
@@ -438,7 +438,7 @@ export default function BookingCalendar({
           el.style.boxShadow = '0 1px 2px rgba(0,0,0,0.1)';
           el.style.border = 'none';
 
-          // Add hover effect
+          // Voeg hover effect toe
           el.style.transition = 'all 0.2s ease';
           el.addEventListener('mouseenter', () => {
             el.style.filter = 'brightness(1.05)';
@@ -449,7 +449,7 @@ export default function BookingCalendar({
             el.style.boxShadow = '0 1px 2px rgba(0,0,0,0.1)';
           });
 
-          // Add tooltip styling
+          // Voeg tooltip styling toe
           const tooltipCSS = `
             .fc-event-tooltip {
               position: absolute;
@@ -507,7 +507,7 @@ export default function BookingCalendar({
         eventClassNames="rounded-lg px-2 py-1 transition-colors"
         dayCellClassNames="bg-white hover:bg-slate-50 transition-colors"
         viewClassNames="rounded-lg overflow-hidden p-2"
-        buttonText={{ today: "Today", month: "Month", timeGridWeek: "Week", workWeek: "Work Week", day: "Day" }}
+        buttonText={{ today: "Vandaag", month: "Maand", timeGridWeek: "Week", workWeek: "Werkweek", day: "Dag" }}
       />
 
       {popupPos && (createRange || editEvent) && (

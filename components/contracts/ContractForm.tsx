@@ -19,7 +19,6 @@ import { WhenNotification } from "./WhenNotification";
 import FilesUploader2 from "@/common/components/FilesUploader2";
 import { useRouter } from "next/navigation";
 import { Any } from "@/common/types/types";
-import { useLocalizedPath } from "@/hooks/common/useLocalizedPath";
 
 function mapToForm(data: ContractResDto): ContractFormType {
   return {
@@ -144,7 +143,6 @@ const ContractForm: FunctionComponent<PropsType> = ({ clientId, contract }) => {
     getContract();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [contract]);
-    const { currentLocale } = useLocalizedPath();
 
   const onSubmit = async (data: ContractFormType) => {
     try {
@@ -162,7 +160,7 @@ const ContractForm: FunctionComponent<PropsType> = ({ clientId, contract }) => {
       };
       if (contract) {
         await updateOne(preparedData, String(contract.id));
-        router.push(`/${currentLocale}/contracts`)
+        router.push(`/contracts`)
       }
       else {
         // await addContract(preparedData, clientId);

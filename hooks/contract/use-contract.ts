@@ -1,4 +1,4 @@
-import { ContractResults } from "@/app/[locale]/(pages)/contracts/_components/columns";
+import { ContractResults } from "@/app/(pages)/contracts/_components/columns";
 import api from "@/common/api/axios";
 import ApiRoutes from "@/common/api/routes";
 import { useApi } from "@/common/hooks/use-api";

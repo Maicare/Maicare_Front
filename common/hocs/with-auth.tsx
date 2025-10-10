@@ -4,7 +4,6 @@ import { useAuth } from '../hooks/use-auth';
 import Routes from '../routes';
 import { useEffect, useState } from 'react';
 import { NextPage } from 'next';
-import { useLocalizedPath } from '@/hooks/common/useLocalizedPath';
 
 
 type Props = Record<string, unknown>;
@@ -28,16 +27,15 @@ const withAuth = (Component: React.ComponentType<Props>, options: WithAuthOption
     const router = useRouter();
     const { user,isLoading, } = useAuth({autoFetch:true});
     const mode = options.mode ?? AUTH_MODE.LOGGED_IN;
-    const {currentLocale} = useLocalizedPath();
     useEffect(() => {
       if(isLoading ) return;
       console.log({user})
       if (authEnabled) {
         if (mode === AUTH_MODE.LOGGED_IN && !user) {
-          const url =options.redirectUrl ? "/" + currentLocale + options.redirectUrl : "/" + currentLocale + Routes.Auth.Login;
+          const url =options.redirectUrl ?  options.redirectUrl :  Routes.Auth.Login;
           router.replace(url);
         } else if (mode === AUTH_MODE.LOGGED_OUT && user) {
-          const url =options.redirectUrl ? "/" + currentLocale + options.redirectUrl : "/" + currentLocale + Routes.Common.Home;
+          const url =options.redirectUrl ?  options.redirectUrl :  Routes.Common.Home;
           router.replace(url);
         } else {
           setIsAllowed(true); // Allow rendering if no redirection is needed

@@ -7,7 +7,6 @@ import { dateFormat } from "@/utils/timeFormatting";
 import DetailCell from "../common/DetailCell";
 import Loader from "../common/loader";
 import { useEducation } from "@/hooks/education/use-education";
-import { useLocalizedPath } from "@/hooks/common/useLocalizedPath";
 
 type Props = {
   employeeId: number;
@@ -17,7 +16,6 @@ const EmployeeEducationsSummary: FunctionComponent<Props> = ({ employeeId }) => 
   const { educations,isLoading } = useEducation({autoFetch:true,employeeId:employeeId.toString()});
 
   const router = useRouter();
-    const { currentLocale } = useLocalizedPath();
 
 
   if (isLoading) return <Loader />;
@@ -30,7 +28,7 @@ const EmployeeEducationsSummary: FunctionComponent<Props> = ({ employeeId }) => 
         return (
           <li
             key={education.id}
-            onClick={() => router.push(`/${currentLocale}/employees/${employeeId}/educations`)}
+            onClick={() => router.push(`/employees/${employeeId}/educations`)}
             className="grid grid-cols-3 hover:bg-gray-3 p-2 cursor-pointer rounded-xl"
           >
             <DetailCell

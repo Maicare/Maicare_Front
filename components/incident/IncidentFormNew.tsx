@@ -34,7 +34,6 @@ import Succession, {
 import { CreateIncident, Incident } from "@/types/incident.types";
 import Button from "../common/Buttons/Button";
 import Report from "./incidentsSteps/Report";
-import { useLocalizedPath } from "@/hooks/common/useLocalizedPath";
 
 const formSchema = Yup.object().shape({
   ...GeneralInfosShema,
@@ -88,7 +87,6 @@ const EpisodeForm: FunctionComponent<Props> = ({
       }
     }
   }, [mode, incident, reset]);
-    const { currentLocale } = useLocalizedPath();
 
   const onSubmit = useCallback(
     async (_values: CreateIncident) => {
@@ -102,13 +100,13 @@ const EpisodeForm: FunctionComponent<Props> = ({
         setIsDataLoading(true);
         // await updateOne({...formattedValues}, incident.id, clientId);
         setIsDataLoading(false);
-        router.push(`/${currentLocale}/clients/${clientId}/incidents`);
+        router.push(`/clients/${clientId}/incidents`);
       } else if (mode === "new") {
         setIsDataLoading(true);
         alert("commented for now");
         // await createOne({...formattedValues,employee_id: values.employee_id.toString() || "1",location_id:values.location_id.toString()||"1",additional_appointments:values.additional_appointments || "",cause_explanation:values.cause_explanation||"",}, clientId);
         setIsDataLoading(false);
-        router.push(`/${currentLocale}/clients/${clientId}/incidents`);
+        router.push(`/clients/${clientId}/incidents`);
       }
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [mode, incident, clientId, selectedEmails, router]

@@ -2,7 +2,6 @@ import { Any } from "@/common/types/types";
 import LinkButton from "@/components/common/Buttons/LinkButton";
 import PaginatedTable from "@/components/common/PaginatedTable/PaginatedTable";
 import Panel from "@/components/common/Panel/Panel";
-import { useLocalizedPath } from "@/hooks/common/useLocalizedPath";
 import { useGoal } from "@/hooks/goal/use-goal";
 import { Goal } from "@/types/goals.types";
 import { LEVEL_OPTIONS } from "@/types/maturity-matrix.types";
@@ -73,7 +72,6 @@ const AssessmentGoals = ({ assessmentId, clientId }: { assessmentId: string, cli
         ];
     }, []);
     const router = useRouter();
-    const { currentLocale } = useLocalizedPath();
 
     return (
         <Panel
@@ -94,7 +92,7 @@ const AssessmentGoals = ({ assessmentId, clientId }: { assessmentId: string, cli
                     page={page ?? 1}
                     isFetching={isLoading}
                     onPageChange={(page) => setPage(page)}
-                    onRowClick={(goal) => { router.push(`/${currentLocale}/clients/${clientId}/goals/${assessmentId}/objectives/${goal.id}`) }}
+                    onRowClick={(goal) => { router.push(`/clients/${clientId}/goals/${assessmentId}/objectives/${goal.id}`) }}
                 />
             )}
             {error && (

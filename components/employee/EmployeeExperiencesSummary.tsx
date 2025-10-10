@@ -6,7 +6,6 @@ import { useRouter } from "next/navigation";
 import Loader from "../common/loader";
 import DetailCell from "../common/DetailCell";
 import { useExperience } from "@/hooks/experience/use-experience";
-import { useLocalizedPath } from "@/hooks/common/useLocalizedPath";
 
 type Props = {
   employeeId: number;
@@ -15,7 +14,6 @@ type Props = {
 const EmployeeExperiencesSummary: FunctionComponent<Props> = ({ employeeId }) => {
   const { experiences,isLoading } = useExperience({ autoFetch:false,employeeId:employeeId.toString() });
   const router = useRouter();
-    const { currentLocale } = useLocalizedPath();
 
   
   if (isLoading) return <Loader />;
@@ -28,7 +26,7 @@ const EmployeeExperiencesSummary: FunctionComponent<Props> = ({ employeeId }) =>
         return (
           <li
             key={experience.id}
-            onClick={() => router.push(`/${currentLocale}/employees/${employeeId}/experiences`)}
+            onClick={() => router.push(`/employees/${employeeId}/experiences`)}
             className="grid grid-cols-3 hover:bg-gray-3 dark:hover:bg-slate-700 p-4 cursor-pointer rounded-xl"
           >
             <DetailCell

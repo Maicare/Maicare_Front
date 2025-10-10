@@ -5,7 +5,6 @@ import { useRouter } from "next/navigation";
 import DetailCell from "../../common/DetailCell";
 import { useEmergencyContact } from "@/hooks/client-network/use-emergency-contact";
 import Loader from "@/components/common/loader";
-import { useLocalizedPath } from "@/hooks/common/useLocalizedPath";
 
 type Props = {
     clientId: number | undefined;
@@ -17,7 +16,6 @@ const EmergencyContactsSummary: FunctionComponent<Props> = ({ clientId }) => {
 
     const { emergencyContacts, isLoading } = useEmergencyContact({ clientId: clientId?.toString() })
 
-    const { currentLocale } = useLocalizedPath();
 
     if (isLoading) return <Loader />;
     if (!emergencyContacts?.results) return <div>Geen gegevens opgehaald.</div>;
@@ -28,7 +26,7 @@ const EmergencyContactsSummary: FunctionComponent<Props> = ({ clientId }) => {
                 return (
                     <li
                         key={contact.id}
-                        onClick={() => router.push(`/${currentLocale}/clients/${clientId}/emergency/${contact.id}`)}
+                        onClick={() => router.push(`/clients/${clientId}/emergency/${contact.id}`)}
                         className="grid grid-cols-2 hover:bg-gray-3 dark:hover:bg-slate-700 p-4 cursor-pointer rounded-xl"
                     >
                         <DetailCell
