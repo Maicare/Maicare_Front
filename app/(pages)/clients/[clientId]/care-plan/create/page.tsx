@@ -25,7 +25,7 @@ function CareplanUI() {
     const { clientId } = useParams();
     const router = useRouter();
     const { readOne } = useClient({ autoFetch: false, });
-    const [client, setClient] = useState<Client | undefined>(undefined);
+    const [client, setClient] = useState<Client & { identity_attachment_ids: string[]; }| null>(null);
     const [isLoading, setIsLoading] = useState(true);
     const [selectedDomain, setSelectedDomain] = useState("");
     const [selectedLevel, setSelectedLevel] = useState("");

@@ -8,8 +8,8 @@ import { Info, PlusCircle, XCircle } from "lucide-react";
 import { cn } from "@/utils/cn";
 import Tooltip from "@/common/components/Tooltip";
 import { Separator } from "@/components/ui/separator";
+import { Any } from "@/common/types/types";
 
-type Any = any;
 
 interface PDOKAddressDoc {
   id: string;
@@ -46,7 +46,7 @@ const AddressesForm: React.FC<{ className?: string }> = ({ className }) => {
   const [debugInfo, setDebugInfo] = useState<Record<number, string>>({});
 
   // Per-row debounce timers and abort controllers
-  const timersRef = useRef<Record<number, any>>({});
+  const timersRef = useRef<Record<number, Any>>({});
   const abortersRef = useRef<Record<number, AbortController | undefined>>({});
   const lastQueryRef = useRef<Record<number, string>>({}); // avoid duplicate calls
 
@@ -180,10 +180,10 @@ const AddressesForm: React.FC<{ className?: string }> = ({ className }) => {
           <div className="col-span-2 p-2 bg-yellow-100 border border-yellow-300 rounded text-xs">
             <div className="font-bold">Debug Info (Adres {index + 1}):</div>
             <div>Status: {debugInfo[index] || "Wachten op invoer…"}</div>
-            <div>Postcode: "{String(watch(`addresses.${index}.zip_code`) || "Empty")}"</div>
-            <div>Huisnummer: "{String(watch(`addresses.${index}.house_number`) || "Empty")}"</div>
-            <div>Straat: "{String(watch(`addresses.${index}.address`) || "Empty")}"</div>
-            <div>Stad: "{String(watch(`addresses.${index}.city`) || "Empty")}"</div>
+            <div>Postcode: &quot;{String(watch(`addresses.${index}.zip_code`) || "Empty")}&quot;</div>
+            <div>Huisnummer: &quot;{String(watch(`addresses.${index}.house_number`) || "Empty")}&quot;</div>
+            <div>Straat: &quot;{String(watch(`addresses.${index}.address`) || "Empty")}&quot;</div>
+            <div>Stad: &quot;{String(watch(`addresses.${index}.city`) || "Empty")}&quot;</div>
             <button
               type="button"
               onClick={() => handleManualTrigger(index)}

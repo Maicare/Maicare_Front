@@ -57,7 +57,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             try {
                 setIsLoading(true);
                 const data = await readClient(id);
-                setUser({ ...data, profile_picture: data.profile_picture ?? "/images/avatar-1.jpg" });
+                setUser({ ...data, profile_picture: data?.profile_picture ?? "/images/avatar-1.jpg", first_name: data?.first_name || "", last_name: data?.last_name || "", email: data?.email || "", id: data?.id || 0 });
             } catch (error) {
                 console.error(error);
             } finally {

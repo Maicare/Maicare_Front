@@ -55,6 +55,7 @@ const UpsertClientForm = ({ mode, onCancel, defaultValues, onSuccess }: Props) =
             }
         };
         fetchLocations();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [selectedOrganisation]);
     const form = useForm<CreateClientInput>({
         resolver: zodResolver(CreateClientSchema),
