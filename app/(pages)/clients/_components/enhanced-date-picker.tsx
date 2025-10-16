@@ -3,6 +3,7 @@
 
 import { useState, useMemo } from 'react';
 import { format } from 'date-fns';
+import { nl } from 'date-fns/locale';
 import { Calendar as CalendarIcon, ChevronLeft, ChevronRight, Info } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
@@ -19,11 +20,11 @@ interface EnhancedDatePickerProps {
   tooltipText?: string;
 }
 
-export function EnhancedDatePicker({ 
-  control, 
-  name, 
-  label = "Date of birth",
-  tooltipText = "This is date of birth." 
+export function EnhancedDatePicker({
+  control,
+  name,
+  label = "Geboortedatum",
+  tooltipText = "Dit is de geboortedatum."
 }: EnhancedDatePickerProps) {
   const [yearView, setYearView] = useState(false);
   const [decadeView, setDecadeView] = useState(false);
@@ -50,8 +51,8 @@ export function EnhancedDatePicker({
   }, [currentDecade, startYear, currentYear]);
 
   const months = [
-    'January', 'February', 'March', 'April', 'May', 'June',
-    'July', 'August', 'September', 'October', 'November', 'December'
+    'Januari', 'Februari', 'Maart', 'April', 'Mei', 'Juni',
+    'Juli', 'Augustus', 'September', 'Oktober', 'November', 'December'
   ];
 
   return (
@@ -122,9 +123,9 @@ export function EnhancedDatePicker({
                     )}
                   >
                     {field.value ? (
-                      format(field.value, "PPP")
+                      format(field.value, "PPP", { locale: nl })
                     ) : (
-                      <span>Pick a date</span>
+                      <span>Kies een datum</span>
                     )}
                     <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                   </Button>
@@ -171,11 +172,11 @@ export function EnhancedDatePicker({
                       }}
                     >
                       {decadeView ? (
-                        <span>{currentDecade - 90}s - {currentDecade + 9}s</span>
+                        <span>{currentDecade - 90}er - {currentDecade + 9}</span>
                       ) : yearView ? (
                         <span>{currentDecade} - {currentDecade + 9}</span>
                       ) : (
-                        <span>{format(currentMonth, 'MMMM yyyy')}</span>
+                        <span>{format(currentMonth, 'MMMM yyyy', { locale: nl })}</span>
                       )}
                     </Button>
                   </div>
@@ -251,7 +252,7 @@ export function EnhancedDatePicker({
                           handleYearSelect(recentYear);
                         }}
                       >
-                        Recent
+                        Recentelijk
                       </Button>
                       <Button
                         variant="outline"
@@ -261,7 +262,7 @@ export function EnhancedDatePicker({
                           handleYearSelect(startYear);
                         }}
                       >
-                        Oldest
+                        Oudst
                       </Button>
                     </div>
                   </div>
@@ -270,7 +271,7 @@ export function EnhancedDatePicker({
                     {/* Month Quick Select */}
                     <div className="w-32 border-r">
                       <div className="p-2">
-                        <h4 className="text-xs font-medium text-muted-foreground mb-2">Months</h4>
+                        <h4 className="text-xs font-medium text-muted-foreground mb-2">Maanden</h4>
                         <div className="grid grid-cols-1 gap-1 max-h-48 overflow-y-auto">
                           {months.map((month, index) => (
                             <Button
@@ -304,6 +305,7 @@ export function EnhancedDatePicker({
                           date > new Date() || date < new Date("1950-01-01")
                         }
                         initialFocus
+                        locale={nl}
                         className="p-3"
                       />
                     </div>

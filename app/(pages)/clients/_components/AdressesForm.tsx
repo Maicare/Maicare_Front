@@ -43,15 +43,67 @@ const AddressesForm: React.FC<{ className?: string }> = ({ className }) => {
   const { fields, append, remove } = useFieldArray({ control, name: "addresses" });
 
   const [isSearching, setIsSearching] = useState<Record<number, boolean>>({});
-  const [debugInfo, setDebugInfo] = useState<Record<number, string>>({});
 
   // Per-row debounce timers and abort controllers
   const timersRef = useRef<Record<number, Any>>({});
   const abortersRef = useRef<Record<number, AbortController | undefined>>({});
   const lastQueryRef = useRef<Record<number, string>>({}); // avoid duplicate calls
 
-  const setStatus = (index: number, text: string) =>
-    setDebugInfo((prev) => ({ ...prev, [index]: text }));
+  
+  const autoCompleteByPostalCode = useCallback(
+    async (index: number, postcodeRaw: string) => {
+      const postcode = normalizePostcode(String(postcodeRaw || ""));
+
+      // Validate postal code
+      if (!dutchPostcodeRegex.test(postcode.replace(/\s+/g, ""))) {
+        return;
+      }
+
+      const queryKey = `postal_${postcode}`;
+      if (lastQueryRef.current[index] === queryKey) {
+        // Same query already applied — skip
+        return;
+      }
+
+      // Cancel any previous request for this row
+      abortersRef.current[index]?.abort();
+      const aborter = new AbortController();
+      abortersRef.current[index] = aborter;
+
+      setIsSearching((p) => ({ ...p, [index]: true }));
+
+      try {
+        const q = postcode.replace(/\s+/g, "");
+        const url = `https://api.pdok.nl/bzk/locatieserver/search/v3_1/free?q=${encodeURIComponent(
+          q
+        )}&fq=type:postcode`;
+
+        const res = await fetch(url, { signal: aborter.signal });
+        if (!res.ok) throw new Error(`PDOK ${res.status}`);
+
+        const json = await res.json();
+        const doc: PDOKAddressDoc | undefined = json?.response?.docs?.[0];
+
+        if (!doc) {
+          return;
+        }
+
+        const street = (doc.straatnaam || "").trim();
+        const city = (doc.woonplaatsnaam || "").trim();
+
+        // Fill the form (fill street & city based on postal code only)
+        setValue(`addresses.${index}.address`, street, { shouldDirty: true, shouldValidate: true });
+        setValue(`addresses.${index}.city`, city, { shouldDirty: true, shouldValidate: true });
+
+        lastQueryRef.current[index] = queryKey;
+      } catch (e: Any) {
+        if (e?.name === "AbortError") return; // ignore canceled
+      } finally {
+        setIsSearching((p) => ({ ...p, [index]: false }));
+      }
+    },
+    [setValue]
+  );
 
   const autoCompleteAddress = useCallback(
     async (index: number, postcodeRaw: string, houseRaw: string) => {
@@ -60,7 +112,6 @@ const AddressesForm: React.FC<{ className?: string }> = ({ className }) => {
 
       // Validate input
       if (!dutchPostcodeRegex.test(postcode.replace(/\s+/g, "")) || !isLikelyHouseNo(house)) {
-        setStatus(index, "Postcode of huisnummer ongeldig");
         return;
       }
 
@@ -76,7 +127,6 @@ const AddressesForm: React.FC<{ className?: string }> = ({ className }) => {
       abortersRef.current[index] = aborter;
 
       setIsSearching((p) => ({ ...p, [index]: true }));
-      setStatus(index, "Zoeken…");
 
       try {
         const q = `${postcode.replace(/\s+/g, "")} ${house}`;
@@ -91,7 +141,6 @@ const AddressesForm: React.FC<{ className?: string }> = ({ className }) => {
         const doc: PDOKAddressDoc | undefined = json?.response?.docs?.[0];
 
         if (!doc) {
-          setStatus(index, "Geen adres gevonden");
           return;
         }
 
@@ -107,11 +156,9 @@ const AddressesForm: React.FC<{ className?: string }> = ({ className }) => {
         setValue(`addresses.${index}.address`, streetLine, { shouldDirty: true, shouldValidate: true });
         setValue(`addresses.${index}.city`, city, { shouldDirty: true, shouldValidate: true });
 
-        setStatus(index, `Gevonden: ${streetLine}${city ? `, ${city}` : ""}`);
         lastQueryRef.current[index] = queryKey;
       } catch (e: Any) {
         if (e?.name === "AbortError") return; // ignore canceled
-        setStatus(index, `Fout: ${e?.message || "onbekend"}`);
       } finally {
         setIsSearching((p) => ({ ...p, [index]: false }));
       }
@@ -138,11 +185,18 @@ const AddressesForm: React.FC<{ className?: string }> = ({ className }) => {
 
       // Debounce 600ms
       timersRef.current[index] = setTimeout(() => {
-        // If zip looks like partial "1234 A", we still try only when valid
         const normalized = normalizePostcode(zip);
-        const looksValid = dutchPostcodeRegex.test(normalized.replace(/\s+/g, "")) && isLikelyHouseNo(house);
+        const isValidPostalCode = dutchPostcodeRegex.test(normalized.replace(/\s+/g, ""));
+
+        // If we have a valid postal code but no house number, search by postal code only
+        if (isValidPostalCode && !house) {
+          autoCompleteByPostalCode(index, normalized);
+          return;
+        }
+
+        // If we have both valid postal code and house number, search for full address
+        const looksValid = isValidPostalCode && isLikelyHouseNo(house);
         if (!looksValid) {
-          setStatus(index, "Wacht op geldige postcode + huisnummer…");
           return;
         }
         autoCompleteAddress(index, normalized, house);
@@ -155,43 +209,33 @@ const AddressesForm: React.FC<{ className?: string }> = ({ className }) => {
       Object.values(timersRef.current).forEach((t) => clearTimeout(t));
       Object.values(abortersRef.current).forEach((a) => a?.abort());
     };
-  }, [watch, getValues, autoCompleteAddress]);
+  }, [watch, getValues, autoCompleteAddress, autoCompleteByPostalCode]);
 
   const handleManualTrigger = useCallback(
     (index: number) => {
       const zip = String(getValues(`addresses.${index}.zip_code`) || "");
       const house = String(getValues(`addresses.${index}.house_number`) || "");
       const normalized = normalizePostcode(zip);
+      const isValidPostalCode = dutchPostcodeRegex.test(normalized.replace(/\s+/g, ""));
 
-      if (!zip || !house) {
-        setStatus(index, "Postcode of huisnummer ontbreekt");
+      if (!isValidPostalCode) {
         return;
       }
+
+      if (!house) {
+        autoCompleteByPostalCode(index, normalized);
+        return;
+      }
+
       autoCompleteAddress(index, normalized, house);
     },
-    [getValues, autoCompleteAddress]
+    [getValues, autoCompleteAddress, autoCompleteByPostalCode]
   );
 
   return (
     <div className="grid grid-cols-2 gap-x-2 gap-y-4">
       {fields.map((field, index) => (
         <div key={field.id} className={cn("col-span-2 grid grid-cols-2 gap-x-2 gap-y-4", className)}>
-          {/* Debug */}
-          <div className="col-span-2 p-2 bg-yellow-100 border border-yellow-300 rounded text-xs">
-            <div className="font-bold">Debug Info (Adres {index + 1}):</div>
-            <div>Status: {debugInfo[index] || "Wachten op invoer…"}</div>
-            <div>Postcode: &quot;{String(watch(`addresses.${index}.zip_code`) || "Empty")}&quot;</div>
-            <div>Huisnummer: &quot;{String(watch(`addresses.${index}.house_number`) || "Empty")}&quot;</div>
-            <div>Straat: &quot;{String(watch(`addresses.${index}.address`) || "Empty")}&quot;</div>
-            <div>Stad: &quot;{String(watch(`addresses.${index}.city`) || "Empty")}&quot;</div>
-            <button
-              type="button"
-              onClick={() => handleManualTrigger(index)}
-              className="mt-1 px-2 py-1 bg-blue-500 text-white text-xs rounded"
-            >
-              Handmatig zoeken
-            </button>
-          </div>
 
           {/* Belongs To */}
           <FormField
@@ -205,6 +249,37 @@ const AddressesForm: React.FC<{ className?: string }> = ({ className }) => {
                     <Input placeholder="Bijv: moeder, broer, werk" {...field} />
                     <div className="absolute right-2 top-0 translate-y-1/2 h-5 w-5">
                       <Tooltip text="Aan wie dit adres toebehoort">
+                        <Info className="h-5 w-5" />
+                      </Tooltip>
+                    </div>
+                  </div>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          {/* Postal Code */}
+          <FormField
+            control={control}
+            name={`addresses.${index}.zip_code`}
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Postcode *</FormLabel>
+                <FormControl>
+                  <div className="relative">
+                    <Input
+                      placeholder="Bijv: 1234 AB"
+                      {...field}
+                      value={field.value || ""}
+                      onChange={(e) => {
+                        const formatted = normalizePostcode(e.target.value);
+                        field.onChange(formatted);
+                      }}
+                      onBlur={() => handleManualTrigger(index)}
+                    />
+                    <div className="absolute right-2 top-0 translate-y-1/2 h-5 w-5">
+                      <Tooltip text="Vul postcode in voor automatisch adres">
                         <Info className="h-5 w-5" />
                       </Tooltip>
                     </div>
@@ -242,37 +317,6 @@ const AddressesForm: React.FC<{ className?: string }> = ({ className }) => {
                         <div className="h-4 w-4 animate-spin rounded-full border-2 border-primary border-t-transparent" />
                       )}
                       <Tooltip text="Vul huisnummer in voor automatisch adres">
-                        <Info className="h-5 w-5" />
-                      </Tooltip>
-                    </div>
-                  </div>
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          {/* Postal Code */}
-          <FormField
-            control={control}
-            name={`addresses.${index}.zip_code`}
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Postcode *</FormLabel>
-                <FormControl>
-                  <div className="relative">
-                    <Input
-                      placeholder="Bijv: 1234 AB"
-                      {...field}
-                      value={field.value || ""}
-                      onChange={(e) => {
-                        const formatted = normalizePostcode(e.target.value);
-                        field.onChange(formatted);
-                      }}
-                      onBlur={() => handleManualTrigger(index)}
-                    />
-                    <div className="absolute right-2 top-0 translate-y-1/2 h-5 w-5">
-                      <Tooltip text="Vul postcode in voor automatisch adres">
                         <Info className="h-5 w-5" />
                       </Tooltip>
                     </div>
