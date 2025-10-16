@@ -484,6 +484,41 @@ const UpsertClientForm = ({ mode, onCancel, defaultValues, onSuccess }: Props) =
                             <div className="grid grid-cols-2 gap-x-2 gap-y-4">
                                 <FormField
                                     control={form.control}
+                                    name="organisation_id"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel className='flex items-center justify-between'>
+                                                Organisatie
+                                                <Tooltip text='Dit is Organisatie'>
+                                                    <Info className='h-5 w-5 mr-2' />
+                                                </Tooltip>
+                                            </FormLabel>
+                                            <FormControl>
+                                                <Select onValueChange={(value) => {
+                                                    field.onChange(value);
+                                                    setSelectedOrganisation(parseInt(value));
+                                                }} defaultValue={field.value} >
+                                                    <SelectTrigger className="w-full">
+                                                        <SelectValue placeholder="Selecteer locatie" />
+                                                    </SelectTrigger>
+                                                    <SelectContent className="bg-white">
+                                                        <SelectGroup>
+                                                            <SelectLabel>Organisatie</SelectLabel>
+                                                            {
+                                                                organisations?.map((item, index) => (
+                                                                    <SelectItem key={index} value={item.id.toString()} className="hover:bg-slate-100 cursor-pointer">{item.name}</SelectItem>
+                                                                ))
+                                                            }
+                                                        </SelectGroup>
+                                                    </SelectContent>
+                                                </Select>
+                                            </FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+                                <FormField
+                                    control={form.control}
                                     name="location_id"
                                     render={({ field }) => (
                                         <FormItem>
@@ -574,41 +609,7 @@ const UpsertClientForm = ({ mode, onCancel, defaultValues, onSuccess }: Props) =
                                         </FormItem>
                                     )}
                                 />
-                                <FormField
-                                    control={form.control}
-                                    name="organisation_id"
-                                    render={({ field }) => (
-                                        <FormItem>
-                                            <FormLabel className='flex items-center justify-between'>
-                                                Organisatie
-                                                <Tooltip text='Dit is Organisatie'>
-                                                    <Info className='h-5 w-5 mr-2' />
-                                                </Tooltip>
-                                            </FormLabel>
-                                            <FormControl>
-                                                <Select onValueChange={(value) => {
-                                                    field.onChange(value);
-                                                    setSelectedOrganisation(parseInt(value));
-                                                }} defaultValue={field.value} >
-                                                    <SelectTrigger className="w-full">
-                                                        <SelectValue placeholder="Selecteer locatie" />
-                                                    </SelectTrigger>
-                                                    <SelectContent className="bg-white">
-                                                        <SelectGroup>
-                                                            <SelectLabel>Organisatie</SelectLabel>
-                                                            {
-                                                                organisations?.map((item, index) => (
-                                                                    <SelectItem key={index} value={item.id.toString()} className="hover:bg-slate-100 cursor-pointer">{item.name}</SelectItem>
-                                                                ))
-                                                            }
-                                                        </SelectGroup>
-                                                    </SelectContent>
-                                                </Select>
-                                            </FormControl>
-                                            <FormMessage />
-                                        </FormItem>
-                                    )}
-                                />
+                                
                             </div>
                         </div>
                     </div>
