@@ -18,7 +18,7 @@ import { cn } from "@/utils/cn";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { format } from "date-fns";
 import { CalendarIcon, CheckCircle, Info, PlusCircle, XCircle } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import AddressesForm from "./AdressesForm";
 import EmployeeSelect from "../[clientId]/incidents/_components/EmployeeSelect";
@@ -27,6 +27,8 @@ import { Checkbox } from "@/components/ui/checkbox";
 import UpsertContactForm from "../../contacts/_components/upsert-contact-form";
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { EnhancedDatePicker } from "./enhanced-date-picker";
+import { useOrganisation } from "@/hooks/organisation/use-organisation";
+import { Location } from "@/schemas/location.schema";
 
 type Props = {
     mode: "create" | "update";
@@ -37,12 +39,24 @@ type Props = {
 
 const UpsertClientForm = ({ mode, onCancel, defaultValues, onSuccess }: Props) => {
     const { createOne, updateOne } = useClient({ autoFetch: false });
-    const { locations, } = useLocation({ autoFetch: true });
+    const { locations:allLocations, readAllForOrganisation } = useLocation({ autoFetch: true });
+    const { organisations, } = useOrganisation({ autoFetch: true });
     const { contacts, } = useContact({ autoFetch: true });
     const [loading, setLoading] = useState(false);
     const [openContactSheet, setOpenContactSheet] = useState(false);
+    const [locations, setLocations] = useState<Location[] | null | undefined>(allLocations);
+    const [selectedOrganisation, setSelectedOrganisation] = useState<number | null>(null);
     // 1. Define your form.
-
+    useEffect(() => {
+        const fetchLocations = async () => {
+            if (selectedOrganisation) {
+                const data = await readAllForOrganisation(selectedOrganisation.toString());
+                setLocations(data);
+            }
+        };
+        fetchLocations();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [selectedOrganisation]);
     const form = useForm<CreateClientInput>({
         resolver: zodResolver(CreateClientSchema),
         defaultValues: mode === "update" ? {
@@ -58,7 +72,7 @@ const UpsertClientForm = ({ mode, onCancel, defaultValues, onSuccess }: Props) =
             first_name: "", // Voornaam
             last_name: "", // Achternaam
             email: "", // E-mail
-            organisation: "", // Organisatie
+            organisation_id: "", // Organisatie
             location_id: "", // Locatie ID
             legal_measure: "", // Juridische maatregel
             birthplace: "", // Geboorteplaats
@@ -111,6 +125,7 @@ const UpsertClientForm = ({ mode, onCancel, defaultValues, onSuccess }: Props) =
                         ...values,
                         date_of_birth: values.date_of_birth.toISOString().split("T")[0],
                         location_id: Number(values.location_id),
+                        organisation_id: Number(values.organisation_id),
                         sender_id: Number(values.sender_id),
                     }, {
                     displaySuccess: true,
@@ -132,6 +147,7 @@ const UpsertClientForm = ({ mode, onCancel, defaultValues, onSuccess }: Props) =
                         ...values,
                         date_of_birth: values.date_of_birth.toISOString().replace("00:00:00Z", "04:00:00Z"),
                         location_id: Number(values.location_id),
+                        organisation_id: Number(values.organisation_id),
                         sender_id: Number(values.sender_id),
                     }, {
                     displaySuccess: true,
@@ -468,6 +484,41 @@ const UpsertClientForm = ({ mode, onCancel, defaultValues, onSuccess }: Props) =
                             <div className="grid grid-cols-2 gap-x-2 gap-y-4">
                                 <FormField
                                     control={form.control}
+                                    name="organisation_id"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel className='flex items-center justify-between'>
+                                                Organisatie
+                                                <Tooltip text='Dit is Organisatie'>
+                                                    <Info className='h-5 w-5 mr-2' />
+                                                </Tooltip>
+                                            </FormLabel>
+                                            <FormControl>
+                                                <Select onValueChange={(value) => {
+                                                    field.onChange(value);
+                                                    setSelectedOrganisation(parseInt(value));
+                                                }} defaultValue={field.value} >
+                                                    <SelectTrigger className="w-full">
+                                                        <SelectValue placeholder="Selecteer locatie" />
+                                                    </SelectTrigger>
+                                                    <SelectContent className="bg-white">
+                                                        <SelectGroup>
+                                                            <SelectLabel>Organisatie</SelectLabel>
+                                                            {
+                                                                organisations?.map((item, index) => (
+                                                                    <SelectItem key={index} value={item.id.toString()} className="hover:bg-slate-100 cursor-pointer">{item.name}</SelectItem>
+                                                                ))
+                                                            }
+                                                        </SelectGroup>
+                                                    </SelectContent>
+                                                </Select>
+                                            </FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+                                <FormField
+                                    control={form.control}
                                     name="location_id"
                                     render={({ field }) => (
                                         <FormItem>
@@ -558,26 +609,7 @@ const UpsertClientForm = ({ mode, onCancel, defaultValues, onSuccess }: Props) =
                                         </FormItem>
                                     )}
                                 />
-                                <FormField
-                                    control={form.control}
-                                    name="organisation"
-                                    render={({ field }) => (
-                                        <FormItem>
-                                            <FormLabel>Organisatie</FormLabel>
-                                            <FormControl>
-                                                <div className="relative">
-                                                    <Input placeholder="Bijv: MaiCare" {...field} />
-                                                    <div className="absolute right-2 top-0 translate-y-1/2 h-5 w-5 ">
-                                                        <Tooltip text='Dit is Organisatie'>
-                                                            <Info className='h-5 w-5' />
-                                                        </Tooltip>
-                                                    </div>
-                                                </div>
-                                            </FormControl>
-                                            <FormMessage />
-                                        </FormItem>
-                                    )}
-                                />
+                                
                             </div>
                         </div>
                     </div>
@@ -937,7 +969,7 @@ const UpsertClientForm = ({ mode, onCancel, defaultValues, onSuccess }: Props) =
 
                     <div className="grid grid-cols-1 gap-4 h-fit">
                         <div className="flex flex-col gap-4 px-6 py-3 bg-white rounded-md border-2 border-muted h-fit">
-                            <h1 className='text-base font-semibold text-black'>Adresgegevens</h1>
+                            <h1 className='text-base font-semibold text-black'>Wettelijk Vertegenwoordiger / Cliënt Registratieadres</h1>
                             <Separator className='bg-slate-300' />
                             <div className="grid grid-cols-1">
                                 <AddressesForm />

@@ -24,7 +24,9 @@ import StatusHistoryPreview from '../_components/StatusHistoryPreview';
 const Page = () => {
     const { clientId } = useParams();
     const { readOne } = useClient({ autoFetch: false });
-    const [client, setClient] = useState<Client | undefined>(undefined);
+    const [client, setClient] = useState<Client & {
+        identity_attachment_ids: string[];
+    } | null>(null);
     const [isLoading, setIsLoading] = useState(true);
     useEffect(() => {
         const fetchClient = async (id: Id) => {

@@ -5,6 +5,7 @@ import { AppSidebar } from "@/common/components/AppSidebar";
 import { Separator } from "@/components/ui/separator";
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "@/components/ui/breadcrumb";
 import NotificationDropdown from "@/components/common/Header/notification-dropdown";
+import DynamicBreadcrumbNL from "./_components/advanced-breadcrumb";
 // import DropdownNotification from "@/components/common/Header/DropdownNotification";
 
 export default function RootLayout({ children }: { children: ReactNode }) {
@@ -27,19 +28,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
                 <div className="flex items-center gap-2 px-4 text-white">
                   <SidebarTrigger className="-ml-1" />
                   <Separator orientation="vertical" className="mr-2 h-4" />
-                  <Breadcrumb>
-                    <BreadcrumbList>
-                      <BreadcrumbItem className="hidden md:block">
-                        <BreadcrumbLink href="#">
-                          Jouw Applicatie Bouwen
-                        </BreadcrumbLink>
-                      </BreadcrumbItem>
-                      <BreadcrumbSeparator className="hidden md:block" />
-                      <BreadcrumbItem>
-                        <BreadcrumbPage className="text-sidebar-foreground text-white">Data Ophalen</BreadcrumbPage>
-                      </BreadcrumbItem>
-                    </BreadcrumbList>
-                  </Breadcrumb>
+                  <DynamicBreadcrumbNL />
                 </div>
                 <div className="mr-8">
                   {/* <DropdownNotification /> */}

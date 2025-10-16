@@ -1,20 +1,20 @@
 import { z } from 'zod';
 
-// Zod schema for createShift
+// Zod schema voor createShift
 export const createShiftSchema = z.object({
-  end_time: z.string(),
-  location_id: z.number(),
-  shift: z.string(),
-  start_time: z.string(),
+  end_time: z.string().min(1, "Eindtijd is verplicht"),
+  location_id: z.number().min(1, "Locatie is verplicht"),
+  shift: z.string().min(1, "Dienst is verplicht"),
+  start_time: z.string().min(1, "Starttijd is verplicht"),
 });
 
-// Type for createShift (inferred from the schema)
+// Type voor createShift (geïnferreerd van het schema)
 export type CreateShift = z.infer<typeof createShiftSchema>;
 
-// Zod schema for Shift (createShift with id)
+// Zod schema voor Shift (createShift met id)
 export const shiftSchema = createShiftSchema.extend({
   id: z.number(),
 });
 
-// Type for Shift (inferred from the schema)
+// Type voor Shift (geïnferreerd van het schema)
 export type Shift = z.infer<typeof shiftSchema>;

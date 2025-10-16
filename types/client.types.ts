@@ -39,7 +39,7 @@ export type CreateClientInput = {
     first_name: string;
     last_name: string;
     email: string;
-    organisation: string;
+    organisation_id: Id;
     location_id: Id;
     legal_measure: string;
     birthplace: string;

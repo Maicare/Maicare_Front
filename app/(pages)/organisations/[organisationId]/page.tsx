@@ -96,6 +96,7 @@ export default function OrganizationDetailsPage() {
     };
 
     fetchLocations();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [organisationId, open]);
 
   const handleCreate = async (values: CreateLocation) => {

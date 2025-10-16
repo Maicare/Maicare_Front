@@ -57,7 +57,9 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             try {
                 setIsLoading(true);
                 const data = await readClient(id);
-                setUser({ ...data, profile_picture: data.profile_picture ?? "/images/avatar-1.jpg" });
+                if(data) {
+                    setUser({ ...data, profile_picture: data?.profile_picture ?? "/images/avatar-1.jpg", first_name: data?.first_name || "", last_name: data?.last_name || "", email: data?.email || "", id: data?.id || 0 });
+                }
             } catch (error) {
                 console.error(error);
             } finally {
@@ -76,13 +78,13 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             }
         }
         if (isEmployee) {
-            const employeeId = pathname.split("/")[3];
+            const employeeId = pathname.split("/")[2];
             if (employeeId) fetchEmployee(+employeeId);
         } else if (isClient) {
-            const clientId = pathname.split("/")[3];
+            const clientId = pathname.split("/")[2];
             if (clientId) fetchClient(+clientId);
         } else if (isLocation) {
-            const locationId = pathname.split("/")[3];
+            const locationId = pathname.split("/")[2];
             if (locationId) fetchLocation(+locationId);
         }else{
 

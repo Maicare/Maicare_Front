@@ -1,6 +1,5 @@
 import { z } from "zod";
 
-
 // Zod Schema
 export const IncidentCreateSchema = z.object({
     accident: z.boolean(),
@@ -13,7 +12,7 @@ export const IncidentCreateSchema = z.object({
     employee_id: z.string().min(1, "Medewerker is verplicht"),
     fire_water_damage: z.boolean(),
     incident_date: z.coerce.date().refine(date => !isNaN(date.getTime()), {
-        message: "Geboortedatum is vereist", // Invalid date format
+        message: "Incidentdatum is verplicht",
     }),
     incident_explanation: z.string(),
     incident_prevent_steps: z.string(),
@@ -23,7 +22,7 @@ export const IncidentCreateSchema = z.object({
     location_id: z.string().min(1, "Locatie is verplicht"),
     medicines: z.boolean(),
     mese_worker: z.array(z.string()),
-    needed_consultation: z.string().min(1, "Psychische schade is verplicht"),
+    needed_consultation: z.string().min(1, "Benodigde consultatie is verplicht"),
     organization: z.boolean(),
     organizational: z.array(z.string()),
     other: z.boolean(),
@@ -31,15 +30,15 @@ export const IncidentCreateSchema = z.object({
     other_desc: z.string(),
     other_notifications: z.boolean(),
     passing_away: z.boolean(),
-    physical_injury: z.string().min(1, "Psychische schade is verplicht"),
+    physical_injury: z.string().min(1, "Fysiek letsel is verplicht"),
     physical_injury_desc: z.string(),
-    psychological_damage: z.string(),
+    psychological_damage: z.string().min(1, "Psychische schade is verplicht"),
     psychological_damage_desc: z.string(),
-    recurrence_risk: z.string().min(1, "Psychische schade is verplicht"),
-    reporter_involvement: z.string().min(1, "Psychische schade is verplicht"),
+    recurrence_risk: z.string().min(1, "Herhalingsrisico is verplicht"),
+    reporter_involvement: z.string().min(1, "Betrokkenheid melder is verplicht"),
     runtime_incident: z.string(),
     self_harm: z.boolean(),
-    severity_of_incident: z.string().min(1, "Psychische schade is verplicht"),
+    severity_of_incident: z.string().min(1, "Ernst van incident is verplicht"),
     succession: z.array(z.string()),
     succession_desc: z.string(),
     technical: z.array(z.string()),
@@ -47,5 +46,5 @@ export const IncidentCreateSchema = z.object({
     violence: z.boolean(),
 });
 
-// Infer Type from Zod Schema (alternative to manual interface)
+// Type inferentie van Zod Schema (alternatief voor handmatige interface)
 export type CreateIncidentNew = z.infer<typeof IncidentCreateSchema>;

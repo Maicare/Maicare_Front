@@ -6,51 +6,51 @@ export const appointmentSchema = z
   .object({
     client_ids: z
       .array(z.number())
-      .min(1, "Please select at least one client."),
+      .min(1, "Selecteer minimaal één cliënt."),
 
     participant_employee_ids: z
       .array(z.number())
-      .min(1, "Please select at least one participant."),
+      .min(1, "Selecteer minimaal één deelnemer."),
 
     description: z
       .string()
-      .min(1, "Please enter a description for this appointment."),
+      .min(1, "Voer een beschrijving in voor deze afspraak."),
 
     location: z
       .string()
-      .min(1, "Please choose a location."),
+      .min(1, "Kies een locatie."),
 
     start_time: z.union([
-      z.string().datetime({ message: "Please pick a valid start date & time." }),
+      z.string().datetime({ message: "Kies een geldige startdatum & tijd." }),
       z.date(),
     ]),
     end_time: z.union([
-      z.string().datetime({ message: "Please pick a valid end date & time." }),
+      z.string().datetime({ message: "Kies een geldige einddatum & tijd." }),
       z.date(),
     ]),
 
     recurrence_type: z
       .nativeEnum(RecurrenceType, {
-        required_error: "Please select a recurrence pattern.",
+        required_error: "Selecteer een herhalingspatroon.",
       }),
     recurrence_interval: z
       .number()
-      .int({ message: "Recurrence interval must be a whole number." })
-      .nonnegative({ message: "Recurrence interval cannot be negative." }),
+      .int({ message: "Herhalingsinterval moet een heel getal zijn." })
+      .nonnegative({ message: "Herhalingsinterval kan niet negatief zijn." }),
     recurrence_end_date: z.union([
-      z.string().datetime({ message: "Please pick a valid recurrence end date." }),
+      z.string().datetime({ message: "Kies een geldige einddatum voor herhaling." }),
       z.date(),
     ]),
 
     color: z
       .string()
-      .regex(/^#[0-9A-Fa-f]{6}$/, "Color must be a hex code like #4f46e5")
+      .regex(/^#[0-9A-Fa-f]{6}$/, "Kleur moet een hex code zijn zoals #4f46e5")
       .optional(),
   })
   .refine(
     (data) => new Date(data.start_time) < new Date(data.end_time),
     {
-      message: "Please ensure the end time is after the start time.",
+      message: "Zorg ervoor dat de eindtijd na de starttijd ligt.",
       path: ["end_time"],
     }
   );
@@ -70,7 +70,7 @@ function parseEventDates(input: Omit<CreateAppointmentType, 'start_time' | 'end_
   };
 }
 
-// Usage example:
+// Gebruiksvoorbeeld:
 const sampleEvent = {
   client_ids: [0],
   description: "string",
@@ -83,5 +83,5 @@ const sampleEvent = {
   start_time: "2023-10-01T10:00:00Z"
 };
 
-// const parsed = eventSchema.parse(sampleEvent); // Zod validation
-// const withDates = parseEventDates(sampleEvent); // Convert to Date objects
+// const parsed = eventSchema.parse(sampleEvent); // Zod validatie
+// const withDates = parseEventDates(sampleEvent); // Converteren naar Date objecten

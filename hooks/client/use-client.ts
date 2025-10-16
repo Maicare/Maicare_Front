@@ -61,6 +61,10 @@ export function useClient({
   const readOne = async (id: Id, options?: ApiOptions) => {
     const { displayProgress = false } = options || {};
     try {
+      if (id === null || id === undefined || isNaN(Number(id))) {
+        console.log("id is null or undefined or NaN");
+        return null;
+      }
       if (displayProgress) startProgress();
       const response = await useApi<Client & { identity_attachment_ids: string[] }>(
         ApiRoutes.Client.ReadOne.replace("{id}", id.toString()),
