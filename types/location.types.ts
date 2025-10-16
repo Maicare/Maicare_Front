@@ -5,6 +5,7 @@ export type Location = {
   name: string;
   address: string;
   capacity: number;
+  organisation_id: string;
 };
 
 export type CreateLocationReqDto = {

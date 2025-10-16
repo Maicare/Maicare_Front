@@ -1,47 +1,49 @@
 import { OP_CLIENT_TYPE } from '@/types/contacts.types';
 import { z } from 'zod';
 
-
 export type OpClientType = typeof OP_CLIENT_TYPE[number];
 
-// Schema for individual contact in the contacts array
+// Schema voor individueel contact in de contacten array
 const ContactPersonSchema = z.object({
-  email: z.string().email(),
-  name: z.string(),
-  phone_number: z.string(),
+  email: z.string().email("Ongeldig e-mailadres"),
+  name: z.string().min(1, "Naam is verplicht"),
+  phone_number: z.string().min(1, "Telefoonnummer is verplicht"),
 });
 
 export type ContactPerson = z.infer<typeof ContactPersonSchema>;
 
-// Main Contact schema
+// Hoofd Contact schema
 export const ContactSchema = z.object({
-  BTWnumber: z.string(),
-  KVKnumber: z.string(),
-  address: z.string(),
-  client_number: z.string(),
-  contacts: z.array(ContactPersonSchema),
-  created_at: z.string().datetime(), // or z.string() if you don't want datetime validation
+  BTWnumber: z.string().min(1, "BTW-nummer is verplicht"),
+  KVKnumber: z.string().min(1, "KVK-nummer is verplicht"),
+  address: z.string().min(1, "Adres is verplicht"),
+  client_number: z.string().min(1, "Klantnummer is verplicht"),
+  contacts: z.array(ContactPersonSchema).min(1, "Minstens één contactpersoon is verplicht"),
+  created_at: z.string().datetime("Ongeldige datum/tijd"),
   id: z.number().int(),
-  land: z.string(),
-  name: z.string(),
-  phone_number: z.string(),
-  place: z.string(),
-  postal_code: z.string(),
-  types: z.enum(OP_CLIENT_TYPE), // or z.string() if you want to allow any string
-  updated_at: z.string().datetime(), // or z.string() if you don't want datetime validation
+  land: z.string().min(1, "Land is verplicht"),
+  name: z.string().min(1, "Naam is verplicht"),
+  phone_number: z.string().min(1, "Telefoonnummer is verplicht"),
+  place: z.string().min(1, "Plaats is verplicht"),
+  postal_code: z.string().min(1, "Postcode is verplicht"),
+  types: z.enum(OP_CLIENT_TYPE, {
+    errorMap: () => ({ message: "Selecteer een geldig type" })
+  }),
+  updated_at: z.string().datetime("Ongeldige datum/tijd"),
 });
-// Schema for validation
+
+// Schema voor validatie
 const invoiceTemplateItemSchema = z.object({
-  description: z.string().min(1, "Description is required"),
-  item_tag: z.string().min(1, "Tag is required"),
-  source_column: z.string().min(1, "Source column is required"),
-  source_table: z.string().min(1, "Source table is required"),
+  description: z.string().min(1, "Omschrijving is verplicht"),
+  item_tag: z.string().min(1, "Tag is verplicht"),
+  source_column: z.string().min(1, "Bronkolom is verplicht"),
+  source_table: z.string().min(1, "Brontabel is verplicht"),
 });
 
 type InvoiceTemplateItem = z.infer<typeof invoiceTemplateItemSchema> & { id?: number };
-export type Contact = z.infer<typeof ContactSchema> & {invoice_template_items:InvoiceTemplateItem[]};
+export type Contact = z.infer<typeof ContactSchema> & {invoice_template_items: InvoiceTemplateItem[]};
 
-// CreateContact schema (without id, created_at, updated_at)
+// CreateContact schema (zonder id, created_at, updated_at)
 export const CreateContactSchema = ContactSchema.omit({ 
   id: true,
   created_at: true,

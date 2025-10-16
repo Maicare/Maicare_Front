@@ -1,14 +1,18 @@
 import { z } from "zod";
 
-// Define the schema
+// Definieer het schema
 export const educationSchema = z.object({
-  institution_name: z.string().min(1, "Uitgever is vereist"), // Required string
-  field_of_study: z.string().min(1, "Uitgever is vereist"), // Required string
-  degree: z.string().min(1, "Uitgever is vereist"), // Required string
-  start_date: z.coerce.date().refine(date => !isNaN(date.getTime()), { message: "Startdatum is ongeldig" }),
-  end_date: z.coerce.date().refine(date => !isNaN(date.getTime()), { message: "Einddatum is ongeldig" }),
-  employee_id: z.number().default(0), // Required number
+  institution_name: z.string().min(1, "Onderwijsinstelling is verplicht"),
+  field_of_study: z.string().min(1, "Studierichting is verplicht"),
+  degree: z.string().min(1, "Diploma is verplicht"),
+  start_date: z.coerce.date().refine(date => !isNaN(date.getTime()), { 
+    message: "Startdatum is ongeldig" 
+  }),
+  end_date: z.coerce.date().refine(date => !isNaN(date.getTime()), { 
+    message: "Einddatum is ongeldig" 
+  }),
+  employee_id: z.number().default(0),
 });
 
-// Infer the type from the schema (optional, for TypeScript)
+// Type inferentie van het schema (optioneel, voor TypeScript)
 export type CreateEducation = z.infer<typeof educationSchema>;

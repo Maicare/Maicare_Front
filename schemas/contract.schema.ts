@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-// Define enums with your specific values
+// Definieer enums met specifieke waarden
 export const CareTypeSchema = z.enum(["ambulante", "accommodation"]);
 export type CareType = z.infer<typeof CareTypeSchema>;
 
@@ -13,23 +13,23 @@ export type FinancingOption = z.infer<typeof FinancingOptionSchema>;
 export const AmbulantePriceTimeUnitSchema = z.enum(["minute", "hourly"]);
 export const AccommodationPriceTimeUnitSchema = z.enum(["daily", "weekly", "monthly"]);
 
-// Base schema with common fields
+// Basis schema met gemeenschappelijke velden
 const BaseContractSchema = z.object({
   VAT: z.number().min(0).max(100),
   attachment_ids: z.array(z.string()).optional(),
-  care_name: z.string().min(1, "Care name is required"),
+  care_name: z.string().min(1, "Zorgnaam is verplicht"),
   care_type: CareTypeSchema,
   end_date: z.string().datetime().optional(),
   financing_act: FinancingActSchema,
   financing_option: FinancingOptionSchema,
-  price: z.number().positive("Price must be positive"),
+  price: z.number().positive("Prijs moet positief zijn"),
   reminder_period: z.number().int().min(0).max(365),
   sender_id: z.number().int().positive(),
-  start_date: z.string().datetime({ message: "Invalid date format" }),
+  start_date: z.string().datetime({ message: "Ongeldig datumformaat" }),
   type_id: z.number().int().positive(),
 });
 
-// Create Contract schema with conditional validation
+// Maak Contract schema met conditionele validatie
 export const CreateContractSchema = BaseContractSchema.extend({
   hours: z.number().positive().nullable(),
   hours_type: z.string().nullable(),
@@ -39,21 +39,21 @@ export const CreateContractSchema = BaseContractSchema.extend({
     if (data.hours === null || data.hours === undefined) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
-        message: "Hours are required for ambulante care",
+        message: "Uren zijn verplicht voor ambulante zorg",
         path: ["hours"],
       });
     }
     if (!data.hours_type) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
-        message: "Hours type is required for ambulante care",
+        message: "Urentype is verplicht voor ambulante zorg",
         path: ["hours_type"],
       });
     }
     if (!data.price_time_unit || !["minute", "hourly"].includes(data.price_time_unit)) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
-        message: "Price time unit must be daily, weekly, or monthly for ambulante care",
+        message: "Prijs tijdseenheid moet 'minute' of 'hourly' zijn voor ambulante zorg",
         path: ["price_time_unit"],
       });
     }
@@ -61,28 +61,28 @@ export const CreateContractSchema = BaseContractSchema.extend({
     if (data.hours !== null) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
-        message: "Hours must be null for accommodation care",
+        message: "Uren moeten null zijn voor accommodatie zorg",
         path: ["hours"],
       });
     }
     if (data.hours_type !== null) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
-        message: "Hours type must be null for accommodation care",
+        message: "Urentype moet null zijn voor accommodatie zorg",
         path: ["hours_type"],
       });
     }
     if (!data.price_time_unit || !["daily", "weekly", "monthly"].includes(data.price_time_unit)) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
-        message: "Price time unit must be minute or hourly for accommodation care",
+        message: "Prijs tijdseenheid moet 'daily', 'weekly' of 'monthly' zijn voor accommodatie zorg",
         path: ["price_time_unit"],
       });
     }
   }
 });
 
-// Full Contract schema (for responses)
+// Volledig Contract schema (voor responses)
 export const ContractSchema = BaseContractSchema.extend({
   id: z.number().int().positive(),
   client_id: z.number().int().positive(),

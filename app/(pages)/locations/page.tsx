@@ -18,7 +18,7 @@ import { PermissionsObjects } from "@/common/data/permission.data";
 
 
 const LocationsPage = () => {
-  const { locations, isLoading, createOne, updateOne } = useLocation({ autoFetch: true });
+  const { locations, isLoading, createOneForOrganisation, updateOne } = useLocation({ autoFetch: true });
   const [open, setOpen] = useState(false);
   const [location, setLocation] = useState<Location | null>(null);
   const handleOpen = (bool: boolean) => {
@@ -39,8 +39,8 @@ const LocationsPage = () => {
   }
   const handleCreate = async (values: CreateLocation) => {
     try {
-      await createOne(
-        values, {
+      await createOneForOrganisation(
+        values, values.organisation_id,{
         displayProgress: true,
         displaySuccess: true
       }

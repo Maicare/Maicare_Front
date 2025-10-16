@@ -1,9 +1,9 @@
 "use client";
-import { Sheet, SheetClose, SheetContent, SheetDescription,  SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
+import { Sheet, SheetClose, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 
 import { Button } from '@/components/ui/button';
 import PrimaryButton from '@/common/components/PrimaryButton';
-import {  Info, PlusCircle } from 'lucide-react';
+import { Info, PlusCircle } from 'lucide-react';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import Tooltip from '@/common/components/Tooltip';
 import { useForm } from 'react-hook-form';
@@ -12,6 +12,8 @@ import { Input } from '@/components/ui/input';
 import { useEffect, useState } from 'react';
 import { Textarea } from '@/components/ui/textarea';
 import { CreateLocation, createLocationSchema, Location } from '@/schemas/location.schema';
+import { useOrganisation } from '@/hooks/organisation/use-organisation';
+import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from '@/components/ui/select';
 type Props = {
     mode: "create" | "update";
     handleCreate: (values: CreateLocation) => void;
@@ -23,14 +25,15 @@ type Props = {
 
 const CreateLocationSheet = ({ mode, handleCreate, handleUpdate, location, handleOpen, isOpen }: Props) => {
     const [loading, setLoading] = useState(false);
+    const { organisations } = useOrganisation({ autoFetch: true });
     const form = useForm<CreateLocation>({
         resolver: zodResolver(createLocationSchema),
         defaultValues: location ? {
             ...location
         } : {
-            address:"",
-            capacity:0,
-            name:""
+            address: "",
+            capacity: 0,
+            name: ""
         },
     });
     // 2. Definieer een submit handler.
@@ -49,6 +52,7 @@ const CreateLocationSheet = ({ mode, handleCreate, handleUpdate, location, handl
             form.setValue("address", location.address);
             form.setValue("capacity", location.capacity);
             form.setValue("name", location.name);
+            form.setValue("organisation_id", location.organisation_id);
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [location]);
@@ -73,6 +77,38 @@ const CreateLocationSheet = ({ mode, handleCreate, handleUpdate, location, handl
                 </SheetHeader>
                 <Form {...form} >
                     <form className="grid grid-cols-2 gap-4 py-4" onSubmit={form.handleSubmit(onSubmit)}>
+                        <FormField
+                            control={form.control}
+                            name="organisation_id"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel className='flex items-center justify-between'>
+                                        Organisatie
+                                        <Tooltip text='Dit is Organisatie'>
+                                            <Info className='h-5 w-5 mr-2' />
+                                        </Tooltip>
+                                    </FormLabel>
+                                    <FormControl>
+                                        <Select onValueChange={field.onChange} defaultValue={field.value} >
+                                            <SelectTrigger className="w-full">
+                                                <SelectValue placeholder="Selecteer locatie" />
+                                            </SelectTrigger>
+                                            <SelectContent className="bg-white">
+                                                <SelectGroup>
+                                                    <SelectLabel>Organisatie</SelectLabel>
+                                                    {
+                                                        organisations?.map((item, index) => (
+                                                            <SelectItem key={index} value={item.id.toString()} className="hover:bg-slate-100 cursor-pointer">{item.name}</SelectItem>
+                                                        ))
+                                                    }
+                                                </SelectGroup>
+                                            </SelectContent>
+                                        </Select>
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
                         <FormField
                             control={form.control}
                             name="name"
@@ -101,7 +137,7 @@ const CreateLocationSheet = ({ mode, handleCreate, handleUpdate, location, handl
                                     <FormLabel>Capaciteit</FormLabel>
                                     <FormControl>
                                         <div className="relative">
-                                            <Input type="number" placeholder="bijv: 100" {...field} onChange={(e) => field.onChange(Number(e.target.value))}  />
+                                            <Input type="number" placeholder="bijv: 100" {...field} onChange={(e) => field.onChange(Number(e.target.value))} />
                                             <div className="absolute right-2 top-0 translate-y-1/2 h-5 w-5 ">
                                                 <Tooltip text='Dit is de maximale capaciteit van de locatie'>
                                                     <Info className='h-5 w-5' />
@@ -140,12 +176,12 @@ const CreateLocationSheet = ({ mode, handleCreate, handleUpdate, location, handl
                         />
 
 
-                            <Button disabled={loading} type="submit" className='bg-indigo-200 text-indigo-600 hover:text-white hover:bg-indigo-600 transition-colors'>
-                                {loading ? "Opslaan..." : "Wijzigingen Opslaan"}
-                            </Button>
-                            <SheetClose asChild>
-                                <Button className='bg-red-200 text-red-600 hover:text-white hover:bg-red-600 transition-colors'>Annuleren</Button>
-                            </SheetClose>
+                        <Button disabled={loading} type="submit" className='bg-indigo-200 text-indigo-600 hover:text-white hover:bg-indigo-600 transition-colors'>
+                            {loading ? "Opslaan..." : "Wijzigingen Opslaan"}
+                        </Button>
+                        <SheetClose asChild>
+                            <Button className='bg-red-200 text-red-600 hover:text-white hover:bg-red-600 transition-colors'>Annuleren</Button>
+                        </SheetClose>
                     </form>
                 </Form>
 

@@ -3,10 +3,10 @@ import * as yup from "yup";
 export const loginSchema = yup.object().shape({
   email: yup
     .string()
-    .email("Enter a valid email address")
-    .required("Email is required"),
+    .email("Voer een geldig e-mailadres in")
+    .required("E-mail is verplicht"),
   password: yup
     .string()
-    .min(6, "Password must be at least 6 characters long")
-    .required("Password is required"),
+    .min(6, "Wachtwoord moet minimaal 6 tekens lang zijn")
+    .required("Wachtwoord is verplicht"),
 });
