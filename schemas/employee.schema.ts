@@ -6,8 +6,8 @@ export const employeeOldSchema = Yup.object().shape({
     employee_number: Yup.string().required("Medewerkernummer is verplicht"),
     employment_number: Yup.string().required("Dienstnummer is verplicht"),
     is_subcontractor: Yup.boolean(),
-    location_id: Yup.string().required("Locatie is verplicht"),
-    role_id: Yup.string(),
+    location_id: Yup.string().uuid().required("Locatie is verplicht"),
+    role_id: Yup.string().uuid().required("Rol is verplicht"),
     first_name: Yup.string().required("Voornaam is verplicht"),
     last_name: Yup.string().required("Achternaam is verplicht"),
     date_of_birth: Yup.string().required("Geboortedatum is verplicht"),
@@ -26,8 +26,8 @@ export const employeeSchema = z.object({
   employee_number: z.string().min(1, "Medewerkernummer is verplicht"),
   employment_number: z.string().min(1, "Dienstnummer is verplicht"),
   is_subcontractor: z.boolean(),
-  location_id: z.string().min(1, "Locatie is verplicht"),
-  role_id: z.string().min(1, "Rol is verplicht"),
+  location_id: z.string().uuid().min(1, "Locatie is verplicht"),
+  role_id: z.string().uuid().min(1, "Rol is verplicht"),
   first_name: z.string().min(1, "Voornaam is verplicht"),
   last_name: z.string().min(1, "Achternaam is verplicht"),
   date_of_birth: z.coerce.date().refine(date => !isNaN(date.getTime()),{
@@ -49,16 +49,16 @@ export const employeeSchema = z.object({
 // Type inferentie van het schema (optioneel, voor TypeScript)
 export type CreateEmployee = z.infer<typeof employeeSchema>;
 export type CreateEmployeeRequestBody = Omit<CreateEmployee,"role_id"|"location_id"|"date_of_birth"> & {
-    role_id: number;
-    location_id: number;
+    role_id: Id;
+    location_id: Id;
     date_of_birth: string;
     department: null;
     position: null;
     id?: Id;
 }
 export type UpdateEmployeeRequestBody = Omit<CreateEmployee,"role_id"|"location_id"|"date_of_birth"> & {
-    role_id: number;
-    location_id: number;
+    role_id: Id;
+    location_id: Id;
     date_of_birth: string;
     department: null;
     position: null;
@@ -103,7 +103,7 @@ export interface EmployeeContract {
   contract_start_date: string;
   contract_type: 'loondienst' | 'ZZP';
   contract_hours: number;
-  id: number;
+  id: Id;
   is_subcontractor: boolean;
   contract_rate: number;
 }

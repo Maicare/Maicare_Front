@@ -24,7 +24,7 @@ const BaseContractSchema = z.object({
   financing_option: FinancingOptionSchema,
   price: z.number().positive("Prijs moet positief zijn"),
   reminder_period: z.number().int().min(0).max(365),
-  sender_id: z.number().int().positive(),
+  sender_id: z.string().uuid(),
   start_date: z.string().datetime({ message: "Ongeldig datumformaat" }),
   type_id: z.number().int().positive(),
 });
@@ -84,8 +84,8 @@ export const CreateContractSchema = BaseContractSchema.extend({
 
 // Volledig Contract schema (voor responses)
 export const ContractSchema = BaseContractSchema.extend({
-  id: z.number().int().positive(),
-  client_id: z.number().int().positive(),
+  id: z.string().uuid(),
+  client_id: z.string().uuid(),
   created_at: z.string().datetime(),
   updated_at: z.string().datetime(),
   status: z.enum(["draft", "approved", "terminated", "stoped"]),

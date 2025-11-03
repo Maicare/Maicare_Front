@@ -28,7 +28,7 @@ const Page = () => {
       setEmployee(data);
       setIsLoading(false);
     }
-    if (employeeId) fetchEmployee(+employeeId);
+    if (employeeId) fetchEmployee(employeeId as string);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [employeeId]);
 
@@ -42,14 +42,14 @@ const Page = () => {
           gender={employee?.gender || ""}
           isParentLoading={isLoading}
           profile_picture={employee?.profile_picture || ""}
-          role_id={employee?.role_id || 0}
+          role_id={employee?.role_id || "0"}
         />
         <PersonalInformation
           email={employee?.email || ""}
           first_name={employee?.first_name || ""}
           last_name={employee?.last_name || ""}
           isParentLoading={isLoading}
-          location_id={employee?.location_id || 0}
+          location_id={employee?.location_id || "0"}
           private_phone_number={employee?.private_phone_number || ""}
         />
         <WorkInformation 

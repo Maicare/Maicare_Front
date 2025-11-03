@@ -1,16 +1,18 @@
+import { Id } from "@/common/types/types";
+
 export interface Payment {
     /** Payment amount in the currency's smallest unit (e.g., cents) */
     amount: number;
     /** When the payment was created (ISO 8601 format) */
     created_at: string;
     /** Related invoice ID */
-    invoice_id: number;
+    invoice_id: Id;
     /** Optional notes about the payment */
     notes: string | null;
     /** When the payment was made (ISO 8601 format) */
     payment_date: string;
     /** Unique payment identifier */
-    payment_id: number;
+    payment_id: Id;
     /** Payment method (e.g., "credit_card", "bank_transfer", "paypal") */
     payment_method: 'bank_transfer'| 'credit_card'| 'check'| 'cash'| 'other';
     /** Reference number for the payment */
@@ -18,7 +20,7 @@ export interface Payment {
     /** Current payment status */
     payment_status: 'completed'| 'pending'| 'failed'| 'reversed'| 'refunded';
     /** ID of the user who recorded the payment */
-    recorded_by: number;
+    recorded_by: Id;
     /** First name of the user who recorded the payment */
     recorded_by_first_name: string;
     /** Last name of the user who recorded the payment */

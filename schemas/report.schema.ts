@@ -6,8 +6,8 @@ import * as Yup from "yup";
 export const ReportSchema: Yup.ObjectSchema<CreateReportOld> = Yup.object().shape({
     report_text: Yup.string().required("Rapport is verplicht").test("minWords", "Voer meer dan 50 woorden in om het rapport in te dienen.", wordCount),
     date: Yup.string().required("Datum is verplicht"),
-    id: Yup.number().optional(),
-    employee_id: Yup.number().required("Medewerker is verplicht"),
+    id: Yup.string().optional(),
+    employee_id: Yup.string().required("Medewerker is verplicht"),
     type: Yup.string().oneOf(Object.values(ReportTypes)).required("Rapporttype is verplicht"),
     emotional_state: Yup.string().oneOf(Object.values(EmotionalState)).required("Emotionele toestand is verplicht"),
 });
@@ -36,7 +36,7 @@ const ReportTypesSchema = z.enum([
   ""
 ]);
 
-const IdSchema = z.number().min(0, "ID is verplicht");
+const IdSchema = z.string().uuid().min(1, "ID is verplicht");
 
 // Maak dan het hoofd schema
 export const CreateReportSchema = z.object({

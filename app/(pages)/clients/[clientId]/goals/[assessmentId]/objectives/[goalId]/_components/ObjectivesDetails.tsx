@@ -24,8 +24,8 @@ const ObjectivesDetails = ({
 
   const { readOne, createObjective } = useGoal({
     autoFetch: false,
-    clientId: parseInt(clientId),
-    assessmentId: parseInt(assessmentId),
+    clientId: clientId,
+    assessmentId: assessmentId,
   });
 
   const [objectives, setObjectives] = useState<ObjectiveRow[]>([]);
@@ -39,7 +39,7 @@ const ObjectivesDetails = ({
 
     async function fetchObjectives() {
       try {
-        const data: GoalWithObjectives = await readOne(parseInt(goalId));
+        const data: GoalWithObjectives = await readOne(goalId);
         if (data.objectives) {
           const sorted = data.objectives
             .slice()
@@ -69,7 +69,7 @@ const ObjectivesDetails = ({
 
   const handleCreate = async (values: CreateObjectiveForm) => {
     try {
-      await createObjective(+goalId!, [{...values,due_date:values.due_date.toISOString().split("T")[0]}], { displayProgress: true, displaySuccess: true });
+      await createObjective(goalId!, [{...values,due_date:values.due_date.toISOString().split("T")[0]}], { displayProgress: true, displaySuccess: true });
     } catch (error) {
       console.error({ error });
     }
@@ -78,7 +78,7 @@ const ObjectivesDetails = ({
   const handleEdit = (obj: ObjectiveRow) => {
     console.log("edit", obj);
   };
-  const handleDelete = (id: number) => {
+  const handleDelete = (id: string) => {
     console.log("delete", id);
   };
 

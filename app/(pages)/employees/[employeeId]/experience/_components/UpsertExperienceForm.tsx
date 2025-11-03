@@ -15,13 +15,14 @@ import PrimaryButton from '@/common/components/PrimaryButton'
 import { Textarea } from '@/components/ui/textarea'
 import { useExperience } from '@/hooks/experience/use-experience';
 import { CreateExperience, experienceSchema } from '@/schemas/experience.schema';
+import { Id } from '@/common/types/types';
 
 type Props = {
-    employeeId: number;
+    employeeId: Id;
     onCancel: () => void;
     mode: "add" | "update";
     onSuccess:()=>void;
-    defaultValues?:CreateExperience&{id:number};
+    defaultValues?:CreateExperience&{id:Id};
 }
 const UpsertExperienceForm = ({ employeeId, onCancel, mode,onSuccess,defaultValues }: Props) => {
     const { createOne, updateOne } = useExperience({ autoFetch: false, employeeId: employeeId.toString() });
@@ -70,7 +71,7 @@ const UpsertExperienceForm = ({ employeeId, onCancel, mode,onSuccess,defaultValu
                         ...values,
                         end_date:values.end_date.toISOString().split("T")[0],
                         start_date:values.start_date.toISOString().split("T")[0],
-                        id:defaultValues?.id||0
+                        id:defaultValues?.id||""
                     },{
                         displaySuccess:true,
                         displayProgress:true

@@ -26,13 +26,13 @@ const Page: React.FC = () => {
       setContact(data);
       setIsLoading(false);
     }
-    if (contactId) fetchContact(+contactId);
+    if (contactId) fetchContact(contactId as string);
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [contactId]);
 
 
-  const onSuccess = (id: number) => {
+  const onSuccess = (id: Id) => {
     router.push(`/contacts/${id}`)
   }
   const onCancel = () => {

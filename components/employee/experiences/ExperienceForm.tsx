@@ -8,8 +8,9 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import InputControl from "@/common/components/InputControl";
 import Button from "@/components/common/Buttons/Button";
 import TextareaControlled from "@/components/common/FormFields/TextareaControlled";
+import { Id } from "@/common/types/types";
 type Props = FormProps<Experience | undefined> & {
-  employeeId: number;
+  employeeId: Id;
 };
 
 const experienceSchema: Yup.ObjectSchema<CreateExperience> = Yup.object({
@@ -18,7 +19,7 @@ const experienceSchema: Yup.ObjectSchema<CreateExperience> = Yup.object({
   start_date: Yup.string().required("Startdatum is vereist"),
   end_date: Yup.string().required("Einddatum is vereist"),
   description: Yup.string().required("Beschrijving is vereist"),
-  employee_id: Yup.number().required("Beschrijving is vereist").default(0)
+  employee_id: Yup.string().uuid().required("Beschrijving is vereist").default("")
 });
 
 const ExperienceForm: FunctionComponent<Props> = ({

@@ -17,13 +17,14 @@ import { useCarePlan } from "@/hooks/care-plan/use-care-plan";
 import { useState } from "react";
 import { CreateReport } from "@/schemas/plan-care.schema";
 import UpsertReportSheet from "./upsert-report-sheet";
+import { Id } from "@/common/types/types";
 
 type Report = {
-    care_plan_id: number;
+    care_plan_id: Id;
     created_at: string;
     created_by_first_name: string;
     created_by_last_name: string;
-    id: number;
+    id: Id;
     is_critical: boolean;
     report_content: string;
     report_type: 'progress' | 'concern' | 'achievement' | 'modification';
@@ -63,9 +64,9 @@ export function ReportCard({ report }: { report: Report }) {
     const { updateReport, deleteReport } = useCarePlan({
         carePlanId: carePlanId as string
     });
-    const [openId, setOpenId] = useState<number | null>(null);
+    const [openId, setOpenId] = useState<Id | null>(null);
 
-    const handleUpdateReport = async (values: CreateReport, id: number) => {
+    const handleUpdateReport = async (values: CreateReport, id: Id) => {
         try {
             await updateReport(values, id, {
                 displayProgress: true,
@@ -77,7 +78,7 @@ export function ReportCard({ report }: { report: Report }) {
         }
     };
 
-    const handleDeleteReport = async (id: number) => {
+    const handleDeleteReport = async (id: Id) => {
         try {
             await deleteReport(id, {
                 displayProgress: true,

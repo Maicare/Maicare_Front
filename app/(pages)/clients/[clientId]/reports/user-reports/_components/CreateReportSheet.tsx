@@ -42,7 +42,7 @@ const CreateReportSheet = ({ mode, handleCreate, handleUpdate, report, handleOpe
             emotional_state: "",
             report_text: "",
             type: "",
-            employee_id: user?.employee_id || 0
+            employee_id: user?.employee_id || "0"
         },
     });
     // 2. Define a submit handler.

@@ -11,6 +11,7 @@ import {
   CreateAutomaticReport,
   ValidateAutomaticReport,
 } from "@/types/automatic-report.types";
+import { Id } from "@/common/types/types";
 
 const schema = yup.object().shape({
   start_date: yup.string().required("Start date is required"),
@@ -18,7 +19,7 @@ const schema = yup.object().shape({
   report_text: yup.string(),
 });
 
-const NewAutomaticReports = ({ clientId }: { clientId: number }) => {
+const NewAutomaticReports = ({ clientId }: { clientId: Id }) => {
   const [isGenerating, setIsGenerating] = useState(false);
   const [isValidating, setIsValidating] = useState(false);
   const [showValidate, setShowValidate] = useState(false);

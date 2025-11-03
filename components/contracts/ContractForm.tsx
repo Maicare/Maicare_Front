@@ -80,7 +80,7 @@ const ContractForm: FunctionComponent<PropsType> = ({ clientId, contract }) => {
 
   useEffect(() => {
     const getClient = async () => {
-      const data = await getClientData(parseInt(clientId));
+      const data = await getClientData(clientId);
       setClientData(data);
     };
     getClient();
@@ -155,7 +155,7 @@ const ContractForm: FunctionComponent<PropsType> = ({ clientId, contract }) => {
         tax: parseInt(data.tax),
         hours: data.care_type === "ambulante" ? parseInt(data.hours) : 0,
         type_id: parseInt(data.type_id),
-        sender_id: 32,
+        sender_id: data.sender_id,
         hours_type: data.hours_type ? data.hours_type : "all_period",
       };
       if (contract) {

@@ -9,7 +9,7 @@ const periodSchema = z.object({
 });
 
 const invoiceDetailSchema = z.object({
-  contract_id: z.number(),
+  contract_id: z.string().uuid(),
   contract_name: z.string().min(1, "Contractnaam is verplicht"),
   periods: z.array(periodSchema),
   pre_vat_total_price: z.number(),
@@ -28,7 +28,7 @@ export const updateInvoiceSchema = z.object({
   status: z.string().min(1, "Status is verplicht"),
   total_amount: z.number(),
   warning_count: z.number().optional(),
-  client_id: z.number().optional(),
+  client_id: z.string().uuid().optional(),
   invoice_type: z.string().optional(),
 });
 

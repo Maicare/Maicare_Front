@@ -16,7 +16,7 @@ type Props = {
 const DocumentsPreview = ({ isParentLoading }: Props) => {
 
     const { clientId } = useParams();
-    const { isLoading, documents } = useDocument({ autoFetch: true, clientId: parseInt(clientId as string) })
+    const { isLoading, documents } = useDocument({ autoFetch: true, clientId: clientId as string });
     const router = useRouter();
     
     if (isParentLoading || isLoading) {

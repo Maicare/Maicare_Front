@@ -12,17 +12,18 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { AllergyForm as AllergyFormType } from "@/types/allergy.types";
 import { useAllergy } from "@/hooks/allergy/use-allergy";
 import Loader from "../common/loader";
+import { Id } from "@/common/types/types";
 
 
 
 type PropsType = {
-    clientId: string;
-    allergyId?: string;
+    clientId: Id;
+    allergyId?: Id;
 };
 
 const AllergyForm: FunctionComponent<PropsType> = ({ allergyId, clientId }) => {
 
-    const { createOne, readOne, updateOne } = useAllergy(parseInt(clientId));
+    const { createOne, readOne, updateOne } = useAllergy(clientId);
 
     const [loading, setLoading] = useState(true)
 

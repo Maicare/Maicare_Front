@@ -232,7 +232,7 @@ const AddressesForm: React.FC<{ className?: string }> = ({ className }) => {
                         // keep raw; watcher handles debounce/fetch
                         field.onChange(e.target.value);
                       }}
-                      onBlur={(e) => {
+                      onBlur={(_e) => {
                         // Trigger a lookup on blur too
                         handleManualTrigger(index);
                       }}

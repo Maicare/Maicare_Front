@@ -19,10 +19,11 @@ import { CreatePayment, createPaymentSchema } from '@/schemas/payment.schema';
 import { Payment, PAYMENT_METHODS_OPTIONS, PAYMENT_STATUSES_OPTIONS } from '@/types/payment.types';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
+import { Id } from '@/common/types/types';
 type Props = {
     mode: "create" | "update";
     handleCreate: (values: CreatePayment) => void;
-    handleUpdate: (values: CreatePayment & { recorded_by: number }) => void;
+    handleUpdate: (values: CreatePayment & { recorded_by: Id }) => void;
     payment?: Payment;
     isOpen: boolean;
     handleOpen: (bool: boolean) => void;

@@ -7,9 +7,10 @@ import { dateFormat } from "@/utils/timeFormatting";
 import DetailCell from "../common/DetailCell";
 import Loader from "../common/loader";
 import { useEducation } from "@/hooks/education/use-education";
+import { Id } from "@/common/types/types";
 
 type Props = {
-  employeeId: number;
+  employeeId: Id;
 };
 
 const EmployeeEducationsSummary: FunctionComponent<Props> = ({ employeeId }) => {

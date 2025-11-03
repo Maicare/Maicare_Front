@@ -13,9 +13,10 @@ import { EmployeeDetailsResponse } from "@/types/employee.types";
 import Loader from "../common/loader";
 import { useModal } from "../providers/ModalProvider";
 import { EmployeeProfilePictureModal } from "../common/Modals/EmployeeProfileModal";
+import { Id } from "@/common/types/types";
 
 type Props = {
-  employeeId: number;
+  employeeId: Id;
 };
 
 const EmployeeInformation: FunctionComponent<Props> = ({ employeeId }) => {

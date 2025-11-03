@@ -11,7 +11,7 @@ export const educationSchema = z.object({
   end_date: z.coerce.date().refine(date => !isNaN(date.getTime()), { 
     message: "Einddatum is ongeldig" 
   }),
-  employee_id: z.number().default(0),
+  employee_id: z.string().uuid().default(""),
 });
 
 // Type inferentie van het schema (optioneel, voor TypeScript)

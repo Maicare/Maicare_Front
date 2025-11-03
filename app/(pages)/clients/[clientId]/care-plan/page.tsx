@@ -19,7 +19,7 @@ const ListingCarePlans = () => {
     const { clientId } = useParams();
     const router = useRouter();
     const [__, _setCarePlan] = useState<CarePlan | null>(null);
-    const { isLoading, assessments, page, setPage } = useAssessment({ autoFetch: true, clientId: parseInt(clientId as string) });
+    const { isLoading, assessments, page, setPage } = useAssessment({ autoFetch: true, clientId: clientId as string });
     const handlePrevious = () => {
         if (page <= 1) {
             setPage(1);

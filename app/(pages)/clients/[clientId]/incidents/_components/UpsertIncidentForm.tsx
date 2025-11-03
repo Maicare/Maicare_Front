@@ -33,7 +33,7 @@ type Props = {
     incidentId?: string;
 }
 const UpsertIncidentForm = ({ mode, onCancel, defaultValues, onSuccess, clientId }: Props) => {
-    const { createOne, updateOne } = useIncident({ autoFetch: false, clientId: parseInt(clientId) });
+    const { createOne, updateOne } = useIncident({ autoFetch: false, clientId: clientId});
     const [loading, setLoading] = useState(false);
     const { locations, } = useLocation({ autoFetch: true });
     // 1. Define your form.
@@ -95,7 +95,7 @@ const UpsertIncidentForm = ({ mode, onCancel, defaultValues, onSuccess, clientId
             try {
                 setLoading(true);
                 await createOne(
-                    {...values,emails:form.getValues("emails")}, parseInt(clientId), {
+                    {...values,emails:form.getValues("emails")}, clientId, {
                     displaySuccess: true,
                     displayProgress: true
                 }
@@ -113,8 +113,8 @@ const UpsertIncidentForm = ({ mode, onCancel, defaultValues, onSuccess, clientId
                     {
                         ...values
                     },
-                    defaultValues?.id || 0,
-                    parseInt(clientId),
+                    defaultValues?.id || "",
+                    clientId,
                     {
                         displaySuccess: true,
                         displayProgress: true

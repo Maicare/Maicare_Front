@@ -13,6 +13,7 @@ import { useRouter } from "next/navigation"
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog"
 import { useIncident } from "@/hooks/incident/use-incident"
 import { useState } from "react"
+import { Id } from "@/common/types/types"
 
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
@@ -316,7 +317,7 @@ const ActionCell = ({ row }: { row: Row<Incident> }) => {
   const selectedDialog = dialogProps[type];
   const handleView = async () => {
     try {
-      const res = await generatePdf(row.original?.id as number, { displaySuccess: true });
+      const res = await generatePdf(row.original?.id as Id, { displaySuccess: true });
       window.open(res.file_url, "_blank");
     } catch (error) {
       console.error(error);

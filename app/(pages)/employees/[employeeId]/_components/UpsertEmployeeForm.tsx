@@ -1,5 +1,6 @@
 import PrimaryButton from '@/common/components/PrimaryButton'
 import Tooltip from '@/common/components/Tooltip'
+import { Id } from '@/common/types/types'
 import { Button } from '@/components/ui/button'
 import { Calendar } from '@/components/ui/calendar'
 import { Checkbox } from '@/components/ui/checkbox'
@@ -24,7 +25,7 @@ import { useForm } from 'react-hook-form'
 
 type Props = {
     mode:"create"|"update";
-    onSuccess?:(id:number)=>void;
+    onSuccess?:(id:Id)=>void;
     defaultValues?:EmployeeDetailsResponse;
     onCancel:()=>void;
 }
@@ -70,8 +71,8 @@ const UpsertEmployeeForm = ({mode,onSuccess,defaultValues,onCancel}:Props) => {
                     {
                         ...values,
                         date_of_birth: values.date_of_birth.toISOString().split("T")[0],
-                        location_id: Number(values.location_id),
-                        role_id: Number(values.role_id),
+                        location_id: values.location_id,
+                        role_id: values.role_id,
                         department: null,
                         position: null,
                     }, {
@@ -92,17 +93,17 @@ const UpsertEmployeeForm = ({mode,onSuccess,defaultValues,onCancel}:Props) => {
                     {
                         ...values,
                         date_of_birth: values.date_of_birth.toISOString().split("T")[0],
-                        location_id: Number(values.location_id),
-                        role_id: Number(values.role_id),
+                        location_id: values.location_id,
+                        role_id: values.role_id,
                         department: null,
                         position: null,
-                        id: defaultValues?.id || 0
+                        id: defaultValues?.id || ""
                     }, {
                     displaySuccess: true,
                     displayProgress: true
                 }
                 );
-                onSuccess?.(defaultValues?.id||0);
+                onSuccess?.(defaultValues?.id||"0");
             } catch (error) {
                 console.log(error);
             } finally {

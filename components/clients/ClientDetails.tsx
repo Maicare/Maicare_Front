@@ -27,10 +27,11 @@ import { useDocument } from "@/hooks/document/use-document";
 import Loader from "../common/loader";
 import { useModal } from "@/components/providers/ModalProvider";
 import TerminationModal from "../common/Modals/TerminationModal";
+import { Id } from "@/common/types/types";
 
 
 type PropsType = {
-  clientId: number;
+  clientId: Id;
 };
 
 const ClientDetails: FunctionComponent<PropsType> = ({ clientId }) => {
@@ -55,7 +56,7 @@ const ClientDetails: FunctionComponent<PropsType> = ({ clientId }) => {
   }, [clientId]);
 
   useEffect(() => {
-    const fetchClient = async (id: number) => {
+    const fetchClient = async (id: Id) => {
       const data = await readOne(id);
       setClientData(data);
     };

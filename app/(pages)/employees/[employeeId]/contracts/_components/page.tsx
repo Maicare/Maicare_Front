@@ -43,7 +43,7 @@ const Page = () => {
 
             }
         }
-        if (employeeId) fetchEmployeeContract(+employeeId);
+        if (employeeId) fetchEmployeeContract(employeeId as string);
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [employeeId,refetch]);
     const onSubmit = async (values: EmployeeContract) => {

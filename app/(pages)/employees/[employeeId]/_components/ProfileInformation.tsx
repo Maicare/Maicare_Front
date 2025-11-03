@@ -5,12 +5,13 @@ import Image from 'next/image'
 import React from 'react'
 import ProfileInformationSkeleton from './ProfileInformationSkeleton'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { Id } from '@/common/types/types'
 
 type Props = {
     profile_picture:string;
     first_name:string;
     last_name:string;
-    role_id:number;
+    role_id:Id;
     date_of_birth:string;
     gender:string;
     isParentLoading:boolean;

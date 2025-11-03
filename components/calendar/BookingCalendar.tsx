@@ -32,8 +32,8 @@ const getContrast = (hex: string) => {
 
 
 interface Props {
-  employeeId?: number;
-  clientId?: number;
+  employeeId?: Id;
+  clientId?: Id;
   initialEvents?: EventInput[];
 }
 

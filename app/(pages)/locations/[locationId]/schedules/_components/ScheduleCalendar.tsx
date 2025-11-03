@@ -96,7 +96,7 @@ const ScheduleCalendar: FunctionComponent<{ locationId: string }> = ({ locationI
 
   const { readSchedulesByMonth, deleteSchedule } = useSchedule();
 
-  const { shifts } = useShift({ location_id: Number(locationId), autoFetch: true })
+  const { shifts } = useShift({ location_id: locationId as string, autoFetch: true })
 
   const [events, setEvents] = useState<EventInput[]>([]);
   const [createRange, setCreateRange] = useState<DateSelectArg | null>(null);
@@ -943,7 +943,7 @@ const ScheduleCalendar: FunctionComponent<{ locationId: string }> = ({ locationI
                     ? editEvent.event.extendedProps.location_shift_id
                     : createInitialShiftId
                 }
-                locationId={Number(locationId)}
+                locationId={locationId}
                 existingEvents={events}
               />
             )

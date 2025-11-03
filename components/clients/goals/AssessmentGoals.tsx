@@ -14,7 +14,7 @@ import { useMemo, useState } from "react";
 
 const AssessmentGoals = ({ assessmentId, clientId }: { assessmentId: string, clientId: string }) => {
     const [page, setPage] = useState<number>(1);
-    const { goals, isLoading, error } = useGoal({ autoFetch: true, clientId: parseInt(clientId), assessmentId: parseInt(assessmentId), page, page_size: 10 });
+    const { goals, isLoading, error } = useGoal({ autoFetch: true, clientId: clientId, assessmentId: assessmentId, page, page_size: 10 });
     const getTailwindClasses = (level: number) => {
         switch (level) {
           case 1:

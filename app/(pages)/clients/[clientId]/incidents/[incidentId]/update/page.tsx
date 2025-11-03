@@ -17,7 +17,7 @@ const Page = () => {
     const router = useRouter();
     const { clientId, incidentId } = useParams();
     const [incident, setIncident] = useState<Incident | null>(null);
-    const { readOne } = useIncident({ autoFetch: false, clientId: parseInt(clientId as string) });
+    const { readOne } = useIncident({ autoFetch: false, clientId: clientId as string });
 
     const onSuccess = () => {
         router.push(`/clients/${clientId}/incidents`)
@@ -29,11 +29,11 @@ const Page = () => {
     useEffect(() => {
         const fetchIncident = async (id: Id) => {
             setIsLoading(true);
-            const data = await readOne(id,+clientId!, { displayProgress: true });
+            const data = await readOne(id,clientId as string, { displayProgress: true });
             setIncident({ ...data });//TODO: ask taha to add locationId in client details
             setIsLoading(false);
         }
-        if (incidentId && clientId) fetchIncident(+incidentId);
+        if (incidentId && clientId) fetchIncident(incidentId as string);
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [clientId]);

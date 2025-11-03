@@ -5,9 +5,10 @@ import DetailCell from "../../common/DetailCell";
 import { dateFormat } from "@/utils/timeFormatting";
 import { useInvolvedEmployee } from "@/hooks/client-network/use-involved-employee";
 import { Loader } from "lucide-react";
+import { Id } from "@/common/types/types";
 
 type Props = {
-    clientId: number | undefined;
+    clientId: Id | undefined;
 };
 
 const InvolvedEmployeesSummary: FunctionComponent<Props> = ({ clientId }) => {

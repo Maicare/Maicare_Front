@@ -6,7 +6,7 @@ import { Briefcase, Calendar as CalendarIco, X } from "lucide-react";
 
 import { useSchedule } from "@/hooks/schedule/use-schedule";
 import { useShift } from "@/hooks/shift/use-shift";
-import { Any } from "@/common/types/types";
+import { Any, Id } from "@/common/types/types";
 import ShiftPlaceholder, { ScheduleRow } from "@/app/(pages)/schedules/_components/ShiftPlaceholder";
 
 type ShiftDef = {
@@ -18,7 +18,7 @@ type ShiftDef = {
 
 interface ScheduleDetailsProps {
   date: Date;
-  locationId: string;
+  locationId: Id;
   calendarHeight: number;
   onClose: () => void;
   onShiftClick: (row: CalendarScheduleResponse) => void;
@@ -68,7 +68,7 @@ const ScheduleDetails = ({
 
   const { readSchedulesByDay } = useSchedule();
   const { shifts: shiftDefs } = useShift({
-    location_id: Number(locationId),
+    location_id: locationId,
     autoFetch: Boolean(locationId),
   });
 
@@ -106,7 +106,14 @@ const ScheduleDetails = ({
 
   const defaultShifts: ShiftDef[] = useMemo(
     () =>
-      (shiftDefs ?? []).filter((s) => DEFAULT_NAMES.has(s.shift)) as ShiftDef[],
+      (shiftDefs ?? [])
+        .filter((s) => DEFAULT_NAMES.has(s.shift))
+        .map((s) => ({
+          id: Number((s as Any).id),
+          shift: (s as Any).shift,
+          start_time: (s as Any).start_time,
+          end_time: (s as Any).end_time,
+        })) as ShiftDef[],
     [shiftDefs]
   );
 

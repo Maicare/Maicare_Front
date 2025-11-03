@@ -81,7 +81,7 @@ export function useContact({search,autoFetch}:{ search?: string,autoFetch: boole
 
   }
 
-  const readOne = async (id: number, options?: ApiOptions) => {
+  const readOne = async (id: Id, options?: ApiOptions) => {
     const { displayProgress = false, displaySuccess = false } = options || {};
     try {
       // Display progress bar
@@ -103,7 +103,7 @@ export function useContact({search,autoFetch}:{ search?: string,autoFetch: boole
     }
   }
 
-  const updateOne = async (id: number, contact: CreateContact, options?: ApiOptions) => {
+  const updateOne = async (id: Id, contact: CreateContact, options?: ApiOptions) => {
     const { displayProgress = false, displaySuccess = false } = options || {};
     try {
       if (displayProgress) startProgress();

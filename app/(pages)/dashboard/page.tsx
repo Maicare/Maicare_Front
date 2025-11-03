@@ -341,9 +341,9 @@ function AdminDashboard() {
             </CardHeader>
             <CardContent className="p-0">
               <div className="space-y-4 p-4">
-                {dischargeOverview?.slice(0, 5).map((discharge) => (
+                {dischargeOverview?.slice(0, 5).map((discharge,index) => (
                   <motion.div
-                    key={discharge.id * 3 + new Date(discharge.contract_end_date).getTime().toString()}
+                    key={discharge.id+index+ new Date(discharge.contract_end_date).getTime().toString()}
                     className="flex items-center justify-between p-3 rounded-lg hover:bg-muted/50 transition-colors"
                     whileHover={{ scale: 1.01 }}
                     transition={{ type: "spring", stiffness: 300 }}
@@ -399,9 +399,9 @@ function AdminDashboard() {
             </CardHeader>
             <CardContent className="p-0">
               <div className="space-y-4 p-4">
-                {employeeEndingContracts?.slice(0, 3).map((employee) => (
+                {employeeEndingContracts?.slice(0, 3).map((employee,index) => (
                   <motion.div
-                    key={employee.id * 2 + new Date(employee.contract_end_date).getTime().toString()}
+                    key={employee.id+index+ new Date(employee.contract_end_date).getTime().toString()}
                     className="flex items-center justify-between p-3 rounded-lg hover:bg-rose-50/50 transition-colors"
                     whileHover={{ scale: 1.01 }}
                     transition={{ type: "spring", stiffness: 300 }}
@@ -457,9 +457,9 @@ function AdminDashboard() {
             </CardHeader>
             <CardContent className="p-0">
               <div className="space-y-4 p-4">
-                {latestPayments?.slice(0, 4).map((payment) => (
+                {latestPayments?.slice(0, 4).map((payment,index) => (
                   <motion.div
-                    key={payment.invoice_id * Math.random() + new Date(payment.payment_date).getTime()}
+                    key={payment.invoice_id + index + new Date(payment.payment_date).getTime()}
                     className="flex items-center justify-between p-3 rounded-lg hover:bg-muted/50 transition-colors"
                     whileHover={{ scale: 1.01 }}
                     transition={{ type: "spring", stiffness: 300 }}

@@ -50,11 +50,11 @@ export const GoalForm: FunctionComponent<PropsType> = ({ clientId }) => {
       const data = formData.map(i=>({
         ...i,
         initial_level:parseInt(i.initial_level as unknown as string),
-        maturity_matrix_id:parseInt(i.maturity_matrix_id as unknown as string),
+        maturity_matrix_id:i.maturity_matrix_id as unknown as string,
         start_date:i.start_date+"T15:04:05Z",
         end_date:i.end_date+"T15:04:05Z",
       }))
-      await createOne(data, +clientId, { displayProgress: true, displaySuccess: true });
+      await createOne(data, clientId, { displayProgress: true, displaySuccess: true });
       router.push(`/clients/${clientId}/goals`);
     } catch (error) {
       console.error({ error });

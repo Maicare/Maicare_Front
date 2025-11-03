@@ -18,7 +18,7 @@ import { CreateGoal } from "@/schemas/goal.schema";
 const GoalsDetails = ({ assessmentId, clientId }: { clientId: string, assessmentId: string }) => {
     const router = useRouter();
     const [open, setOpen] = useState(false);
-    const { goals, isLoading, error, page, setPage,createOne } = useGoal({ autoFetch: true, clientId: parseInt(clientId), assessmentId: parseInt(assessmentId) });
+    const { goals, isLoading, error, page, setPage,createOne } = useGoal({ autoFetch: true, clientId: clientId as string, assessmentId: assessmentId as string });
     const handlePrevious = () => {
         if (page <= 1) {
             setPage(1);

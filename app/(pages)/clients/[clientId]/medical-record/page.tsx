@@ -16,7 +16,7 @@ import { PermissionsObjects } from "@/common/data/permission.data";
 const MedicalPage = () => {
     const {clientId} = useParams();
     const router = useRouter();
-    const {diagnosis,isLoading,page,setPage} = useDiagnosis({ autoFetch: true, clientId: parseInt(clientId as string) });
+    const {diagnosis,isLoading,page,setPage} = useDiagnosis({ autoFetch: true, clientId: clientId as string });
     const handlePrevious = () => {
         if (page <= 1) {
             setPage(1);

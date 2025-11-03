@@ -78,7 +78,7 @@ export type EmployeeDetailsResponse = {
 }
 
 export type EmployeeForm = {
-    id?: number;
+    id?: Id;
     employee_number: string;
     employment_number: string;
     is_subcontractor: boolean;

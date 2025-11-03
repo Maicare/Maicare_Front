@@ -14,11 +14,12 @@ import withAuth, { AUTH_MODE } from '@/common/hocs/with-auth';
 import withPermissions from '@/common/hocs/with-permissions';
 import Routes from '@/common/routes';
 import { PermissionsObjects } from '@/common/data/permission.data';
+import { Id } from '@/common/types/types';
 
 
 const UserReports = () => {
     const { clientId } = useParams();
-    const { reports, isLoading, page, setPage, createOne, updateOne, } = useReport({ clientId: parseInt(clientId as string), autoFetch: true });
+    const { reports, isLoading, page, setPage, createOne, updateOne, } = useReport({ clientId: clientId as string, autoFetch: true });
     const [report, setReport] = useState<Report | null>(null);
     const [open, setOpen] = useState(false);
     const handleOpen = (bool: boolean) => {
@@ -61,7 +62,7 @@ const UserReports = () => {
             console.log(error);
         }
     }
-    const handleDelete = async (_id: number) => {
+    const handleDelete = async (_id: Id) => {
         try {
             alert("Verwijderd!")
         } catch (error) {
@@ -117,7 +118,7 @@ const UserReports = () => {
                                                     avatar: "https://github.com/shadcn.png"//TODO add image here
                                                 }}
                                                 emotionalState={report.emotional_state}
-                                                handleDelete={() => handleDelete(report.id as number)}
+                                                handleDelete={() => handleDelete(report.id||"")}
                                                 handleUpdate={() => handlePreUpdate(report)}
                                             />
                                         ))

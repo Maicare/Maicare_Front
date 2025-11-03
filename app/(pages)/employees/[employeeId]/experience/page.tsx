@@ -17,11 +17,12 @@ import withAuth, { AUTH_MODE } from "@/common/hocs/with-auth";
 import withPermissions from "@/common/hocs/with-permissions";
 import Routes from "@/common/routes";
 import { PermissionsObjects } from "@/common/data/permission.data";
+import { Id } from "@/common/types/types";
 
 const Page = () => {
     const [adding, setAdding] = useState(false);
     const [editing, setEditing] = useState(false);
-    const [experience, setExperience] = useState<CreateExperience & { id: number } | null>(null);
+    const [experience, setExperience] = useState<CreateExperience & { id: Id } | null>(null);
     const {employeeId} = useParams();
 
 
@@ -47,7 +48,7 @@ const Page = () => {
         mutate();
     }
     const handleEdit = (experience: Experience) => {
-        const transformed: CreateExperience & { id: number } = {
+        const transformed: CreateExperience & { id: Id } = {
             ...experience,
             start_date: new Date(experience.start_date),
             end_date: new Date(experience.end_date),
@@ -94,9 +95,9 @@ const Page = () => {
                 />
             </div>
             {adding ?
-                <UpsertExperienceForm employeeId={parseInt(employeeId as string)} onCancel={cancelAdd} mode="add" onSuccess={cancelAdd} />
+                <UpsertExperienceForm employeeId={employeeId as string} onCancel={cancelAdd} mode="add" onSuccess={cancelAdd} />
                 : editing ?
-                    <UpsertExperienceForm employeeId={parseInt(employeeId as string)} onCancel={cancelEdit} mode="update" onSuccess={cancelEdit} defaultValues={experience || undefined} />
+                    <UpsertExperienceForm employeeId={employeeId as string} onCancel={cancelEdit} mode="update" onSuccess={cancelEdit} defaultValues={experience || undefined} />
                     : null
             }
             <div className="w-full bg-white p-4 rounded-md shadow-md">

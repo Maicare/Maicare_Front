@@ -27,11 +27,11 @@ const ShiftPage = () => {
   const { locationId } = useParams();
 
   const [filters, _setFilters] = useState<{
-    location_id: number;
+    location_id: Id;
     autoFetch?: boolean;
   }>({
     autoFetch: true,
-    location_id: parseInt(locationId as string, 10) || 0,
+    location_id: locationId as Id,
   });
 
   const deboucedFilters = useDebounce(filters, 500);

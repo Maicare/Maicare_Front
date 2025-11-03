@@ -18,7 +18,7 @@ const ReportsPreview = ({ isParentLoading }: Props) => {
     const { clientId } = useParams();
     const router = useRouter();
 
-    const { reports, isLoading } = useReport({ autoFetch: true, clientId: parseInt(clientId as string) });
+    const { reports, isLoading } = useReport({ autoFetch: true, clientId: clientId as string });
 
     if (isParentLoading || isLoading) {
         return (

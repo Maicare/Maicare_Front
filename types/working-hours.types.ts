@@ -1,3 +1,5 @@
+import { Id } from "@/common/types/types";
+
 export type TimePeriod = {
     date_range: {
         end: string;
@@ -21,16 +23,16 @@ export type WorkingHoursEntry = {
     description: string;
     duration_hours: number;
     end_time: string;
-    id: number;
+    id: Id;
     location: string;
-    location_id: number;
+    location_id: Id;
     start_time: string;
     status?: "PENDING"|"CONFIRMED"|"CANCELED";
     type: "appointment"|"schedule";
 };
 
 export type EmployeeWorkingHoursReport = {
-    employee_id: number;
+    employee_id: Id;
     period: TimePeriod;
     summary: WorkingHoursSummary;
     working_hours: WorkingHoursEntry[];

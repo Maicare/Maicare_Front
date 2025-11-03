@@ -8,9 +8,10 @@ import { Role } from "@/types/role.types";
 import RoleSelectModal from "../common/Modals/RoleSelectModal";
 import { useModal } from "../providers/ModalProvider";
 import EditIcon from "../icons/EditIcon";
+import { Id } from "@/common/types/types";
 
 type Props = {
-  employeeId: number;
+  employeeId: Id;
 };
 
 const EmployeeRolesSummary: FunctionComponent<Props> = ({ employeeId }) => {

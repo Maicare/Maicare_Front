@@ -99,7 +99,7 @@ export function useIncident({
         ),
         "POST",
         {},
-        {...incident,employee_id: parseInt(incident.employee_id),location_id: parseInt(incident.location_id)}
+        {...incident,employee_id: incident.employee_id,location_id: incident.location_id}
       );
       if (!data)
         throw new Error(error || message || "An unknown error occurred");
@@ -140,7 +140,7 @@ export function useIncident({
         ).replace("{incident_id}", incident_id.toString()),
         "PUT",
         {},
-        {...incident,employee_id: parseInt(incident.employee_id),location_id: parseInt(incident.location_id)}
+        {...incident,employee_id: incident.employee_id,location_id: incident.location_id}
       );
       if (!data)
         throw new Error(error || message || "An unknown error occurred");

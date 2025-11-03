@@ -4,13 +4,14 @@ import { Location } from '@/types/location.types';
 import { InfoIcon } from 'lucide-react'
 import React, { useEffect, useState } from 'react'
 import PersonalInformationSkeleton from './PersonalInformationSkeleton';
+import { Id } from '@/common/types/types';
 
 type Props = {
     first_name: string;
     last_name: string;
     email: string;
     private_phone_number: string;
-    location_id: number;
+    location_id: Id;
     isParentLoading: boolean;
 }
 
@@ -19,7 +20,7 @@ const PersonalInformation = ({ email, first_name, last_name, location_id, privat
     const [location, setLocation] = useState<Location | null>(null);
     const [isLoading, setIsLoading] = useState(true);
     useEffect(() => {
-        const fetchLocationById = async (id:number) => {
+        const fetchLocationById = async (id:Id) => {
             setIsLoading(true);
             const data = await readOne(id);
             setLocation(data);

@@ -16,6 +16,7 @@ import withAuth, { AUTH_MODE } from "@/common/hocs/with-auth";
 import withPermissions from "@/common/hocs/with-permissions";
 import Routes from "@/common/routes";
 import { PermissionsObjects } from "@/common/data/permission.data";
+import { Id } from "@/common/types/types";
 
 const WorkingHoursPage = () => {
     const { employeeId } = useParams();
@@ -28,13 +29,13 @@ const WorkingHoursPage = () => {
     const [filters, setFilters] = useState<{
         year: string,
         week: string,
-        employee_id: number,
+        employee_id: Id,
         autoFetch: boolean
     }>({
         week: currentWeek.toString(),
         year: currentYear.toString(),
         autoFetch: true,
-        employee_id: parseInt(employeeId as string)
+        employee_id: employeeId as string
     });
     
     const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined);

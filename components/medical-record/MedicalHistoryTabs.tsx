@@ -9,18 +9,17 @@ import { Client } from "@/types/client.types";
 
 const MedicalHistoryTabs: FunctionComponent = () => {
   const { clientId } = useParams();
-  const parsedId = typeof clientId === "string" && parseInt(clientId);
   const { readOne } = useClient({ autoFetch: false });
   const [data, setData] = useState<Client | null>(null);
 
   useEffect(() => {
     const fetchData = async () => {
-      const result = await readOne(parsedId || 0);
+      const result = await readOne(clientId as string || "");
       setData(result);
     };
     fetchData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [parsedId]);
+  }, [clientId]);
   return (
     <PageTabs
       backHref={`/clients/${clientId}/medical-record`}

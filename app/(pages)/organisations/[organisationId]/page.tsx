@@ -17,7 +17,7 @@ import {
 } from "lucide-react";
 import { Organization } from "@/types/organisation";
 import CreateLocationSheet from "../../locations/_components/CreateLocationSheet";
-import { CreateLocation } from "@/schemas/location.schema";
+import { CreateLocation, Location } from "@/schemas/location.schema";
 import { useLocation } from "@/hooks/location/use-location";
 import { useParams, useRouter } from "next/navigation";
 import { useOrganisation } from "@/hooks/organisation/use-organisation";
@@ -27,13 +27,7 @@ import { Id } from "@/common/types/types";
 import { cn } from "@/utils/cn";
 import { formatDateToDutch } from "@/utils/timeFormatting";
 
-interface Location {
-  id: number;
-  name: string;
-  address: string;
-  capacity: number;
-  created_at?:string;
-}
+
 
 
 export default function OrganizationDetailsPage() {
@@ -66,8 +60,8 @@ export default function OrganizationDetailsPage() {
       try {
         if (organisationId) {
           const [orgRes, countRes] = await Promise.all([
-            readOrganization(parseInt(organisationId as string, 10), { displayProgress: true }),
-            readCount(parseInt(organisationId as string))
+            readOrganization(organisationId as string, { displayProgress: true }),
+            readCount(organisationId as string)
           ])
           setOrganization(orgRes);
           setCount(countRes);

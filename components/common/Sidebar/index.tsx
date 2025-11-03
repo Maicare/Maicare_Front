@@ -27,7 +27,7 @@ import { PermitableComponent } from "@/common/components/permitable-component";
 import { PermissionsObjects } from "@/common/data/permission.data";
 import usePermissions from "@/common/hooks/use-permissions";
 import ClientSidebarBriefing from "./client-sidebar-briefing";
-import { Any } from "@/common/types/types";
+import { Any, Id } from "@/common/types/types";
 import IconButton from "../Buttons/IconButton";
 import { useLocalSidebar } from "@/common/hooks/use-local-sidebar";
 
@@ -418,7 +418,7 @@ const ClientMenu: FunctionComponent = () => {
 
   return (
     <>
-      <ClientSidebarBriefing clientId={parseInt(clientId as string)} />
+      <ClientSidebarBriefing clientId={clientId as Id} />
       <SidebarMenu
         items={[
           {

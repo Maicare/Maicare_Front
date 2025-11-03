@@ -1,13 +1,14 @@
 import CopyTooltip from '@/common/components/CopyTooltip'
 import PrimaryButton from '@/common/components/PrimaryButton';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
-import { AddressType } from '@/types/client.types';
 import { Edit, MapPinned } from 'lucide-react'
 import Image from 'next/image';
 import React from 'react'
 import { AddressesLoaderSkeleton } from './AddressesLoaderSkeleton';
 import { useParams, useRouter } from 'next/navigation';
 import { useClient } from '@/hooks/client/use-client';
+import { Id } from '@/common/types/types';
+import { AddressType } from '@/schemas/clientNew.schema';
 
 type Props = {
   isParentLoading: boolean;
@@ -25,8 +26,7 @@ const AddressesPreview = ({ isParentLoading }: Props) => {
   React.useEffect(() => {
     const fetchAddresses = async () => {
       setIsLoading(true);
-      const numericClientId = Number(Array.isArray(clientId) ? clientId[0] : clientId);
-      const response = await readClientAddresses(numericClientId);
+      const response = await readClientAddresses(clientId as Id);
       const data = response;
       setAddressesData(data.addresses);
       setIsLoading(false);
@@ -65,7 +65,7 @@ const AddressesPreview = ({ isParentLoading }: Props) => {
       <div className="mt-2 w-full">
         <Accordion type="single" collapsible className="w-full" defaultValue='item-1'>
           {
-            addressesData.map(({ address, belongs_to, city, phone_number, zip_code }, index) => (
+            addressesData.map(({ address, belongs_to, city, phone_number, zip_code ,house_number}, index) => (
               <AccordionItem value={`item-${index + 1}`} key={index}>
                 <AccordionTrigger className='text-sm text-slate-600 font-bold'>{address}:</AccordionTrigger>
                 <AccordionContent>
@@ -73,6 +73,12 @@ const AddressesPreview = ({ isParentLoading }: Props) => {
                     <p className="w-[40%] text-sm text-slate-600 font-bold">Behoort tot:</p>
                     <CopyTooltip text={belongs_to || "Niet gespecificeerd"}>
                       <p className="text-sm text-slate-400 ">{belongs_to || "Niet gespecificeerd"}</p>
+                    </CopyTooltip>
+                  </div>
+                  <div className="flex items-center w-full py-2 border-b border-slate-200">
+                    <p className="w-[40%] text-sm text-slate-600 font-bold">Huisnummer:</p>
+                    <CopyTooltip text={house_number || "Niet gespecificeerd"}>
+                      <p className="text-sm text-slate-400 ">{house_number || "Niet gespecificeerd"}</p>
                     </CopyTooltip>
                   </div>
                   <div className="flex items-center w-full py-2 border-b border-slate-200">

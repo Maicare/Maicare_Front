@@ -16,7 +16,7 @@ const Page= () => {
   return (
     <>
       <Breadcrumb pageName="Agenda" />
-      <BookingCalendar clientId={Number(clientId)} />
+      <BookingCalendar clientId={clientId as string} />
     </>
   );
 };

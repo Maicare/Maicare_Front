@@ -13,11 +13,12 @@ import React, { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { ContactsFormSection } from './contacts-form-section'
 import { cn } from '@/utils/cn'
+import { Id } from '@/common/types/types'
 
 
 type Props = {
     mode: "create" | "update";
-    onSuccess?: (id: number) => void;
+    onSuccess?: (id: Id) => void;
     defaultValues?: Contact;
     onCancel: () => void;
     sheet?: boolean;
@@ -75,7 +76,7 @@ const UpsertContactForm = ({ mode, onSuccess, defaultValues, onCancel,sheet=fals
             try {
                 setLoading(true);
                 await updateOne(
-                    defaultValues?.id || 0,
+                    defaultValues?.id || "0",
                     {
                         ...values
                     }, {
@@ -83,7 +84,7 @@ const UpsertContactForm = ({ mode, onSuccess, defaultValues, onCancel,sheet=fals
                     displayProgress: true
                 }
                 );
-                onSuccess?.(defaultValues?.id || 0);
+                onSuccess?.(defaultValues?.id || "0");
             } catch (error) {
                 console.log(error);
             } finally {

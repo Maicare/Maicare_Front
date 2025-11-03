@@ -8,6 +8,7 @@ import { useApi } from "@/common/hooks/use-api";
 import useProgressBar from "@/common/hooks/use-progress-bar";
 import { ApiOptions } from "@/common/types/api.types";
 import { PaginatedResponse } from "@/common/types/pagination.types";
+import { Id } from "@/common/types/types";
 import { PAGE_SIZE } from "@/consts";
 import { UpdateInvoiceFormValues } from "@/schemas/invoice.schema";
 import { GenerateInvoice, Invoice } from "@/types/invoice.types";
@@ -18,8 +19,8 @@ import useSWR from "swr";
 
 export type InvoiceSearchParams = {
     search?: string;
-    client_id?: number;
-    sender_id?: number;
+    client_id?: Id;
+    sender_id?: Id;
     status?: string;
     start_date?: string;
     end_date?: string;
@@ -51,7 +52,7 @@ export function useInvoice({ autoFetch = false,client_id,end_date,search,sender_
     const isLoading = !invoices && !error;
 
 
-    const readOne = async (id: number, options?: ApiOptions) => {
+    const readOne = async (id: Id, options?: ApiOptions) => {
         const { displayProgress = false, displaySuccess = false } = options || {};
         try {
             // Display progress bar

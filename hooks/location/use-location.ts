@@ -3,6 +3,7 @@ import ApiRoutes from "@/common/api/routes";
 import { useApi } from "@/common/hooks/use-api";
 import useProgressBar from "@/common/hooks/use-progress-bar";
 import { ApiOptions } from "@/common/types/api.types";
+import { Id } from "@/common/types/types";
 import { CreateLocation, Location } from "@/schemas/location.schema";
 import {  useSnackbar } from "notistack";
 import useSWR from "swr";
@@ -33,7 +34,7 @@ export function useLocation({autoFetch=false}:{autoFetch?:boolean}) {
   const isLoading = !locations && !error;
 
   
-  const readOne = async (id: number, options?: ApiOptions) => {
+  const readOne = async (id: Id, options?: ApiOptions) => {
     const { displayProgress = false, displaySuccess = false } = options || {};
     try {
       // Display progress bar
@@ -86,7 +87,7 @@ export function useLocation({autoFetch=false}:{autoFetch?:boolean}) {
         if (displayProgress) stopProgress();
       }
     }
-    const createOneForOrganisation = async (location: CreateLocation, organisationId: string, options?: ApiOptions) => {
+    const createOneForOrganisation = async (location: CreateLocation, organisationId: Id, options?: ApiOptions) => {
       const { displayProgress = false, displaySuccess = false } = options || {};
       try {
         if (displayProgress) startProgress();
@@ -108,7 +109,7 @@ export function useLocation({autoFetch=false}:{autoFetch?:boolean}) {
       }
     }
 
-    const readAllForOrganisation = async (organisationId: string, options?: ApiOptions) => {
+    const readAllForOrganisation = async (organisationId: Id, options?: ApiOptions) => {
       const { displayProgress = false, displaySuccess = false } = options || {};
       try {
         // Display progress bar
@@ -140,7 +141,7 @@ export function useLocation({autoFetch=false}:{autoFetch?:boolean}) {
       }
     };
 
-    const updateOne = async (location: CreateLocation,id:string, options?: ApiOptions) => {
+    const updateOne = async (location: CreateLocation,id:Id, options?: ApiOptions) => {
       const { displayProgress = false, displaySuccess = false } = options || {};
       try {
         if (displayProgress) startProgress();

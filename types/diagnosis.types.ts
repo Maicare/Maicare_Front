@@ -5,7 +5,7 @@ export type DiagnosisSeverity = (typeof DIAGNOSIS_SEVERITY_ARRAY)[number];
 
 export type Diagnosis = {
   id?: Id;
-  client_id: number;
+  client_id: Id;
   title: string;
   diagnosis_code: string;
   severity: DiagnosisSeverity;

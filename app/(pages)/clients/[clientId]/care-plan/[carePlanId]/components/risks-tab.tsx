@@ -86,8 +86,8 @@ const RisksTab = () => {
                     <UpsertRiskSheet
                         mode="create"
                         handleCreate={handleCreate}
-                        isOpen={openId === -1}
-                        handleOpen={(o) => setOpenId(o ? -1 : null)}
+                        isOpen={openId === "-1"}
+                        handleOpen={(o) => setOpenId(o ? "-1" : null)}
                     />
                 </CardTitle>
             </CardHeader>

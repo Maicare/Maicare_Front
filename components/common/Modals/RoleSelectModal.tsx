@@ -13,7 +13,7 @@ import { useParams } from "next/navigation";
 import { useRole } from "@/hooks/role/use-role";
 
 const initialValues = {
-    role_id: 0,
+    role_id: "",
 };
 type FormValues = {
     role_id: Id;
@@ -21,7 +21,7 @@ type FormValues = {
 
 const validationSchema = yup.object().shape({
     role_id: yup
-        .number()
+        .string().uuid("role must be a valid UUID")
         .required("role is required"),
 });
 
@@ -39,7 +39,7 @@ const RoleSelectModal: FunctionComponent<ModalProps> = ({ open, onClose, additio
         formState: { isSubmitting, errors },
     } = methods;
     const onSubmit = async (data: FormValues) => {
-        await updateOneRole(Number(employeeId),data.role_id, { displayProgress: true, displaySuccess: true });
+        await updateOneRole(employeeId as string,data.role_id, { displayProgress: true, displaySuccess: true });
         await mutate();
         onClose();
     };

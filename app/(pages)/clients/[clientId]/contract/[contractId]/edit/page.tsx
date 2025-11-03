@@ -45,7 +45,7 @@ const Page = () => {
 
     useEffect(() => {
         const getClient = async () => {
-            const data = await getClientData(parseInt(clientId as string));
+            const data = await getClientData(clientId as string);
             setClientData(data);
         };
         getClient();
@@ -54,7 +54,7 @@ const Page = () => {
 
     useEffect(() => {
         const getContact = async () => {
-            const data = await getContactData(clientData?.sender_id || 0);
+            const data = await getContactData(clientData?.sender_id as string);
             setContact(data);
         };
 
@@ -141,7 +141,7 @@ const Page = () => {
             />
             <CreateContractForm
                 onSubmit={onSubmit}
-                defaultValues={{ ...contract, sender_id: clientData?.sender_id ?? 0 }}
+                defaultValues={{ ...contract, sender_id: clientData?.sender_id }}
                 contractTypes={contractTypes}
                 createContractType={createContractType}
             />

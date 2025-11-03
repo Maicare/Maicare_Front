@@ -14,17 +14,17 @@ import { PermissionsObjects } from '@/common/data/permission.data';
 
 const AssessmentPage = () => {
     const { assessmentId, clientId } = useParams();
-    const { readOne } = useAssessment({ autoFetch: false, clientId: parseInt(clientId as string) });
+    const { readOne } = useAssessment({ autoFetch: false, clientId: clientId as string });
     const [assessment, setAssessment] = useState<AssessmentResponse | null>(null);
     const [isLoading, setIsLoading] = useState(true);
     useEffect(() => {
-        const fetchClient = async (id: number) => {
+        const fetchClient = async (id: string) => {
             setIsLoading(true);
             const data = await readOne(id);
             setAssessment(data);
             setIsLoading(false);
         };
-        if (assessmentId) fetchClient(+assessmentId);
+        if (assessmentId) fetchClient(assessmentId as string);
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [assessmentId]);
     return (

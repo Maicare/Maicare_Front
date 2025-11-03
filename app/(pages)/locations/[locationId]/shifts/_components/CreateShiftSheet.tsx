@@ -34,7 +34,7 @@ const CreateShiftSheet = ({ mode, handleCreate, handleUpdate, shift, handleOpen,
         defaultValues: shift ? {
             ...shift
         } : {
-            location_id: parseInt(locationId as string),
+            location_id: locationId as string,
             shift: "",
             start_time: "00:00",
             end_time: "23:59"

@@ -10,6 +10,7 @@ const AddressSchema = z.object({
   phone_number: z.string().min(1, "Telefoonnummer is verplicht"),
   house_number: z.string().min(1, "Huisnummer is verplicht"),
 });
+export type AddressType = z.infer<typeof AddressSchema>;
 
 // Hoofdschema voor het aanmaken van een cliënt
 export const CreateClientSchema = z.object({
@@ -59,10 +60,7 @@ export const CreateClientSchema = z.object({
 
 // Type inferentie voor het schema
 export type CreateClientInput = z.infer<typeof CreateClientSchema>;
-export type UpdateClientRequestBody = Omit<CreateClientInput,"sender_id"|"location_id"|"date_of_birth"|"employee_id"> & {
-    sender_id: number;
-    employee_id: number;
-    location_id: number;
+export type UpdateClientRequestBody = Omit<CreateClientInput,"date_of_birth"> & {
     date_of_birth: string;
     id: Id;
 }

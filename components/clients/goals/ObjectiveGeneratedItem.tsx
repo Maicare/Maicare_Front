@@ -1,4 +1,5 @@
 import InputUncontrol from "@/common/components/InputUncontrol"
+import { Id } from "@/common/types/types"
 import Button from "@/components/common/Buttons/Button"
 import IconButton from "@/components/common/Buttons/IconButton"
 import Textarea from "@/components/common/FormFields/Textarea"
@@ -8,7 +9,7 @@ import { Pencil, Trash } from "lucide-react"
 import { useState } from "react"
 
 
-const ObjectiveGeneratedItem = ({ objective, updateObjective, deleteObjective, index }: { objective: CreateObjective, index: number, updateObjective: (id: number, updated: CreateObjective) => void, deleteObjective: (id: number) => void }) => {
+const ObjectiveGeneratedItem = ({ objective, updateObjective, deleteObjective, index }: { objective: CreateObjective, index: Id, updateObjective: (id: Id, updated: CreateObjective) => void, deleteObjective: (id: Id) => void }) => {
     const [editMode, setEditMode] = useState<boolean>(false);
     const [updated, setUpdated] = useState<CreateObjective>(objective);
     if (editMode) {

@@ -5,19 +5,19 @@ import { useParams } from "next/navigation";
 import PageTabs from "@/components/common/PageTabs/PageTabs";
 import { useClient } from "@/hooks/client/use-client";
 import { Client } from "@/types/client.types";
+import { Id } from "@/common/types/types";
 
 const ReportsHistoryTabs: FunctionComponent = () => {
   const { clientId } = useParams();
 
-  const parsedId = typeof clientId === "string" && parseInt(clientId);
   const { readOne } = useClient({ autoFetch: false });
   const [client, setClient] = useState<Client | null>(null);
   useEffect(() => {
-    if (parsedId) {
-      readOne(parsedId).then(setClient);
+    if (clientId) {
+      readOne(clientId as Id).then(setClient);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [parsedId]);
+  }, [clientId]);
 
   if (!client) {
     return null;

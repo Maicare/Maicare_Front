@@ -7,8 +7,9 @@ import { FormProvider, Resolver, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import InputControl from "@/common/components/InputControl";
 import Button from "@/components/common/Buttons/Button";
+import { Id } from "@/common/types/types";
 type Props = FormProps<Education | undefined> & {
-  employeeId: number;
+  employeeId: Id;
 };
 
 const educationSchema: Yup.ObjectSchema<CreateEducation> = Yup.object({
@@ -17,7 +18,7 @@ const educationSchema: Yup.ObjectSchema<CreateEducation> = Yup.object({
   degree: Yup.string().required("Uitgever is vereist"),
   start_date: Yup.string().required("Datum van uitgifte is vereist"),
   end_date: Yup.string().required("Datum van uitgifte is vereist"),
-  employee_id: Yup.number().required("Datum van uitgifte is vereist"),
+  employee_id: Yup.string().uuid().required("Datum van uitgifte is vereist"),
 
 });
 

@@ -14,11 +14,12 @@ import {
 } from "@/components/ui/alert-dialog"
 import { Trash2, Loader2 } from "lucide-react"
 import { Client } from "@/types/client.types"
+import { Id } from "@/common/types/types"
 
 // Same props interface as above
 interface DeleteClientButtonProps {
     client:Client;
-    onDelete: (id:number) => Promise<Client>;
+    onDelete: (id:Id) => Promise<Client>;
 }
 export default function DeleteClientButton({ client, onDelete }: DeleteClientButtonProps) {
   const [isOpen, setIsOpen] = useState(false)

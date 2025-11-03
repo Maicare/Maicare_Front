@@ -25,7 +25,7 @@ type Props = {
 const AssessmentGoalForm = (props: Props) => {
     const { assessmentId, clientId } = props;
     const router = useRouter();
-    const {createOne:_} = useGoal({autoFetch:false,assessmentId:+assessmentId,clientId:+clientId});
+    const {createOne:_} = useGoal({autoFetch:false,assessmentId:assessmentId,clientId:clientId});
     // const methods = useForm<CreateGoal>({
     //     resolver: yupResolver(CreateGoalSchema),
     //     defaultValues: initialValues,

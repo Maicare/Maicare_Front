@@ -43,9 +43,9 @@ const RolesCard = ({
         }
     }
 
-    const handleUserRoleChange = async (userId: number, roleId: string) => {
+    const handleUserRoleChange = async (userId: Id, roleId: Id) => {
         try {
-            await updateOneRole(userId, parseInt(roleId), {
+            await updateOneRole(userId, roleId, {
                 displayProgress: true,
                 displaySuccess: true
             });

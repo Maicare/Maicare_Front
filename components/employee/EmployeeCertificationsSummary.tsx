@@ -6,9 +6,10 @@ import Loader from "../common/loader";
 import DetailCell from "../common/DetailCell";
 import { dateFormat } from "@/utils/timeFormatting";
 import { useCertificate } from "@/hooks/certificate/use-certificate";
+import { Id } from "@/common/types/types";
 
 type Props = {
-  employeeId: number;
+  employeeId: Id;
 };
 
 const EmployeeCertificationsSummary: FunctionComponent<Props> = ({ employeeId }) => {

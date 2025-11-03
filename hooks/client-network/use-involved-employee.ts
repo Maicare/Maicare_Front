@@ -47,7 +47,7 @@ export function useInvolvedEmployee({ search, page: pageParam = 1, page_size = 1
         const { displayProgress = false, displaySuccess = false } = options || {};
         try {
             if (displayProgress) startProgress();
-            const { message, success, data, error } = await useApi<InvolvedEmployeeForm>(ApiRoutes.ClientNetwork.involved.CreateOne.replace("{id}", clientId), "POST", {}, {...employee,employee_id:parseInt(employee.employee_id)});
+            const { message, success, data, error } = await useApi<InvolvedEmployeeForm>(ApiRoutes.ClientNetwork.involved.CreateOne.replace("{id}", clientId), "POST", {}, {...employee,employee_id:employee.employee_id});
             if (!data)
                 throw new Error(error || message || "An unknown error occurred");
 
@@ -91,7 +91,7 @@ export function useInvolvedEmployee({ search, page: pageParam = 1, page_size = 1
         const { displayProgress = false, displaySuccess = false } = options || {};
         try {
             if (displayProgress) startProgress();
-            const { message, success, data, error } = await useApi<EmergencyContactForm>(ApiRoutes.ClientNetwork.involved.ReadOne.replace("{employee_id}", id.toString()).replace("{id}", clientId), "PUT", {}, {...contact,employee_id:parseInt(contact.employee_id)});
+            const { message, success, data, error } = await useApi<EmergencyContactForm>(ApiRoutes.ClientNetwork.involved.ReadOne.replace("{employee_id}", id.toString()).replace("{id}", clientId), "PUT", {}, {...contact,employee_id:contact.employee_id});
             if (!data)
                 throw new Error(error || message || "An unknown error occurred");
 

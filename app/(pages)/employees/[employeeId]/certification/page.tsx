@@ -17,11 +17,12 @@ import withAuth, { AUTH_MODE } from "@/common/hocs/with-auth";
 import withPermissions from "@/common/hocs/with-permissions";
 import Routes from "@/common/routes";
 import { PermissionsObjects } from "@/common/data/permission.data";
+import { Id } from "@/common/types/types";
 
 const Page = () => {
     const [adding, setAdding] = useState(false);
     const [editing, setEditing] = useState(false);
-    const [certification, setCertification] = useState<CreateCertificate & { id: number } | null>(null);
+    const [certification, setCertification] = useState<CreateCertificate & { id: Id } | null>(null);
     const {employeeId} = useParams();
 
     const { isLoading, certificates, mutate, deleteOne } = useCertificate({ autoFetch: true, employeeId: employeeId as string });
@@ -46,7 +47,7 @@ const Page = () => {
         mutate();
     }
     const handleEdit = (certification: Certification) => {
-        const transformed: CreateCertificate & { id: number } = {
+        const transformed: CreateCertificate & { id: Id } = {
             ...certification,
             date_issued: new Date(certification.date_issued),
             id: certification.id
@@ -91,9 +92,9 @@ const Page = () => {
                 />
             </div>
             {adding ?
-                <UpsertCertificationForm employeeId={parseInt(employeeId as string)} onCancel={cancelAdd} mode="add" onSuccess={cancelAdd} />
+                <UpsertCertificationForm employeeId={employeeId as string} onCancel={cancelAdd} mode="add" onSuccess={cancelAdd} />
                 : editing ?
-                    <UpsertCertificationForm employeeId={parseInt(employeeId as string)} onCancel={cancelEdit} mode="update" onSuccess={cancelEdit} defaultValues={certification || undefined} />
+                    <UpsertCertificationForm employeeId={employeeId as string} onCancel={cancelEdit} mode="update" onSuccess={cancelEdit} defaultValues={certification || undefined} />
                     : null
             }
             <div className="grid grid-cols-4 gap-4">

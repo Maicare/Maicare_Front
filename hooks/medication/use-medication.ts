@@ -4,6 +4,7 @@ import { useApi } from "@/common/hooks/use-api";
 import useProgressBar from "@/common/hooks/use-progress-bar";
 import { ApiOptions } from "@/common/types/api.types";
 import { PaginatedResponse } from "@/common/types/pagination.types";
+import { Id } from "@/common/types/types";
 import { CreateMedication } from "@/schemas/medication.schema";
 import { Medication, MedicationForm } from "@/types/medication.types";
 import { PaginationParams } from "@/types/pagination.types";
@@ -12,7 +13,7 @@ import { useSnackbar } from "notistack";
 import { useState } from "react";
 import useSWR from "swr";
 
-export function useMedication({clientId,diagnosisId, params,autoFetch=false}:{ clientId: number,diagnosisId: number, params?: PaginationParams,autoFetch?:boolean; }) {
+export function useMedication({clientId,diagnosisId, params,autoFetch=false}:{ clientId: Id,diagnosisId: Id, params?: PaginationParams,autoFetch?:boolean; }) {
   const router = useRouter();
 
 
@@ -51,7 +52,7 @@ export function useMedication({clientId,diagnosisId, params,autoFetch=false}:{ c
     const { displayProgress = false, displaySuccess = false } = options || {};
     try {
       if (displayProgress) startProgress();
-      const { message, success, data, error } = await useApi<CreateMedication>(ApiRoutes.Client.Medical.Medications.CreateOne.replace("{id}", clientId.toString()).replace("{diagnosis_id}",diagnosisId.toString()), "POST", {}, {...medication,administered_by_id: parseInt(medication.administered_by_id)});
+      const { message, success, data, error } = await useApi<CreateMedication>(ApiRoutes.Client.Medical.Medications.CreateOne.replace("{id}", clientId.toString()).replace("{diagnosis_id}",diagnosisId.toString()), "POST", {}, {...medication,administered_by_id: medication.administered_by_id});
       if (!data)
         throw new Error(error || message || "An unknown error occurred");
 
@@ -95,7 +96,7 @@ export function useMedication({clientId,diagnosisId, params,autoFetch=false}:{ c
     const { displayProgress = false, displaySuccess = false } = options || {};
     try {
       if (displayProgress) startProgress();
-      const { message, success, data, error } = await useApi<CreateMedication>(ApiRoutes.Client.Medical.Medications.UpdateOne.replace("{id}", clientId.toString()).replace("{diagnosis_id}",diagnosisId.toString()).replace("{medication_id}",id), "PUT", {}, {...medication,administered_by_id: parseInt(medication.administered_by_id)});
+      const { message, success, data, error } = await useApi<CreateMedication>(ApiRoutes.Client.Medical.Medications.UpdateOne.replace("{id}", clientId.toString()).replace("{diagnosis_id}",diagnosisId.toString()).replace("{medication_id}",id), "PUT", {}, {...medication,administered_by_id: medication.administered_by_id});
       if (!data)
         throw new Error(error || message || "An unknown error occurred");
 

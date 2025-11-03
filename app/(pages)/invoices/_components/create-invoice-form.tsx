@@ -44,7 +44,7 @@ export function CreateInvoiceForm({
             extra_content: {},
             invoice_details: [
                 {
-                    contract_id: parseInt(clientId),
+                    contract_id: clientId,
                     contract_name: "",
                     periods: [
                         {
@@ -94,7 +94,7 @@ export function CreateInvoiceForm({
         form.setValue("invoice_details", [
             ...currentDetails,
             {
-                contract_id: 0,
+                contract_id: "",
                 contract_name: "",
                 periods: [
                     {
@@ -252,7 +252,7 @@ export function CreateInvoiceForm({
     const submitWithValidation = (values: UpdateInvoiceFormValues) => {
         onSubmit({
             ...values,
-            client_id: parseInt(clientId),
+            client_id: clientId,
             invoice_type:"standard",
             invoice_details:values.invoice_details.map((detail, index) => ({
                 ...detail,
@@ -530,7 +530,7 @@ export function CreateInvoiceForm({
                                                     <FormControl>
                                                         <ContractSelect
                                                             value={field.value.toString()}
-                                                            onChange={(value) => field.onChange(parseInt(value))}
+                                                            onChange={(value) => field.onChange(value)}
                                                             label="Selecteer Contract"
                                                             className="w-full"
                                                             modal={false}

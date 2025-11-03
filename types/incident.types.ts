@@ -1,11 +1,13 @@
+import { Id } from "@/common/types/types";
+
 export type Incident = {
-  id: number;
-  employee_id: number;
+  id: Id;
+  employee_id: Id;
   employee_first_name: string;
   employee_last_name: string;
   emails: string[];
-  client_id: number;
-  location_id: number;
+  client_id: Id;
+  location_id: Id;
   reporter_involvement: string;
   inform_who: string[];
   incident_date: string;
@@ -52,9 +54,9 @@ export type Incident = {
 };
 
 export type CreateIncident = {
-  employee_id: number;
-  client_id?: number;
-  location_id: number;
+  employee_id: Id;
+  client_id?: Id;
+  location_id: Id;
   emails?: string[];
   reporter_involvement: string;
   inform_who?: string[];

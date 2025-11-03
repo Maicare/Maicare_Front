@@ -12,7 +12,7 @@ import { CreateShift, Shift } from "@/schemas/shift.schema";
 export function useShift({
   location_id,
   autoFetch = true,
-}: { location_id:number,autoFetch?: boolean }) {
+}: { location_id:Id,autoFetch?: boolean }) {
   const { enqueueSnackbar } = useSnackbar();
   const { start: startProgress, stop: stopProgress } = useProgressBar();
   const {

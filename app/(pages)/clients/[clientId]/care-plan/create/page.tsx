@@ -31,7 +31,7 @@ function CareplanUI() {
     const [selectedLevel, setSelectedLevel] = useState("");
     const [selectedTargetLevel, setSelectedTargetLevel] = useState("");
     const [isGenerating, setIsGenerating] = useState(false);
-    const { generateOne } = useAssessment({ autoFetch: false, clientId: parseInt(clientId as string) });
+    const { generateOne } = useAssessment({ autoFetch: false, clientId: clientId as string });
     useEffect(() => {
         const fetchClient = async (id: Id) => {
             setIsLoading(true);
@@ -39,7 +39,7 @@ function CareplanUI() {
             setClient(data);
             setIsLoading(false);
         }
-        if (clientId) fetchClient(+clientId);
+        if (clientId) fetchClient(clientId as string);
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [clientId]);
     const handleGeneratePlan = async () => {

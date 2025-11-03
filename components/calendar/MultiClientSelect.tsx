@@ -44,7 +44,7 @@ const MultiClientSelect = ({
   const options = useMemo(() => {
     if (!clients) return [];
     return clients.results.map(
-      (c: { first_name: string; last_name?: string; id: number }) => ({
+      (c: { first_name: string; last_name?: string; id: Id }) => ({
         label: c.last_name
           ? `${c.first_name} ${c.last_name}`
           : c.first_name,

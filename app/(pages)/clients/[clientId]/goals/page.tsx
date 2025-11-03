@@ -22,7 +22,7 @@ const GoalsPage = () => {
     const router = useRouter();
     const [open, setOpen] = useState(false);
     const [assessment, _setAssessment] = useState<Assessment | null>(null);
-    const { isLoading, assessments, page, setPage,createOne } = useAssessment({ autoFetch: true, clientId: parseInt(clientId as string) });
+    const { isLoading, assessments, page, setPage,createOne } = useAssessment({ autoFetch: true, clientId: clientId as string });
     const handlePrevious = () => {
         if (page <= 1) {
             setPage(1);
@@ -46,7 +46,7 @@ const GoalsPage = () => {
     const handleCreate = async (values: CreateAssessment) => {
         try {
             await createOne(
-                [values],parseInt(clientId as string), {
+                [values],clientId as string, {
                 displayProgress: true,
                 displaySuccess: true
             }

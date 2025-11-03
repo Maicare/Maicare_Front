@@ -6,9 +6,10 @@ import { useClient } from "@/hooks/client/use-client";
 import { useEffect, useState } from "react";
 import { Client } from "@/types/client.types";
 import { useSnackbar } from "notistack";
+import { Id } from "@/common/types/types";
 
 interface ClientSidebarBriefingProps {
-  clientId: number;
+  clientId: Id;
 }
 
 const ClientSidebarBriefing: React.FC<ClientSidebarBriefingProps> = ({ clientId:clientId }) => {

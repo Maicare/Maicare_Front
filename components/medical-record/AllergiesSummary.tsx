@@ -5,9 +5,10 @@ import Loader from "@/components/common/loader";
 import Severity from "../common/Severity/Severity";
 import { Allergy } from "@/types/allergy.types";
 import { useAllergy } from "@/hooks/allergy/use-allergy";
+import { Id } from "@/common/types/types";
 
 type Props = {
-  clientId: number;
+  clientId: Id;
   count?: number;
 };
 

@@ -11,8 +11,9 @@ import useProgressBar from "@/common/hooks/use-progress-bar";
 import { useApi } from "@/common/hooks/use-api";
 import { useRouter } from "next/navigation";
 import { CreateDiagnosis } from "@/schemas/diagnosis.schema";
+import { Id } from "@/common/types/types";
 
-export function useDiagnosis({clientId, params,autoFetch=false}:{ clientId: number, params?: PaginationParams,autoFetch?: boolean }) {
+export function useDiagnosis({clientId, params,autoFetch=false}:{ clientId: Id, params?: PaginationParams,autoFetch?: boolean }) {
 
   const router = useRouter();
 
@@ -50,7 +51,7 @@ export function useDiagnosis({clientId, params,autoFetch=false}:{ clientId: numb
     try {
       const medications = diagnosis.medications.map((medication) => ({
         ...medication,
-        administered_by_id: parseInt(medication.administered_by_id),
+        administered_by_id: medication.administered_by_id,
       }));
       const body = {
         ...diagnosis,
@@ -103,7 +104,7 @@ export function useDiagnosis({clientId, params,autoFetch=false}:{ clientId: numb
       if (displayProgress) startProgress();
       const medications = diagnosis.medications.map((medication) => ({
         ...medication,
-        administered_by_id: parseInt(medication.administered_by_id),
+        administered_by_id: medication.administered_by_id,
       }));
       const body = {
         ...diagnosis,

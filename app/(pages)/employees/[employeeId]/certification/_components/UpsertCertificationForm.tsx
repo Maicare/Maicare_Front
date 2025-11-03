@@ -14,13 +14,14 @@ import { Calendar } from '@/components/ui/calendar'
 import PrimaryButton from '@/common/components/PrimaryButton'
 import { certificateSchema, CreateCertificate } from '@/schemas/certification.schema';
 import { useCertificate } from '@/hooks/certificate/use-certificate';
+import { Id } from '@/common/types/types';
 
 type Props = {
-    employeeId: number;
+    employeeId: Id;
     onCancel: () => void;
     mode: "add" | "update";
     onSuccess:()=>void;
-    defaultValues?:CreateCertificate&{id:number};
+    defaultValues?:CreateCertificate&{id:Id};
 }
 const UpsertCertificationForm = ({ employeeId, onCancel, mode,onSuccess,defaultValues }: Props) => {
     const { createOne, updateOne } = useCertificate({ autoFetch: false, employeeId: employeeId.toString() });
@@ -65,7 +66,7 @@ const UpsertCertificationForm = ({ employeeId, onCancel, mode,onSuccess,defaultV
                     {
                         ...values,
                         date_issued:values.date_issued.toISOString().split("T")[0],
-                        id:defaultValues?.id||0
+                        id:defaultValues?.id||""
                     },{
                         displaySuccess:true,
                         displayProgress:true

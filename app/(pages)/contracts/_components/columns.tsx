@@ -6,10 +6,11 @@ import { cn } from "@/utils/cn"
 import { useRouter } from "next/navigation"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { Button } from "@/components/ui/button"
+import { Id } from "@/common/types/types"
 
 export type ContractResults = {
-  id: number
-  client_id: number
+  id: Id
+  client_id: Id
   status: "draft" | "approved" | "terminated" | "stoped"
   start_date: string
   end_date?: string
@@ -20,7 +21,7 @@ export type ContractResults = {
   financing_act: "WMO" | "ZVW" | "WLZ" | "JW" | "WPG"
   financing_option: "ZIN" | "PGB"
   created_at: string
-  sender_id: number
+  sender_id: Id
   sender_name: string
   client_first_name: string
   client_last_name: string

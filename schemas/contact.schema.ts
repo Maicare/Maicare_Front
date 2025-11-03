@@ -1,3 +1,4 @@
+import { Id } from '@/common/types/types';
 import { OP_CLIENT_TYPE } from '@/types/contacts.types';
 import { z } from 'zod';
 
@@ -20,7 +21,7 @@ export const ContactSchema = z.object({
   client_number: z.string().min(1, "Klantnummer is verplicht"),
   contacts: z.array(ContactPersonSchema).min(1, "Minstens één contactpersoon is verplicht"),
   created_at: z.string().datetime("Ongeldige datum/tijd"),
-  id: z.number().int(),
+  id: z.string().uuid(),
   land: z.string().min(1, "Land is verplicht"),
   name: z.string().min(1, "Naam is verplicht"),
   phone_number: z.string().min(1, "Telefoonnummer is verplicht"),
@@ -40,7 +41,7 @@ const invoiceTemplateItemSchema = z.object({
   source_table: z.string().min(1, "Brontabel is verplicht"),
 });
 
-type InvoiceTemplateItem = z.infer<typeof invoiceTemplateItemSchema> & { id?: number };
+type InvoiceTemplateItem = z.infer<typeof invoiceTemplateItemSchema> & { id?: Id };
 export type Contact = z.infer<typeof ContactSchema> & {invoice_template_items: InvoiceTemplateItem[]};
 
 // CreateContact schema (zonder id, created_at, updated_at)

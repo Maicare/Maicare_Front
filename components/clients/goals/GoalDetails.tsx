@@ -1,3 +1,4 @@
+import { Id } from "@/common/types/types";
 import IconButton from "@/components/common/Buttons/IconButton";
 import Loader from "@/components/common/loader";
 import Panel from "@/components/common/Panel/Panel";
@@ -13,14 +14,14 @@ import { useEffect, useState } from "react";
 
 
 const GoalDetails = ({ assessmentId, clientId, goalId }: { assessmentId: string, clientId: string, goalId: string }) => {
-    const { readOne } = useGoal({ autoFetch: false, clientId: parseInt(clientId), assessmentId: parseInt(assessmentId) });
+    const { readOne } = useGoal({ autoFetch: false, clientId: clientId, assessmentId: assessmentId });
     const [goal, setGoal] = useState<GoalWithObjectives | null>(null);
     useEffect(() => {
-        const fetchGoal = async (id: number) => {
+        const fetchGoal = async (id: Id) => {
             const data = await readOne(id);
             setGoal(data);
         };
-        if (goalId) fetchGoal(+goalId);
+        if (goalId) fetchGoal(goalId);
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [goalId]);
     if (!goal) return <Loader />;

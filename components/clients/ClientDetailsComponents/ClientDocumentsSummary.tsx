@@ -8,9 +8,10 @@ import bytesToSize from "@/utils/sizeConverter";
 import DetailCell from "../../common/DetailCell";
 import { useDocument } from "@/hooks/document/use-document";
 import { getUniqueConcurrencesObjects } from "@/utils/concurrences";
+import { Id } from "@/common/types/types";
 
 type Props = {
-  clientId: number;
+  clientId: Id;
 };
 
 const ClientDocumentsSummary: FunctionComponent<Props> = ({ clientId }) => {

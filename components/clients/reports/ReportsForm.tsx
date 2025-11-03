@@ -18,7 +18,7 @@ const initialValues: CreateReport = {
     report_text: "",
     date: "",
     emotional_state: "",
-    employee_id: 0,
+    employee_id: "",
     type: "",
 };
 

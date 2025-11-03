@@ -76,7 +76,7 @@ export function useRegistration({
   );
   const isLoading = !registrations && !error;
 
-  const readOne = async (id: number, options?: ApiOptions) => {
+  const readOne = async (id: Id, options?: ApiOptions) => {
     const { displayProgress = false } = options || {};
     try {
       if (displayProgress) startProgress();

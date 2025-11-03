@@ -23,7 +23,7 @@ export type CreateExperience = {
 export const initialValues: CreateExperience = {
     company_name: "",
     description: "",
-    employee_id: 0,
+    employee_id: "",
     end_date: "",
     job_title: "",
     start_date: ""

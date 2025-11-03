@@ -1,4 +1,5 @@
 import InputControl from "@/common/components/InputControl";
+import { Id } from "@/common/types/types";
 import Button from "@/components/common/Buttons/Button";
 import { useCertificate } from "@/hooks/certificate/use-certificate";
 import { Certification, CreateCertificate, initialValues } from "@/types/certification.types";
@@ -10,14 +11,14 @@ import * as Yup from "yup";
 
 
 type Props = FormProps<Certification|undefined> & {
-    employeeId: number;
+    employeeId: Id;
 };
 
 const certificateSchema: Yup.ObjectSchema<CreateCertificate> = Yup.object({
     name: Yup.string().required("Titel is vereist"),
     issued_by: Yup.string().required("Uitgever is vereist"),
     date_issued: Yup.string().required("Datum van uitgifte is vereist"),
-    employee_id: Yup.number().required("Datum van uitgifte is vereist"),
+    employee_id: Yup.string().uuid().required("Datum van uitgifte is vereist"),
 });
 
 const CertificationForm: FunctionComponent<Props> = ({

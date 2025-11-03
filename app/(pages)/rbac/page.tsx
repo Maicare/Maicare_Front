@@ -16,7 +16,7 @@ import { PermissionsObjects } from '@/common/data/permission.data';
 function RolePermissionPage() {
 
   const [selectedRole, setSelectedRole] = useState<{
-    id: number;
+    id: Id;
     role_name: string;
     permission_count: number;
   } | null>(null);

@@ -1,3 +1,4 @@
+import { Id } from "@/common/types/types"
 import IconButton from "@/components/common/Buttons/IconButton"
 import Loader from "@/components/common/loader"
 import Panel from "@/components/common/Panel/Panel"
@@ -13,14 +14,14 @@ import { useEffect, useState } from "react"
 
 
 const AssessmentDetails = ({ assessmentId, clientId }: { assessmentId: string, clientId: string }) => {
-    const { readOne } = useAssessment({ autoFetch: false, clientId: parseInt(clientId) });
+    const { readOne } = useAssessment({ autoFetch: false, clientId: clientId });
     const [assessment, setAssessment] = useState<AssessmentResponse | null>(null);
     useEffect(() => {
-        const fetchClient = async (id: number) => {
+        const fetchClient = async (id: Id) => {
             const data = await readOne(id);
             setAssessment(data);
         };
-        if (assessmentId) fetchClient(+assessmentId);
+        if (assessmentId) fetchClient(assessmentId);
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [assessmentId]);
     if (!assessment) return <Loader />;

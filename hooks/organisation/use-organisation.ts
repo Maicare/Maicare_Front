@@ -35,7 +35,7 @@ export function useOrganisation({ autoFetch = false }: { autoFetch?: boolean }) 
   const isLoading = !organisations && !error;
 
 
-  const readOne = async (id: number, options?: ApiOptions) => {
+  const readOne = async (id: Id, options?: ApiOptions) => {
     const { displayProgress = false, displaySuccess = false } = options || {};
     try {
       // Display progress bar
@@ -66,7 +66,7 @@ export function useOrganisation({ autoFetch = false }: { autoFetch?: boolean }) 
       if (displayProgress) stopProgress();
     }
   };
-  const readCount = async (id: number, options?: ApiOptions) => {
+  const readCount = async (id: Id, options?: ApiOptions) => {
     const { displayProgress = false, displaySuccess = false } = options || {};
     try {
       // Display progress bar

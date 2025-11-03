@@ -8,6 +8,7 @@ import { Check, ChevronsUpDown, Info } from "lucide-react";
 import { cn } from "@/utils/cn";
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
 import Tooltip from "@/common/components/Tooltip";
+import { Id } from "@/common/types/types";
 
 type Variant = "full" | "inputOnly"
 
@@ -34,7 +35,7 @@ export const EmployeeSelect: FunctionComponent<Props> = ({
     // Build options from employees
     const options = useMemo(() => {
         if (!employees) return [];
-        return employees.results.map((emp: { first_name: string; last_name: string; id: number; }) => ({
+        return employees.results.map((emp: { first_name: string; last_name: string; id: Id; }) => ({
             label: `${emp.first_name} ${emp.last_name}`,
             value: `${emp.id}`,
         }));

@@ -29,7 +29,7 @@ export type CalendarEventDTO = Omit<
   CreateAppointmentType,
   "start_time" | "end_time"
 > & {
-  id: string;
+  id: Id;
   start_time: Date;
   end_time: Date;
   backgroundColor: string;

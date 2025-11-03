@@ -23,10 +23,10 @@ import { PermissionsObjects } from "@/common/data/permission.data";
 const DiagnosisPAge = () => {
     const { clientId, diagnosisId } = useParams();
     const { readOne } = useDiagnosis({
-        clientId: parseInt(clientId as string),
+        clientId: clientId as string,
         autoFetch: false
     });
-    const { createOne, updateOne, deleteOne } = useMedication({ clientId: parseInt(clientId as string), diagnosisId: parseInt(diagnosisId as string), autoFetch: false });
+    const { createOne, updateOne, deleteOne } = useMedication({ clientId: clientId as string, diagnosisId: diagnosisId as string, autoFetch: false });
     const [diagnosis, setDiagnosis] = useState<Diagnosis | null>(null);
     const [isMutate, setIsMutate] = useState(true);
     const router = useRouter();
@@ -112,7 +112,7 @@ const DiagnosisPAge = () => {
             console.log(error);
         }
     }
-    const handleDelete = async (id: number) => {
+    const handleDelete = async (id: string) => {
         try {
             await deleteOne(
                 id.toString(),

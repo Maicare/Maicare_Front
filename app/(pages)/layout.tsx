@@ -3,7 +3,6 @@ import { ReactNode } from "react";
 import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/common/components/AppSidebar";
 import { Separator } from "@/components/ui/separator";
-import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "@/components/ui/breadcrumb";
 import NotificationDropdown from "@/components/common/Header/notification-dropdown";
 import DynamicBreadcrumbNL from "./_components/advanced-breadcrumb";
 // import DropdownNotification from "@/components/common/Header/DropdownNotification";

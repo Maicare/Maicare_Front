@@ -98,7 +98,7 @@ const ScheduleCalendar: FunctionComponent = () => {
   const { readSchedulesByMonth, deleteSchedule } = useSchedule();
 
   const [selectedLocation, setSelectedLocation] = useState<string>("");
-  const { shifts } = useShift({ location_id: Number(selectedLocation), autoFetch: true })
+  const { shifts } = useShift({ location_id: selectedLocation, autoFetch: true })
 
   const [events, setEvents] = useState<EventInput[]>([]);
   const [createRange, setCreateRange] = useState<DateSelectArg | null>(null);
@@ -914,10 +914,11 @@ const ScheduleCalendar: FunctionComponent = () => {
               onDelete={handleDelete}
               initialEmployeeId={editEvent?.event.extendedProps.employee_id}
               initialLocationId={editEvent?.event.extendedProps.location_id}
-              locationId={Number(selectedLocation)}
+              locationId={selectedLocation}
               initialShiftId={editEvent?.event.extendedProps.location_shift_id}
             />
           )}
+          
         </div>
 
         {sidebarDate && (

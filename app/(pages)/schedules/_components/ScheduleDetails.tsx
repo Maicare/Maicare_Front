@@ -53,7 +53,7 @@ const ScheduleDetails = ({
 
   const { readSchedulesByDay } = useSchedule();
   const { shifts: shiftDefs } = useShift({
-    location_id: Number(locationId),
+    location_id: locationId,
     autoFetch: Boolean(locationId),
   });
 
@@ -90,7 +90,14 @@ const ScheduleDetails = ({
 
   const defaultShifts: ShiftDef[] = useMemo(
     () =>
-      (shiftDefs ?? []).filter((s) => DEFAULT_NAMES.has(s.shift)) as ShiftDef[],
+      (shiftDefs ?? [])
+        .filter((s) => DEFAULT_NAMES.has(s.shift))
+        .map((s) => ({
+          id: Number((s as Any).id),
+          shift: s.shift,
+          start_time: s.start_time,
+          end_time: s.end_time,
+        })),
     [shiftDefs]
   );
 

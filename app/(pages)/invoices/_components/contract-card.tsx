@@ -5,11 +5,12 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { format } from "date-fns"
 import { ClockIcon, CalendarIcon, DollarSignIcon, FileTextIcon, UserIcon, Building2Icon } from "lucide-react"
 import { ContractCardSkeleton } from "./contract-card-skeleton";
+import { Id } from "@/common/types/types";
 
 interface ContractCardProps {
   contract: {
-    id: number
-    client_id: number
+    id: Id
+    client_id: Id
     status: "draft" | "approved" | "terminated" | "stoped"
     start_date: string
     end_date?: string
@@ -20,7 +21,7 @@ interface ContractCardProps {
     financing_act: "WMO" | "ZVW" | "WLZ" | "JW" | "WPG"
     financing_option: "ZIN" | "PGB"
     created_at: string
-    sender_id: number
+    sender_id: Id
     sender_name: string
     client_first_name: string
     client_last_name: string

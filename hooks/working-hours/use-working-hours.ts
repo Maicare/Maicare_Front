@@ -8,13 +8,14 @@ import ApiRoutes from "@/common/api/routes";
 // import { useSnackbar } from "notistack";
 import useSWR from "swr";
 import { EmployeeWorkingHoursReport } from "@/types/working-hours.types";
+import { Id } from "@/common/types/types";
 
 export function useWorkingHours({
   employee_id,
   autoFetch = true,
   week,
   year
-}: { employee_id:number,autoFetch?: boolean,year?: string, week?: string }) {
+}: { employee_id:Id,autoFetch?: boolean,year?: string, week?: string }) {
 //   const { enqueueSnackbar } = useSnackbar();
 //   const { start: startProgress, stop: stopProgress } = useProgressBar();
   const {

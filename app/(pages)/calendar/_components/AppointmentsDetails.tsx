@@ -25,8 +25,8 @@ export default function AppointmentsDetails() {
 
       {employeeId ? (
         <AppointmentsTable
-          key={String(employeeId) + start.toISOString() + end.toISOString()}
-          employeeId={employeeId as number}
+          key={employeeId + start.toISOString() + end.toISOString()}
+          employeeId={employeeId}
           start={start}
           end={end}
         />

@@ -21,6 +21,7 @@ import { useMutation } from "@/common/hooks/use-mutate";
 import { AxiosError } from "axios";
 import { useRouter } from "next/navigation";
 import { CreateContractInput, CreateEmployeeRequestBody, EmployeeContract, UpdateEmployeeRequestBody } from "@/schemas/employee.schema";
+import { Id } from "@/common/types/types";
 
 export function useEmployee({
   search,
@@ -76,7 +77,7 @@ export function useEmployee({
     { shouldRetryOnError: false, dedupingInterval: 10000 }
   );
   const isLoading = !employees && !error;
-  const readOne = async (id: number, options?: ApiOptions) => {
+  const readOne = async (id: Id, options?: ApiOptions) => {
     const { displayProgress = false, displaySuccess = false } = options || {};
     try {
       // Display progress bar
@@ -203,7 +204,7 @@ export function useEmployee({
     }
   };
 
-  const deleteOne = async (id: number, options?: ApiOptions) => {
+  const deleteOne = async (id: Id, options?: ApiOptions) => {
     const { displayProgress = false, displaySuccess = false } = options || {};
     try {
       // Display progress bar
@@ -308,7 +309,7 @@ export function useEmployee({
 
   const updateEmployee = async (
     newEmployee: EmployeeFormType,
-    employeeId: number
+    employeeId: Id
   ) => {
     try {
       const created = await patchEmployee(
@@ -405,7 +406,7 @@ export function useEmployee({
     }
   };
   const readEmployeeContract = async (
-    employeeId: number,
+    employeeId: Id,
     options?: ApiOptions
   ) => {
     const { displayProgress = false, displaySuccess = false } = options || {};

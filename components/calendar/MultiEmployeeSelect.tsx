@@ -40,7 +40,7 @@ const MultiEmployeeSelect = ({
   const options = useMemo(() => {
     if (!employees) return [];
     return employees.results.map(
-      (emp: { first_name: string; last_name: string; id: number }) => ({
+      (emp: { first_name: string; last_name: string; id: Id }) => ({
         label: `${emp.first_name} ${emp.last_name}`,
         value: emp.id as Id,
       }),

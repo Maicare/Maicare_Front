@@ -42,7 +42,7 @@ export function UpdateInvoiceForm({
             extra_content: {},
             invoice_details: [
                 {
-                    contract_id: 0,
+                    contract_id: "",
                     contract_name: "",
                     periods: [
                         {
@@ -441,7 +441,7 @@ export function UpdateInvoiceForm({
                                                 <FormItem>
                                                     <FormLabel>Contract ID</FormLabel>
                                                     <FormControl>
-                                                        <Input type="number" {...field} onChange={(e) => field.onChange(parseInt(e.target.value))} />
+                                                        <Input type="string" {...field} onChange={(e) => field.onChange(e.target.value)} />
                                                     </FormControl>
                                                     <FormMessage />
                                                 </FormItem>

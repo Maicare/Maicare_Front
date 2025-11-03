@@ -19,11 +19,11 @@ import { formatPrice, rateType, calculateTotalRate, getRate } from "@/utils/rate
 import { ClientDetailsResDto } from "@/types/client.types";
 import { useContact } from "@/hooks/contact/use-contact";
 import { useClient } from "@/hooks/client/use-client";
-import { Any } from "@/common/types/types";
+import { Any, Id } from "@/common/types/types";
 
 type Props = {
   contractData: ContractResDto | null;
-  clientId: string;
+  clientId: Id;
 };
 
 const ContractDetails: FunctionComponent<Props> = ({ contractData, clientId }) => {
@@ -40,7 +40,7 @@ const ContractDetails: FunctionComponent<Props> = ({ contractData, clientId }) =
     const getContact = async () => {
       try {
         setContactLoading(true);
-        const data = await getContactData(contractData?.sender_id || 0);
+        const data = await getContactData(contractData?.sender_id || "");
         setContact(data);
         setContactLoading(false);
       } catch (error) {
@@ -58,7 +58,7 @@ const ContractDetails: FunctionComponent<Props> = ({ contractData, clientId }) =
     const getClient = async () => {
       try {
         setClientLoading(true);
-        const data = await getClientData(parseInt(clientId));
+        const data = await getClientData(clientId);
         setClientData(data);
         setClientLoading(false);
       } catch (error) {

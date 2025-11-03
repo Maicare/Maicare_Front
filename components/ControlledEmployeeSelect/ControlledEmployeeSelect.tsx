@@ -5,6 +5,7 @@ import React, { FunctionComponent, useMemo, useState } from "react";
 import { useFormContext, Controller } from "react-hook-form";
 import SearchableSelect from "./SearchableSelect";
 import { useEmployee } from "@/hooks/employee/use-employee";
+import { Id } from "@/common/types/types";
 
 type Props = {
     name: string;
@@ -26,7 +27,7 @@ export const ControlledEmployeeSelect: FunctionComponent<Props> = ({
     // Build options from employees
     const options = useMemo(() => {
         if (!employees) return [];
-        return employees.results.map((emp: { first_name: string; last_name: string; id: number; }) => ({
+        return employees.results.map((emp: { first_name: string; last_name: string; id: Id; }) => ({
             label: `${emp.first_name} ${emp.last_name}`,
             value: emp.id,
         }));

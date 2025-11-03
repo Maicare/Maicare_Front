@@ -13,7 +13,7 @@ type PropsType = {
 };
 
 export const DocumentForm: FunctionComponent<PropsType> = ({ clientId }) => {
-  const { createOne, documents } = useDocument({ autoFetch: true, clientId: parseInt(clientId) });
+  const { createOne, documents } = useDocument({ autoFetch: true, clientId: clientId });
   const { createOne: createOneAttachment } = useAttachment();
   const router = useRouter();
 

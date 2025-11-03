@@ -18,7 +18,7 @@ const transformPermissions = (data: {
 }[]): {
     category: string;
     permissions: {
-        id: number;
+        id: Id;
         name: string;
         resource: string;
         action: string;
@@ -52,7 +52,7 @@ const PermissionCard = ({ selectedRole,selectedUser }: { selectedRole: Role | nu
     const [permissions, setPermissions] = useState<{
         category: string;
         permissions: {
-            id: number;
+            id: Id;
             name: string;
             resource: string;
             action: string;

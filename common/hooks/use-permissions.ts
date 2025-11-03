@@ -16,7 +16,7 @@ const usePermissions = (): PermissionsAPI => {
     // Handle entityId if present
     if (parts.length === 3) {
       const [entity, entityId, action] = parts;
-      return { entity, entityId:Number(entityId), action };
+      return { entity, entityId:entityId, action };
     }
 
     // Handle case without entityId

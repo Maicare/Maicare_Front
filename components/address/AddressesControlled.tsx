@@ -119,7 +119,7 @@ const AddressesControlled: FunctionComponent<{ className?: string; required?: bo
         type="button"
         className="mt-4 bg-blue-500 text-white py-2 px-4 rounded-lg w-full"
         onClick={() =>
-          append({ belongs_to: "", address: "", city: "", zip_code: "", phone_number: "" })
+          append({ belongs_to: "", address: "", city: "", zip_code: "", phone_number: "",house_number: "" })
         }
       >
         Voeg Adres Toe

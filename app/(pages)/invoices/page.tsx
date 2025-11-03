@@ -62,7 +62,7 @@ const InvoicesPage = () => {
       }
       // Roep de createOne functie aan met de benodigde data
       await generateOne({
-        client_id: parseInt(clientId),
+        client_id: clientId,
         start_date: startDate.toISOString(),
         end_date: endDate.toISOString(),
       }, {

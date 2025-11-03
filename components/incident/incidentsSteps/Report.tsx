@@ -3,16 +3,17 @@ import Panel from "@/components/common/Panel/Panel";
 import { useEmployee } from "@/hooks/employee/use-employee";
 import { useClient } from "@/hooks/client/use-client";
 import { Incident } from "@/types/incident.types";
+import { Id } from "@/common/types/types";
 
 type ReportProps = {
-  clientId: number;
+  clientId: Id;
   incident?: Incident;
   selectedEmails: string[];
   setSelectedEmails: (emails: string[]) => void;
 };
 
 type EmailItem = {
-  id: number;
+  id: Id;
   email: string;
   first_name: string;
   last_name: string;

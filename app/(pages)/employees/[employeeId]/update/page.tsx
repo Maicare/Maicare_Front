@@ -17,7 +17,7 @@ const Page = () => {
     const router = useRouter();
     const { employeeId } = useParams();
 
-    const onSuccess = (id: number) => {
+    const onSuccess = (id: Id) => {
         router.push(`/employees/${id}`)
     }
     const onCancel = () => {
@@ -33,7 +33,7 @@ const Page = () => {
             setEmployee(data);
             setIsLoading(false);
         }
-        if (employeeId) fetchEmployee(+employeeId);
+        if (employeeId) fetchEmployee(employeeId as string);
         
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [employeeId]);

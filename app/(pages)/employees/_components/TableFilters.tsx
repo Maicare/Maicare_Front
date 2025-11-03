@@ -18,7 +18,7 @@ const TableFilters = ({filters,setFilters,handleAdd}:Props) => {
     return (
         <div className="flex px-2 py-3 bg-white dark:bg-[#18181b] dark:border-black rounded-md mb-5 gap-2 border-2 border-muted">
             <Input type="search" placeholder="Zoeken" className="w-60 dark:bg-[#18181b] dark:border-white dark:ring-offset-black focus:ring-indigo-800" value={filters.search} onChange={(e) => setFilters({ ...filters, search: e.target.value })} />
-            <Select value={filters.location_id?.toString()} onValueChange={(e) => setFilters({ ...filters, location_id: parseInt(e) })} >
+            <Select value={filters.location_id?.toString()} onValueChange={(e) => setFilters({ ...filters, location_id: e })} >
                 <SelectTrigger className="w-[180px] dark:bg-[#18181b] dark:ring-offset-black focus:ring-indigo-800">
                     <SelectValue placeholder="Selecteer een locatie" />
                 </SelectTrigger>

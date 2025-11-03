@@ -4,6 +4,7 @@ import { useApi } from "@/common/hooks/use-api";
 import useProgressBar from "@/common/hooks/use-progress-bar";
 import { ApiOptions } from "@/common/types/api.types";
 import { PaginatedResponse } from "@/common/types/pagination.types";
+import { Id } from "@/common/types/types";
 import { Allergy, AllergyForm } from "@/types/allergy.types";
 import { PaginationParams } from "@/types/pagination.types";
 import { useRouter } from "next/navigation";
@@ -11,7 +12,7 @@ import { useSnackbar } from "notistack";
 import { useState } from "react";
 import useSWR from "swr";
 
-export function useAllergy(clientId: Number, params?: PaginationParams) {
+export function useAllergy(clientId: Id, params?: PaginationParams) {
 
   const router = useRouter();
 
@@ -88,7 +89,7 @@ export function useAllergy(clientId: Number, params?: PaginationParams) {
     }
   }
 
-  const readOne = async (id: string, options?: ApiOptions) => {
+  const readOne = async (id: Id, options?: ApiOptions) => {
     const { displayProgress = false, displaySuccess = false } = options || {};
     try {
       // Display progress bar
@@ -110,7 +111,7 @@ export function useAllergy(clientId: Number, params?: PaginationParams) {
     }
   }
 
-  const updateOne = async (allergy: AllergyForm, id: string, options?: ApiOptions) => {
+  const updateOne = async (allergy: AllergyForm, id: Id, options?: ApiOptions) => {
     const { displayProgress = false, displaySuccess = false } = options || {};
     try {
       if (displayProgress) startProgress();

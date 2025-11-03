@@ -5,9 +5,10 @@ import { useRouter } from "next/navigation";
 import DetailCell from "../../common/DetailCell";
 import { useEmergencyContact } from "@/hooks/client-network/use-emergency-contact";
 import Loader from "@/components/common/loader";
+import { Id } from "@/common/types/types";
 
 type Props = {
-    clientId: number | undefined;
+    clientId: Id | undefined;
 };
 
 const EmergencyContactsSummary: FunctionComponent<Props> = ({ clientId }) => {

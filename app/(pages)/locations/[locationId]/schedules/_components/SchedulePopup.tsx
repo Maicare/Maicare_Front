@@ -34,7 +34,7 @@ import {
 } from "@/schemas/schedule.schemas";
 import SingleEmployeeSelect from "./SingleEmployeeSelect";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Any } from "@/common/types/types";
+import { Any, Id } from "@/common/types/types";
 import MainShiftSelect from "@/app/(pages)/schedules/_components/MainShiftSelect";
 
 export interface SchedulePopupProps {
@@ -47,21 +47,21 @@ export interface SchedulePopupProps {
   onClose: () => void;
   onUpsert: (payload: Any, isEdit: boolean) => void;
   onDelete: (id: string) => void;
-  initialEmployeeId?: number;
-  initialLocationId?: number;
-  initialShiftId?: number;
-  locationId: number;
+  initialEmployeeId?: Id;
+  initialLocationId?: Id;
+  initialShiftId?: Id;
+  locationId: Id;
   existingEvents: EventInput[];
 }
 
 export type SchedulePayload = {
-  id: string;
-  employee_id: number;
-  location_id: number;
+  id: Id;
+  employee_id: Id;
+  location_id: Id;
   color: string;
   is_custom: boolean;
 
-  location_shift_id: number;
+  location_shift_id: Id;
   shift_date: string;
 
   start_datetime?: Date;
@@ -70,11 +70,11 @@ export type SchedulePayload = {
 
 type FormValues = {
   is_custom: boolean;
-  employee_id: number;
-  location_id: number;
+  employee_id: Id;
+  location_id: Id;
   start_datetime: Date;
   end_datetime: Date;
-  location_shift_id: number;
+  location_shift_id: Id;
   shift_date: string;
 };
 
@@ -89,11 +89,11 @@ const POPUP_HEIGHT = 450;
 
 const calcIsCustom = (
   ev: EventClickArg | null,
-  initialShiftId: number | undefined
+  initialShiftId: Id | undefined
 ) =>
   ev
     ? !(ev.event.extendedProps?.location_shift_id > 0)
-    : initialShiftId && initialShiftId > 0
+    : initialShiftId && initialShiftId !== ""
       ? false
       : true;
 

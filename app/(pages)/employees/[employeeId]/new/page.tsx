@@ -6,12 +6,13 @@ import withAuth, { AUTH_MODE } from "@/common/hocs/with-auth";
 import withPermissions from "@/common/hocs/with-permissions";
 import Routes from "@/common/routes";
 import { PermissionsObjects } from "@/common/data/permission.data";
+import { Id } from "@/common/types/types";
 
 
 const Page = () => {
     const router = useRouter();
 
-    const onSuccess = (id:number) => {
+    const onSuccess = (id:Id) => {
         router.push(`/employee/${id}`)
     }
     const onCancel = () => {

@@ -10,6 +10,7 @@ import { useEffect, useState } from "react";
 import { useInvoice } from "@/hooks/invoice/use-invoive";
 import { useContact } from "@/hooks/contact/use-contact";
 import { useParams } from "next/navigation";
+import { Id } from "@/common/types/types";
 
 // Schema voor validatie
 const invoiceTemplateItemSchema = z.object({
@@ -19,7 +20,7 @@ const invoiceTemplateItemSchema = z.object({
     source_table: z.string().min(1, "Brontabel is verplicht"),
 });
 
-export type InvoiceTemplateItemForm = z.infer<typeof invoiceTemplateItemSchema> & { id?: number };
+export type InvoiceTemplateItemForm = z.infer<typeof invoiceTemplateItemSchema> & { id?: Id };
 
 interface InvoiceTemplateItemsCardProps {
     items: InvoiceTemplateItemForm[];
@@ -32,7 +33,7 @@ export function InvoiceTemplateItemsCard({
     const {contactId} = useParams();
     const { readAllInvoiceTemplate } = useInvoice({ autoFetch: false });
     const { createOneInvoiceTemplate } = useContact({ autoFetch: false });
-    const [selectedTemplateIds, setSelectedTemplateIds] = useState<number[]>([]);
+    const [selectedTemplateIds, setSelectedTemplateIds] = useState<Id[]>([]);
     const [allTemplate, setAllTemplate] = useState<InvoiceTemplateItem[]>([]);
 
     const [_isLoading, setIsLoading] = useState(true);

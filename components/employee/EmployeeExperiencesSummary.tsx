@@ -6,9 +6,10 @@ import { useRouter } from "next/navigation";
 import Loader from "../common/loader";
 import DetailCell from "../common/DetailCell";
 import { useExperience } from "@/hooks/experience/use-experience";
+import { Id } from "@/common/types/types";
 
 type Props = {
-  employeeId: number;
+  employeeId: Id;
 };
 
 const EmployeeExperiencesSummary: FunctionComponent<Props> = ({ employeeId }) => {

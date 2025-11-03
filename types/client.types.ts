@@ -1,13 +1,8 @@
 import { Id } from "@/common/types/types";
 import { AttachmentItem } from "./contracts.types";
+import { AddressType } from "@/schemas/clientNew.schema";
 
-export type AddressType = {
-    belongs_to?: string;
-    address?: string;
-    city?: string;
-    zip_code?: string;
-    phone_number?: string;
-};
+
 export type ClientFormType = {
     first_name: string;
     last_name: string;
@@ -65,7 +60,7 @@ export const initialClientFormValues: ClientFormType = {
     last_name: "",
     email: "",
     organisation: "",
-    location: 0,
+    location: "",
     legal_measure: "",
     birthplace: "",
     departement: "",
@@ -91,8 +86,10 @@ export type Client = {
     first_name: string;
     last_name: string;
     email: string;
-    organisation: string;
-    location: string;
+    location:string;
+    organisation:string;
+    organisation_id: Id;
+    location_id: Id;
     legal_measure: string;
     birthplace: string;
     departement: string;
@@ -120,6 +117,38 @@ export type Client = {
     living_situation:string;
     education_level:string;
     location_name:string;
+    // work_additional_notes: z.string().optional(),
+    //   work_current_employer: z.string().optional(),
+    //   work_current_position: z.string().optional(),
+    //   work_currently_employed: z.boolean().optional(),
+    //   work_employer_email: z.string().optional(),
+    //   work_employer_phone: z.string().optional(),
+    //   work_start_date: z.coerce.date().refine(date => !isNaN(date.getTime()),{
+    //     message: "Startdatum werk is verplicht",
+    //   }).optional(),
+    //   education_additional_notes: z.string().optional(),
+    //   education_currently_enrolled: z.boolean().optional(),
+    //   education_institution: z.string().optional(),
+    //   education_level: z.enum(["primary", "secondary", "higher","none"]).optional(),
+    //   education_mentor_email: z.string().optional(),
+    //   education_mentor_name: z.string().optional(),
+    //   education_mentor_phone: z.string().optional(),
+    //   living_situation: z.enum(["home", "foster_care", "youth_care_institution", "other"]).optional(),
+    //   living_situation_notes: z.string().optional(),
+    work_additional_notes?:string;
+    work_current_employer?:string;
+    work_current_position?:string;
+    work_currently_employed?:boolean;
+    work_employer_email?:string;
+    work_employer_phone?:string;
+    work_start_date?:string;
+    education_additional_notes?:string;
+    education_currently_enrolled?:boolean;
+    education_institution?:string;
+    education_mentor_email?:string;
+    education_mentor_name?:string;
+    education_mentor_phone?:string;
+    living_situation_notes?:string;
 }
 export type ClientsSearchParams = {
     search?: string;

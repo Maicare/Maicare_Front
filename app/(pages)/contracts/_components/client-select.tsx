@@ -18,6 +18,7 @@ import {
   CommandList,
 } from "@/components/ui/command";
 import { Label } from "@/components/ui/label";
+import { Id } from "@/common/types/types";
 
 type Props = {
   /** Selected client IDs */
@@ -43,7 +44,7 @@ const ClientSelect = ({
   const options = useMemo(() => {
     if (!clients) return [];
     return clients.results.map(
-      (c: { first_name: string; last_name?: string; id: number }) => ({
+      (c: { first_name: string; last_name?: string; id: Id }) => ({
         label: c.last_name
           ? `${c.first_name} ${c.last_name}`
           : c.first_name,

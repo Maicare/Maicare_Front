@@ -5,13 +5,11 @@ export const scheduleSchema = z
     z.object({
       is_custom: z.literal(true),
       employee_id: z
-        .coerce.number({ invalid_type_error: "Selecteer een medewerker." })
-        .int()
-        .gt(0, { message: "Selecteer een medewerker." }),
+        .coerce.string({ invalid_type_error: "Selecteer een medewerker." })
+        .uuid(),
       location_id: z
-        .coerce.number({ invalid_type_error: "Selecteer een locatie." })
-        .int()
-        .gt(0, { message: "Selecteer een locatie." }),
+        .coerce.string({ invalid_type_error: "Selecteer een locatie." })
+        .uuid(),
       start_datetime: z.union([
         z.string().datetime({ message: "Kies een geldige startdatum & tijd." }),
         z.date(),
@@ -24,17 +22,14 @@ export const scheduleSchema = z
     z.object({
       is_custom: z.literal(false),
       employee_id: z
-        .coerce.number({ invalid_type_error: "Selecteer een medewerker." })
-        .int()
-        .gt(0, { message: "Selecteer een medewerker." }),
+        .coerce.string({ invalid_type_error: "Selecteer een medewerker." })
+        .uuid(),
       location_id: z
-        .coerce.number({ invalid_type_error: "Selecteer een locatie." })
-        .int()
-        .gt(0, { message: "Selecteer een locatie." }),
+        .coerce.string({ invalid_type_error: "Selecteer een locatie." })
+        .uuid(),
       location_shift_id: z
-        .coerce.number({ invalid_type_error: "Selecteer een dienst." })
-        .int()
-        .gt(0, { message: "Selecteer een dienst." }),
+        .coerce.string({ invalid_type_error: "Selecteer een dienst." })
+        .uuid(),
       shift_date: z
         .string()
         .refine((d) => !isNaN(Date.parse(d)), { message: "Kies een geldige dienst datum." }),
@@ -56,17 +51,17 @@ export function parseScheduleDates(input: any): CreateScheduleType {
   if (input.is_custom) {
     return {
       is_custom: true,
-      employee_id: Number(input.employee_id),
-      location_id: Number(input.location_id),
+      employee_id: input.employee_id,
+      location_id: input.location_id,
       start_datetime: new Date(input.start_datetime),
       end_datetime: new Date(input.end_datetime),
     };
   } else {
     return {
       is_custom: false,
-      employee_id: Number(input.employee_id),
-      location_id: Number(input.location_id),
-      location_shift_id: Number(input.location_shift_id),
+      employee_id: input.employee_id,
+      location_id: input.location_id,
+      location_shift_id: input.location_shift_id,
       shift_date: input.shift_date,
     };
   }

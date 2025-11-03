@@ -29,10 +29,11 @@ import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTr
 import { EnhancedDatePicker } from "./enhanced-date-picker";
 import { useOrganisation } from "@/hooks/organisation/use-organisation";
 import { Location } from "@/schemas/location.schema";
+import { Id } from "@/common/types/types";
 
 type Props = {
     mode: "create" | "update";
-    onSuccess?: (id: number) => void;
+    onSuccess?: (id: Id) => void;
     defaultValues?: UpdateClientRequestBody & { identity_attachment_ids: string[] };
     onCancel: () => void;
 }
@@ -45,7 +46,7 @@ const UpsertClientForm = ({ mode, onCancel, defaultValues, onSuccess }: Props) =
     const [loading, setLoading] = useState(false);
     const [openContactSheet, setOpenContactSheet] = useState(false);
     const [locations, setLocations] = useState<Location[] | null | undefined>(allLocations);
-    const [selectedOrganisation, setSelectedOrganisation] = useState<number | null>(null);
+    const [selectedOrganisation, setSelectedOrganisation] = useState<Id | null>(null);
     // 1. Define your form.
     useEffect(() => {
         const fetchLocations = async () => {
@@ -124,9 +125,9 @@ const UpsertClientForm = ({ mode, onCancel, defaultValues, onSuccess }: Props) =
                     {
                         ...values,
                         date_of_birth: values.date_of_birth.toISOString().split("T")[0],
-                        location_id: Number(values.location_id),
-                        organisation_id: Number(values.organisation_id),
-                        sender_id: Number(values.sender_id),
+                        location_id: values.location_id,
+                        organisation_id: values.organisation_id,
+                        sender_id: values.sender_id,
                     }, {
                     displaySuccess: true,
                     displayProgress: true
@@ -142,19 +143,19 @@ const UpsertClientForm = ({ mode, onCancel, defaultValues, onSuccess }: Props) =
             try {
                 setLoading(true);
                 await updateOne(
-                    defaultValues?.id || 0,
+                    defaultValues?.id || "",
                     {
                         ...values,
                         date_of_birth: values.date_of_birth.toISOString().replace("00:00:00Z", "04:00:00Z"),
-                        location_id: Number(values.location_id),
-                        organisation_id: Number(values.organisation_id),
-                        sender_id: Number(values.sender_id),
+                        location_id: values.location_id,
+                        organisation_id: values.organisation_id,
+                        sender_id: values.sender_id,
                     }, {
                     displaySuccess: true,
                     displayProgress: true
                 }
                 );
-                onSuccess?.(defaultValues?.id || 0);
+                onSuccess?.(defaultValues?.id || "");
             } catch (error) {
                 console.log(error);
             } finally {
@@ -496,7 +497,7 @@ const UpsertClientForm = ({ mode, onCancel, defaultValues, onSuccess }: Props) =
                                             <FormControl>
                                                 <Select onValueChange={(value) => {
                                                     field.onChange(value);
-                                                    setSelectedOrganisation(parseInt(value));
+                                                    setSelectedOrganisation(value);
                                                 }} defaultValue={field.value} >
                                                     <SelectTrigger className="w-full">
                                                         <SelectValue placeholder="Selecteer locatie" />

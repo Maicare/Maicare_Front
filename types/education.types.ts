@@ -23,5 +23,5 @@ export const initialValues: CreateEducation = {
     field_of_study: "",
     start_date: "",
     end_date: "",
-    employee_id: 0
+    employee_id: ""
 };

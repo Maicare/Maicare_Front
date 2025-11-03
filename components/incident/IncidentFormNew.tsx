@@ -34,6 +34,7 @@ import Succession, {
 import { CreateIncident, Incident } from "@/types/incident.types";
 import Button from "../common/Buttons/Button";
 import Report from "./incidentsSteps/Report";
+import { Id } from "@/common/types/types";
 
 const formSchema = Yup.object().shape({
   ...GeneralInfosShema,
@@ -45,7 +46,7 @@ const formSchema = Yup.object().shape({
 
 type Props = {
   incident?: Incident;
-  clientId: number;
+  clientId: Id;
   mode: string;
 };
 

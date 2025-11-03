@@ -25,7 +25,7 @@ const InvoiceDetailsPage = () => {
       setInvoice(data);
       setIsLoading(false);
     }
-    if (invoiceId) fetchInvoice(+invoiceId);
+    if (invoiceId) fetchInvoice(invoiceId as string);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [invoiceId,refetch]);
   if (!invoice || isLoading) {

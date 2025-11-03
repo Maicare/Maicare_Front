@@ -3,7 +3,7 @@
 import PrimaryButton from "@/common/components/PrimaryButton";
 import Loader from "@/components/common/loader";
 import { useDocument } from "@/hooks/document/use-document";
-import { ArrowBigLeft, ArrowBigRight, Clock, Database, Download,FileArchive, Tag,  Type, Upload, XCircle } from "lucide-react";
+import { ArrowBigLeft, ArrowBigRight, Clock, Database, Download, FileArchive, Tag, Type, Upload, XCircle } from "lucide-react";
 import { useParams } from "next/navigation";
 import AddDocumentDialog from "./_components/AddDocumentDialog";
 import { CreateDocument, Document } from "@/types/Document.types";
@@ -21,7 +21,7 @@ import { PermissionsObjects } from "@/common/data/permission.data";
 
 const DocumentsPage = () => {
     const { clientId } = useParams();
-    const { isLoading, documents, page, setPage, createOne, deleteOne } = useDocument({ autoFetch: true, clientId: parseInt(clientId as string) });
+    const { isLoading, documents, page, setPage, createOne, deleteOne } = useDocument({ autoFetch: true, clientId: clientId as string });
     const [open, setOpen] = useState(false);
     const [defaultSeleted, setDefaultSeleted] = useState("");
     const handlePrevious = () => {
@@ -195,9 +195,9 @@ const DocumentsPage = () => {
 }
 
 export default withAuth(
-  withPermissions(DocumentsPage, {
-    redirectUrl: Routes.Common.NotFound,
-    requiredPermissions: PermissionsObjects.ViewClientDocuments, // TODO: Add correct permission
+    withPermissions(DocumentsPage, {
+        redirectUrl: Routes.Common.NotFound,
+        requiredPermissions: PermissionsObjects.ViewClientDocuments, // TODO: Add correct permission
     }),
-    { mode: AUTH_MODE.LOGGED_IN, redirectUrl: Routes.Auth.Login } 
-    );
+    { mode: AUTH_MODE.LOGGED_IN, redirectUrl: Routes.Auth.Login }
+);

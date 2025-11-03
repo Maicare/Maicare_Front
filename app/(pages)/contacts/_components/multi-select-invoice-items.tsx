@@ -8,9 +8,10 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { useState } from "react";
+import { Id } from "@/common/types/types";
 
 export interface InvoiceTemplateItem {
-  id: number;
+  id: Id;
   description: string;
   item_tag?: string;
   source_column?: string;
@@ -19,8 +20,8 @@ export interface InvoiceTemplateItem {
 
 interface MultiSelectInvoiceItemsProps {
   items: InvoiceTemplateItem[];
-  selectedIds: number[];
-  onSelectChange: (selectedIds: number[]) => void;
+  selectedIds: Id[];
+  onSelectChange: (selectedIds: Id[]) => void;
   placeholder?: string;
   className?: string;
 }
@@ -41,7 +42,7 @@ export function MultiSelectInvoiceItems({
   );
 
   // Handle checkbox changes
-  const handleCheckedChange = (itemId: number, checked: boolean) => {
+  const handleCheckedChange = (itemId: Id, checked: boolean) => {
     if (checked) {
       onSelectChange([...selectedIds, itemId]);
     } else {
@@ -50,7 +51,7 @@ export function MultiSelectInvoiceItems({
   };
 
   // Remove a selected item
-  const removeSelectedItem = (itemId: number) => {
+  const removeSelectedItem = (itemId: Id) => {
     onSelectChange(selectedIds.filter(id => id !== itemId));
   };
 

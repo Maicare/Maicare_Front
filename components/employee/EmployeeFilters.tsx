@@ -39,11 +39,11 @@ const EmployeeFilters: FunctionComponent<Props> = ({ onFiltersChange }) => {
         label={"Locatie"}
         className={"lg:min-w-75 [&_label]:hidden"}
         onChange={(e) => {
-          setLocation(+e.target.value || undefined);
+          setLocation(e.target.value || undefined);
           onFiltersChange({
             search,
             out_of_service: selected.includes("out_of_service"),
-            location_id: +e.target.value || undefined,
+            location_id: e.target.value || undefined,
             is_archived: selected.includes("is_archived"),
           });
         }}

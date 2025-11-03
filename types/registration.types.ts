@@ -1,3 +1,5 @@
+import { Id } from "@/common/types/types";
+
 export type RegistrationParamsFilters = {
     page?: number;
     page_size?: number;
@@ -57,9 +59,9 @@ export type RegistrationParamsFilters = {
       guardian2_last_name: string;
       guardian2_phone_number: string;
       guardian2_relationship: string;
-      id: number;
+      id: Id;
       processed_at: string;
-      processed_by_employee_id?: number;
+      processed_by_employee_id?: Id;
       referrer_email: string;
       referrer_first_name: string;
       referrer_job_title: string;

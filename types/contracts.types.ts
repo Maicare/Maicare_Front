@@ -1,4 +1,5 @@
 import { PaginatedResponse } from "@/common/types/pagination.types";
+import { Id } from "@/common/types/types";
 
 export const RATE_TYPE_ARRAY = ["daily", "minute", "hourly", "weekly", "monthly"] as const;
 
@@ -18,8 +19,8 @@ export const FINANCING_LAW_TYPES = ["WMO", "ZVW", "WLZ", "JW", "WPG"] as const;
 export type FinancingLawType = (typeof FINANCING_LAW_TYPES)[number];
 
 export type NewContractReqDto = {
-    client_id: number;
-    sender_id: number;
+    client_id: Id;
+    sender_id: Id;
     type_id: number;
     attachment_ids: string[];
     price: number;
@@ -55,7 +56,7 @@ export type DepartureEntries = {
 
 
 export type ContractResDto = Omit<NewContractReqDto, "attachment_ids" | "type_id"> & {
-    id: number;
+    id: Id;
     type: number;
     type_id: number;
     attachments: AttachmentItem[];
@@ -138,5 +139,5 @@ export type ContractFormType = {
     financing_option: FinancingOptionType | "";
     hours_type: HoursTermType | "";
     hours: string;
-    sender_id?: number;
+    sender_id?: Id;
 };

@@ -23,7 +23,7 @@ const Page = () => {
             setContact(data);
             setIsLoading(false);
         }
-        if (contactId) fetchEmployee(+contactId);
+        if (contactId) fetchEmployee(contactId as string);
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [contactId]);
     if (isLoading || !contact) {

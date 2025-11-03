@@ -47,7 +47,7 @@ function ReregistrationView() {
             setRegistration(data);
             setIsLoading(false);
         }
-        if (registrationId) fetchRegistration(+registrationId);
+        if (registrationId) fetchRegistration(registrationId as string);
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [registrationId, isStatusLoading]);
 

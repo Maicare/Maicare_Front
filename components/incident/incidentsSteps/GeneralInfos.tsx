@@ -10,8 +10,8 @@ import SelectControlled from "@/common/components/SelectControlled";
 import ControlledEmployeeSelect from "@/components/ControlledEmployeeSelect/ControlledEmployeeSelect";
 
 export const GeneralInfosInitial = {
-  employee_id: 0,
-  location_id: 0,
+  employee_id: "",
+  location_id: "",
   reporter_involvement: "",
   runtime_incident: "",
   incident_date: "",
@@ -19,8 +19,8 @@ export const GeneralInfosInitial = {
 };
 
 export const GeneralInfosShema = {
-  employee_id: Yup.number().required("shouldn t be empty"),
-  location_id: Yup.number().required("shouldn t be empty"),
+  employee_id: Yup.string().uuid().required("shouldn t be empty"),
+  location_id: Yup.string().uuid().required("shouldn t be empty"),
   reporter_involvement: Yup.string().required("shouldn t be empty"),
   runtime_incident: Yup.string().required("shouldn t be empty"),
   incident_date: Yup.string().required("shouldn t be empty"),

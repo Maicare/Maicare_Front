@@ -34,10 +34,10 @@ const ClientFilters: FunctionComponent<Props> = ({ onFiltersChange }) => {
         label={"Locatie"}
         className={"min-w-60 [&_label]:hidden "}
         onChange={(e) => {
-          setLocation(+e.target.value || undefined);
+          setLocation(e.target.value || undefined);
           onFiltersChange({
             search,
-            location_id: +e.target.value || undefined,
+            location_id: e.target.value || undefined,
           });
         }}
       />

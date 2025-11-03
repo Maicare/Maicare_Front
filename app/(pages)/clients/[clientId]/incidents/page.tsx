@@ -16,7 +16,7 @@ const Page = () => {
     const { clientId } = useParams();
     const router = useRouter();
 
-    const { isLoading, incidents, page, setPage } = useIncident({ autoFetch: true, clientId: parseInt(clientId as string) });
+    const { isLoading, incidents, page, setPage } = useIncident({ autoFetch: true, clientId: clientId as string });
 
     const handlePrevious = () => {
         if (page <= 1) {

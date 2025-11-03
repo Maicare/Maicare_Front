@@ -6,6 +6,6 @@ export const experienceSchema = z.object({
     start_date: z.coerce.date().refine(date => !isNaN(date.getTime()), { message: "Startdatum is ongeldig" }),
     end_date: z.coerce.date().refine(date => !isNaN(date.getTime()), { message: "Einddatum is ongeldig" }),
     description: z.string().min(1, "Beschrijving is verplicht"),
-    employee_id: z.number().default(0),
+    employee_id: z.string().uuid().default(""),
 });
 export type CreateExperience = z.infer<typeof experienceSchema>;

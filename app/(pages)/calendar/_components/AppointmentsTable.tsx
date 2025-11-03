@@ -14,12 +14,12 @@ import { CalendarAppointment } from "@/types/calendar.types"
 
 import { ArrowBigLeft, ArrowBigRight } from "lucide-react"
 import getColumns from "./columns"
-import { Any } from "@/common/types/types"
+import { Any, Id } from "@/common/types/types"
 
 const PAGE_SIZE = 10
 
 type Props = {
-  employeeId: number
+  employeeId: Id
   start?: Date
   end?: Date
   onRowClick?: (row: Row<CalendarAppointment>) => void

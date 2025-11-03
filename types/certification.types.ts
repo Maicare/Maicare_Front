@@ -20,6 +20,6 @@ export const initialValues: CreateCertificate = {
   name: "",
   issued_by: "",
   date_issued: "",
-  employee_id: 0
+  employee_id: ""
 };
 

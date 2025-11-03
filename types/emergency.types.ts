@@ -20,6 +20,8 @@ export type EmergencyContactList = {
     phone_number: string;
     relation_status: string;
     relationship: string;
+    phone: string;
+    priority: string;
 }
 
 export type EmergencyContactForm = {

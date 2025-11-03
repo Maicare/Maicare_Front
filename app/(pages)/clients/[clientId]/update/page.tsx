@@ -16,7 +16,7 @@ import { PermissionsObjects } from "@/common/data/permission.data";
 const Page = () => {
     const router = useRouter();
     const { clientId } = useParams();
-    const onSuccess = (id: number) => {
+    const onSuccess = (id: Id) => {
         router.push(`/clients/${id}/overview`)
     }
     const onCancel = () => {
@@ -29,10 +29,10 @@ const Page = () => {
             const fetchClient = async (id: Id) => {
                 setIsLoading(true);
                 const data = await readOne(id);
-                setClient({...data,location_id:1} as UpdateClientRequestBody&{identity_attachment_ids:string[]});//TODO: ask taha to add locationId in client details
+                setClient(data as UpdateClientRequestBody&{identity_attachment_ids:string[]});//TODO: ask taha to add locationId in client details
                 setIsLoading(false);
             }
-            if (clientId) fetchClient(+clientId);
+            if (clientId) fetchClient(clientId as Id);
             
         // eslint-disable-next-line react-hooks/exhaustive-deps
         }, [clientId]);

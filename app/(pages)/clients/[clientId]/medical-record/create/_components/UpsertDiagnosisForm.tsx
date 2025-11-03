@@ -28,7 +28,7 @@ type Props = {
 }
 
 const UpsertDiagnosisForm = ({ clientId, mode, onCancel, onSuccess, diagnosis }: Props) => {
-    const { createOne, updateOne } = useDiagnosis({ autoFetch: false, clientId: parseInt(clientId) });
+    const { createOne, updateOne } = useDiagnosis({ autoFetch: false, clientId: clientId });
     const [loading, setLoading] = useState(false);
     // 1. Define your form.
 

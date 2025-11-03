@@ -10,7 +10,7 @@ import { useReport } from "@/hooks/report/use-report";
 
 
 const TextEnhancingModal: FunctionComponent<ModalProps> = ({ additionalProps, ...props }) => {
-    const { enhanceReport } = useReport({ autoFetch: false, clientId: 0 });
+    const { enhanceReport } = useReport({ autoFetch: false, clientId: "" });
     const [enhanced, setEnhaced] = useState<string>("");
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [isError, setIsError] = useState<boolean>(false);

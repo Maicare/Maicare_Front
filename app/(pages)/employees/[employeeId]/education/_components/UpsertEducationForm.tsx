@@ -14,13 +14,14 @@ import { Calendar } from '@/components/ui/calendar'
 import PrimaryButton from '@/common/components/PrimaryButton'
 import { useEducation } from '@/hooks/education/use-education';
 import { CreateEducation, educationSchema } from '@/schemas/education.schema';
+import { Id } from '@/common/types/types';
 
 type Props = {
-    employeeId: number;
+    employeeId: Id;
     onCancel: () => void;
     mode: "add" | "update";
     onSuccess:()=>void;
-    defaultValues?:CreateEducation&{id:number};
+    defaultValues?:CreateEducation&{id:Id};
 }
 const UpsertEducationForm = ({ employeeId, onCancel, mode,onSuccess,defaultValues }: Props) => {
     const { createOne, updateOne } = useEducation({ autoFetch: false, employeeId: employeeId.toString() });
@@ -69,7 +70,7 @@ const UpsertEducationForm = ({ employeeId, onCancel, mode,onSuccess,defaultValue
                         ...values,
                         end_date:values.end_date.toISOString().split("T")[0],
                         start_date:values.start_date.toISOString().split("T")[0],
-                        id:defaultValues?.id||0
+                        id:defaultValues?.id||""
                     },{
                         displaySuccess:true,
                         displayProgress:true

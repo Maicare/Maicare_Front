@@ -5,11 +5,11 @@ import { z } from 'zod';
 export const appointmentSchema = z
   .object({
     client_ids: z
-      .array(z.number())
+      .array(z.string().uuid())
       .min(1, "Selecteer minimaal één cliënt."),
 
     participant_employee_ids: z
-      .array(z.number())
+      .array(z.string().uuid())
       .min(1, "Selecteer minimaal één deelnemer."),
 
     description: z

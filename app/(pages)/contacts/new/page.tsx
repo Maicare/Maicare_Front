@@ -7,11 +7,12 @@ import Routes from "@/common/routes";
 import { PermissionsObjects } from "@/common/data/permission.data";
 import UpsertContactForm from "../_components/upsert-contact-form";
 import { useRouter } from "next/navigation";
+import { Id } from "@/common/types/types";
 
 const Page: FunctionComponent = () => {
       const router = useRouter();
 
-      const onSuccess = (id:number) => {
+      const onSuccess = (id:Id) => {
           router.push(`/contacts/${id}`)
       }
       const onCancel = () => {

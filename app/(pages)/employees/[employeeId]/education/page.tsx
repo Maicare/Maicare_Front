@@ -17,11 +17,12 @@ import withAuth, { AUTH_MODE } from "@/common/hocs/with-auth";
 import withPermissions from "@/common/hocs/with-permissions";
 import Routes from "@/common/routes";
 import { PermissionsObjects } from "@/common/data/permission.data";
+import { Id } from "@/common/types/types";
 
 const Page = () => {
     const [adding, setAdding] = useState(false);
     const [editing, setEditing] = useState(false);
-    const [education, setEducation] = useState<CreateEducation & { id: number } | null>(null);
+    const [education, setEducation] = useState<CreateEducation & { id: Id } | null>(null);
     const {employeeId} = useParams();
 
     const { isLoading, educations, mutate, deleteOne } = useEducation({ autoFetch: true, employeeId: employeeId as string });
@@ -46,7 +47,7 @@ const Page = () => {
         mutate();
     }
     const handleEdit = (education: Education) => {
-        const transformed: CreateEducation & { id: number } = {
+        const transformed: CreateEducation & { id: Id } = {
             ...education,
             start_date: new Date(education.start_date),
             end_date: new Date(education.end_date),
@@ -93,9 +94,9 @@ const Page = () => {
                 />
             </div>
             {adding ?
-                <UpsertEducationForm employeeId={parseInt(employeeId as string)} onCancel={cancelAdd} mode="add" onSuccess={cancelAdd} />
+                <UpsertEducationForm employeeId={employeeId as string} onCancel={cancelAdd} mode="add" onSuccess={cancelAdd} />
                 : editing ?
-                    <UpsertEducationForm employeeId={parseInt(employeeId as string)} onCancel={cancelEdit} mode="update" onSuccess={cancelEdit} defaultValues={education || undefined} />
+                    <UpsertEducationForm employeeId={employeeId as string} onCancel={cancelEdit} mode="update" onSuccess={cancelEdit} defaultValues={education || undefined} />
                     : null
             }
             <div className="w-full bg-white p-4 rounded-md shadow-md">

@@ -78,7 +78,7 @@ const TableFilters = ({ filters,  setFilters }: TableFiltersProps) => {
       <Select
         value={filters.client_id?.toString() || ''}
         onValueChange={(value) => 
-          setFilters({ ...filters, client_id: value ? parseInt(value) : undefined })
+          setFilters({ ...filters, client_id: value ? value : undefined })
         }
       >
         <SelectTrigger className="w-60 dark:bg-[#18181b] dark:border-white focus:ring-indigo-800">
@@ -100,7 +100,7 @@ const TableFilters = ({ filters,  setFilters }: TableFiltersProps) => {
       <Select
         value={filters.sender_id?.toString() || ''}
         onValueChange={(value) => 
-          setFilters({ ...filters, sender_id: value ? parseInt(value) : undefined })
+          setFilters({ ...filters, sender_id: value ? value : undefined })
         }
       >
         <SelectTrigger className="w-60 dark:bg-[#18181b] dark:border-white focus:ring-indigo-800">

@@ -83,8 +83,8 @@ export interface BookingPopupProps {
   onClose: () => void;
   onUpsert: (p: UpsertPayload, isEdit: boolean) => void;
   onDelete: (id: string) => void;
-  initialClientId?: number;
-  initialEmployeeId?: number;
+  initialClientId?: Id;
+  initialEmployeeId?: Id;
 }
 
 const BookingPopup: FunctionComponent<BookingPopupProps> = ({

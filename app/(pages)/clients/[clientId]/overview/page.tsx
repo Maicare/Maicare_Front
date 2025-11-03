@@ -35,7 +35,7 @@ const Page = () => {
             setClient(data);
             setIsLoading(false);
         }
-        if (clientId) fetchClient(+clientId);
+        if (clientId) fetchClient(clientId as Id);
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [clientId]);
 

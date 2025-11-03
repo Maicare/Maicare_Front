@@ -26,7 +26,7 @@ const MultiEmailsSelect = ({ mode = "create", emails, clientId, label }: Props) 
         } else {
             (async () => {
                 try {
-                    const data = await readClientRelatedEmails(parseInt(clientId as string));
+                    const data = await readClientRelatedEmails(clientId as string);
                     if (!data.emails || data.emails.length === 0) return;
                     setSelectedValues(data.emails);
                 } catch (error) {

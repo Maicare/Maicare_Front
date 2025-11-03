@@ -28,10 +28,11 @@ import UpsertObjectiveSheet from "./UpsertObjectiveSheet";
 import { useGoal } from "@/hooks/goal/use-goal";
 import { cn } from "@/utils/cn";
 import { dateFormat } from "@/utils/timeFormatting";
+import { Id } from "@/common/types/types";
 
 
 export type ObjectiveRow = {
-  id: number;
+  id: Id;
   objective_description: string;
   due_date: string;
   status: string;
@@ -42,7 +43,7 @@ export type ObjectiveRow = {
 
 export const getColumns = (
   handleEdit: (objective: ObjectiveRow) => void,
-  handleDelete: (id: number) => void
+  handleDelete: (id: string) => void
 ): ColumnDef<ObjectiveRow>[] => [
     {
       accessorKey: "objective_description",
@@ -118,7 +119,7 @@ const ActionsCell = ({
 }: {
   row: Row<ObjectiveRow>;
   handleEdit: (objective: ObjectiveRow) => void;
-  handleDelete: (id: number) => void;
+  handleDelete: (id: string) => void;
 }) => {
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
   const [isEditOpen, setIsEditOpen] = useState(false);
@@ -131,16 +132,16 @@ const ActionsCell = ({
   };
 
   const { generateObjective, createObjective } = useGoal({
-    clientId: Number(clientId),
-    assessmentId: Number(assessmentId),
+    clientId: clientId,
+    assessmentId: assessmentId,
   });
 
   const handleGenerate = async () => {
-    const objs = await generateObjective(Number(goalId), {
+    const objs = await generateObjective(goalId, {
       displayProgress: true,
       displaySuccess: true,
     });
-    await createObjective(Number(goalId), objs, {
+    await createObjective(goalId, objs, {
       displayProgress: false,
       displaySuccess: true,
     });

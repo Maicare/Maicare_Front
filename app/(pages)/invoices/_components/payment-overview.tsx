@@ -9,6 +9,7 @@ import UpsertPaymentSheet from "./upsert-payment-sheet"
 import { useState } from "react"
 import { Payment } from "@/types/payment.types"
 import { CreatePayment } from "@/schemas/payment.schema"
+import { Id } from "@/common/types/types"
 
 const PaymentOverview = ({ invoiceId,onRefetch }: { invoiceId: string,onRefetch:()=>void }) => {
     const { payments, createOne, updateOne } = usePayment({ autoFetch: true, invoiceId });
@@ -28,7 +29,7 @@ const PaymentOverview = ({ invoiceId,onRefetch }: { invoiceId: string,onRefetch:
             console.log(error);
         }
     }
-    const handleUpdate = async (values: CreatePayment & { recorded_by: number }) => {
+    const handleUpdate = async (values: CreatePayment & { recorded_by: Id }) => {
         try {
             await updateOne(
                 payment!.payment_id.toString()!,

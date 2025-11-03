@@ -14,7 +14,7 @@ type Props = {
 const MedicalDossierPreview = ({ isParentLoading }: Props) => {
 
     const { clientId } = useParams();
-    const { diagnosis } = useDiagnosis({ autoFetch: true, clientId: parseInt(clientId as string) });
+    const { diagnosis } = useDiagnosis({ autoFetch: true, clientId: clientId as string });
     const router = useRouter();
 
     if (isParentLoading) {

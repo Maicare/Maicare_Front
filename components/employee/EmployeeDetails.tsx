@@ -18,9 +18,10 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { getDangerActionConfirmationModal } from "../common/Modals/DangerActionConfirmation";
 import { useModal } from "../providers/ModalProvider";
+import { Id } from "@/common/types/types";
 
 interface EmployeeDetailsProps {
-  employeeId: number;
+  employeeId: Id;
   showAsProfile?: boolean;
 }
 

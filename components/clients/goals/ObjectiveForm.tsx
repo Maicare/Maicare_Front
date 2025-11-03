@@ -10,21 +10,22 @@ import React, { useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form';
 import ObjectiveGeneratedItem from './ObjectiveGeneratedItem';
 import { useGoal } from '@/hooks/goal/use-goal';
+import { Id } from '@/common/types/types';
 
 type Props = {
-    assessmentId: string;
-    clientId: string;
-    goalId: string;
+    assessmentId: Id;
+    clientId: Id;
+    goalId: Id;
     initialValues: CreateObjective;
     objectives?: CreateObjective[];
-    updateObjective: (id: number, updated: CreateObjective) => void;
-    deleteObjective: (id: number) => void;
+    updateObjective: (id: Id, updated: CreateObjective) => void;
+    deleteObjective: (id: Id) => void;
 }
 
 const ObjectiveForm = (props: Props) => {
     const { assessmentId, clientId, goalId, initialValues, objectives, deleteObjective, updateObjective } = props;
     const router = useRouter();
-    const {createObjective} = useGoal({ autoFetch: false, assessmentId: +assessmentId, clientId: +clientId });
+    const {createObjective} = useGoal({ autoFetch: false, assessmentId: assessmentId , clientId: clientId });
     const [loading, setLoading] = useState(false);
     const methods = useForm<CreateObjective>({
         resolver: yupResolver(CreateObjectiveSchema),
@@ -37,7 +38,7 @@ const ObjectiveForm = (props: Props) => {
     } = methods;
     const onSubmit = async (_data: CreateObjective) => {
         try {
-            await createObjective(+goalId!,[_data], { displayProgress: true, displaySuccess: true });
+            await createObjective(goalId ,[_data], { displayProgress: true, displaySuccess: true });
             reset();
             router.push(`/clients/${clientId}/goals/${assessmentId}/objectives/${goalId}`);
         } catch (error) {
@@ -47,7 +48,7 @@ const ObjectiveForm = (props: Props) => {
     const submitMany = async () => {
         try {
             setLoading(true);
-            await createObjective(+goalId!,objectives!, { displayProgress: true, displaySuccess: true });
+            await createObjective(goalId,objectives!, { displayProgress: true, displaySuccess: true });
             router.back();
         } catch (error) {
             console.error({ error });
@@ -64,7 +65,7 @@ const ObjectiveForm = (props: Props) => {
                     <h3 className="text-lg font-medium text-slate-800 dark:text-white">Doelstellingen</h3>
                     <div className="grid grid-cols-1 gap-4.5">
                         {objectives.map((objective, index) => (
-                            <ObjectiveGeneratedItem key={index} index={index} objective={objective} updateObjective={updateObjective} deleteObjective={deleteObjective} />
+                            <ObjectiveGeneratedItem key={index} index={index.toString()} objective={objective} updateObjective={updateObjective} deleteObjective={deleteObjective} />
                         ))}
                     </div>
                 </div>

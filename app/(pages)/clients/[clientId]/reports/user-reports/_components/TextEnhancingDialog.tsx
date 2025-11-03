@@ -15,7 +15,7 @@ type Props = {
 }
 
 const TextEnhancingDialog = ({ content, onConfirm }: Props) => {
-    const { enhanceReport } = useReport({ autoFetch: false, clientId: 0 });
+    const { enhanceReport } = useReport({ autoFetch: false, clientId: "0" });
     const [open, setOpen] = useState(false);
     const [enhanced, setEnhaced] = useState<string>("");
     const [isLoading, setIsLoading] = useState<boolean>(false);

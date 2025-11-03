@@ -24,22 +24,22 @@ const ObjectivePage = () => {
   const { assessmentId, clientId, goalId } = useParams();
   const { readOne } = useGoal({
     autoFetch: false,
-    clientId: parseInt(clientId as string),
-    assessmentId: parseInt(assessmentId as string),
+    clientId: clientId as string,
+    assessmentId: assessmentId as string,
   });
   const [goal, setGoal] = useState<Goal | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isEditOpen, setIsEditOpen] = useState(false);
 
   useEffect(() => {
-    const fetchGoal = async (id: number) => {
+    const fetchGoal = async (id: string) => {
       setIsLoading(true);
       const data = await readOne(id);
       setGoal(data);
       setIsLoading(false);
     };
     if (goalId) {
-      fetchGoal(+goalId);
+      fetchGoal(goalId as string);
     } else {
       setIsLoading(false);
     }

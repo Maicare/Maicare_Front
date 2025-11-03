@@ -4,6 +4,7 @@ import { useApi } from "@/common/hooks/use-api";
 import useProgressBar from "@/common/hooks/use-progress-bar";
 import { ApiOptions } from "@/common/types/api.types";
 import { PaginatedResponse } from "@/common/types/pagination.types";
+import { Id } from "@/common/types/types";
 import {
   AutomaticReportItem,
   CreateAutomaticReport,
@@ -22,7 +23,7 @@ export function useAutomaticReport({
   autoFetch = true,
 }: {
   autoFetch?: boolean;
-  clientId: Number;
+  clientId: Id;
   params?: PaginationParams;
 }) {
   const router = useRouter();

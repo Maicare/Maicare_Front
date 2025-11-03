@@ -8,7 +8,7 @@ import interactionPlugin from "@fullcalendar/interaction";
 import { DateSelectArg,  EventClickArg } from "@fullcalendar/core";
 import "react-datepicker/dist/react-datepicker.css";
 import BookingPopup, { CalendarEventDTO } from "./_comp2";
-import { Any } from "@/common/types/types";
+import { Any, Id } from "@/common/types/types";
 
 const getContrastColor = (hex: string): string => {
   const h = hex.replace("#", "");
@@ -20,7 +20,7 @@ const getContrastColor = (hex: string): string => {
 };
 
 export type CalendarEvent = {
-  id: string;
+  id: Id;
   title: string;
   description?: string;
   start: string | Date;

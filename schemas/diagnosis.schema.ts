@@ -28,7 +28,7 @@ export const createDiagnosisSchema = z.object({
     severity: z.string().min(1, "Ernst is verplicht"),
     status: z.string().min(1, "Status is verplicht"),
     title: z.string().min(1, "Titel is verplicht"),
-    id: z.number().optional(),
+    id: z.string().uuid().optional(),
 });
 
 // TypeScript type

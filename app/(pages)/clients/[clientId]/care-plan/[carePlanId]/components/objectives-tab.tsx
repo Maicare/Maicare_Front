@@ -161,8 +161,8 @@ const ObjectivesTab = () => {
                     <UpsertObjectiveSheet
                         mode="create"
                         handleCreate={handleCreate}
-                        isOpen={openId === -1}
-                        handleOpen={(o) => setOpenId(o ? -1 : null)}
+                        isOpen={openId === "-1"}
+                        handleOpen={(o) => setOpenId(o ? "-1" : null)}
                     />
                 </CardTitle>
             </CardHeader>
@@ -222,8 +222,8 @@ const ObjectivesTab = () => {
                                                         mode="create"
                                                         handleCreate={handleCreateAction}
                                                         objectiveId={objectiveTermGoal.objective_id}
-                                                        isOpen={openId === -objectiveTermGoal.objective_id}
-                                                        handleOpen={(o) => setOpenId(o ? -objectiveTermGoal.objective_id : null)}
+                                                        isOpen={openId === objectiveTermGoal.objective_id+"actions"}
+                                                        handleOpen={(o) => setOpenId(o ? objectiveTermGoal.objective_id+"actions" : null)}
                                                     />
                                                 </div>
                                                 {objectiveTermGoal.actions.length === 0 ? (

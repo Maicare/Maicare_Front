@@ -1,4 +1,5 @@
 import { BellRing, BookMarked, BriefcaseBusiness, FileBadge, FileText, GraduationCap, Handshake, HeartPulse, Home, Map, UserCircle, UsersRound, CalendarClock, Users2, Calendar, ClockArrowUp, Hourglass, FileArchive, BrainCircuit, Settings, Building2 } from "lucide-react";
+import { Id } from "../types/types";
 
 export const sidebarLinks = [
     {
@@ -67,7 +68,7 @@ export const sidebarLinks = [
         icon: Settings,
     },
 ];
-export const sidebarEmployeeLinks = (employee: { first_name: string, last_name: string, id: number }) => [
+export const sidebarEmployeeLinks = (employee: { first_name: string, last_name: string, id: Id }) => [
     {
         title: "Overzicht (" + employee?.first_name + " " + employee?.last_name + ")", // "Overview"
         url: "/employees/" + employee?.id,
@@ -105,7 +106,7 @@ export const sidebarEmployeeLinks = (employee: { first_name: string, last_name: 
         icon: Handshake,
     }
 ];
-export const sidebarLocationLinks = (location: { first_name: string, last_name: string, id: number }) => [
+export const sidebarLocationLinks = (location: { first_name: string, last_name: string, id: Id }) => [
     {
         title: "Overzicht (" + location?.first_name + " " + location?.last_name + ")", // "Overview"
         url: "/locations/" + location?.id + "/overview",
@@ -123,7 +124,7 @@ export const sidebarLocationLinks = (location: { first_name: string, last_name: 
         icon: Calendar,
     }
 ];
-export const sidebarClientLinks = (client: { first_name: string, last_name: string, id: number }) => [
+export const sidebarClientLinks = (client: { first_name: string, last_name: string, id: Id }) => [
     {
         title: "Overzicht (" + client?.first_name + " " + client?.last_name + ")", // "Overview"
         url: "/clients/" + client?.id + "/overview",

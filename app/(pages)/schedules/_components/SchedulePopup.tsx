@@ -35,7 +35,7 @@ import {
 import SingleEmployeeSelect from "./SingleEmployeeSelect";
 import { Checkbox } from "@/components/ui/checkbox";
 import MainShiftSelect from "./MainShiftSelect";
-import { Any } from "@/common/types/types";
+import { Any, Id } from "@/common/types/types";
 
 export interface SchedulePopupProps {
   createRange: DateSelectArg | null;
@@ -46,21 +46,21 @@ export interface SchedulePopupProps {
   containerRef: React.RefObject<HTMLDivElement | null>;
   onClose: () => void;
   onUpsert: (payload: Any, isEdit: boolean) => void;
-  onDelete: (id: string) => void;
-  initialEmployeeId?: number;
-  initialLocationId?: number;
-  initialShiftId?: number;
-  locationId: number;
+  onDelete: (id: Id) => void;
+  initialEmployeeId?: Id;
+  initialLocationId?: Id;
+  initialShiftId?: Id;
+  locationId: Id;
 }
 
 export type SchedulePayload = {
-  id: string;
-  employee_id: number;
-  location_id: number;
+  id: Id;
+  employee_id: Id;
+  location_id: Id;
   color: string;
   is_custom: boolean;
 
-  location_shift_id: number;
+  location_shift_id: Id;
   shift_date: string;
 
   start_datetime?: Date;
@@ -70,11 +70,11 @@ export type SchedulePayload = {
 
 type FormValues = {
   is_custom: boolean;
-  employee_id: number;
-  location_id: number;
+  employee_id: Id;
+  location_id: Id;
   start_datetime: Date;
   end_datetime: Date;
-  location_shift_id: number;
+  location_shift_id: Id;
   shift_date: string;
 };
 

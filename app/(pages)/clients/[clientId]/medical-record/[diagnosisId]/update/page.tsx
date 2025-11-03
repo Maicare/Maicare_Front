@@ -21,7 +21,7 @@ const UpdateDiagnosisPage = () => {
     const onCancel = () => {
         router.back();
     }
-    const { readOne } = useDiagnosis({clientId:parseInt(clientId as string), autoFetch: false });
+    const { readOne } = useDiagnosis({clientId:clientId as string, autoFetch: false });
     const [diagnose, setDiagnose] = useState<Diagnosis | undefined>(undefined);
     const [isLoading, setIsLoading] = useState(false);
     useEffect(() => {
@@ -31,7 +31,7 @@ const UpdateDiagnosisPage = () => {
             setDiagnose(data);//TODO: ask taha to add locationId in diagnose details
             setIsLoading(false);
         }
-        if (clientId && diagnosisId) fetchDiagnose(+diagnosisId);
+        if (clientId && diagnosisId) fetchDiagnose(diagnosisId as string);
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [clientId,diagnosisId]);
