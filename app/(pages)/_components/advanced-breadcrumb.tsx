@@ -1,47 +1,10 @@
 'use client';
 
-export const routeConfigNL: { [key: string]: string } = {
-  '/': '',
-  '/dashboard': 'Dashboard',
-  '/calendar': 'Kalender',
-  '/clients': 'Cliënten',
-  '/clients/[clientId]': 'Cliënt Details',
-  '/clients/[clientId]/edit': 'Cliënt Bewerken',
-  '/clients/[clientId]/calendar': 'Cliënt Kalender',
-  '/clients/[clientId]/care-plan': 'Zorgplan',
-  '/clients/[clientId]/care-plan/create': 'Zorgplan Aanmaken',
-  '/clients/[clientId]/care-plan/[carePlanId]': 'Zorgplan Details',
-  '/clients/[clientId]/client-network': 'Client Netwerk',
-  '/clients/[clientId]/emergency': 'Noodgeval',
-  '/clients/[clientId]/involved-employees': 'Betrokken Medewerkers',
-  '/clients/[clientId]/contract': 'Contracten',
-  '/clients/[clientId]/contract/create': 'Contract Aanmaken',
-  '/clients/[clientId]/contract/[contractId]': 'Contract Details',
-  '/clients/[clientId]/documents': 'Documenten',
-  '/clients/[clientId]/goals': 'Doelen',
-  '/clients/[clientId]/goals/[assessmentId]': 'Doel Assessment',
-  '/clients/[clientId]/goals/[assessmentId]/objectives/[goalId]': 'Doelstellingen',
-  '/clients/[clientId]/incidents': 'Incidenten',
-  '/clients/[clientId]/incidents/create': 'Incident Aanmaken',
-  '/clients/[clientId]/incidents/[incidentId]': 'Incident Details',
-  '/clients/[clientId]/medical-record': 'Medisch Dossier',
-  '/clients/[clientId]/medical-record/overview': 'Overzicht',
-  '/clients/[clientId]/medical-record/create': 'Medische Aantekening Aanmaken',
-  '/clients/[clientId]/medical-record/[diagnosisId]': 'Diagnose Details',
-  '/clients/[clientId]/reports': 'Rapporten',
-  '/clients/[clientId]/reports/automatic-reports': 'Automatische Rapporten',
-  '/clients/[clientId]/reports/user-reports': 'Gebruikersrapporten',
-  '/clients/[clientId]/reports/new': 'Nieuw Rapport',
-  '/contacts': 'Contacten',
-  '/contacts/new': 'Nieuw Contact',
-  '/contacts/[contactId]': 'Contact Details',
-  '/contracts': 'Contracten',
-};
-
 // components/dynamic-breadcrumb-nl.tsx
 
 import { usePathname } from 'next/navigation';
 import { Breadcrumb, BreadcrumbList, BreadcrumbItem, BreadcrumbLink, BreadcrumbSeparator, BreadcrumbPage } from '@/components/ui/breadcrumb';
+import routeConfigNL from '@/utils/route-config-nl.generated';
 
 const DynamicBreadcrumbNL = () => {
   const pathname = usePathname();
@@ -59,21 +22,58 @@ const DynamicBreadcrumbNL = () => {
       currentPath += `/${path}`;
       const isLast = index === paths.length - 1;
       
-      // Vervang dynamische segments met plaatshouders
-      const routeKey = currentPath
-        .replace(/\/\d+/g, '/[id]')
-        .replace(/\/[a-f0-9-]+/g, '/[id]'); // UUIDs vervangen
+      // Check if this path segment is a UUID
+      const isUuid = /^[a-f0-9-]{36}$/.test(path);
       
-      const label = routeConfigNL[routeKey] || routeConfigNL[currentPath] || formatBreadcrumbLabel(path);
-      
-      breadcrumbs.push({ 
-        href: currentPath, 
-        label, 
-        isLast 
-      });
+      if (isUuid) {
+        // For UUID segments, use the parent route's label but clean it up
+        const parentPath = currentPath.substring(0, currentPath.lastIndexOf('/'));
+        const parentRouteKey = generateRouteKey(parentPath);
+        const parentLabel = routeConfigNL[parentRouteKey];
+        
+        if (parentLabel) {
+          // Remove the dynamic part from parent label (e.g., "Cliënten / [clientId]" becomes "Cliënt Details")
+          const cleanLabel = parentLabel
+            .replace(/ \/ \[.*\]$/, '') // Remove "/ [something]" at the end
+            .replace(/Cliënten$/, 'Cliënt Details') // Special case for clients
+            .replace(/Medewerkers$/, 'Medewerker Details') // Special case for employees
+            .replace(/Contacten$/, 'Contact Details') // Special case for contacts
+            .replace(/Organisaties$/, 'Organisatie Details') // Special case for organisations
+            .replace(/Locaties$/, 'Locatie Details') // Special case for locations
+            .replace(/Intake$/, 'Intake Details') // Special case for intake
+            .replace(/Registraties$/, 'Registratie Details'); // Special case for registrations
+          
+          breadcrumbs.push({ 
+            href: currentPath, 
+            label: cleanLabel, 
+            isLast 
+          });
+        } else {
+          // Fallback if parent label not found
+          breadcrumbs.push({ 
+            href: currentPath, 
+            label: 'Details', 
+            isLast 
+          });
+        }
+      } else {
+        // For non-UUID segments, use the normal route lookup
+        const routeKey = generateRouteKey(currentPath);
+        const label = routeConfigNL[routeKey] || formatBreadcrumbLabel(path);
+        
+        breadcrumbs.push({ 
+          href: currentPath, 
+          label, 
+          isLast 
+        });
+      }
     });
 
     return breadcrumbs;
+  };
+
+  const generateRouteKey = (path: string) => {
+    return path.replace(/\/[a-f0-9-]{36}/g, '/[id]'); // Replace UUIDs with [id]
   };
 
   const formatBreadcrumbLabel = (path: string) => {
@@ -83,6 +83,15 @@ const DynamicBreadcrumbNL = () => {
       'update': 'Bijwerken',
       'new': 'Nieuw',
       'overview': 'Overzicht',
+      'appointment-card': 'Afsprakenkaart',
+      'care-plan': 'Zorgplan',
+      'client-network': 'Client Netwerk',
+      'involved-employees': 'Betrokken Medewerkers',
+      'medical-record': 'Medisch Dossier',
+      'automatic-reports': 'Automatische Rapporten',
+      'user-reports': 'Gebruikersrapporten',
+      'working-hours': 'Werkuren',
+      'certification': 'Certificering',
     };
     
     return labelMap[path] || path
