@@ -19,6 +19,7 @@ import CarePlan from "./routes/care-plan";
 import Organisation from "./routes/organization";
 import Notifications from "./routes/notifications";
 import ECR from "./routes/ecr";
+import AuditLogs from "./routes/audit-log";
 
 const ApiRoutes = {
   Auth,
@@ -42,6 +43,7 @@ const ApiRoutes = {
   Organisation,
   Notifications,
   ECR,
+  AuditLogs
 };
 
 export default ApiRoutes;
