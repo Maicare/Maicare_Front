@@ -617,8 +617,8 @@ const Page = () => {
                             </div>
                             <div className="text-right">
                                 <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4 inline-block">
-                                    <p className="text-white/80 text-sm">Client ID</p>
-                                    <p className="font-mono font-bold text-xl">#{client?.id}</p>
+                                    <p className="text-white/80 text-sm">Filenummber</p>
+                                    <p className="font-mono font-bold text-xl">#{client?.filenumber}</p>
                                 </div>
                             </div>
                         </div>
