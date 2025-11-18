@@ -10,7 +10,37 @@ import { useApi } from "@/common/hooks/use-api";
 import { Id } from "@/common/types/types";
 import { CalendarSchedule } from "@/types/schedule.types";
 import { CreateScheduleType } from "@/schemas/schedule.schemas";
-
+export interface EmployeeSummary {
+  id: string;
+  first_name: string;
+  last_name: string;
+  status: string;
+  target_hours: number;
+  actual_hours: number;
+  deviation: number;
+  shifts: Record<string, number>;
+}
+export interface Shift {
+  shift_id: number;
+  shift_name: string;
+  start_time: string;
+  end_time: string;
+  hours: number;
+  date: string;
+  day_name: string;
+  employees: {
+    employee_id: string;
+    employee_name: string;
+  }[];
+}
+export interface GridView {
+  dates: string[];
+  days: string[];
+  shifts_by_day: Record<string, Array<{
+    date: string;
+    shifts: Record<string, Shift[]>;
+  }>>;
+}
 export function useSchedule(autoFetch: boolean = false, params?: PaginationParams) {
 
   const { enqueueSnackbar } = useSnackbar();
@@ -192,6 +222,87 @@ export function useSchedule(autoFetch: boolean = false, params?: PaginationParam
       if (displayProgress) stopProgress();
     }
   };
+  const autoGenerateSchedule = async ({
+    employee_ids,
+    location_id,
+    week,
+    year
+  }: {
+    employee_ids: Id[];
+    location_id: number;
+    week: number;
+    year: number;
+  }, options?: ApiOptions) => {
+    const { displayProgress = false, displaySuccess = false } = options || {};
+    try {
+      if (displayProgress) startProgress();
+      const { message, success, error,data } = await useApi<{
+          grid_view: GridView;
+          shifts: Shift[];
+          summary: EmployeeSummary[];
+          status: string;
+          week: number;
+          year: number;
+        }>(
+        ApiRoutes.Schedule.AutoGenerate,
+        "POST",
+        {},
+        {
+          employee_ids,
+          location_id,
+          week,
+          year
+        }
+      );
+      if (!success||!data)
+        throw new Error(error || message || "An unknown error occurred");
+
+      if (displaySuccess) {
+        enqueueSnackbar("Schedule generated successfully!", { variant: "success" });
+      }
+      mutate();
+      return data;
+    } catch (err: any) {
+      enqueueSnackbar(err?.response?.data?.message || "Schedule generation failed", { variant: "error" });
+      throw err;
+    } finally {
+      if (displayProgress) stopProgress();
+    }
+  };
+  const saveGeneration = async ({
+    scheduled_shifts,
+    location_id
+  }: {
+    scheduled_shifts: Shift[];
+    location_id: number;
+  }, options?: ApiOptions) => {
+    const { displayProgress = false, displaySuccess = false } = options || {};
+    try {
+      if (displayProgress) startProgress();
+      const { message, success, error,data } = await useApi<string>(
+        ApiRoutes.Schedule.SaveGeneration,
+        "POST",
+        {},
+        {
+          scheduled_shifts,
+          location_id
+        }
+      );
+      if (!success)
+        throw new Error(error || message || "An unknown error occurred");
+
+      if (displaySuccess) {
+        enqueueSnackbar("Schedule generated successfully!", { variant: "success" });
+      }
+      mutate();
+      return data;
+    } catch (err: any) {
+      enqueueSnackbar(err?.response?.data?.message || "Schedule generation failed", { variant: "error" });
+      throw err;
+    } finally {
+      if (displayProgress) stopProgress();
+    }
+  };
 
   return {
     schedules,
@@ -207,5 +318,7 @@ export function useSchedule(autoFetch: boolean = false, params?: PaginationParam
     createSchedule,
     updateSchedule,
     deleteSchedule,
+    autoGenerateSchedule,
+    saveGeneration,
   };
 }

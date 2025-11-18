@@ -127,6 +127,7 @@ export function useShift({
     isLoading,
     readOne,
     createOne,
-    updateOne
+    updateOne,
+    mutate
   };
 }

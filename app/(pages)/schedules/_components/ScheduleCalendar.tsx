@@ -23,6 +23,9 @@ import { useShift } from "@/hooks/shift/use-shift";
 import ShiftPlaceholder from "./ShiftPlaceholder";
 import { createRoot } from "react-dom/client";
 import { Any } from "@/common/types/types";
+import AutoGenerateScheduleModal from "./auto-generate-schedule-modal";
+import { Button } from "@/components/ui/button";
+import { Zap } from "lucide-react";
 
 interface DayWithShifts {
   date: string;
@@ -95,10 +98,11 @@ const ScheduleCalendar: FunctionComponent = () => {
   const calendarContainerRef = useRef<HTMLDivElement | null>(null);
   const calendarRef = useRef<FullCalendar>(null);
 
-  const { readSchedulesByMonth, deleteSchedule } = useSchedule();
+  const { readSchedulesByMonth, deleteSchedule, mutate } = useSchedule();
 
   const [selectedLocation, setSelectedLocation] = useState<string>("");
-  const { shifts } = useShift({ location_id: selectedLocation, autoFetch: true })
+  const { shifts, mutate: shiftMutate } = useShift({ location_id: selectedLocation, autoFetch: true })
+  const [isScheduleModalOpen, setIsScheduleModalOpen] = useState(false);
 
   const [events, setEvents] = useState<EventInput[]>([]);
   const [createRange, setCreateRange] = useState<DateSelectArg | null>(null);
@@ -121,7 +125,6 @@ const ScheduleCalendar: FunctionComponent = () => {
     }
   );
 
-  console.log(calendarHeight)
 
   // const renderLegend = () => {
   //   const map: Record<
@@ -399,7 +402,24 @@ const ScheduleCalendar: FunctionComponent = () => {
 
   return (
     <>
-      <div className="flex justify-end mb-4">
+      <div className="flex justify-between items-center mb-4">
+        <Button
+          onClick={() => setIsScheduleModalOpen(true)}
+          className="w-full md:w-auto bg-indigo-600 hover:bg-indigo-700 text-white"
+
+        >
+          <Zap className="h-4 w-4 mr-2" />
+          Genereer Rooster
+        </Button>
+        <AutoGenerateScheduleModal
+          isOpen={isScheduleModalOpen}
+          onClose={() => setIsScheduleModalOpen(false)}
+          onScheduleGenerated={(_) => {
+            mutate();
+            shiftMutate();
+            setIsScheduleModalOpen(false);
+          }}
+        />
         <LocationSelect
           value={selectedLocation}
           onChange={(e) => setSelectedLocation(e.target.value)}
@@ -918,7 +938,7 @@ const ScheduleCalendar: FunctionComponent = () => {
               initialShiftId={editEvent?.event.extendedProps.location_shift_id}
             />
           )}
-          
+
         </div>
 
         {sidebarDate && (
