@@ -1,6 +1,5 @@
 import { z } from 'zod';
 
-// Zod schema voor CreateLocation
 export const createLocationSchema = z.object({
   name: z.string().min(1, "Naam is verplicht"),
   address: z.string().min(1, "Adres is verplicht"),
@@ -8,13 +7,14 @@ export const createLocationSchema = z.object({
   organisation_id: z.string().uuid().min(1, "Organisatie ID is verplicht"),
 });
 
-// Type voor CreateLocation (geïnferreerd van het schema)
 export type CreateLocation = z.infer<typeof createLocationSchema>;
 
-// Zod schema voor Location (CreateLocation met id)
 export const locationSchema = createLocationSchema.extend({
   id: z.string().uuid(),
+  occupied: z.number().int().nonnegative(),
+  available: z.number().int().nonnegative(),
+  created_at: z.string(),
+  updated_at: z.string(),
 });
 
-// Type voor Location (geïnferreerd van het schema)
-export type Location = z.infer<typeof locationSchema> & {created_at?:string};
+export type Location = z.infer<typeof locationSchema>;

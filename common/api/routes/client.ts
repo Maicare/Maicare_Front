@@ -16,6 +16,11 @@ const ApiRoutes = {
     ReadAll: prefix + "/{id}/appointment_cards",
     Download: prefix + "/{id}/appointment_cards/generate_document",
   },
+  LocationTransfer:{
+    ReadAll: prefix + "/location_transfer",
+    ApproveOrReject: prefix + "/location_transfer/approve_reject",
+    RequestOne: prefix + "/{id}/location_transfer"
+  },
   Medical: {
     Allergies: {
       ReadAll: prefix + "/{id}/allergies",

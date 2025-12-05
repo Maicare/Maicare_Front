@@ -7,7 +7,7 @@ import { Any } from "@/common/types/types";
  * @returns A string representing the URL search parameters.
  */
 export function constructUrlSearchParams(params: Record<string, Any>): string {
-  const queryParts: string[] = ["?"];
+  const queryParts: string[] = [];
 
   Object.entries(params).forEach(([key, value]) => {
     if (value === undefined || value === null || !value) {
@@ -26,6 +26,6 @@ export function constructUrlSearchParams(params: Record<string, Any>): string {
     }
   });
 
-  // Join all parts with "&" and return the query string
-  return queryParts.join('&');
+  // Only add "?" if there are actual parameters
+  return queryParts.length > 0 ? `?${queryParts.join('&')}` : '';
 }

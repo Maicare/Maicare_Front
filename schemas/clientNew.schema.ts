@@ -64,3 +64,13 @@ export type UpdateClientRequestBody = Omit<CreateClientInput,"date_of_birth"> & 
     date_of_birth: string;
     id: Id;
 }
+
+// Alternative with more specific validation:
+export const requestLocationTransferSchema = z.object({
+  from_location_id: z.number().int().nonnegative(),
+  new_mentor_id: z.string().min(1, "Mentor ID cannot be empty"),
+  reason: z.string().min(1, "Reason cannot be empty"),
+  to_location_id: z.number().int().nonnegative(),
+});
+export type RequestLocationTransfer = z.infer<typeof requestLocationTransferSchema>;
+

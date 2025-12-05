@@ -5,6 +5,10 @@ export type Location = {
   name: string;
   address: string;
   capacity: number;
+  occupied: number;
+  available: number;
+  created_at: string;
+  updated_at: string;
   organisation_id: string;
 };
 

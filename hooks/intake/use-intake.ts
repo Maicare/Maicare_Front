@@ -20,7 +20,7 @@ export function useIntake({
     search,
     sort_by,
     page = 1,
-    page_size = 12,
+    page_size,
     autoFetch = true,
 }: Partial<IntakeSearchParams & { autoFetch?: boolean }>) {
 
@@ -35,12 +35,12 @@ export function useIntake({
         error,
         mutate,
     } = useSWR<PaginatedResponse<IntakeFormType> | null>(
-        stringConstructor(
+        autoFetch ? stringConstructor(
             ApiRoutes.IntakeForm.CreateOne,
-            constructUrlSearchParams({ search, sort_by, page, page_size })
-        ), // Endpoint to fetch clients
+            constructUrlSearchParams({ search, sort_by, page, ...(page_size !== undefined && { page_size }) })
+        ) : null, // Endpoint to fetch clients
         async (url) => {
-            if (!autoFetch)
+            if (!url || !autoFetch)
                 return {
                     results: [],
                     count: 0,
