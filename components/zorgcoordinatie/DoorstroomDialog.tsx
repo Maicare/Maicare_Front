@@ -28,6 +28,7 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { useSnackbar } from "notistack";
+import { Any } from "@/common/types/types";
 
 const formSchema = z.object({
   clientNaam: z.string().min(2, "Naam moet minimaal 2 karakters bevatten"),
@@ -44,7 +45,7 @@ const formSchema = z.object({
 interface DoorstroomDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  doorstroom?: any;
+  doorstroom?: Any;
 }
 
 export function DoorstroomDialog({
