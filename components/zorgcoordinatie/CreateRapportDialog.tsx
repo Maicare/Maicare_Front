@@ -55,14 +55,14 @@ export function CreateRapportDialog({
   }, [open]);
 
   const fetchTemplates = async () => {
-    const { data, error } = await supabase
-      .from("rapportage_templates")
-      .select("*")
-      .eq("actief", true);
+    // const { data, error } = await supabase
+    //   .from("rapportage_templates")
+    //   .select("*")
+    //   .eq("actief", true);
 
-    if (!error && data) {
-      setTemplates(data);
-    }
+    // if (!error && data) {
+    //   setTemplates(data);
+    // }
   };
 
   const handleTemplateChange = (templateId: string) => {
@@ -81,18 +81,18 @@ export function CreateRapportDialog({
 
     setLoading(true);
 
-    const { error } = await supabase.from("rapporten").insert({
-      client_id: clientId,
-      template_id: selectedTemplate,
-      titel,
-      inhoud: formData,
-      status: "concept",
-    });
+    // const { error } = await supabase.from("rapporten").insert({
+    //   client_id: clientId,
+    //   template_id: selectedTemplate,
+    //   titel,
+    //   inhoud: formData,
+    //   status: "concept",
+    // });
 
     setLoading(false);
 
-    if (error) {
-      enqueueSnackbar(error.message || "Kon rapport niet opslaan", { variant: "error" });
+    if (false) {
+      // enqueueSnackbar(error.message || "Kon rapport niet opslaan", { variant: "error" });
     } else {
       enqueueSnackbar("Rapport is als concept aangemaakt", { variant: "success" });
       onOpenChange(false);

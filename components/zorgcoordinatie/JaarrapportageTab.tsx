@@ -35,185 +35,185 @@ export function JaarrapportageTab() {
 
   const fetchYearStats = async () => {
     setLoading(true);
-    try {
-      const startDate = `${selectedYear}-01-01`;
-      const endDate = `${selectedYear}-12-31`;
+    // try {
+    //   const startDate = `${selectedYear}-01-01`;
+    //   const endDate = `${selectedYear}-12-31`;
 
-      // Fetch clienten statistics
-      const { count: totalClienten, data: clientenData } = await supabase
-        .from('clienten')
-        .select('hoofdaanbieder')
-        .gte('created_at', startDate)
-        .lte('created_at', endDate);
+    //   // Fetch clienten statistics
+    //   // const { count: totalClienten, data: clientenData } = await supabase
+    //   //   .from('clienten')
+    //   //   .select('hoofdaanbieder')
+    //   //   .gte('created_at', startDate)
+    //   //   .lte('created_at', endDate);
 
-      // Count clients per opdrachtgever
-      const opdrachtgeverCount: { [key: string]: number } = {};
-      clientenData?.forEach((client) => {
-        const opdrachtgever = client.hoofdaanbieder || 'Niet toegewezen';
-        opdrachtgeverCount[opdrachtgever] = (opdrachtgeverCount[opdrachtgever] || 0) + 1;
-      });
-      setClientenPerOpdrachtgever(opdrachtgeverCount);
+    //   // // Count clients per opdrachtgever
+    //   // const opdrachtgeverCount: { [key: string]: number } = {};
+    //   // clientenData?.forEach((client) => {
+    //   //   const opdrachtgever = client.hoofdaanbieder || 'Niet toegewezen';
+    //   //   opdrachtgeverCount[opdrachtgever] = (opdrachtgeverCount[opdrachtgever] || 0) + 1;
+    //   // });
+    //   // setClientenPerOpdrachtgever(opdrachtgeverCount);
 
-      // Fetch wachtlijst statistics
-      const { count: wachtlijstClienten } = await supabase
-        .from('wachtlijst')
-        .select('*', { count: 'exact', head: true })
-        .gte('created_at', startDate)
-        .lte('created_at', endDate);
+    //   // // Fetch wachtlijst statistics
+    //   // const { count: wachtlijstClienten } = await supabase
+    //   //   .from('wachtlijst')
+    //   //   .select('*', { count: 'exact', head: true })
+    //   //   .gte('created_at', startDate)
+    //   //   .lte('created_at', endDate);
 
-      // Fetch incidents
-      const { count: incidenten } = await supabase
-        .from('incidenten')
-        .select('*', { count: 'exact', head: true })
-        .gte('created_at', startDate)
-        .lte('created_at', endDate);
+    //   // // Fetch incidents
+    //   // const { count: incidenten } = await supabase
+    //   //   .from('incidenten')
+    //   //   .select('*', { count: 'exact', head: true })
+    //   //   .gte('created_at', startDate)
+    //   //   .lte('created_at', endDate);
 
-      // Fetch verbeterlog items
-      const { count: verbeterlogItems } = await supabase
-        .from('verbeterlog_items')
-        .select('*', { count: 'exact', head: true })
-        .gte('created_at', startDate)
-        .lte('created_at', endDate);
+    //   // // Fetch verbeterlog items
+    //   // const { count: verbeterlogItems } = await supabase
+    //   //   .from('verbeterlog_items')
+    //   //   .select('*', { count: 'exact', head: true })
+    //   //   .gte('created_at', startDate)
+    //   //   .lte('created_at', endDate);
 
-      // Fetch rapporten
-      const { count: rapporten } = await supabase
-        .from('rapporten')
-        .select('*', { count: 'exact', head: true })
-        .gte('created_at', startDate)
-        .lte('created_at', endDate);
+    //   // // Fetch rapporten
+    //   // const { count: rapporten } = await supabase
+    //   //   .from('rapporten')
+    //   //   .select('*', { count: 'exact', head: true })
+    //   //   .gte('created_at', startDate)
+    //   //   .lte('created_at', endDate);
 
-      // Fetch bedden capaciteit
-      const { data: beddenData } = await supabase
-        .from('bedden_capaciteit')
-        .select('totaal_bedden, bezette_bedden');
+    //   // // Fetch bedden capaciteit
+    //   // const { data: beddenData } = await supabase
+    //   //   .from('bedden_capaciteit')
+    //   //   .select('totaal_bedden, bezette_bedden');
 
-      let totalBedden = 0;
-      let bezetteBedden = 0;
-      beddenData?.forEach((bed) => {
-        totalBedden += bed.totaal_bedden;
-        bezetteBedden += bed.bezette_bedden;
-      });
+    //   // let totalBedden = 0;
+    //   // let bezetteBedden = 0;
+    //   // beddenData?.forEach((bed) => {
+    //   //   totalBedden += bed.totaal_bedden;
+    //   //   bezetteBedden += bed.bezette_bedden;
+    //   // });
 
-      const beddenBezetting = totalBedden > 0 ? Math.round((bezetteBedden / totalBedden) * 100) : 0;
+    //   // const beddenBezetting = totalBedden > 0 ? Math.round((bezetteBedden / totalBedden) * 100) : 0;
 
-      // Calculate average waiting time
-      const { data: wachtlijstData } = await supabase
-        .from('wachtlijst')
-        .select('toegevoegd_op, geplaatst_op')
-        .eq('status', 'geplaatst')
-        .gte('geplaatst_op', startDate)
-        .lte('geplaatst_op', endDate);
+    //   // // Calculate average waiting time
+    //   // const { data: wachtlijstData } = await supabase
+    //   //   .from('wachtlijst')
+    //   //   .select('toegevoegd_op, geplaatst_op')
+    //   //   .eq('status', 'geplaatst')
+    //   //   .gte('geplaatst_op', startDate)
+    //   //   .lte('geplaatst_op', endDate);
 
-      let gemiddeldeWachttijd = 0;
-      if (wachtlijstData && wachtlijstData.length > 0) {
-        const totalWaitDays = wachtlijstData.reduce((sum, item) => {
-          if (item.geplaatst_op) {
-            const days = Math.floor(
-              (new Date(item.geplaatst_op).getTime() - new Date(item.toegevoegd_op).getTime()) / (1000 * 60 * 60 * 24)
-            );
-            return sum + days;
-          }
-          return sum;
-        }, 0);
-        gemiddeldeWachttijd = Math.round(totalWaitDays / wachtlijstData.length);
-      }
+    //   // let gemiddeldeWachttijd = 0;
+    //   // if (wachtlijstData && wachtlijstData.length > 0) {
+    //   //   const totalWaitDays = wachtlijstData.reduce((sum, item) => {
+    //   //     if (item.geplaatst_op) {
+    //   //       const days = Math.floor(
+    //   //         (new Date(item.geplaatst_op).getTime() - new Date(item.toegevoegd_op).getTime()) / (1000 * 60 * 60 * 24)
+    //   //       );
+    //   //       return sum + days;
+    //   //     }
+    //   //     return sum;
+    //   //   }, 0);
+    //   //   gemiddeldeWachttijd = Math.round(totalWaitDays / wachtlijstData.length);
+    //   // }
 
-      setStats({
-        totalClienten: totalClienten || 0,
-        nieuweAanmeldingen: 0, // Mock data - zou uit een aanmeldingen tabel moeten komen
-        afgerondeIntakes: 0, // Mock data
-        wachtlijstClienten: wachtlijstClienten || 0,
-        doorstroomClienten: 0, // Mock data
-        uitstroomClienten: 0, // Mock data
-        incidenten: incidenten || 0,
-        verbeterlogItems: verbeterlogItems || 0,
-        beddenBezetting,
-        gemiddeldeWachttijd,
-      });
-    } catch (error) {
-      console.error('Error fetching year stats:', error);
-      enqueueSnackbar("Kon jaarstatistieken niet laden", { variant: "error" });
-    } finally {
-      setLoading(false);
-    }
+    //   // setStats({
+    //   //   totalClienten: totalClienten || 0,
+    //   //   nieuweAanmeldingen: 0, // Mock data - zou uit een aanmeldingen tabel moeten komen
+    //   //   afgerondeIntakes: 0, // Mock data
+    //   //   wachtlijstClienten: wachtlijstClienten || 0,
+    //   //   doorstroomClienten: 0, // Mock data
+    //   //   uitstroomClienten: 0, // Mock data
+    //   //   incidenten: incidenten || 0,
+    //   //   verbeterlogItems: verbeterlogItems || 0,
+    //   //   beddenBezetting,
+    //   //   gemiddeldeWachttijd,
+    //   // });
+    // } catch (error) {
+    //   console.error('Error fetching year stats:', error);
+    //   enqueueSnackbar("Kon jaarstatistieken niet laden", { variant: "error" });
+    // } finally {
+    //   setLoading(false);
+    // }
   };
 
   const handleExportYearReport = async (type: "excel" | "pdf") => {
-    try {
-      const startDate = `${selectedYear}-01-01`;
-      const endDate = `${selectedYear}-12-31`;
+    // try {
+    //   const startDate = `${selectedYear}-01-01`;
+    //   const endDate = `${selectedYear}-12-31`;
 
-      // Fetch all data for export
-      const { data: clientenData } = await supabase
-        .from('clienten')
-        .select('*')
-        .gte('created_at', startDate)
-        .lte('created_at', endDate);
+    //   // Fetch all data for export
+    //   const { data: clientenData } = await supabase
+    //     .from('clienten')
+    //     .select('*')
+    //     .gte('created_at', startDate)
+    //     .lte('created_at', endDate);
 
-      const { data: wachtlijstData } = await supabase
-        .from('wachtlijst')
-        .select('*')
-        .gte('created_at', startDate)
-        .lte('created_at', endDate);
+    //   const { data: wachtlijstData } = await supabase
+    //     .from('wachtlijst')
+    //     .select('*')
+    //     .gte('created_at', startDate)
+    //     .lte('created_at', endDate);
 
-      const { data: incidentenData } = await supabase
-        .from('incidenten')
-        .select('*')
-        .gte('created_at', startDate)
-        .lte('created_at', endDate);
+    //   const { data: incidentenData } = await supabase
+    //     .from('incidenten')
+    //     .select('*')
+    //     .gte('created_at', startDate)
+    //     .lte('created_at', endDate);
 
-      // Export summary
-      const summaryData = [{
-        Jaar: selectedYear,
-        "Totaal Cliënten": stats.totalClienten,
-        "Nieuwe Aanmeldingen": stats.nieuweAanmeldingen,
-        "Afgeronde Intakes": stats.afgerondeIntakes,
-        "Wachtlijst": stats.wachtlijstClienten,
-        "Doorstroom": stats.doorstroomClienten,
-        "Uitstroom": stats.uitstroomClienten,
-        "Incidenten": stats.incidenten,
-        "Verbeterlog Items": stats.verbeterlogItems,
-        "Bedden Bezetting %": stats.beddenBezetting,
-        "Gem. Wachttijd (dagen)": stats.gemiddeldeWachttijd,
-      }];
+    //   // Export summary
+    //   const summaryData = [{
+    //     Jaar: selectedYear,
+    //     "Totaal Cliënten": stats.totalClienten,
+    //     "Nieuwe Aanmeldingen": stats.nieuweAanmeldingen,
+    //     "Afgeronde Intakes": stats.afgerondeIntakes,
+    //     "Wachtlijst": stats.wachtlijstClienten,
+    //     "Doorstroom": stats.doorstroomClienten,
+    //     "Uitstroom": stats.uitstroomClienten,
+    //     "Incidenten": stats.incidenten,
+    //     "Verbeterlog Items": stats.verbeterlogItems,
+    //     "Bedden Bezetting %": stats.beddenBezetting,
+    //     "Gem. Wachttijd (dagen)": stats.gemiddeldeWachttijd,
+    //   }];
 
-      const filename = `jaarrapportage-${selectedYear}-samenvatting`;
+    //   const filename = `jaarrapportage-${selectedYear}-samenvatting`;
       
-      if (type === "excel") {
-        exportToExcel(summaryData, filename);
-      } else {
-        exportToPDF(summaryData, filename, `Jaarrapportage ${selectedYear} - Samenvatting`);
-      }
+    //   if (type === "excel") {
+    //     exportToExcel(summaryData, filename);
+    //   } else {
+    //     exportToPDF(summaryData, filename, `Jaarrapportage ${selectedYear} - Samenvatting`);
+    //   }
 
-      // Export detailed client data if available
-      if (clientenData && clientenData.length > 0) {
-        const clientenExport = clientenData.map((client) => ({
-          Naam: client.naam,
-          Leeftijd: client.leeftijd,
-          Locatie: client.locatie,
-          Zorgvorm: client.zorgvorm,
-          Hoofdaanbieder: client.hoofdaanbieder,
-          Startdatum: client.start_datum,
-          Einddatum: client.eind_datum,
-          "Beschikking Gebruikt": client.beschikkings_gebruikt,
-          "Beschikking Totaal": client.beschikkings_totaal,
-          Herindicatie: client.herindicatie_datum,
-        }));
+    //   // Export detailed client data if available
+    //   if (clientenData && clientenData.length > 0) {
+    //     const clientenExport = clientenData.map((client) => ({
+    //       Naam: client.naam,
+    //       Leeftijd: client.leeftijd,
+    //       Locatie: client.locatie,
+    //       Zorgvorm: client.zorgvorm,
+    //       Hoofdaanbieder: client.hoofdaanbieder,
+    //       Startdatum: client.start_datum,
+    //       Einddatum: client.eind_datum,
+    //       "Beschikking Gebruikt": client.beschikkings_gebruikt,
+    //       "Beschikking Totaal": client.beschikkings_totaal,
+    //       Herindicatie: client.herindicatie_datum,
+    //     }));
         
-        const clientenFilename = `jaarrapportage-${selectedYear}-clienten`;
+    //     const clientenFilename = `jaarrapportage-${selectedYear}-clienten`;
         
-        if (type === "excel") {
-          exportToExcel(clientenExport, clientenFilename);
-        } else {
-          exportToPDF(clientenExport, clientenFilename, `Jaarrapportage ${selectedYear} - Cliënten Details`);
-        }
-      }
+    //     if (type === "excel") {
+    //       exportToExcel(clientenExport, clientenFilename);
+    //     } else {
+    //       exportToPDF(clientenExport, clientenFilename, `Jaarrapportage ${selectedYear} - Cliënten Details`);
+    //     }
+    //   }
 
-      enqueueSnackbar(`Jaarrapportage ${selectedYear} is geëxporteerd naar ${type === "excel" ? "Excel" : "PDF"}`, { variant: "success" });
-    } catch (error) {
-      console.error('Error exporting year report:', error);
-      enqueueSnackbar("Kon jaarrapportage niet exporteren", { variant: "error" });
-    }
+    //   enqueueSnackbar(`Jaarrapportage ${selectedYear} is geëxporteerd naar ${type === "excel" ? "Excel" : "PDF"}`, { variant: "success" });
+    // } catch (error) {
+    //   console.error('Error exporting year report:', error);
+    //   enqueueSnackbar("Kon jaarrapportage niet exporteren", { variant: "error" });
+    // }
   };
 
   if (loading) {

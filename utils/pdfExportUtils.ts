@@ -80,9 +80,9 @@ export const exportAfsluitrapportToPDF = (uitstroom: any, trajectData: any) => {
   ];
 
   trajectInfo.forEach(([label, value]) => {
-    doc.setFont(undefined, "bold");
+    doc.setFont("", "bold");
     doc.text(`${label}:`, 14, yPos);
-    doc.setFont(undefined, "normal");
+    doc.setFont("", "normal");
     doc.text(String(value), 60, yPos);
     yPos += 6;
   });
@@ -91,7 +91,7 @@ export const exportAfsluitrapportToPDF = (uitstroom: any, trajectData: any) => {
 
   // Section 2: Uitstroom Details
   doc.setFontSize(14);
-  doc.setFont(undefined, "bold");
+  doc.setFont("", "bold");
   doc.text("UITSTROOM DETAILS", 14, yPos);
   yPos += 8;
 
@@ -108,9 +108,9 @@ export const exportAfsluitrapportToPDF = (uitstroom: any, trajectData: any) => {
   }
 
   uitstroomInfo.forEach(([label, value]) => {
-    doc.setFont(undefined, "bold");
+    doc.setFont("", "bold");
     doc.text(`${label}:`, 14, yPos);
-    doc.setFont(undefined, "normal");
+    doc.setFont("", "normal");
     doc.text(String(value), 60, yPos);
     yPos += 6;
   });
@@ -120,12 +120,12 @@ export const exportAfsluitrapportToPDF = (uitstroom: any, trajectData: any) => {
   // Section 3: Evaluatie
   if (uitstroom.evaluatie) {
     doc.setFontSize(14);
-    doc.setFont(undefined, "bold");
+    doc.setFont("", "bold");
     doc.text("EVALUATIE", 14, yPos);
     yPos += 8;
 
     doc.setFontSize(10);
-    doc.setFont(undefined, "normal");
+    doc.setFont("", "normal");
     const evaluatieLines = doc.splitTextToSize(uitstroom.evaluatie, 180);
     doc.text(evaluatieLines, 14, yPos);
     yPos += evaluatieLines.length * 5 + 5;
@@ -139,12 +139,12 @@ export const exportAfsluitrapportToPDF = (uitstroom: any, trajectData: any) => {
     }
 
     doc.setFontSize(14);
-    doc.setFont(undefined, "bold");
+    doc.setFont("", "bold");
     doc.text("OPMERKINGEN", 14, yPos);
     yPos += 8;
 
     doc.setFontSize(10);
-    doc.setFont(undefined, "normal");
+    doc.setFont("", "normal");
     const opmerkingenLines = doc.splitTextToSize(uitstroom.opmerkingen, 180);
     doc.text(opmerkingenLines, 14, yPos);
     yPos += opmerkingenLines.length * 5 + 5;

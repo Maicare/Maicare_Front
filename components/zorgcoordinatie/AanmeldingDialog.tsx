@@ -93,15 +93,15 @@ export function AanmeldingDialog({
   }, [open]);
 
   async function fetchVerwijzendeOrganisaties() {
-    const { data } = await supabase
-      .from('verwijzende_organisaties')
-      .select('*')
-      .order('gebruikt_count', { ascending: false })
-      .limit(10);
+    // const { data } = await supabase
+    //   .from('verwijzende_organisaties')
+    //   .select('*')
+    //   .order('gebruikt_count', { ascending: false })
+    //   .limit(10);
     
-    if (data) {
-      setVeelVoorkomendOrganisaties(data);
-    }
+    // if (data) {
+    //   setVeelVoorkomendOrganisaties(data);
+    // }
   }
 
   async function uploadGezinsplan(clientNaam: string): Promise<string | null> {
@@ -129,32 +129,32 @@ export function AanmeldingDialog({
   }
 
   async function saveOrUpdateOrganisatie(organisatieNaam: string, contactData: Any) {
-    const { data: existing } = await supabase
-      .from('verwijzende_organisaties')
-      .select('*')
-      .eq('organisatie_naam', organisatieNaam)
-      .maybeSingle();
+    // const { data: existing } = await supabase
+    //   .from('verwijzende_organisaties')
+    //   .select('*')
+    //   .eq('organisatie_naam', organisatieNaam)
+    //   .maybeSingle();
 
-    if (existing) {
-      await supabase
-        .from('verwijzende_organisaties')
-        .update({ 
-          gebruikt_count: existing.gebruikt_count + 1,
-          contactpersoon: contactData.contactpersoon || existing.contactpersoon,
-          telefoon: contactData.telefoon || existing.telefoon,
-          email: contactData.email || existing.email,
-        })
-        .eq('id', existing.id);
-    } else {
-      await supabase
-        .from('verwijzende_organisaties')
-        .insert([{
-          organisatie_naam: organisatieNaam,
-          contactpersoon: contactData.contactpersoon,
-          telefoon: contactData.telefoon,
-          email: contactData.email,
-        }]);
-    }
+    // if (existing) {
+    //   await supabase
+    //     .from('verwijzende_organisaties')
+    //     .update({ 
+    //       gebruikt_count: existing.gebruikt_count + 1,
+    //       contactpersoon: contactData.contactpersoon || existing.contactpersoon,
+    //       telefoon: contactData.telefoon || existing.telefoon,
+    //       email: contactData.email || existing.email,
+    //     })
+    //     .eq('id', existing.id);
+    // } else {
+    //   await supabase
+    //     .from('verwijzende_organisaties')
+    //     .insert([{
+    //       organisatie_naam: organisatieNaam,
+    //       contactpersoon: contactData.contactpersoon,
+    //       telefoon: contactData.telefoon,
+    //       email: contactData.email,
+    //     }]);
+    // }
   }
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {

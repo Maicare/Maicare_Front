@@ -58,21 +58,21 @@ export function EditClientDialog({
     const mentorValue = selectedMentor === "none" ? "" : selectedMentor;
     
     try {
-      const { error } = await supabase
-        .from('clienten')
-        .update({ 
-          mentor: mentorValue,
-          contactpersoon_hoofdaanbieder: contactpersoon,
-          contactpersoon_telefoon: telefoon,
-          contactpersoon_email: email
-        })
-        .eq('id', client.id);
+      // const { error } = await supabase
+      //   .from('clienten')
+      //   .update({ 
+      //     mentor: mentorValue,
+      //     contactpersoon_hoofdaanbieder: contactpersoon,
+      //     contactpersoon_telefoon: telefoon,
+      //     contactpersoon_email: email
+      //   })
+      //   .eq('id', client.id);
 
-      if (error) throw error;
+      // if (error) throw error;
 
-      onSave?.(client.id, mentorValue);
-      enqueueSnackbar(`Gegevens succesvol bijgewerkt voor ${client.naam}`, { variant: "success" });
-      onOpenChange(false);
+      // onSave?.(client.id, mentorValue);
+      // enqueueSnackbar(`Gegevens succesvol bijgewerkt voor ${client.naam}`, { variant: "success" });
+      // onOpenChange(false);
     } catch (error) {
       console.error('Error updating client:', error);
       enqueueSnackbar("Kon gegevens niet opslaan", { variant: "error" });

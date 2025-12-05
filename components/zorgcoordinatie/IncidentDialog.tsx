@@ -101,18 +101,18 @@ export function IncidentDialog({
   const fetchVerbeterlogItems = async () => {
     if (!incident?.id) return;
     
-    const { data, error } = await supabase
-      .from("verbeterlog_items")
-      .select("*")
-      .eq("incident_id", incident.id)
-      .order("created_at", { ascending: false });
+    // const { data, error } = await supabase
+    //   .from("verbeterlog_items")
+    //   .select("*")
+    //   .eq("incident_id", incident.id)
+    //   .order("created_at", { ascending: false });
 
-    if (error) {
-      console.error("Error fetching verbeterlog items:", error);
-      return;
-    }
+    // if (error) {
+    //   console.error("Error fetching verbeterlog items:", error);
+    //   return;
+    // }
 
-    setVerbeterlogItems(data || []);
+    // setVerbeterlogItems(data || []);
   };
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
@@ -132,38 +132,38 @@ export function IncidentDialog({
       };
 
       if (incident?.id) {
-        const { error } = await supabase
-          .from("incidenten")
-          .update(data)
-          .eq("id", incident.id);
+        // const { error } = await supabase
+        //   .from("incidenten")
+        //   .update(data)
+        //   .eq("id", incident.id);
 
-        if (error) throw error;
+        // if (error) throw error;
       } else {
         // Insert incident en krijg het ID terug
-        const { data: newIncident, error: incidentError } = await supabase
-          .from("incidenten")
-          .insert([data])
-          .select()
-          .single();
+        // const { data: newIncident, error: incidentError } = await supabase
+        //   .from("incidenten")
+        //   .insert([data])
+        //   .select()
+        //   .single();
 
-        if (incidentError) throw incidentError;
+        // if (incidentError) throw incidentError;
 
         // Voeg verbeteringen toe aan verbeterlog
-        if (verbeteringen.length > 0 && newIncident) {
-          const verbeterlogData = verbeteringen.map(v => ({
-            incident_id: newIncident.id,
-            verbeterpunt: v.verbeterpunt,
-            verantwoordelijke: v.verantwoordelijke,
-            deadline: v.deadline || null,
-            status: "open" as const,
-          }));
+      //   if (verbeteringen.length > 0 && newIncident) {
+      //     const verbeterlogData = verbeteringen.map(v => ({
+      //       incident_id: newIncident.id,
+      //       verbeterpunt: v.verbeterpunt,
+      //       verantwoordelijke: v.verantwoordelijke,
+      //       deadline: v.deadline || null,
+      //       status: "open" as const,
+      //     }));
 
-          const { error: verbeterlogError } = await supabase
-            .from("verbeterlog_items")
-            .insert(verbeterlogData);
+      //     const { error: verbeterlogError } = await supabase
+      //       .from("verbeterlog_items")
+      //       .insert(verbeterlogData);
 
-          if (verbeterlogError) throw verbeterlogError;
-        }
+      //     if (verbeterlogError) throw verbeterlogError;
+      //   }
       }
 
       enqueueSnackbar(`Incident is succesvol ${incident ? "bijgewerkt" : "geregistreerd"}.`, { variant: "success" });

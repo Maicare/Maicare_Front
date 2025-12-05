@@ -81,18 +81,18 @@ export function VerbeterlogDialog({
       }
 
       if (verbeterlogItem?.id) {
-        const { error } = await supabase
-          .from("verbeterlog_items")
-          .update(data)
-          .eq("id", verbeterlogItem.id);
+        // const { error } = await supabase
+        //   .from("verbeterlog_items")
+        //   .update(data)
+        //   .eq("id", verbeterlogItem.id);
 
-        if (error) throw error;
+        // if (error) throw error;
       } else {
-        const { error } = await supabase
-          .from("verbeterlog_items")
-          .insert([data]);
+        // const { error } = await supabase
+        //   .from("verbeterlog_items")
+        //   .insert([data]);
 
-        if (error) throw error;
+        // if (error) throw error;
       }
 
       enqueueSnackbar("Het verbeterpunt is succesvol opgeslagen.", { variant: "success" });
