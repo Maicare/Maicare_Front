@@ -172,9 +172,11 @@ export default function AppointmentCardEditPage() {
       },
       {} as typeof appointmentData
     );
-    appointments
-      ? updateAppointment(transformed)
-      : createAppointment(transformed);
+    if ((appointmentData as any).id) {
+      updateAppointment(transformed);
+    } else {
+      createAppointment(transformed);
+    }
   };
 
   return (

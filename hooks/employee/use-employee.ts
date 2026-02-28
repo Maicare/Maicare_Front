@@ -20,7 +20,8 @@ import { EmployeeForm as EmployeeFormType } from "@/types/employee.types";
 import { useMutation } from "@/common/hooks/use-mutate";
 import { AxiosError } from "axios";
 import { useRouter } from "next/navigation";
-import {  CreateEmployeeRequestBody, UpdateEmployeeRequestBody } from "@/schemas/employee.schema";
+import { CreateEmployeeRequestBody, UpdateEmployeeRequestBody } from "@/schemas/employee.schema";
+import { Id } from "@/common/types/types";
 
 export function useEmployee({
   search,
@@ -32,8 +33,8 @@ export function useEmployee({
   page: pageParam = 1,
   page_size = 10,
   autoFetch = true,
-  v:_v
-}: Partial<EmployeesSearchParams & { autoFetch?: boolean,v?:string }>) {
+  v: _v
+}: Partial<EmployeesSearchParams & { autoFetch?: boolean, v?: string }>) {
   const [page, setPage] = useState(pageParam);
   const { enqueueSnackbar } = useSnackbar();
   const router = useRouter();
@@ -57,7 +58,7 @@ export function useEmployee({
       })
     ) : null, // Endpoint to fetch Locations
     async (url) => {
-      if (!url){
+      if (!url) {
         return {
           results: [],
           count: 0,
@@ -72,10 +73,10 @@ export function useEmployee({
       }
       return response.data.data; // Assuming API returns data inside a "data" field
     },
-    { shouldRetryOnError: false,dedupingInterval:10000 }
+    { shouldRetryOnError: false, dedupingInterval: 10000 }
   );
   const isLoading = !employees && !error;
-  const readOne = async (id: number, options?: ApiOptions) => {
+  const readOne = async (id: Id, options?: ApiOptions) => {
     const { displayProgress = false, displaySuccess = false } = options || {};
     try {
       // Display progress bar
@@ -176,7 +177,7 @@ export function useEmployee({
       if (displayProgress) startProgress();
       const { message, success, data, error } =
         await useApi<EmployeeDetailsResponse>(
-          ApiRoutes.Employee.UpdateOne.replace("{id}",employee.id.toString()),
+          ApiRoutes.Employee.UpdateOne.replace("{id}", employee.id.toString()),
           "PUT",
           {},
           employee
@@ -202,7 +203,7 @@ export function useEmployee({
     }
   };
 
-  const deleteOne = async (id: number, options?: ApiOptions) => {
+  const deleteOne = async (id: Id, options?: ApiOptions) => {
     const { displayProgress = false, displaySuccess = false } = options || {};
     try {
       // Display progress bar
@@ -233,7 +234,7 @@ export function useEmployee({
   };
 
   const updateEmployeePicture = async (
-    id: number,
+    id: Id,
     attachement_id: string,
     options?: ApiOptions
   ) => {
@@ -306,7 +307,7 @@ export function useEmployee({
 
   const updateEmployee = async (
     newEmployee: EmployeeFormType,
-    employeeId: number
+    employeeId: Id
   ) => {
     try {
       const created = await patchEmployee(

@@ -17,7 +17,7 @@ import { employeeOldSchema } from "@/schemas/employee.schema";
 import { Id } from "@/common/types/types";
 
 type PropsType = {
-    employeeId?: number;
+    employeeId?: Id;
 }
 
 

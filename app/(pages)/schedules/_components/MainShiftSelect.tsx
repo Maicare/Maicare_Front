@@ -10,10 +10,12 @@ import {
   SelectItem,
 } from "@/components/ui/select";
 
+import { Id } from "@/common/types/types";
+
 interface MainShiftSelectProps {
-  locationId: number;
-  value: number;
-  onChange: (shiftId: number) => void;
+  locationId: Id;
+  value: Id;
+  onChange: (shiftId: Id) => void;
 }
 
 const MainShiftSelect: FunctionComponent<MainShiftSelectProps> = ({
@@ -30,7 +32,7 @@ const MainShiftSelect: FunctionComponent<MainShiftSelectProps> = ({
 
   useEffect(() => {
     if (!isLoading) {
-      if (value && !options.some((s) => s.id === value)) {
+      if (value && !options.some((s) => String(s.id) === String(value))) {
         onChange(0);
       }
     }
@@ -38,7 +40,7 @@ const MainShiftSelect: FunctionComponent<MainShiftSelectProps> = ({
   return (
     <Select
       value={String(value)}
-      onValueChange={(val) => onChange(Number(val))}
+      onValueChange={(val) => onChange(val as Id)}
       disabled={isLoading || options.length === 0}
     >
       <SelectTrigger className="w-full">

@@ -20,7 +20,7 @@ import { Id } from '@/common/types/types';
 type Props = {
     mode: "create" | "update";
     handleCreate: (values: CreateShift) => void;
-    handleUpdate: (values: CreateShift&{id:Id}) => void;
+    handleUpdate: (values: CreateShift & { id: Id }) => void;
     shift?: Shift;
     isOpen: boolean;
     handleOpen: (bool: boolean) => void;
@@ -46,7 +46,7 @@ const CreateShiftSheet = ({ mode, handleCreate, handleUpdate, shift, handleOpen,
         if (mode === "create") {
             handleCreate(values);
         } else {
-            handleUpdate(values);
+            handleUpdate({ ...values, id: shift!.id } as CreateShift & { id: Id });
         }
         handleOpen(false);
         setLoading(false);
@@ -111,7 +111,7 @@ const CreateShiftSheet = ({ mode, handleCreate, handleUpdate, shift, handleOpen,
                                         <div className="relative">
                                             <ReactDatePicker
                                                 selected={createDateFromTimeString(field.value)}
-                                                onChange={(d)=> d && field.onChange(formatTimeFromDate(d))}
+                                                onChange={(d) => d && field.onChange(formatTimeFromDate(d))}
                                                 showTimeSelect
                                                 showTimeSelectOnly
                                                 timeIntervals={15}
@@ -135,7 +135,7 @@ const CreateShiftSheet = ({ mode, handleCreate, handleUpdate, shift, handleOpen,
                                         <div className="relative">
                                             <ReactDatePicker
                                                 selected={createDateFromTimeString(field.value)}
-                                                onChange={(d)=> d && field.onChange(formatTimeFromDate(d))}
+                                                onChange={(d) => d && field.onChange(formatTimeFromDate(d))}
                                                 showTimeSelect
                                                 showTimeSelectOnly
                                                 timeIntervals={15}

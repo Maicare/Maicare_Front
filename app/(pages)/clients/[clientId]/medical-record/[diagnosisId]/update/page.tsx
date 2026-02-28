@@ -9,14 +9,14 @@ import { Id } from "@/common/types/types";
 
 const UpdateDiagnosisPage = () => {
     const router = useRouter();
-    const { clientId,diagnosisId } = useParams();
+    const { clientId, diagnosisId } = useParams();
     const onSuccess = () => {
         router.push(`/clients/${clientId}/medical-record`)
     }
     const onCancel = () => {
         router.back();
     }
-    const { readOne } = useDiagnosis({clientId:parseInt(clientId as string), autoFetch: false });
+    const { readOne } = useDiagnosis({ clientId: parseInt(clientId as string), autoFetch: false });
     const [diagnose, setDiagnose] = useState<Diagnosis | undefined>(undefined);
     const [isLoading, setIsLoading] = useState(false);
     useEffect(() => {
@@ -29,7 +29,7 @@ const UpdateDiagnosisPage = () => {
         if (clientId && diagnosisId) fetchDiagnose(+diagnosisId);
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [clientId,diagnosisId]);
+    }, [clientId, diagnosisId]);
     if (isLoading || !diagnose) {
         return (
             // <UpsertClientFormSkeleton />
@@ -56,7 +56,7 @@ const UpdateDiagnosisPage = () => {
                         start_date: new Date(medication.start_date),
                         end_date: new Date(medication.end_date)
                     })),
-                }}
+                } as any}
             />
         </div>
     )

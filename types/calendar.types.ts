@@ -1,6 +1,7 @@
 import { Id } from "@/common/types/types";
 
 export interface CalendarAppointment {
+  id: Id;
   description: string;
   start_time: Date;
   end_time: Date;

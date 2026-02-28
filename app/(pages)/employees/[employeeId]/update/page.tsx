@@ -12,7 +12,7 @@ import EmployeeFormSkeleton from "../_components/UpsertEmployeeFormSkeleton";
 const Page = () => {
     const router = useRouter();
     const { employeeId } = useParams();
-    const onSuccess = (id: number) => {
+    const onSuccess = (id: Id) => {
         router.push(`/employee/${id}`)
     }
     const onCancel = () => {
@@ -29,8 +29,8 @@ const Page = () => {
             setIsLoading(false);
         }
         if (employeeId) fetchEmployee(+employeeId);
-        
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [employeeId]);
     return (
         <div className="container mx-auto">

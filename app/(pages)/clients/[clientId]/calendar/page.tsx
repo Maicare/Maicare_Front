@@ -14,7 +14,7 @@ const Page: FunctionComponent<PageProps> = ({ params }) => {
   return (
     <>
       <Breadcrumb pageName="Opdrachtgevers" />
-      <BookingCalendar clientId={Number(clientId)} />
+      <BookingCalendar clientId={clientId} />
     </>
   );
 };

@@ -33,7 +33,7 @@ const getContrast = (hex: string) => {
 
 interface Props {
   employeeId?: number;
-  clientId?: number;
+  clientId?: Id;
   initialEvents?: EventInput[];
 }
 
@@ -76,7 +76,7 @@ export default function BookingCalendar({
     const employeeIds = a.participants_details?.map((p) => p.employee_id) ?? [];
 
     return {
-      id: String((a as any).id),
+      id: String((a as { id: Id }).id),
       title: a.description ?? "",
       start: new Date(a.start_time),
       end: new Date(a.end_time),

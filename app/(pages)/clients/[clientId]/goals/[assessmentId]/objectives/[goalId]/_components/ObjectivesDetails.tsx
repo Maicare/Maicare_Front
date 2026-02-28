@@ -14,6 +14,7 @@ import { useState, useEffect } from "react";
 import { CreateGoal } from "@/schemas/goal.schema";
 import UpsertGoalSheet from "../../../_components/UpsertGoalSheet";
 import { getColumns, ObjectiveRow } from "./columns";
+import { Id } from "@/common/types/types";
 
 const ObjectivesDetails = ({
   assessmentId,
@@ -28,11 +29,11 @@ const ObjectivesDetails = ({
 
   const { readOne, createObjective } = useGoal({
     autoFetch: false,
-    clientId: parseInt(clientId),
-    assessmentId: parseInt(assessmentId),
+    clientId: clientId,
+    assessmentId: assessmentId,
   });
 
-  const [objectives, setObjectives] = useState<CreateObjective[]>([]);
+  const [objectives, setObjectives] = useState<ObjectiveRow[]>([]);
   const [loadingObjs, setLoadingObjs] = useState(true);
   const [errorObjs, setErrorObjs] = useState<Error | null>(null);
   const [open, setOpen] = useState(false);
@@ -43,7 +44,7 @@ const ObjectivesDetails = ({
 
     async function fetchObjectives() {
       try {
-        const data: GoalWithObjectives = await readOne(parseInt(goalId));
+        const data: GoalWithObjectives = await readOne(goalId);
         if (data.objectives) {
           const sorted = data.objectives
             .slice()
@@ -64,7 +65,7 @@ const ObjectivesDetails = ({
     fetchObjectives();
   }, [goalId]);
 
-  const handleRowClick = (row: Row<Goal>) => {
+  const handleRowClick = (row: Row<ObjectiveRow>) => {
     // router.push(
     //   `/clients/${clientId}/goals/${assessmentId}/objectives/${row.original.id}`
     // );
@@ -77,11 +78,11 @@ const ObjectivesDetails = ({
         due_date: dateOnly,
         objective_description: values.description,
       };
-      await createObjective(parseInt(goalId as string), [objPayload], {
+      await createObjective(goalId, [objPayload], {
         displayProgress: true,
         displaySuccess: true,
       });
-      const updated = await readOne(parseInt(goalId as string));
+      const updated = await readOne(goalId);
       // sort again after create
       const sorted = [...updated.objectives].sort(
         (a, b) =>
@@ -97,7 +98,7 @@ const ObjectivesDetails = ({
   const handleEdit = (obj: ObjectiveRow) => {
     console.log("edit", obj);
   };
-  const handleDelete = (id: number) => {
+  const handleDelete = (id: Id) => {
     console.log("delete", id);
   };
 
@@ -106,7 +107,7 @@ const ObjectivesDetails = ({
       <CardHeader className="flex flex-row items-center justify-between p-0 pb-4">
         <CardTitle className="text-lg flex items-center gap-2">
           <SquareCheck className="text-indigo-400" />
-          Goal's Objectives
+          Goal&apos;s Objectives
         </CardTitle>
         <div className="flex gap-2">
           <UpsertGoalSheet

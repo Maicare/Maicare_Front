@@ -163,7 +163,7 @@ export function useClient({
   };
 
   const updateClientPicture = async (
-    id: number,
+    id: Id,
     attachement_id: string,
     options?: ApiOptions
   ) => {

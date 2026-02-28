@@ -36,9 +36,8 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 
-import MultiEmployeeSelect from "./MultiEmployeeSelect";
 import MultiClientSelect from "./MultiClientSelect";
-import { LocationSelect } from "@/components/employee/LocationSelect";
+import MultiEmployeeSelect from "./MultiEmployeeSelect";
 import RecurrenceSelect from "./RecurrenceSelect";
 import { useCalendar } from "@/hooks/calendar/use-calendar";
 import {
@@ -84,15 +83,14 @@ export interface BookingPopupProps {
   onClose: () => void;
   onUpsert: (p: UpsertPayload, isEdit: boolean) => void;
   onDelete: (id: string) => void;
-  initialClientId?: number;
-  initialEmployeeId?: number;
+  initialClientId?: Id;
+  initialEmployeeId?: Id;
 }
 
 const BookingPopup: FunctionComponent<BookingPopupProps> = ({
   createRange,
   editEvent,
   position,
-  containerRef,
   onClose,
   onUpsert,
   onDelete,
@@ -117,12 +115,12 @@ const BookingPopup: FunctionComponent<BookingPopupProps> = ({
       client_ids: editEvent
         ? (editEvent.event.extendedProps.client_ids as Id[]) ?? []
         : initialClientId != null
-          ? [initialClientId]
+          ? [initialClientId as Id]
           : [],
       participant_employee_ids: editEvent
         ? (editEvent.event.extendedProps.participant_employee_ids as Id[]) ?? []
         : initialEmployeeId != null
-          ? [initialEmployeeId]
+          ? [initialEmployeeId as Id]
           : [],
       description:
         (editEvent?.event.extendedProps.description as string) ?? "",
@@ -141,7 +139,7 @@ const BookingPopup: FunctionComponent<BookingPopupProps> = ({
     },
   });
 
-  const { control, register, handleSubmit, formState: { errors } } = form;
+  const { control, handleSubmit, formState: { errors } } = form;
 
   const chosenColor = useWatch({
     control,
@@ -244,7 +242,7 @@ const BookingPopup: FunctionComponent<BookingPopupProps> = ({
 
     onUpsert(
       {
-        id: editEvent?.event.id ?? String((saved as any)?.id ?? Date.now()),
+        id: editEvent?.event.id ?? String((saved as { id?: string | number })?.id ?? Date.now()),
         ...data,
         textColor: fg,
       },

@@ -31,24 +31,24 @@ const Page = () => {
   return (
     <div className='flex flex-col gap-4'>
       <div className="flex items-start gap-4 w-full">
-        <ProfileInformation 
+        <ProfileInformation
           date_of_birth={employee?.date_of_birth || ""}
           first_name={employee?.first_name || ""}
           last_name={employee?.last_name || ""}
           gender={employee?.gender || ""}
           isParentLoading={isLoading}
           profile_picture={employee?.profile_picture || ""}
-          role_id={employee?.role_id || 0}
+          role_id={(employee?.role_id || 0) as number}
         />
         <PersonalInformation
           email={employee?.email || ""}
           first_name={employee?.first_name || ""}
           last_name={employee?.last_name || ""}
           isParentLoading={isLoading}
-          location_id={employee?.location_id || 0}
+          location_id={(employee?.location_id || 0) as number}
           private_phone_number={employee?.private_phone_number || ""}
         />
-        <WorkInformation 
+        <WorkInformation
           department={employee?.department || "Niet gespecificeerd"}
           position={employee?.position || "Niet gespecificeerd"}
           employee_number={employee?.employee_number || "Niet gespecificeerd"}

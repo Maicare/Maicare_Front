@@ -26,33 +26,33 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     const { open } = useSidebar();
     const router = useRouter();
     const pathname = usePathname();
-    const { clientId, employeeId,locationId } = useParams();
+    const { clientId, employeeId, locationId } = useParams();
     const isClient = pathname.startsWith("/clients/") && pathname !== "/clients/" && pathname !== "/clients/new";
     const isEmployee = pathname.startsWith("/employees/") && pathname !== "/employees/";
     const isLocation = pathname.startsWith("/locations/") && pathname !== "/locations/";
-    const [user, setUser] = useState({ first_name: "Loading", last_name: "", email: "", id: parseInt(employeeId as string) ?? parseInt(clientId as string) ?? parseInt(locationId as string), profile_picture: "/images/avatar-1.jpg" });
+    const [user, setUser] = useState({ first_name: "Loading", last_name: "", email: "", id: parseInt(employeeId as string) ?? parseInt(clientId as string) ?? parseInt(locationId as string), profile_picture: "/images/avatar-1.jpg" } as { first_name: string; last_name: string; email: string; id: any; profile_picture: string });
 
     const [isLoading, setIsLoading] = useState(false);
     const { readOne } = useEmployee({ autoFetch: false });
     const { readOne: readClient } = useClient({ autoFetch: false });
     const { readOne: readLocation } = useLocation({ autoFetch: false });
     useEffect(() => {
-        const fetchEmployee = async (id: number) => {
+        const fetchEmployee = async (id: any) => {
             setIsLoading(true);
             const data = await readOne(id);
             setUser({ ...data, profile_picture: data.profile_picture ?? "/images/avatar-1.jpg" });
             setIsLoading(false);
         }
-        const fetchClient = async (id: number) => {
+        const fetchClient = async (id: any) => {
             setIsLoading(true);
             const data = await readClient(id);
             setUser({ ...data, profile_picture: data.profile_picture ?? "/images/avatar-1.jpg" });
             setIsLoading(false);
         }
-        const fetchLocation = async (id: number) => {
+        const fetchLocation = async (id: any) => {
             setIsLoading(true);
             const data = await readLocation(id);
-            setUser({ first_name:data.name,last_name:"",email:data.address,id:data.id, profile_picture: "/images/avatar-1.jpg" });
+            setUser({ first_name: data.name, last_name: "", email: data.address, id: data.id, profile_picture: "/images/avatar-1.jpg" });
             setIsLoading(false);
         }
         if (isEmployee) {
@@ -66,7 +66,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             if (locationId) fetchLocation(+locationId);
         }
     }
-        , [isEmployee, isClient,isLocation, pathname]);
+        , [isEmployee, isClient, isLocation, pathname]);
 
 
     if (isLoading) {

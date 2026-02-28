@@ -9,6 +9,7 @@ import { DateSelectArg, EventClickArg, EventInput } from "@fullcalendar/core";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
+import { Id } from "@/common/types/types";
 import { X, Calendar as CalendarIcon, Clock } from "lucide-react";
 import { format } from "date-fns";
 import {
@@ -48,17 +49,17 @@ export interface SchedulePopupProps {
   onClose: () => void;
   onUpsert: (payload: any, isEdit: boolean) => void;
   onDelete: (id: string) => void;
-  initialEmployeeId?: number;
-  initialLocationId?: number;
-  initialShiftId?: number;
-  locationId: number;
+  initialEmployeeId?: Id;
+  initialLocationId?: Id;
+  initialShiftId?: Id;
+  locationId: Id;
   existingEvents: EventInput[];
 }
 
 export type SchedulePayload = {
   id: string;
-  employee_id: number;
-  location_id: number;
+  employee_id: Id;
+  location_id: Id;
   color: string;
   is_custom: boolean;
 
@@ -71,11 +72,11 @@ export type SchedulePayload = {
 
 type FormValues = {
   is_custom: boolean;
-  employee_id: number;
-  location_id: number;
+  employee_id: Id;
+  location_id: Id;
   start_datetime: Date;
   end_datetime: Date;
-  location_shift_id: number;
+  location_shift_id: Id;
   shift_date: string;
 };
 
@@ -90,13 +91,16 @@ const POPUP_HEIGHT = 450;
 
 const calcIsCustom = (
   ev: EventClickArg | null,
-  initialShiftId: number | undefined
-) =>
-  ev
-    ? !(ev.event.extendedProps?.location_shift_id > 0)
-    : initialShiftId && initialShiftId > 0
+  initialShiftId: Id | undefined
+) => {
+  const isShiftIdZero = typeof initialShiftId === "number" ? initialShiftId === 0 : !initialShiftId;
+
+  return ev
+    ? !(Number(ev.event.extendedProps?.location_shift_id) > 0)
+    : !isShiftIdZero
       ? false
       : true;
+}
 
 const SchedulePopup: FunctionComponent<SchedulePopupProps> = ({
   createRange,

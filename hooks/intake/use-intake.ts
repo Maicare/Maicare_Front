@@ -11,7 +11,7 @@ import useProgressBar from "@/common/hooks/use-progress-bar";
 import { useApi } from "@/common/hooks/use-api";
 import { useRouter } from "next/navigation";
 import { Appointment as AppointmentType } from "@/types/appointment.types";
-import { IntakeFormType, IntakeSearchParams } from "@/types/intake.types";
+import { IntakeFormType, IntakeSearchParams, IntakeOutcomeType } from "@/types/intake.types";
 import { Attachment } from "@/types/attachment.types";
 import { constructUrlSearchParams } from "@/utils/construct-search-params";
 import { stringConstructor } from "@/utils/string-constructor";
@@ -49,20 +49,25 @@ export function useIntake({
                     previous: null,
                 };
             const response = await api.get(url);
-            if (!response.data.data) {
-                return null;
+            if (response.data && response.data.results) {
+                return response.data;
             }
-            return response.data.data; // Assuming API returns data inside a "data" field
+            if (response.data && response.data.data) {
+                return response.data.data;
+            }
+            return null;
         },
         { shouldRetryOnError: false }
     );
     const isLoading = !intakes && !error;
 
-    const sendIntakeForm = async (intakeData: IntakeFormType, options?: ApiOptions) => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const sendIntakeForm = async (intakeData: any, options?: ApiOptions) => {
         const { displayProgress = false } = options || {};
         try {
             if (displayProgress) startProgress();
-            const { message, success, data, error } = await useApi<AppointmentType>(`${ApiRoutes.IntakeForm.CreateOne}`, "POST", {}, intakeData);
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            const { message, success, data, error } = await useApi<any>(`${ApiRoutes.IntakeForm.CreateOne}`, "POST", {}, intakeData);
             if (!data)
                 throw new Error(error || message || "An unknown error occurred");
 
@@ -160,6 +165,26 @@ export function useIntake({
         }
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const updateIntakeOutcome = async (id: string, outcomeData: any, options?: ApiOptions) => {
+        const { displayProgress = false } = options || {};
+        try {
+            if (displayProgress) startProgress();
+            const { message, success, data, error } = await useApi<AppointmentType>(`${ApiRoutes.IntakeForm.UpdateOutcome.replace("{id}", id)}`, "PUT", {}, outcomeData);
+            if (!data)
+                throw new Error(error || message || "An unknown error occurred");
+
+            enqueueSnackbar("Intake outcome updated successfully!", { variant: "success" });
+            mutate();
+            return data;
+        } catch (err: any) {
+            enqueueSnackbar(err?.response?.data?.message || "Intake outcome update failed", { variant: "error" });
+            throw err;
+        } finally {
+            if (displayProgress) stopProgress();
+        }
+    }
+
     return {
         intakes,
         isLoading,
@@ -168,6 +193,7 @@ export function useIntake({
         readOne,
         uploadFileForIntake,
         moveToWaitingList,
-        updateUrgency
+        updateUrgency,
+        updateIntakeOutcome
     };
 }

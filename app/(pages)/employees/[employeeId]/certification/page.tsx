@@ -1,7 +1,7 @@
 "use client";
 
 import PrimaryButton from "@/common/components/PrimaryButton";
-import {  BookMarked, PlusCircle } from "lucide-react";
+import { BookMarked, PlusCircle } from "lucide-react";
 import { useState } from "react";
 import UpsertCertificationForm from "./_components/UpsertCertificationForm";
 import { CreateCertificate } from "@/schemas/certification.schema";
@@ -13,12 +13,13 @@ import CertificationItem from "./_components/CertificationItem";
 import Loader from "@/components/common/loader";
 import LargeErrorMessage from "@/components/common/Alerts/LargeErrorMessage";
 import { useParams } from "next/navigation";
+import { Id } from "@/common/types/types";
 
 const Page = () => {
     const [adding, setAdding] = useState(false);
     const [editing, setEditing] = useState(false);
-    const [certification, setCertification] = useState<CreateCertificate & { id: number } | null>(null);
-    const {employeeId} = useParams();
+    const [certification, setCertification] = useState<CreateCertificate & { id: Id } | null>(null);
+    const { employeeId } = useParams();
 
     const { isLoading, certificates, mutate, deleteOne } = useCertificate({ autoFetch: true, employeeId: employeeId as string });
 
@@ -42,11 +43,11 @@ const Page = () => {
         mutate();
     }
     const handleEdit = (certification: Certification) => {
-        const transformed: CreateCertificate & { id: number } = {
+        const transformed = {
             ...certification,
             date_issued: new Date(certification.date_issued),
             id: certification.id
-        }
+        } as CreateCertificate & { id: Id };
         setCertification(transformed);
         setEditing(true);
         mutate();
@@ -89,7 +90,7 @@ const Page = () => {
             {adding ?
                 <UpsertCertificationForm employeeId={parseInt(employeeId as string)} onCancel={cancelAdd} mode="add" onSuccess={cancelAdd} />
                 : editing ?
-                    <UpsertCertificationForm employeeId={parseInt(employeeId as string)} onCancel={cancelEdit} mode="update" onSuccess={cancelEdit} defaultValues={certification || undefined} />
+                    <UpsertCertificationForm employeeId={parseInt(employeeId as string)} onCancel={cancelEdit} mode="update" onSuccess={cancelEdit} defaultValues={(certification || undefined) as any} />
                     : null
             }
             <div className="grid grid-cols-4 gap-4">
@@ -99,12 +100,12 @@ const Page = () => {
                         : certificates?.length === 0 ?
                             <div className="col-span-4 w-full flex items-center justify-center">
                                 <LargeErrorMessage
-                                firstLine={"Oops!"}
-                                secondLine={
-                                    "Het lijkt erop dat er geen medewerkers zijn die aan uw zoekcriteria voldoen."
-                                }
-                                className="w-full"
-                            />
+                                    firstLine={"Oops!"}
+                                    secondLine={
+                                        "Het lijkt erop dat er geen medewerkers zijn die aan uw zoekcriteria voldoen."
+                                    }
+                                    className="w-full"
+                                />
                             </div>
                             :
 

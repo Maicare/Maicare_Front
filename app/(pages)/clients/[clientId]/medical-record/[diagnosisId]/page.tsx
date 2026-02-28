@@ -1,4 +1,5 @@
 "use client";
+import { Id } from "@/common/types/types";
 
 import { useDiagnosis } from "@/hooks/diagnosis/use-diagnosis";
 import { Diagnosis, Medication } from "@/types/diagnosis.types";
@@ -108,7 +109,7 @@ const DiagnosisPAge = () => {
             console.log(error);
         }
     }
-    const handleDelete = async (id: number) => {
+    const handleDelete = async (id: Id) => {
         try {
             await deleteOne(
                 id.toString(),

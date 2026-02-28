@@ -20,6 +20,7 @@ import ScheduleDetails from "./ScheduleDetails";
 import { ensureHex } from "@/utils/color-utils";
 import { useShift } from "@/hooks/shift/use-shift";
 import { createRoot } from "react-dom/client";
+import { Id } from "@/common/types/types";
 import ShiftPlaceholder from "@/app/(pages)/schedules/_components/ShiftPlaceholder";
 
 interface DayWithShifts {
@@ -89,13 +90,13 @@ const sameInstant = (a: Date | string | undefined, b: Date | string) => {
   return d1 === d2;
 };
 
-const ScheduleCalendar: FunctionComponent<{ locationId: string }> = ({ locationId }: { locationId: string }) => {
+const ScheduleCalendar: FunctionComponent<{ locationId: Id }> = ({ locationId }: { locationId: Id }) => {
   const calendarContainerRef = useRef<HTMLDivElement | null>(null);
   const calendarRef = useRef<FullCalendar>(null);
 
   const { readSchedulesByMonth, deleteSchedule } = useSchedule();
 
-  const { shifts } = useShift({ location_id: Number(locationId), autoFetch: true })
+  const { shifts } = useShift({ location_id: locationId, autoFetch: true })
 
   const [events, setEvents] = useState<EventInput[]>([]);
   const [createRange, setCreateRange] = useState<DateSelectArg | null>(null);
@@ -133,7 +134,7 @@ const ScheduleCalendar: FunctionComponent<{ locationId: string }> = ({ locationI
       endStr: day.toISOString(),
       allDay: true,
       jsEvent: null as any,
-      view: calendarRef.current?.getApi().view!,
+      view: calendarRef.current?.getApi().view as any,
     });
 
     setEditEvent(null);
@@ -163,7 +164,7 @@ const ScheduleCalendar: FunctionComponent<{ locationId: string }> = ({ locationI
       endStr: cust.end_time,
       allDay: false,
       jsEvent: null as any,
-      view: calendarRef.current!.getApi().view,
+      view: calendarRef.current?.getApi().view as any,
     });
 
     setEditEvent(null);
@@ -193,7 +194,7 @@ const ScheduleCalendar: FunctionComponent<{ locationId: string }> = ({ locationI
 
       try {
         const data = (await readSchedulesByMonth(
-          locationId,
+          String(locationId),
           year,
           month
         )) as DayWithShifts[] | null;
@@ -208,7 +209,7 @@ const ScheduleCalendar: FunctionComponent<{ locationId: string }> = ({ locationI
         data.forEach((dayEntry) => {
           dayEntry.shifts.forEach((sh) => {
 
-            if (sh.location_id !== Number(locationId)) return;
+            if (String(sh.location_id) !== String(locationId)) return;
             const assignedColor = ensureHex(sh.color, sh.employee_id);
 
             let displayEnd = sh.end_time;
@@ -940,7 +941,7 @@ const ScheduleCalendar: FunctionComponent<{ locationId: string }> = ({ locationI
                     ? editEvent.event.extendedProps.location_shift_id
                     : createInitialShiftId
                 }
-                locationId={Number(locationId)}
+                locationId={locationId}
                 existingEvents={events}
               />
             )

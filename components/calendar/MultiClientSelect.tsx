@@ -7,7 +7,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { Button } from "@/components/ui/button";
-import { Check, ChevronsUpDown, Info } from "lucide-react";
+import { Check, ChevronsUpDown } from "lucide-react";
 import { cn } from "@/utils/cn";
 import {
   Command,
@@ -44,7 +44,7 @@ const MultiClientSelect = ({
   const options = useMemo(() => {
     if (!clients) return [];
     return clients.results.map(
-      (c: { first_name: string; last_name?: string; id: number }) => ({
+      (c: { first_name: string; last_name?: string; id: Id }) => ({
         label: c.last_name
           ? `${c.first_name} ${c.last_name}`
           : c.first_name,

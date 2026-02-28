@@ -7,6 +7,7 @@ import { Briefcase, Calendar as CalendarIco, X } from "lucide-react";
 import { useSchedule } from "@/hooks/schedule/use-schedule";
 import { useShift } from "@/hooks/shift/use-shift";
 import ShiftPlaceholder, { ScheduleRow } from "@/app/(pages)/schedules/_components/ShiftPlaceholder";
+import { Id } from "@/common/types/types";
 
 type ShiftDef = {
   id: number;
@@ -17,7 +18,7 @@ type ShiftDef = {
 
 interface ScheduleDetailsProps {
   date: Date;
-  locationId: string;
+  locationId: Id;
   calendarHeight: number;
   onClose: () => void;
   onShiftClick: (row: CalendarScheduleResponse) => void;
@@ -32,13 +33,13 @@ const sameUtcDay = (a: Date, b: Date) =>
   a.getUTCDate() === b.getUTCDate();
 
 export interface CalendarScheduleResponse {
-  shift_id: number;
-  employee_id: number;
+  shift_id: Id;
+  employee_id: Id;
   employee_first_name: string;
   employee_last_name: string;
   start_time: string;
   end_time: string;
-  location_id: number;
+  location_id: Id;
   color: string | null;
   shift_name: string;
 }
@@ -67,7 +68,7 @@ const ScheduleDetails = ({
 
   const { readSchedulesByDay } = useSchedule();
   const { shifts: shiftDefs } = useShift({
-    location_id: Number(locationId),
+    location_id: locationId,
     autoFetch: Boolean(locationId),
   });
 
@@ -85,7 +86,7 @@ const ScheduleDetails = ({
     setLoading(true);
     setError(null);
 
-    readSchedulesByDay(locationId, y, m, d, { displayProgress: false })
+    readSchedulesByDay(String(locationId), y, m, d, { displayProgress: false })
       .then((raw) => {
         const rows = (raw as unknown as DailyResponse)?.shifts ?? [];
 

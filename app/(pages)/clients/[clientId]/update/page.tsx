@@ -13,31 +13,31 @@ const Page = () => {
     const router = useRouter();
     const { clientId } = useParams();
 
-    const onSuccess = (id: number) => {
+    const onSuccess = (id: Id) => {
         router.push(`/client/${id}`)
     }
     const onCancel = () => {
         router.back();
     }
     const { readOne } = useClient({ autoFetch: false });
-        const [client, setClient] = useState<UpdateClientRequestBody&{identity_attachment_ids:string[]} | undefined>(undefined);
-        const [isLoading, setIsLoading] = useState(false);
-        useEffect(() => {
-            const fetchClient = async (id: Id) => {
-                setIsLoading(true);
-                const data = await readOne(id);
-                setClient({...data,location_id:1} as UpdateClientRequestBody&{identity_attachment_ids:string[]});//TODO: ask taha to add locationId in client details
-                setIsLoading(false);
-            }
-            if (clientId) fetchClient(+clientId);
-            
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-        }, [clientId]);
-        if (isLoading || !client) {
-            return(
-                <UpsertClientFormSkeleton />
-            )
+    const [client, setClient] = useState<UpdateClientRequestBody & { identity_attachment_ids: string[] } | undefined>(undefined);
+    const [isLoading, setIsLoading] = useState(false);
+    useEffect(() => {
+        const fetchClient = async (id: Id) => {
+            setIsLoading(true);
+            const data = await readOne(id);
+            setClient({ ...data, location_id: 1 } as UpdateClientRequestBody & { identity_attachment_ids: string[] });//TODO: ask taha to add locationId in client details
+            setIsLoading(false);
         }
+        if (clientId) fetchClient(clientId as string);
+
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [clientId]);
+    if (isLoading || !client) {
+        return (
+            <UpsertClientFormSkeleton />
+        )
+    }
     return (
         <div className="container mx-auto">
             <div className="flex justify-between items-center mb-5">

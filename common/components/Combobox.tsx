@@ -3,7 +3,7 @@ import { Combobox, ComboboxInput, ComboboxOption, ComboboxOptions, Label } from 
 import { cn } from "@/utils/cn";
 import { BaseObject, ComboboxOption as ComboboxOptionType } from "@/types/selection-option.types";
 
-type Props<T extends BaseObject> = InputHTMLAttributes<HTMLInputElement> & {
+type Props<T extends BaseObject> = Omit<InputHTMLAttributes<HTMLInputElement>, 'onChange'> & {
   options: ComboboxOptionType<T>[];
   handleQueryChange: (event: ChangeEvent<HTMLInputElement>) => void;
   renderOption?: (option: ComboboxOptionType<T>) => React.ReactNode;

@@ -13,12 +13,13 @@ import LargeErrorMessage from "@/components/common/Alerts/LargeErrorMessage";
 import { Education } from "@/types/education.types";
 import PrimaryButton from "@/common/components/PrimaryButton";
 import { useParams } from "next/navigation";
+import { Id } from "@/common/types/types";
 
 const Page = () => {
     const [adding, setAdding] = useState(false);
     const [editing, setEditing] = useState(false);
-    const [education, setEducation] = useState<CreateEducation & { id: number } | null>(null);
-    const {employeeId} = useParams();
+    const [education, setEducation] = useState<CreateEducation & { id: Id } | null>(null);
+    const { employeeId } = useParams();
 
     const { isLoading, educations, mutate, deleteOne } = useEducation({ autoFetch: true, employeeId: employeeId as string });
 
@@ -42,12 +43,12 @@ const Page = () => {
         mutate();
     }
     const handleEdit = (education: Education) => {
-        const transformed: CreateEducation & { id: number } = {
+        const transformed = {
             ...education,
             start_date: new Date(education.start_date),
             end_date: new Date(education.end_date),
             id: education.id
-        }
+        } as CreateEducation & { id: Id };
         setEducation(transformed);
         setEditing(true);
         mutate();
@@ -91,7 +92,7 @@ const Page = () => {
             {adding ?
                 <UpsertEducationForm employeeId={parseInt(employeeId as string)} onCancel={cancelAdd} mode="add" onSuccess={cancelAdd} />
                 : editing ?
-                    <UpsertEducationForm employeeId={parseInt(employeeId as string)} onCancel={cancelEdit} mode="update" onSuccess={cancelEdit} defaultValues={education || undefined} />
+                    <UpsertEducationForm employeeId={parseInt(employeeId as string)} onCancel={cancelEdit} mode="update" onSuccess={cancelEdit} defaultValues={(education || undefined) as any} />
                     : null
             }
             <div className="w-full bg-white p-4 rounded-md shadow-md">

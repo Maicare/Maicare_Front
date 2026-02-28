@@ -2,7 +2,7 @@
 
 import { useParams, useRouter } from "next/navigation";
 import UpsertIncidentForm from "../../_components/UpsertIncidentForm";
-import {  Incident } from "@/types/incident.types";
+import { Incident } from "@/types/incident.types";
 import { useEffect, useState } from "react";
 import { useIncident } from "@/hooks/incident/use-incident";
 import { Id } from "@/common/types/types";
@@ -13,7 +13,7 @@ const Page = () => {
     const router = useRouter();
     const { clientId, incidentId } = useParams();
     const [incident, setIncident] = useState<Incident | null>(null);
-    const { readOne } = useIncident({ autoFetch: false, clientId: parseInt(clientId as string) });
+    const { readOne } = useIncident({ autoFetch: false, clientId: clientId as string });
     const onSuccess = () => {
         router.push(`/clients/${clientId}/incidents`)
     }
@@ -24,11 +24,11 @@ const Page = () => {
     useEffect(() => {
         const fetchIncident = async (id: Id) => {
             setIsLoading(true);
-            const data = await readOne(id,+clientId!, { displayProgress: true });
+            const data = await readOne(id, +clientId!, { displayProgress: true });
             setIncident({ ...data });//TODO: ask taha to add locationId in client details
             setIsLoading(false);
         }
-        if (incidentId && clientId) fetchIncident(+incidentId);
+        if (incidentId && clientId) fetchIncident(incidentId as string);
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [clientId]);
@@ -52,7 +52,7 @@ const Page = () => {
                 clientId={clientId as string}
                 incidentId={clientId as string}
                 defaultValues={incident}
-                
+
             />
         </div>
     )

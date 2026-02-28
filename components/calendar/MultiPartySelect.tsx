@@ -47,7 +47,7 @@ const MultiPartySelect = ({
   const clientOptions = useMemo(() => {
     if (!clients) return [];
     return clients.results
-      .map((c: { first_name: string; last_name?: string; id: number }) => ({
+      .map((c: { first_name: string; last_name?: string; id: Id }) => ({
         label: c.last_name ? `${c.first_name} ${c.last_name}` : c.first_name,
         id: c.id as Id,
       }))
@@ -58,7 +58,7 @@ const MultiPartySelect = ({
     if (!employees) return [];
     return employees.results
       .map(
-        (e: { first_name: string; last_name: string; id: number }) => ({
+        (e: { first_name: string; last_name: string; id: Id }) => ({
           label: `${e.first_name} ${e.last_name}`,
           id: e.id as Id,
         })
@@ -86,7 +86,7 @@ const MultiPartySelect = ({
       : `Filter by party...`;
 
   return (
-    <div className={cn("w-full" , className)}>
+    <div className={cn("w-full", className)}>
       {label && (
         <Label className="flex items-center justify-between text-slate-600 font-medium mb-1">
           {label}

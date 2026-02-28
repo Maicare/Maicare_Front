@@ -1,3 +1,3 @@
-export type Id = number;
+export type Id = string | number;
 
 export type Any = any;

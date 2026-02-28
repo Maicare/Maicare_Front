@@ -1,4 +1,5 @@
 import PrimaryButton from '@/common/components/PrimaryButton'
+import { Id } from '@/common/types/types'
 import Tooltip from '@/common/components/Tooltip'
 import { Button } from '@/components/ui/button'
 import { Calendar } from '@/components/ui/calendar'
@@ -12,7 +13,7 @@ import { GENDER_OPTIONS } from '@/consts'
 import { useEmployee } from '@/hooks/employee/use-employee'
 import { useLocation } from '@/hooks/location/use-location'
 import { useRole } from '@/hooks/role/use-role'
-import { CreateEmployee,  employeeSchema } from '@/schemas/employee.schema'
+import { CreateEmployee, employeeSchema } from '@/schemas/employee.schema'
 import { EmployeeDetailsResponse } from '@/types/employee.types'
 import { cn } from '@/utils/cn'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -23,25 +24,25 @@ import { useForm } from 'react-hook-form'
 
 
 type Props = {
-    mode:"create"|"update";
-    onSuccess?:(id:number)=>void;
-    defaultValues?:EmployeeDetailsResponse;
-    onCancel:()=>void;
+    mode: "create" | "update";
+    onSuccess?: (id: Id) => void;
+    defaultValues?: EmployeeDetailsResponse;
+    onCancel: () => void;
 }
 
-const UpsertEmployeeForm = ({mode,onSuccess,defaultValues,onCancel}:Props) => {
+const UpsertEmployeeForm = ({ mode, onSuccess, defaultValues, onCancel }: Props) => {
     const { createOne, updateOne } = useEmployee({ autoFetch: false });
-    const {locations} = useLocation({autoFetch:true});
-    const {roles} = useRole({autoFetch:true});
+    const { locations } = useLocation({ autoFetch: true });
+    const { roles } = useRole({ autoFetch: true });
     const [loading, setLoading] = useState(false);
     // 1. Define your form.
     const form = useForm<CreateEmployee>({
         resolver: zodResolver(employeeSchema),
         defaultValues: mode === "update" ? {
             ...defaultValues,
-            date_of_birth: new Date(defaultValues?.date_of_birth||""),
-            location_id: defaultValues?.location_id?.toString()??"",
-            role_id:defaultValues?.role_id?.toString()??"",
+            date_of_birth: new Date(defaultValues?.date_of_birth || ""),
+            location_id: defaultValues?.location_id?.toString() ?? "",
+            role_id: defaultValues?.role_id?.toString() ?? "",
         } : {
             employee_number: '',
             employment_number: '',
@@ -103,7 +104,7 @@ const UpsertEmployeeForm = ({mode,onSuccess,defaultValues,onCancel}:Props) => {
                     displayProgress: true
                 }
                 );
-                onSuccess?.(defaultValues?.id||0);
+                onSuccess?.(defaultValues?.id || 0);
             } catch (error) {
                 console.log(error);
             } finally {
@@ -180,7 +181,7 @@ const UpsertEmployeeForm = ({mode,onSuccess,defaultValues,onCancel}:Props) => {
                                                         <SelectGroup>
                                                             <SelectLabel>Locations</SelectLabel>
                                                             {
-                                                                locations?.map((item,index)=>(
+                                                                locations?.map((item, index) => (
                                                                     <SelectItem key={index} value={item.id.toString()} className="hover:bg-slate-100 cursor-pointer">{item.name}</SelectItem>
                                                                 ))
                                                             }
@@ -212,7 +213,7 @@ const UpsertEmployeeForm = ({mode,onSuccess,defaultValues,onCancel}:Props) => {
                                                         <SelectGroup>
                                                             <SelectLabel>Rolen</SelectLabel>
                                                             {
-                                                                roles?.map((item,index)=>(
+                                                                roles?.map((item, index) => (
                                                                     <SelectItem value={item.id.toString()} key={index} className="hover:bg-slate-100 cursor-pointer">{item.name}</SelectItem>
                                                                 ))
                                                             }
@@ -518,7 +519,7 @@ const UpsertEmployeeForm = ({mode,onSuccess,defaultValues,onCancel}:Props) => {
                                                     <SelectGroup>
                                                         <SelectLabel>Geslacht</SelectLabel>
                                                         {
-                                                            GENDER_OPTIONS.map((item,index)=>(
+                                                            GENDER_OPTIONS.map((item, index) => (
                                                                 <SelectItem key={index} value={item.value} className="hover:bg-slate-100 cursor-pointer">{item.label}</SelectItem>
                                                             ))
                                                         }

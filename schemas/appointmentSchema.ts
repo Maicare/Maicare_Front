@@ -1,15 +1,15 @@
 import { z } from "zod";
-import { RecurrenceType } from "@/types/appointment.types";
+import { RecurrenceType } from "@/types/calendar.types";
 
 export const appointmentSchema = z.object({
   client_ids: z
-    .array(z.number(), {
+    .array(z.union([z.string(), z.number()]), {
       invalid_type_error: "Something went wrong selecting clients."
     })
     .min(1, { message: "Please pick at least one client." }),
 
   participant_employee_ids: z
-    .array(z.number(), {
+    .array(z.union([z.string(), z.number()]), {
       invalid_type_error: "Something went wrong selecting participants."
     })
     .min(1, { message: "Please pick at least one participant." }),

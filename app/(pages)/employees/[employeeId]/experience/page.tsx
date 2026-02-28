@@ -13,12 +13,13 @@ import { getDangerActionConfirmationModal } from "@/components/common/Modals/Dan
 import Loader from "@/components/common/loader";
 import LargeErrorMessage from "@/components/common/Alerts/LargeErrorMessage";
 import { useParams } from "next/navigation";
+import { Id } from "@/common/types/types";
 
 const Page = () => {
     const [adding, setAdding] = useState(false);
     const [editing, setEditing] = useState(false);
-    const [experience, setExperience] = useState<CreateExperience & { id: number } | null>(null);
-    const {employeeId} = useParams();
+    const [experience, setExperience] = useState<CreateExperience & { id: Id } | null>(null);
+    const { employeeId } = useParams();
 
 
     const { isLoading, experiences, mutate, deleteOne } = useExperience({ autoFetch: true, employeeId: employeeId as string });
@@ -43,12 +44,12 @@ const Page = () => {
         mutate();
     }
     const handleEdit = (experience: Experience) => {
-        const transformed: CreateExperience & { id: number } = {
+        const transformed = {
             ...experience,
             start_date: new Date(experience.start_date),
             end_date: new Date(experience.end_date),
             id: experience.id
-        }
+        } as CreateExperience & { id: Id };
         setExperience(transformed);
         setEditing(true);
         mutate();
@@ -92,7 +93,7 @@ const Page = () => {
             {adding ?
                 <UpsertExperienceForm employeeId={parseInt(employeeId as string)} onCancel={cancelAdd} mode="add" onSuccess={cancelAdd} />
                 : editing ?
-                    <UpsertExperienceForm employeeId={parseInt(employeeId as string)} onCancel={cancelEdit} mode="update" onSuccess={cancelEdit} defaultValues={experience || undefined} />
+                    <UpsertExperienceForm employeeId={parseInt(employeeId as string)} onCancel={cancelEdit} mode="update" onSuccess={cancelEdit} defaultValues={(experience || undefined) as any} />
                     : null
             }
             <div className="w-full bg-white p-4 rounded-md shadow-md">

@@ -1,5 +1,6 @@
 "use client";
 
+import { Id } from "@/common/types/types";
 import React, { useState } from "react";
 import { ColumnDef, Row } from "@tanstack/react-table";
 import { useParams } from "next/navigation";
@@ -32,18 +33,19 @@ import { dateFormat } from "@/utils/timeFormatting";
 
 
 export type ObjectiveRow = {
-  id: number;
+  id: Id;
   objective_description: string;
   due_date: string;
   status: string;
-  createdAt?: string;
-  updatedAt?: string;
+  completion_date?: string;
+  created_at?: string;
+  updated_at?: string;
 };
 
 
 export const getColumns = (
   handleEdit: (objective: ObjectiveRow) => void,
-  handleDelete: (id: number) => void
+  handleDelete: (id: Id) => void
 ): ColumnDef<ObjectiveRow>[] => [
     {
       accessorKey: "objective_description",
@@ -78,24 +80,24 @@ export const getColumns = (
         );
       },
     },
-        {
-            accessorKey: "status",
-            header: "Status",
-            cell: (ctx) => {
-              const status = ctx.getValue() as string;
-              const bg =
-                status === "pending"
-                  ? "bg-orange-100 text-orange-800"
-                  : "bg-green-100 text-green-800";
-              return (
-                <span
-                  className={cn(bg, "text-xs font-medium px-2 py-0.5 rounded-sm")}
-                >
-                  {status}
-                </span>
-              );
-            },
-          },
+    {
+      accessorKey: "status",
+      header: "Status",
+      cell: (ctx) => {
+        const status = ctx.getValue() as string;
+        const bg =
+          status === "pending"
+            ? "bg-orange-100 text-orange-800"
+            : "bg-green-100 text-green-800";
+        return (
+          <span
+            className={cn(bg, "text-xs font-medium px-2 py-0.5 rounded-sm")}
+          >
+            {status}
+          </span>
+        );
+      },
+    },
     {
       id: "actions",
       header: "",
@@ -119,7 +121,7 @@ const ActionsCell = ({
 }: {
   row: Row<ObjectiveRow>;
   handleEdit: (objective: ObjectiveRow) => void;
-  handleDelete: (id: number) => void;
+  handleDelete: (id: Id) => void;
 }) => {
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
   const [isEditOpen, setIsEditOpen] = useState(false);
@@ -132,16 +134,16 @@ const ActionsCell = ({
   };
 
   const { generateObjective, createObjective } = useGoal({
-    clientId: Number(clientId),
-    assessmentId: Number(assessmentId),
+    clientId: clientId,
+    assessmentId: assessmentId,
   });
 
   const handleGenerate = async () => {
-    const objs = await generateObjective(Number(goalId), {
+    const objs = await generateObjective(goalId, {
       displayProgress: true,
       displaySuccess: true,
     });
-    await createObjective(Number(goalId), objs, {
+    await createObjective(goalId, objs, {
       displayProgress: false,
       displaySuccess: true,
     });
@@ -174,7 +176,7 @@ const ActionsCell = ({
               mode="update"
               isOpen={isEditOpen}
               handleOpen={setIsEditOpen}
-              objective={row.original}
+              objective={row.original as any} // Cast to any to bypass strict property check if some fields are missing but not used
               handleCreate={() => { }}
               handleUpdate={() => {
                 handleEdit(row.original);

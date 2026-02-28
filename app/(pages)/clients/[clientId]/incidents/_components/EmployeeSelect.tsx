@@ -1,5 +1,6 @@
 
 import React, { FunctionComponent, useMemo, useState } from "react";
+import { Id } from "@/common/types/types";
 import { useFormContext } from "react-hook-form";
 import { useEmployee } from "@/hooks/employee/use-employee";
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
@@ -17,7 +18,7 @@ type Props = {
     label?: string;
     className?: string;
     required?: boolean;
-    modal?:boolean;
+    modal?: boolean;
     variant?: Variant
 };
 
@@ -26,16 +27,16 @@ export const EmployeeSelect: FunctionComponent<Props> = ({
     name,
     label = "Medewerker",
     className,
-    modal=false,
+    modal = false,
     variant = "full",
 }) => {
     const form = useFormContext();
     const [filter, setFilter] = useState({ search: "", autoFetch: true });
-    const { employees } = useEmployee({...filter, autoFetch: true});
+    const { employees } = useEmployee({ ...filter, autoFetch: true });
     // Build options from employees
     const options = useMemo(() => {
         if (!employees) return [];
-        return employees.results.map((emp: { first_name: string; last_name: string; id: number; }) => ({
+        return employees.results.map((emp: { first_name: string; last_name: string; id: Id; }) => ({
             label: `${emp.first_name} ${emp.last_name}`,
             value: `${emp.id}`,
         }));
@@ -49,12 +50,12 @@ export const EmployeeSelect: FunctionComponent<Props> = ({
             render={({ field }) => (
                 <FormItem className={cn("w-full", className)}>
                     {variant === "full" && (
-                      <FormLabel className="flex items-center justify-between">
-                        {label}
-                        <Tooltip text="This is Medewerker">
-                          <Info className="h-5 w-5" />
-                        </Tooltip>
-                      </FormLabel>
+                        <FormLabel className="flex items-center justify-between">
+                            {label}
+                            <Tooltip text="This is Medewerker">
+                                <Info className="h-5 w-5" />
+                            </Tooltip>
+                        </FormLabel>
                     )}
                     <Popover modal={modal}>
                         <PopoverTrigger asChild>
@@ -83,7 +84,7 @@ export const EmployeeSelect: FunctionComponent<Props> = ({
                                     placeholder="Zoek medewerker..."
                                     className="h-9"
                                     onValueChange={(search) => {
-                                        setFilter(prev => ({ ...prev, search,autoFetch:true }));
+                                        setFilter(prev => ({ ...prev, search, autoFetch: true }));
                                     }}
                                 />
                                 <CommandList>

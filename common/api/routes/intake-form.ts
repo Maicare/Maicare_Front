@@ -5,6 +5,7 @@ const ApiRoutes = {
     ReadOne: prefix + '/{id}',
     MoveToWaitingList: prefix + '/{id}/move_to_waiting_list',
     UpdateUrgency: prefix + '/{id}/urgency_score',
+    UpdateOutcome: prefix + '/{id}/outcome',
 };
 
 export default ApiRoutes;

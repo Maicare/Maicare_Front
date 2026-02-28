@@ -2,11 +2,12 @@
 
 import { useRouter } from "next/navigation";
 import UpsertEmployeeForm from "../_components/UpsertEmployeeForm";
+import { Id } from "@/common/types/types";
 
 
 const Page = () => {
     const router = useRouter();
-    const onSuccess = (id:number) => {
+    const onSuccess = (id: Id) => {
         router.push(`/employee/${id}`)
     }
     const onCancel = () => {

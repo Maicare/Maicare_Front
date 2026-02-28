@@ -22,27 +22,29 @@ import TextEnhancingDialog from './TextEnhancingDialog';
 import { useEffect, useState } from 'react';
 type Props = {
     mode: "create" | "update";
-    handleCreate:(values:CreateReport)=>void;
-    handleUpdate:(values:CreateReport)=>void;
-    report?:Report;
-    isOpen:boolean;
-    handleOpen:(bool:boolean)=>void;
+    handleCreate: (values: CreateReport) => void;
+    handleUpdate: (values: CreateReport) => void;
+    report?: Report;
+    isOpen: boolean;
+    handleOpen: (bool: boolean) => void;
 }
 
-const CreateReportSheet = ({ mode,handleCreate,handleUpdate,report,handleOpen,isOpen }: Props) => {
+const CreateReportSheet = ({ mode, handleCreate, handleUpdate, report, handleOpen, isOpen }: Props) => {
     const { user } = useAuth();
     const [loading, setLoading] = useState(false);
     const form = useForm<CreateReport>({
         resolver: zodResolver(CreateReportSchema),
         defaultValues: report ? {
             ...report,
-            date:new Date(report?.date)
+            date: new Date(report?.date),
+            employee_id: Number(report.employee_id),
+            id: report.id ? Number(report.id) : undefined,
         } : {
             date: new Date(),
             emotional_state: "",
             report_text: "",
             type: "",
-            employee_id: user?.employee_id || 0
+            employee_id: Number(user?.employee_id) || 0
         },
     });
     console.log(report)
@@ -59,18 +61,18 @@ const CreateReportSheet = ({ mode,handleCreate,handleUpdate,report,handleOpen,is
     }
     useEffect(() => {
         if (user?.employee_id) {
-            form.setValue("employee_id", user?.employee_id);
+            form.setValue("employee_id", Number(user?.employee_id));
         }
         if (report) {
-            form.setValue("date",new Date(report.date));
-            form.setValue("emotional_state",report.emotional_state);
-            form.setValue("type",report.type);
-            form.setValue("report_text",report.report_text);
-            form.setValue("employee_id",report.employee_id);
-            form.setValue("id",report.id);
+            form.setValue("date", new Date(report.date));
+            form.setValue("emotional_state", report.emotional_state);
+            form.setValue("type", report.type);
+            form.setValue("report_text", report.report_text);
+            form.setValue("employee_id", Number(report.employee_id));
+            form.setValue("id", report.id ? Number(report.id) : undefined);
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [user?.employee_id,report])
+    }, [user?.employee_id, report])
     return (
         <Sheet open={isOpen} onOpenChange={(o) => handleOpen(o)}>
             <SheetTrigger asChild>

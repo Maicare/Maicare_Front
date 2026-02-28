@@ -16,7 +16,7 @@ import { CreateShift, Shift } from "@/schemas/shift.schema";
 export function useShift({
   location_id,
   autoFetch = true,
-}: { location_id:number,autoFetch?: boolean }) {
+}: { location_id: Id, autoFetch?: boolean }) {
   const { enqueueSnackbar } = useSnackbar();
   const { start: startProgress, stop: stopProgress } = useProgressBar();
   const {
@@ -24,7 +24,7 @@ export function useShift({
     error,
     mutate,
   } = useSWR<Shift[] | null>(
-    autoFetch ? ApiRoutes.Location.Shift.ReadAll.replace("{id}",location_id.toString()) : null, // Endpoint to fetch clients
+    autoFetch ? ApiRoutes.Location.Shift.ReadAll.replace("{id}", location_id.toString()) : null, // Endpoint to fetch clients
     async (url) => {
       if (!url)
         return {
@@ -44,7 +44,7 @@ export function useShift({
   );
   const isLoading = !shifts && !error;
 
-  const readOne = async (id:number, options?: ApiOptions) => {
+  const readOne = async (id: Id, options?: ApiOptions) => {
     const { displayProgress = false } = options || {};
     try {
       if (displayProgress) startProgress();

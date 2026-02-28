@@ -70,7 +70,7 @@ const ObjectivePage = () => {
               Objective Not Found
             </h1>
             <p className="text-sm text-slate-500">
-              The requested objective doesn't exist or may have been removed.
+              The requested objective doesn&apos;t exist or may have been removed.
             </p>
           </div>
 

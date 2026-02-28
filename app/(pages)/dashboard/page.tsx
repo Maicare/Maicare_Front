@@ -358,7 +358,7 @@ const DashboardPage = () => {
 export default withAuth(
   withPermissions(DashboardPage, {
     redirectUrl: Routes.Common.NotFound,
-    requiredPermissions: PermissionsObjects.ViewDashboard,
+    requiredPermissions: PermissionsObjects.CreateEmployee,
   }),
   { mode: AUTH_MODE.LOGGED_IN, redirectUrl: Routes.Auth.Login }
 );

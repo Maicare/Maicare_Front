@@ -16,6 +16,29 @@ export const BUTTON_CLASS_NAMES = {
   Info: "bg-info text-white",
 };
 
+export const CLIENT_GENDER_OPTIONS: SelectionOption[] = [
+  { label: "Selecteer Geslacht", value: "" },
+  { label: "Man", value: "male" },
+  { label: "Vrouw", value: "female" },
+  { label: "Anders", value: "other" },
+];
+
+export const EDUCATION_LEVEL_OPTIONS: SelectionOption[] = [
+  { label: "Selecteer Niveau", value: "" },
+  { label: "Primair", value: "primary" },
+  { label: "Secundair", value: "secondary" },
+  { label: "Hoger", value: "higher" },
+  { label: "Geen", value: "none" },
+];
+
+export const LIVING_SITUATION_OPTIONS: SelectionOption[] = [
+  { label: "Selecteer Woonsituatie", value: "" },
+  { label: "Thuis", value: "home" },
+  { label: "Pleegzorg", value: "foster_care" },
+  { label: "Jeugdzorginstelling", value: "youth_care_institution" },
+  { label: "Overig", value: "other" },
+];
+
 export const GENDER_OPTIONS: SelectionOption[] = [
   {
     label: "Man",
@@ -41,12 +64,12 @@ export const SOURCE_OPTIONS = [
 
 export const LEGAL_MEASURE = [
   {
-      value: "Jeugdreclassering",
-      label: "Jeugdreclassering",
+    value: "Jeugdreclassering",
+    label: "Jeugdreclassering",
   },
   {
-      value: "Jeugdbescherming",
-      label: "Jeugdbescherming",
+    value: "Jeugdbescherming",
+    label: "Jeugdbescherming",
   }
 ];
 
@@ -251,7 +274,7 @@ export const INFORM_WHO_OPTIONS = [
   "Met maatregel: niemad (ZIN / 18+).",
 ];
 
-export const INCIDENT_TYPE_NOTIFICATIONS : {label:string,value:"passing_away"|"self_harm"|"violence"|"fire_water_damage"|"client_absence"|"accident"|"medicines"|"organization"|"use_prohibited_substances"|"other_notifications"}[] = [
+export const INCIDENT_TYPE_NOTIFICATIONS: { label: string, value: "passing_away" | "self_harm" | "violence" | "fire_water_damage" | "client_absence" | "accident" | "medicines" | "organization" | "use_prohibited_substances" | "other_notifications" }[] = [
   { label: "Overlijden", value: "passing_away" },
   { label: "Zelfbeschadiging", value: "self_harm" },
   { label: "Agressie/geweld", value: "violence" },

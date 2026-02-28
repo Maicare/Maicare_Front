@@ -29,7 +29,7 @@ const Page = () => {
             setClient(data);
             setIsLoading(false);
         }
-        if (clientId) fetchClient(+clientId);
+        if (clientId) fetchClient(clientId as string);
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [clientId]);
 

@@ -20,7 +20,7 @@ export function useSchedule(autoFetch: boolean = false, params?: PaginationParam
   const page_size = params?.page_size || 10;
 
   interface CalendarScheduleResponse {
-    id: number;
+    id: Id;
     start_datetime: string;
     end_datetime: string;
     employee_id: Id;
