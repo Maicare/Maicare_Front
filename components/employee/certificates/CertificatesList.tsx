@@ -42,14 +42,14 @@ const CertificationItem: FunctionComponent<CertificationItemProps> = ({ certific
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
 
-  const {deleteOne,mutate} = useCertificate({autoFetch:false,employeeId:certificate.employee_id.toString()});
+  const { deleteOne, mutate } = useCertificate({ autoFetch: false, employeeId: certificate.employee_id.toString() });
   const { open } = useModal(
     getDangerActionConfirmationModal({
       msg: "Weet u zeker dat u dit certificaat wilt verwijderen?",
       title: "Certificaat Verwijderen",
     })
   );
-  const triggerEdit = async()=>{
+  const triggerEdit = async () => {
     setIsEdit((v) => !v);
     await mutate();
   }
@@ -74,7 +74,7 @@ const CertificationItem: FunctionComponent<CertificationItemProps> = ({ certific
               buttonType="Danger"
               onClick={() => {
                 open({
-                  onConfirm: async() => {
+                  onConfirm: async () => {
                     try {
                       setLoading(true);
                       await deleteOne(certificate);
@@ -82,7 +82,7 @@ const CertificationItem: FunctionComponent<CertificationItemProps> = ({ certific
                     } catch (error) {
                       console.log(error);
                       setSuccess(false);
-                    } finally{
+                    } finally {
                       setLoading(false);
                     }
                   },
@@ -103,7 +103,7 @@ const CertificationItem: FunctionComponent<CertificationItemProps> = ({ certific
               mode="update"
               initialData={certificate}
               onSuccess={() => setIsEdit(false)}
-              employeeId={certificate.employee_id}
+              employeeId={certificate.employee_id as number}
             />
           </td>
         </tr>

@@ -27,10 +27,11 @@ import { useDocument } from "@/hooks/document/use-document";
 import Loader from "../common/loader";
 import { useModal } from "@/components/providers/ModalProvider";
 import TerminationModal from "../common/Modals/TerminationModal";
+import { Id } from "@/common/types/types";
 
 
 type PropsType = {
-  clientId: number;
+  clientId: Id;
 };
 
 const ClientDetails: FunctionComponent<PropsType> = ({ clientId }) => {
@@ -59,7 +60,7 @@ const ClientDetails: FunctionComponent<PropsType> = ({ clientId }) => {
       const data = await readOne(id);
       setClientData(data);
     };
-    if (clientId) fetchClient(clientId);
+    if (clientId) fetchClient(clientId as number);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [clientId]);
 
@@ -141,7 +142,7 @@ const ClientDetails: FunctionComponent<PropsType> = ({ clientId }) => {
             />
           }
         >
-          <EmergencyContactsSummary clientId={clientData?.id} />
+          <EmergencyContactsSummary clientId={clientData?.id as number} />
         </Panel>
 
         <Panel
@@ -156,10 +157,10 @@ const ClientDetails: FunctionComponent<PropsType> = ({ clientId }) => {
             </div>
           }
         >
-          <InvolvedEmployeesSummary clientId={clientData?.id} />
+          <InvolvedEmployeesSummary clientId={clientData?.id as number} />
         </Panel>
 
-        <ClientContactSummary client={clientData} clientId={clientData?.id} />
+        <ClientContactSummary client={clientData} />
 
         <Panel
           title={"Contracten"}
@@ -171,7 +172,7 @@ const ClientDetails: FunctionComponent<PropsType> = ({ clientId }) => {
             />
           }
         >
-          <ClientContractsSummary clientId={clientId} />
+          <ClientContractsSummary />
         </Panel>
 
         <Panel
@@ -201,7 +202,7 @@ const ClientDetails: FunctionComponent<PropsType> = ({ clientId }) => {
               </ul>
             </div>
           )}
-          <ClientDocumentsSummary clientId={clientId} />
+          <ClientDocumentsSummary clientId={clientId as number} />
         </Panel>
       </div>
 
@@ -260,7 +261,7 @@ const ClientDetails: FunctionComponent<PropsType> = ({ clientId }) => {
             />
           }
         >
-          <ClientReportsSummary clientId={clientId} />
+          <ClientReportsSummary />
         </Panel>
       </div>
     </div>

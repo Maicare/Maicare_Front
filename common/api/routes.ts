@@ -10,7 +10,11 @@ import ClientNetwork from "./routes/clientNetwork";
 import MaturityMatrix from "./routes/maturity-matrix";
 import AutomaticReport from "./routes/automatic-report";
 import IntakeForm from "./routes/intake-form"
+import RegistrationForm from "./routes/registration-form"
 import Contract from "./routes/contract";
+import Calendar from "./routes/calendar";
+import Schedule from "./routes/schedule";
+import Senders from "./routes/senders"; // Added this line
 
 const ApiRoutes = {
   Auth,
@@ -25,7 +29,11 @@ const ApiRoutes = {
   MaturityMatrix,
   AutomaticReport,
   IntakeForm,
-  Contract
+  RegistrationForm,
+  Contract,
+  Calendar,
+  Schedule,
+  Senders, // Added this line
 };
 
 export default ApiRoutes;

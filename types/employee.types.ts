@@ -70,12 +70,11 @@ export type EmployeeDetailsResponse = {
     has_borrowed: boolean,
     out_of_service: boolean,
     is_archived: boolean,
-    profile_picture: string,
-    is_logged_in_user?: boolean,
+    profile_picture: string
 }
 
 export type EmployeeForm = {
-    id?: number;
+    id?: Id;
     employee_number: string;
     employment_number: string;
     is_subcontractor: boolean;
@@ -93,3 +92,10 @@ export type EmployeeForm = {
     role_id: string | number;
     out_of_service: boolean;
 };
+
+export type EmployeeCount = {
+    total_archived: number,
+    total_employees: number,
+    total_out_of_service: number,
+    total_subcontractors: number
+}

@@ -35,12 +35,12 @@ export function useClient({
     error,
     mutate,
   } = useSWR<PaginatedResponse<Client> | null>(
-    stringConstructor(
+    autoFetch ? stringConstructor(
       ApiRoutes.Client.ReadAll,
       constructUrlSearchParams({ search, status, location_id, page, page_size })
-    ), // Endpoint to fetch clients
+    ) : null, // Endpoint to fetch clients
     async (url) => {
-      if (!autoFetch)
+      if (!url)
         return {
           results: [],
           count: 0,
@@ -62,7 +62,7 @@ export function useClient({
     const { displayProgress = false } = options || {};
     try {
       if (displayProgress) startProgress();
-      const response = await useApi<Client>(
+      const response = await useApi<Client & { identity_attachment_ids: string[] }>(
         ApiRoutes.Client.ReadOne.replace("{id}", id.toString()),
         "GET"
       );
@@ -163,7 +163,7 @@ export function useClient({
   };
 
   const updateClientPicture = async (
-    id: number,
+    id: Id,
     attachement_id: string,
     options?: ApiOptions
   ) => {
@@ -234,29 +234,6 @@ export function useClient({
     }
   };
 
-  const readOneSender = async (id: Id, options?: ApiOptions) => {
-    const { displayProgress = false } = options || {};
-    try {
-      if (displayProgress) startProgress();
-      const response = await useApi<Client>(
-        ApiRoutes.Client.ReadSender.replace("{id}", id.toString()),
-        "GET"
-      );
-      if (!response.data) {
-        throw new Error("Client not found");
-      }
-      return response.data;
-    } catch (err: any) {
-      enqueueSnackbar(
-        err?.response?.data?.message || "Failed to fetch client",
-        { variant: "error" }
-      );
-      throw err;
-    } finally {
-      if (displayProgress) stopProgress();
-    }
-  };
-
   //TODO: Add logic to CRUD user role
   return {
     clients,
@@ -270,7 +247,6 @@ export function useClient({
     readClientRelatedEmails,
     updateStatus,
     getStatusHistory,
-    updateOne,
-    readOneSender
+    updateOne
   };
 }

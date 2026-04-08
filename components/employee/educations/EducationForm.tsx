@@ -1,5 +1,6 @@
 import React, { FunctionComponent, useEffect, useState } from "react";
 import * as Yup from "yup";
+import { Id } from "@/common/types/types";
 import { FormProps } from "@/types/form-props";
 import { CreateEducation, Education, initialValues } from "@/types/education.types";
 import { useEducation } from "@/hooks/education/use-education";
@@ -8,7 +9,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import InputControl from "@/common/components/InputControl";
 import Button from "@/components/common/Buttons/Button";
 type Props = FormProps<Education | undefined> & {
-  employeeId: number;
+  employeeId: Id;
 };
 
 const educationSchema: Yup.ObjectSchema<CreateEducation> = Yup.object({
@@ -17,7 +18,7 @@ const educationSchema: Yup.ObjectSchema<CreateEducation> = Yup.object({
   degree: Yup.string().required("Uitgever is vereist"),
   start_date: Yup.string().required("Datum van uitgifte is vereist"),
   end_date: Yup.string().required("Datum van uitgifte is vereist"),
-  employee_id: Yup.number().required("Datum van uitgifte is vereist"),
+  employee_id: Yup.mixed<Id>().required("Datum van uitgifte is vereist"),
 
 });
 

@@ -58,7 +58,7 @@ const SIGNED_BY_OPTIONS = [
   { value: "Client", label: "Cliënt" },
 ];
 
-const IntakeForm = () => {
+export default function IntakeForm() {
 
   const { sendIntakeForm } = useIntake({});
 
@@ -644,7 +644,7 @@ const IntakeForm = () => {
   );
 };
 
-export default withAuth(IntakeForm, {
-  mode: AUTH_MODE.LOGGED_OUT,
-  redirectUrl: Routes.Common.Home,
-});
+// export default withAuth(IntakeForm, {
+//   mode: AUTH_MODE.LOGGED_OUT,
+//   redirectUrl: Routes.Common.Home,
+// });

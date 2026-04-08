@@ -2,13 +2,31 @@
 
 import React, { useEffect, useMemo } from "react";
 import { useForm, FormProvider, useFieldArray } from "react-hook-form";
-import { Plus, TrashIcon } from "lucide-react";
+import type { LucideIcon } from "lucide-react";
+import {
+  Plus,
+  TrashIcon,
+  Info,
+  Users,
+  Home,
+  Building2,
+  Stethoscope,
+  GraduationCap,
+  Plane,
+  CalendarDays,
+  Cigarette,
+  Briefcase,
+  Handshake,
+  Check,
+} from "lucide-react";
 import { useParams } from "next/navigation";
+
 import Panel from "@/components/common/Panel/Panel";
 import IconButton from "@/components/common/Buttons/IconButton";
 import InputControl from "@/common/components/InputControl";
 import { useAppointment } from "@/hooks/client/use-appointment";
-import { Any } from "@/common/types/types";
+import type { Any } from "@/common/types/types";
+import PrimaryButton from "@/common/components/PrimaryButton";
 
 const defaultAppointment = {
   general_information: [] as string[],
@@ -25,22 +43,39 @@ const defaultAppointment = {
 };
 
 const translationMap: Record<string, string> = {
-  general: "Algemeen",
+  general_information: "Algemeen",
   important_contacts: "Belangrijke contacten",
-  household: "Huishouden",
-  organization_agreements: "Organisatieafspraken",
-  probation_service_agreements: "Afspraken met reclassering",
-  appointments_regarding_treatment: "Afspraken betreffende behandeling",
-  school_stage: "Schoolfase",
+  household_info: "Huishouden",
+  organization_agreements: "Organisatie­afspraken",
+  treatment_agreements: "Behandel­afspraken",
+  school_internship: "School­stage",
   travel: "Reizen",
   leave: "Verlof",
+  smoking_rules: "Rook­beleid",
+  work: "Werk",
+  youth_officer_agreements: "Jeugd­ambtenaar",
+};
+
+const sectionIcons: Record<string, LucideIcon> = {
+  general_information: Info,
+  important_contacts: Users,
+  household_info: Home,
+  organization_agreements: Building2,
+  treatment_agreements: Stethoscope,
+  school_internship: GraduationCap,
+  travel: Plane,
+  leave: CalendarDays,
+  smoking_rules: Cigarette,
+  work: Briefcase,
+  youth_officer_agreements: Handshake,
 };
 
 interface FieldArraySectionProps {
   name: string;
-  control: Any;
-  register: Any;
+  control: any;
+  register: any;
   title: string;
+  Icon: LucideIcon;
 }
 
 const FieldArraySection: React.FC<FieldArraySectionProps> = ({
@@ -48,54 +83,55 @@ const FieldArraySection: React.FC<FieldArraySectionProps> = ({
   control,
   register,
   title,
+  Icon,
 }) => {
   const { fields, append, remove } = useFieldArray({ control, name });
 
   return (
-    <div className="mb-6">
-      <h3 className="font-semibold text-gray-600 capitalize">{title}</h3>
-      <div className="overflow-x-auto">
-        <table className="w-full border border-gray-300">
-          <tbody>
-            {fields.length > 0 ? (
-              fields.map((field, index) => (
-                <tr key={field.id} className="border-b border-gray-300">
-                  <td className="p-2">
-                    <InputControl
-                      {...register(`${name}.${index}.content` as const)}
-                      label=""
-                      type="text"
-                      className="w-full border-none focus:ring-0 focus:border-transparent"
-                    />
-                  </td>
-                  <td className="px-4 w-20 text-right">
-                    <IconButton
-                      buttonType="Danger"
-                      onClick={() => remove(index)}
-                    >
-                      <TrashIcon className="w-5 h-5" />
-                    </IconButton>
-                  </td>
-                </tr>
-              ))
-            ) : (
-              <tr className="border-b border-gray-300">
-                <td className="p-2 text-gray-500" colSpan={2}>
-                  -
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
+    <section className="rounded-xl border border-gray-200 bg-white/80 backdrop-blur-sm shadow-xs hover:shadow-sm transition p-6">
+      <div className="flex items-center gap-3 mb-5">
+        <span className="flex items-center justify-center w-8 h-8 rounded-full bg-blue-100">
+          <Icon className="w-4 h-4 text-blue-600" />
+        </span>
+        <h3 className="text-base font-semibold text-gray-800">{title}</h3>
       </div>
-      <button
+
+      <div >
+        {fields.length > 0 ? (
+          fields.map((field, index) => (
+            <div
+              key={field.id}
+              className="flex items-center gap-3 group"
+            >
+              <InputControl
+                {...register(`${name}.${index}.content` as const)}
+                className="flex-1 px-4 py-2  border-gray-200 rounded-md focus:ring-2 focus:ring-blue-400 focus:border-transparent transition border-none"
+              />
+
+              <IconButton
+                buttonType="Danger"
+                onClick={() => remove(index)}
+                className="opacity-70 group-hover:opacity-100 transition h-[42px] w-[42px] flex items-center justify-center"
+              >
+                <TrashIcon className="w-4 h-4 text-white" />
+              </IconButton>
+            </div>
+          ))
+        ) : (
+          <p className="text-gray-400 italic">Nog geen items</p>
+        )}
+      </div>
+
+      <PrimaryButton
+        text="Item toevoegen"
+        icon={Plus}
         type="button"
-        className="mt-2 text-blue-700 bg-blue-100 dark:bg-gray-800 w-full py-1 px-4 rounded-lg flex justify-center items-center gap-1"
         onClick={() => append({ content: "" })}
-      >
-        <Plus size={18} /> <span>Item Toevoegen</span>
-      </button>
-    </div>
+        className="mt-6 w-full flex bg-white items-center justify-center gap-2 rounded-md border border-blue-500 text-blue-700 font-semibold py-3 hover:bg-blue-50 hover:text-blue-700 transition"
+        animation="none"
+        iconSide="left"
+      />
+    </section>
   );
 };
 
@@ -104,84 +140,70 @@ export default function AppointmentCardEditPage() {
   const clientId = params?.clientId?.toString() || "0";
 
   const { appointments, createAppointment, updateAppointment } = useAppointment(clientId);
-  // Exclude unwanted keys
   const appointmentData = appointments || defaultAppointment;
   const keysToExclude = ["id", "client_id", "created_at", "updated_at"];
 
-  // Use useMemo so that formDefaultValues only changes when appointmentData changes.
   const formDefaultValues = useMemo(() => {
     return Object.keys(appointmentData).reduce((acc, key) => {
       if (keysToExclude.includes(key)) return acc;
-      const value = appointmentData[key as keyof typeof appointmentData];
-      if (Array.isArray(value)) {
-        acc[key] = value.map((item) => ({ content: item }));
-      } else {
-        acc[key] = value;
-      }
+      const value = (appointmentData as any)[key];
+      acc[key] = Array.isArray(value)
+        ? value.map((item: string) => ({ content: item }))
+        : value;
       return acc;
     }, {} as Record<string, Any>);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [appointmentData]);
 
-  const methods = useForm({
-    defaultValues: formDefaultValues,
-  });
+  const methods = useForm({ defaultValues: formDefaultValues });
   const { handleSubmit, control, register, reset } = methods;
 
-  // Reset the form when default values change
   useEffect(() => {
     reset(formDefaultValues);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [formDefaultValues]);
+  }, [formDefaultValues, reset]);
 
   const onSubmit = (data: Any) => {
-    // Transform each field array (which is an array of objects with a "content" property)
-    // into an array of strings.
-    const transformedData = Object.keys(data).reduce((acc, key) => {
-      const typedKey = key as keyof typeof appointmentData;
-      const value = data[typedKey];
-      if (Array.isArray(value)) {
-        acc[typedKey] = value.map((item: Any) => item.content || "");
-      } else {
-        acc[typedKey] = value;
-      }
-      return acc;
-    }, {} as typeof appointmentData);
-
-    console.log(transformedData);
-    if (appointments)
-      updateAppointment(transformedData);
-    else
-      createAppointment(transformedData);
-    // Handle further submission if needed (e.g., API call)
+    const transformed: typeof appointmentData = Object.keys(data).reduce(
+      (acc, key) => {
+        const val = (data as any)[key];
+        acc[key as keyof typeof appointmentData] = Array.isArray(val)
+          ? val.map((i: any) => i.content || "")
+          : val;
+        return acc;
+      },
+      {} as typeof appointmentData
+    );
+    if ((appointmentData as any).id) {
+      updateAppointment(transformed);
+    } else {
+      createAppointment(transformed);
+    }
   };
 
   return (
     <FormProvider {...methods}>
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <Panel
-          title="Afspraak Bewerken"
-          sideActions={
-            <button
-              type="submit"
-              className="my-4 bg-blue-700 text-white py-2 px-4 rounded-lg float-right"
-            >
-              Wijzigingen Opslaan
-            </button>
-          }
-        >
-          <div className="w-full gap-4 p-4">
-            {Object.keys(formDefaultValues).map((key) => (
-              <FieldArraySection
-                key={key}
-                name={key}
-                control={control}
-                register={register}
-                title={translationMap[key] || key.replace(/_/g, " ")}
-              />
-            ))}
-          </div>
-        </Panel>
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
+        <div className="flex justify-end">
+          <PrimaryButton
+            text="Opslaan"
+            icon={Check}
+            type="submit"
+            className="bg-blue-600 text-white hover:bg-blue-700 shadow-sm hover:shadow-md focus:ring-4 focus:ring-blue-200 focus:ring-offset-2 transition-all duration-300 transform hover:scale-[1.02]"
+            animation="animate-bounce"
+          />
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          {Object.keys(formDefaultValues).map((key) => (
+            <FieldArraySection
+              key={key}
+              name={key}
+              control={control}
+              register={register}
+              title={translationMap[key] || key.replace(/_/g, " ")}
+              Icon={sectionIcons[key] || Info}
+            />
+          ))}
+        </div>
       </form>
     </FormProvider>
   );

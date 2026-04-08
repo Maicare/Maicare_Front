@@ -6,6 +6,7 @@ import useProgressBar from "@/common/hooks/use-progress-bar";
 import { ApiOptions } from "@/common/types/api.types";
 import { PaginatedResponse } from "@/common/types/pagination.types";
 import {
+  EmployeeCount,
   EmployeeDetailsResponse,
   EmployeeList,
   EmployeesSearchParams,
@@ -19,9 +20,8 @@ import { EmployeeForm as EmployeeFormType } from "@/types/employee.types";
 import { useMutation } from "@/common/hooks/use-mutate";
 import { AxiosError } from "axios";
 import { useRouter } from "next/navigation";
-import { Education } from "@/types/education.types";
-import { Experience } from "@/types/experience.types";
-import { CreateEmployee, CreateEmployeeRequestBody, UpdateEmployeeRequestBody } from "@/schemas/employee.schema";
+import { CreateEmployeeRequestBody, UpdateEmployeeRequestBody } from "@/schemas/employee.schema";
+import { Id } from "@/common/types/types";
 
 export function useEmployee({
   search,
@@ -33,7 +33,8 @@ export function useEmployee({
   page: pageParam = 1,
   page_size = 10,
   autoFetch = true,
-}: Partial<EmployeesSearchParams & { autoFetch?: boolean }>) {
+  v: _v
+}: Partial<EmployeesSearchParams & { autoFetch?: boolean, v?: string }>) {
   const [page, setPage] = useState(pageParam);
   const { enqueueSnackbar } = useSnackbar();
   const router = useRouter();
@@ -43,7 +44,7 @@ export function useEmployee({
     error,
     mutate,
   } = useSWR<PaginatedResponse<EmployeeList> | null>(
-    stringConstructor(
+    autoFetch ? stringConstructor(
       ApiRoutes.Employee.ReadAll,
       constructUrlSearchParams({
         search,
@@ -55,9 +56,9 @@ export function useEmployee({
         page,
         page_size,
       })
-    ), // Endpoint to fetch Locations
+    ) : null, // Endpoint to fetch Locations
     async (url) => {
-      if (!autoFetch)
+      if (!url) {
         return {
           results: [],
           count: 0,
@@ -65,16 +66,17 @@ export function useEmployee({
           next: null,
           previous: null,
         };
+      }
       const response = await api.get(url);
       if (!response.data.data) {
         return null;
       }
       return response.data.data; // Assuming API returns data inside a "data" field
     },
-    { shouldRetryOnError: false }
+    { shouldRetryOnError: false, dedupingInterval: 10000 }
   );
   const isLoading = !employees && !error;
-  const readOne = async (id: number, options?: ApiOptions) => {
+  const readOne = async (id: Id, options?: ApiOptions) => {
     const { displayProgress = false, displaySuccess = false } = options || {};
     try {
       // Display progress bar
@@ -98,6 +100,37 @@ export function useEmployee({
     } catch (err: any) {
       enqueueSnackbar(
         err?.response?.data?.message || "Employee Details fetching failed",
+        { variant: "error" }
+      );
+      throw err;
+    } finally {
+      if (displayProgress) stopProgress();
+    }
+  };
+  const readCount = async (options?: ApiOptions) => {
+    const { displayProgress = false, displaySuccess = false } = options || {};
+    try {
+      // Display progress bar
+      if (displayProgress) startProgress();
+      const { message, success, data, error } =
+        await useApi<EmployeeCount>(
+          ApiRoutes.Employee.ReadCount,
+          "GET",
+          {}
+        );
+      if (!data)
+        throw new Error(error || message || "An unknown error occurred");
+
+      // Display success message
+      if (displaySuccess && success) {
+        enqueueSnackbar("Employee Counts fetched successful!", {
+          variant: "success",
+        });
+      }
+      return data;
+    } catch (err: any) {
+      enqueueSnackbar(
+        err?.response?.data?.message || "Employee Counts fetching failed",
         { variant: "error" }
       );
       throw err;
@@ -170,7 +203,7 @@ export function useEmployee({
     }
   };
 
-  const deleteOne = async (id: number, options?: ApiOptions) => {
+  const deleteOne = async (id: Id, options?: ApiOptions) => {
     const { displayProgress = false, displaySuccess = false } = options || {};
     try {
       // Display progress bar
@@ -201,7 +234,7 @@ export function useEmployee({
   };
 
   const updateEmployeePicture = async (
-    id: number,
+    id: Id,
     attachement_id: string,
     options?: ApiOptions
   ) => {
@@ -274,7 +307,7 @@ export function useEmployee({
 
   const updateEmployee = async (
     newEmployee: EmployeeFormType,
-    employeeId: number
+    employeeId: Id
   ) => {
     try {
       const created = await patchEmployee(
@@ -323,35 +356,11 @@ export function useEmployee({
     }
   };
 
-
-
-  const updateEmployeePassword = async (new_password: string, old_password: string, options?: ApiOptions) => {
-    const { displayProgress = false, displaySuccess = false } = options || {};
-    try {
-      // Display progress bar
-      if (displayProgress) startProgress();
-      const { message, success, data, error } = await useApi(ApiRoutes.Employee.UpdatePassword, "POST", {}, {
-        new_password,
-        old_password
-      });
-
-      // Display success message
-      if (displaySuccess && success) {
-        enqueueSnackbar("Password changed successfully!", { variant: "success" });
-      }
-      return data;
-    } catch (err: any) {
-      enqueueSnackbar(err?.response?.data?.message || "Password did not change", { variant: "error" });
-      throw err;
-    } finally {
-      if (displayProgress) stopProgress();
-    }
-  }
-
   //TODO: Add logic to CRUD user role
   return {
     employees,
     readOne,
+    readCount,
     error,
     isLoading,
     page,
@@ -362,7 +371,6 @@ export function useEmployee({
     updateEmployeePicture,
     readEmployeesEmails,
     createOne,
-    updateOne,
-    updateEmployeePassword
+    updateOne
   };
 }

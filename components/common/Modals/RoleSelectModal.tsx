@@ -26,20 +26,20 @@ const validationSchema = yup.object().shape({
 });
 
 const RoleSelectModal: FunctionComponent<ModalProps> = ({ open, onClose, additionalProps }) => {
-    const {employeeId} = useParams();
+    const { employeeId } = useParams();
 
     const methods = useForm<FormValues>({
-        resolver: yupResolver(validationSchema),
+        resolver: yupResolver(validationSchema) as any,
         defaultValues: additionalProps?.initialData ?? initialValues,
     });
-    const {updateOneRole,mutate} = useRole({autoFetch:false});
-    const {enqueueSnackbar} = useSnackbar();
+    const { updateOneRole, mutate } = useRole({ autoFetch: false });
+    const { enqueueSnackbar } = useSnackbar();
     const {
         handleSubmit,
         formState: { isSubmitting, errors },
     } = methods;
     const onSubmit = async (data: FormValues) => {
-        await updateOneRole(Number(employeeId),data.role_id, { displayProgress: true, displaySuccess: true });
+        await updateOneRole(Number(employeeId), data.role_id, { displayProgress: true, displaySuccess: true });
         await mutate();
         onClose();
     };
