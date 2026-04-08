@@ -1,6 +1,6 @@
 import PrimaryButton from '@/common/components/PrimaryButton'
-import Tooltip from '@/common/components/Tooltip'
 import { Id } from '@/common/types/types'
+import Tooltip from '@/common/components/Tooltip'
 import { Button } from '@/components/ui/button'
 import { Calendar } from '@/components/ui/calendar'
 import { Checkbox } from '@/components/ui/checkbox'
@@ -13,7 +13,7 @@ import { GENDER_OPTIONS } from '@/consts'
 import { useEmployee } from '@/hooks/employee/use-employee'
 import { useLocation } from '@/hooks/location/use-location'
 import { useRole } from '@/hooks/role/use-role'
-import { CreateEmployee,  employeeSchema } from '@/schemas/employee.schema'
+import { CreateEmployee, employeeSchema } from '@/schemas/employee.schema'
 import { EmployeeDetailsResponse } from '@/types/employee.types'
 import { cn } from '@/utils/cn'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -24,30 +24,31 @@ import { useForm } from 'react-hook-form'
 
 
 type Props = {
-    mode:"create"|"update";
-    onSuccess?:(id:Id)=>void;
-    defaultValues?:EmployeeDetailsResponse;
-    onCancel:()=>void;
+    mode: "create" | "update";
+    onSuccess?: (id: Id) => void;
+    defaultValues?: EmployeeDetailsResponse;
+    onCancel: () => void;
 }
 
-const UpsertEmployeeForm = ({mode,onSuccess,defaultValues,onCancel}:Props) => {
+const UpsertEmployeeForm = ({ mode, onSuccess, defaultValues, onCancel }: Props) => {
     const { createOne, updateOne } = useEmployee({ autoFetch: false });
-    const {locations} = useLocation({autoFetch:true});
-    const {roles} = useRole({autoFetch:true});
+    const { locations } = useLocation({ autoFetch: true });
+    const { roles } = useRole({ autoFetch: true });
     const [loading, setLoading] = useState(false);
-    // 1. Definieer je formulier.
+    // 1. Define your form.
     const form = useForm<CreateEmployee>({
         resolver: zodResolver(employeeSchema),
         defaultValues: mode === "update" ? {
             ...defaultValues,
-            date_of_birth: new Date(defaultValues?.date_of_birth||""),
-            location_id: defaultValues?.location_id?.toString()??"",
-            role_id:defaultValues?.role_id?.toString()??"",
+            date_of_birth: new Date(defaultValues?.date_of_birth || ""),
+            location_id: defaultValues?.location_id?.toString() ?? "",
+            role_id: defaultValues?.role_id?.toString() ?? "",
         } : {
             employee_number: '',
             employment_number: '',
             location_id: '',
             is_subcontractor: false,
+            out_of_service: false,
             first_name: '',
             last_name: '',
             date_of_birth: new Date(),
@@ -62,7 +63,7 @@ const UpsertEmployeeForm = ({mode,onSuccess,defaultValues,onCancel}:Props) => {
         },
     })
 
-    // 2. Definieer een submit handler.
+    // 2. Define a submit handler.
     async function onSubmit(values: CreateEmployee) {
         if (mode === "create") {
             try {
@@ -71,8 +72,8 @@ const UpsertEmployeeForm = ({mode,onSuccess,defaultValues,onCancel}:Props) => {
                     {
                         ...values,
                         date_of_birth: values.date_of_birth.toISOString().split("T")[0],
-                        location_id: values.location_id,
-                        role_id: values.role_id,
+                        location_id: Number(values.location_id),
+                        role_id: Number(values.role_id),
                         department: null,
                         position: null,
                     }, {
@@ -93,17 +94,17 @@ const UpsertEmployeeForm = ({mode,onSuccess,defaultValues,onCancel}:Props) => {
                     {
                         ...values,
                         date_of_birth: values.date_of_birth.toISOString().split("T")[0],
-                        location_id: values.location_id,
-                        role_id: values.role_id,
+                        location_id: Number(values.location_id),
+                        role_id: Number(values.role_id),
                         department: null,
                         position: null,
-                        id: defaultValues?.id || ""
+                        id: defaultValues?.id || 0
                     }, {
                     displaySuccess: true,
                     displayProgress: true
                 }
                 );
-                onSuccess?.(defaultValues?.id||"0");
+                onSuccess?.(defaultValues?.id || 0);
             } catch (error) {
                 console.log(error);
             } finally {
@@ -127,9 +128,9 @@ const UpsertEmployeeForm = ({mode,onSuccess,defaultValues,onCancel}:Props) => {
                                         <FormLabel>Medewerkernummer</FormLabel>
                                         <FormControl>
                                             <div className="relative">
-                                                <Input placeholder="bijv: T23JK467" {...field} />
+                                                <Input placeholder="eg: T23JK467" {...field} />
                                                 <div className="absolute right-2 top-0 translate-y-1/2 h-5 w-5 ">
-                                                    <Tooltip text='Dit is het medewerkernummer'>
+                                                    <Tooltip text='This is Medewerkernummer'>
                                                         <Info className='h-5 w-5' />
                                                     </Tooltip>
                                                 </div>
@@ -147,9 +148,9 @@ const UpsertEmployeeForm = ({mode,onSuccess,defaultValues,onCancel}:Props) => {
                                         <FormLabel>Dienstnummer</FormLabel>
                                         <FormControl>
                                             <div className="relative">
-                                                <Input placeholder="bijv: T23JK467" {...field} />
+                                                <Input placeholder="eg: T23JK467" {...field} />
                                                 <div className="absolute right-2 top-0 translate-y-1/2 h-5 w-5 ">
-                                                    <Tooltip text='Dit is het dienstnummer'>
+                                                    <Tooltip text='This is Dienstnummer '>
                                                         <Info className='h-5 w-5' />
                                                     </Tooltip>
                                                 </div>
@@ -167,20 +168,20 @@ const UpsertEmployeeForm = ({mode,onSuccess,defaultValues,onCancel}:Props) => {
                                         <FormItem>
                                             <FormLabel className='flex items-center justify-between'>
                                                 Locatie
-                                                <Tooltip text='Dit is de locatie'>
+                                                <Tooltip text='This is Locatie '>
                                                     <Info className='h-5 w-5 mr-2' />
                                                 </Tooltip>
                                             </FormLabel>
                                             <FormControl>
                                                 <Select onValueChange={field.onChange} defaultValue={field.value} >
                                                     <SelectTrigger className="w-full">
-                                                        <SelectValue placeholder="Selecteer een locatie" />
+                                                        <SelectValue placeholder="Select a Location" />
                                                     </SelectTrigger>
                                                     <SelectContent className="bg-white">
                                                         <SelectGroup>
-                                                            <SelectLabel>Locaties</SelectLabel>
+                                                            <SelectLabel>Locations</SelectLabel>
                                                             {
-                                                                locations?.map((item,index)=>(
+                                                                locations?.map((item, index) => (
                                                                     <SelectItem key={index} value={item.id.toString()} className="hover:bg-slate-100 cursor-pointer">{item.name}</SelectItem>
                                                                 ))
                                                             }
@@ -198,22 +199,22 @@ const UpsertEmployeeForm = ({mode,onSuccess,defaultValues,onCancel}:Props) => {
                                     render={({ field }) => (
                                         <FormItem>
                                             <FormLabel className='flex items-center justify-between'>
-                                                Rollen
-                                                <Tooltip text='Dit zijn de rollen'>
+                                                Rolen
+                                                <Tooltip text='This is Rolen '>
                                                     <Info className='h-5 w-5 mr-2' />
                                                 </Tooltip>
                                             </FormLabel>
                                             <FormControl>
                                                 <Select onValueChange={field.onChange} defaultValue={field.value}>
                                                     <SelectTrigger className="w-full">
-                                                        <SelectValue placeholder="Selecteer een rol" />
+                                                        <SelectValue placeholder="Select a Location" />
                                                     </SelectTrigger>
                                                     <SelectContent className="bg-white">
                                                         <SelectGroup>
-                                                            <SelectLabel>Rollen</SelectLabel>
+                                                            <SelectLabel>Rolen</SelectLabel>
                                                             {
-                                                                roles?.map((item,index)=>(
-                                                                    <SelectItem value={item.id.toString()} key={index} className="hover:bg-slate-100 cursor-pointer">{item.role_name}</SelectItem>
+                                                                roles?.map((item, index) => (
+                                                                    <SelectItem value={item.id.toString()} key={index} className="hover:bg-slate-100 cursor-pointer">{item.name}</SelectItem>
                                                                 ))
                                                             }
                                                         </SelectGroup>
@@ -225,6 +226,29 @@ const UpsertEmployeeForm = ({mode,onSuccess,defaultValues,onCancel}:Props) => {
                                     )}
                                 />
                             </div>
+                            <FormField
+                                control={form.control}
+                                name="out_of_service"
+                                render={({ field }) => (
+                                    <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4 shadow">
+                                        <FormControl>
+                                            <Checkbox
+                                                checked={field.value}
+                                                onCheckedChange={field.onChange}
+                                                className=''
+                                            />
+                                        </FormControl>
+                                        <div className="space-y-1 leading-none">
+                                            <FormLabel>
+                                                Uit Dienst
+                                            </FormLabel>
+                                            <FormDescription>
+                                                An Out of service is a person No longer operational or available for use.
+                                            </FormDescription>
+                                        </div>
+                                    </FormItem>
+                                )}
+                            />
                             <FormField
                                 control={form.control}
                                 name="is_subcontractor"
@@ -242,7 +266,7 @@ const UpsertEmployeeForm = ({mode,onSuccess,defaultValues,onCancel}:Props) => {
                                                 Is een onderaannemer
                                             </FormLabel>
                                             <FormDescription>
-                                                Een onderaannemer is een persoon of bedrijf dat door een hoofdaannemer wordt ingehuurd om specifieke taken of diensten uit te voeren binnen een groter project.
+                                                A subcontractor is a person or company hired by a main contractor to perform specific tasks or services within a larger project.
                                             </FormDescription>
                                         </div>
                                     </FormItem>
@@ -262,9 +286,9 @@ const UpsertEmployeeForm = ({mode,onSuccess,defaultValues,onCancel}:Props) => {
                                         <FormLabel>Voornaam</FormLabel>
                                         <FormControl>
                                             <div className="relative">
-                                                <Input placeholder="bijv: Jan" {...field} />
+                                                <Input placeholder="eg: Jhon" {...field} />
                                                 <div className="absolute right-2 top-0 translate-y-1/2 h-5 w-5 ">
-                                                    <Tooltip text='Dit is de voornaam'>
+                                                    <Tooltip text='This is First name.'>
                                                         <Info className='h-5 w-5' />
                                                     </Tooltip>
                                                 </div>
@@ -282,9 +306,9 @@ const UpsertEmployeeForm = ({mode,onSuccess,defaultValues,onCancel}:Props) => {
                                         <FormLabel>Achternaam</FormLabel>
                                         <FormControl>
                                             <div className="relative">
-                                                <Input placeholder="bijv: Jansen" {...field} />
+                                                <Input placeholder="eg: Doe" {...field} />
                                                 <div className="absolute right-2 top-0 translate-y-1/2 h-5 w-5 ">
-                                                    <Tooltip text='Dit is de achternaam'>
+                                                    <Tooltip text='This is Last name. '>
                                                         <Info className='h-5 w-5' />
                                                     </Tooltip>
                                                 </div>
@@ -310,9 +334,9 @@ const UpsertEmployeeForm = ({mode,onSuccess,defaultValues,onCancel}:Props) => {
                                         <FormLabel>E-mailadres</FormLabel>
                                         <FormControl>
                                             <div className="relative">
-                                                <Input type='email' placeholder="bijv: jan@voorbeeld.nl" {...field} />
+                                                <Input type='email' placeholder="eg: Taha@gmail.com" {...field} />
                                                 <div className="absolute right-2 top-0 translate-y-1/2 h-5 w-5 ">
-                                                    <Tooltip text='Dit is het e-mailadres'>
+                                                    <Tooltip text='This is email address.'>
                                                         <Info className='h-5 w-5' />
                                                     </Tooltip>
                                                 </div>
@@ -330,9 +354,9 @@ const UpsertEmployeeForm = ({mode,onSuccess,defaultValues,onCancel}:Props) => {
                                         <FormLabel>Privé E-mailadres</FormLabel>
                                         <FormControl>
                                             <div className="relative">
-                                                <Input placeholder="bijv: jan@maicaire.com" {...field} />
+                                                <Input placeholder="eg: Taha@maicaire.com" {...field} />
                                                 <div className="absolute right-2 top-0 translate-y-1/2 h-5 w-5 ">
-                                                    <Tooltip text='Dit is het privé e-mailadres'>
+                                                    <Tooltip text='This is private email address. '>
                                                         <Info className='h-5 w-5' />
                                                     </Tooltip>
                                                 </div>
@@ -350,9 +374,9 @@ const UpsertEmployeeForm = ({mode,onSuccess,defaultValues,onCancel}:Props) => {
                                         <FormLabel>Authenticatie Telefoonnummer</FormLabel>
                                         <FormControl>
                                             <div className="relative">
-                                                <Input placeholder="bijv: +31-6-12345678" {...field} />
+                                                <Input placeholder="eg: +212-626-661-516" {...field} />
                                                 <div className="absolute right-2 top-0 translate-y-1/2 h-5 w-5 ">
-                                                    <Tooltip text='Dit is het authenticatie telefoonnummer'>
+                                                    <Tooltip text='This is authentication phone number. '>
                                                         <Info className='h-5 w-5' />
                                                     </Tooltip>
                                                 </div>
@@ -370,9 +394,9 @@ const UpsertEmployeeForm = ({mode,onSuccess,defaultValues,onCancel}:Props) => {
                                         <FormLabel>Werk Telefoonnummer</FormLabel>
                                         <FormControl>
                                             <div className="relative">
-                                                <Input placeholder="bijv: +31-20-1234567" {...field} />
+                                                <Input placeholder="eg: +212-626-661-516" {...field} />
                                                 <div className="absolute right-2 top-0 translate-y-1/2 h-5 w-5 ">
-                                                    <Tooltip text='Dit is het werk telefoonnummer'>
+                                                    <Tooltip text='This is work phone number. '>
                                                         <Info className='h-5 w-5' />
                                                     </Tooltip>
                                                 </div>
@@ -390,9 +414,9 @@ const UpsertEmployeeForm = ({mode,onSuccess,defaultValues,onCancel}:Props) => {
                                         <FormLabel>Privé Telefoonnummer</FormLabel>
                                         <FormControl>
                                             <div className="relative">
-                                                <Input placeholder="bijv: +31-6-12345678" {...field} />
+                                                <Input placeholder="eg: +212-626-661-516" {...field} />
                                                 <div className="absolute right-2 top-0 translate-y-1/2 h-5 w-5 ">
-                                                    <Tooltip text='Dit is het privé telefoonnummer'>
+                                                    <Tooltip text='This is private phone number. '>
                                                         <Info className='h-5 w-5' />
                                                     </Tooltip>
                                                 </div>
@@ -410,9 +434,9 @@ const UpsertEmployeeForm = ({mode,onSuccess,defaultValues,onCancel}:Props) => {
                                         <FormLabel>Huis Telefoonnummer</FormLabel>
                                         <FormControl>
                                             <div className="relative">
-                                                <Input placeholder="bijv: +31-20-1234567" {...field} />
+                                                <Input placeholder="eg: +212-626-661-516" {...field} />
                                                 <div className="absolute right-2 top-0 translate-y-1/2 h-5 w-5 ">
-                                                    <Tooltip text='Dit is het huis telefoonnummer'>
+                                                    <Tooltip text='This is home phone number. '>
                                                         <Info className='h-5 w-5' />
                                                     </Tooltip>
                                                 </div>
@@ -435,8 +459,8 @@ const UpsertEmployeeForm = ({mode,onSuccess,defaultValues,onCancel}:Props) => {
                                 render={({ field }) => (
                                     <FormItem className="flex flex-col">
                                         <FormLabel className='flex items-center justify-between'>
-                                            Geboortedatum
-                                            <Tooltip text='Dit is de geboortedatum'>
+                                            Date of birth
+                                            <Tooltip text='This is date of birth. '>
                                                 <Info className='h-5 w-5 mr-2' />
                                             </Tooltip>
                                         </FormLabel>
@@ -453,7 +477,7 @@ const UpsertEmployeeForm = ({mode,onSuccess,defaultValues,onCancel}:Props) => {
                                                         {field.value ? (
                                                             format(field.value, "PPP")
                                                         ) : (
-                                                            <span>Kies een datum</span>
+                                                            <span>Pick a date</span>
                                                         )}
                                                         <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                                                     </Button>
@@ -482,20 +506,20 @@ const UpsertEmployeeForm = ({mode,onSuccess,defaultValues,onCancel}:Props) => {
                                     <FormItem>
                                         <FormLabel className='flex items-center justify-between'>
                                             Geslacht
-                                            <Tooltip text='Dit is het geslacht'>
+                                            <Tooltip text='This is gender '>
                                                 <Info className='h-5 w-5 mr-2' />
                                             </Tooltip>
                                         </FormLabel>
                                         <FormControl>
                                             <Select onValueChange={field.onChange} defaultValue={field.value} >
                                                 <SelectTrigger className="w-full">
-                                                    <SelectValue placeholder="Selecteer een geslacht" />
+                                                    <SelectValue placeholder="Select a Location" />
                                                 </SelectTrigger>
                                                 <SelectContent className="bg-white">
                                                     <SelectGroup>
                                                         <SelectLabel>Geslacht</SelectLabel>
                                                         {
-                                                            GENDER_OPTIONS.map((item,index)=>(
+                                                            GENDER_OPTIONS.map((item, index) => (
                                                                 <SelectItem key={index} value={item.value} className="hover:bg-slate-100 cursor-pointer">{item.label}</SelectItem>
                                                             ))
                                                         }
@@ -511,7 +535,7 @@ const UpsertEmployeeForm = ({mode,onSuccess,defaultValues,onCancel}:Props) => {
                     </div>
                 </div>
                 <PrimaryButton
-                    text='Opslaan'
+                    text='Save'
                     type='submit'
                     animation='animate-bounce'
                     icon={CheckCircle}
@@ -519,7 +543,7 @@ const UpsertEmployeeForm = ({mode,onSuccess,defaultValues,onCancel}:Props) => {
                     className='bg-indigo-100 text-indigo-500 hover:bg-indigo-500 hover:text-white px-4 py-3 text-sm'
                 />
                 <PrimaryButton
-                    text='Annuleren'
+                    text='Cancel'
                     type='button'
                     animation='animate-bounce'
                     icon={XCircle}

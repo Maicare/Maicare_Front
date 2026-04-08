@@ -4,15 +4,19 @@ import ApiRoutes from "@/common/api/routes";
 import { useApi } from "@/common/hooks/use-api";
 import useProgressBar from "@/common/hooks/use-progress-bar";
 import { ApiOptions } from "@/common/types/api.types";
+import { PaginatedResponse } from "@/common/types/pagination.types";
 import { Id } from "@/common/types/types";
 import { useSnackbar } from "notistack";
+import { useState } from "react";
 import useSWR from "swr";
+import { constructUrlSearchParams } from "@/utils/construct-search-params";
+import { stringConstructor } from "@/utils/string-constructor";
 import { CreateShift, Shift } from "@/schemas/shift.schema";
 
 export function useShift({
   location_id,
   autoFetch = true,
-}: { location_id:Id,autoFetch?: boolean }) {
+}: { location_id: Id, autoFetch?: boolean }) {
   const { enqueueSnackbar } = useSnackbar();
   const { start: startProgress, stop: stopProgress } = useProgressBar();
   const {
@@ -20,7 +24,7 @@ export function useShift({
     error,
     mutate,
   } = useSWR<Shift[] | null>(
-    autoFetch ? ApiRoutes.Location.Shift.ReadAll.replace("{id}",location_id.toString()) : null, // Endpoint to fetch clients
+    autoFetch ? ApiRoutes.Location.Shift.ReadAll.replace("{id}", location_id.toString()) : null, // Endpoint to fetch clients
     async (url) => {
       if (!url)
         return {
@@ -40,7 +44,7 @@ export function useShift({
   );
   const isLoading = !shifts && !error;
 
-  const readOne = async (id:number, options?: ApiOptions) => {
+  const readOne = async (id: Id, options?: ApiOptions) => {
     const { displayProgress = false } = options || {};
     try {
       if (displayProgress) startProgress();
@@ -127,7 +131,6 @@ export function useShift({
     isLoading,
     readOne,
     createOne,
-    updateOne,
-    mutate
+    updateOne
   };
 }

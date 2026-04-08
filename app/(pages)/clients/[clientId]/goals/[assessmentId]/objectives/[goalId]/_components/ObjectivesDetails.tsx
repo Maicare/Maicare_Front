@@ -5,12 +5,16 @@ import Loader from "@/components/common/loader";
 import { DataTable } from "@/components/employee/table/data-table";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useGoal } from "@/hooks/goal/use-goal";
-import {  SquareCheck } from "lucide-react";
+import { ArrowBigLeft, ArrowBigRight, SquareCheck } from "lucide-react";
+import PrimaryButton from "@/common/components/PrimaryButton";
 import { Row } from "@tanstack/table-core";
-import { GoalWithObjectives } from "@/types/goals.types";
+import { GoalWithObjectives, CreateObjective, Goal } from "@/types/goals.types";
+import { useRouter, useParams } from "next/navigation";
 import { useState, useEffect } from "react";
+import { CreateGoal } from "@/schemas/goal.schema";
+import UpsertGoalSheet from "../../../_components/UpsertGoalSheet";
 import { getColumns, ObjectiveRow } from "./columns";
-import UpsertObjectiveSheet, { CreateObjectiveForm } from "./UpsertObjectiveSheet";
+import { Id } from "@/common/types/types";
 
 const ObjectivesDetails = ({
   assessmentId,
@@ -21,6 +25,7 @@ const ObjectivesDetails = ({
   assessmentId: string;
   goalId: string;
 }) => {
+  const router = useRouter();
 
   const { readOne, createObjective } = useGoal({
     autoFetch: false,
@@ -58,27 +63,42 @@ const ObjectivesDetails = ({
     }
 
     fetchObjectives();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [goalId]);
 
-  const handleRowClick = (_row: Row<ObjectiveRow>) => {
+  const handleRowClick = (row: Row<ObjectiveRow>) => {
     // router.push(
     //   `/clients/${clientId}/goals/${assessmentId}/objectives/${row.original.id}`
     // );
   };
 
-  const handleCreate = async (values: CreateObjectiveForm) => {
+  const handleCreate = async (values: CreateGoal) => {
     try {
-      await createObjective(goalId!, [{...values,due_date:values.due_date.toISOString().split("T")[0]}], { displayProgress: true, displaySuccess: true });
-    } catch (error) {
-      console.error({ error });
+      const dateOnly = values.target_date.toISOString().split("T")[0];
+      const objPayload: CreateObjective = {
+        due_date: dateOnly,
+        objective_description: values.description,
+      };
+      await createObjective(goalId, [objPayload], {
+        displayProgress: true,
+        displaySuccess: true,
+      });
+      const updated = await readOne(goalId);
+      // sort again after create
+      const sorted = [...updated.objectives].sort(
+        (a, b) =>
+          new Date(b.created_at).getTime() -
+          new Date(a.created_at).getTime()
+      );
+      setObjectives(sorted);
+    } catch (err) {
+      console.log(err);
     }
   };
 
   const handleEdit = (obj: ObjectiveRow) => {
     console.log("edit", obj);
   };
-  const handleDelete = (id: string) => {
+  const handleDelete = (id: Id) => {
     console.log("delete", id);
   };
 
@@ -90,12 +110,11 @@ const ObjectivesDetails = ({
           Goal&apos;s Objectives
         </CardTitle>
         <div className="flex gap-2">
-          <UpsertObjectiveSheet
+          <UpsertGoalSheet
             isOpen={open}
             handleCreate={handleCreate}
             handleOpen={setOpen}
             handleUpdate={() => { }}
-            handleGenerate={() => { }}
             mode="create"
           />
         </div>

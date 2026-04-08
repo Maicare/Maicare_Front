@@ -21,15 +21,12 @@ import {
 } from "lucide-react";
 import { useParams } from "next/navigation";
 
+import Panel from "@/components/common/Panel/Panel";
 import IconButton from "@/components/common/Buttons/IconButton";
 import InputControl from "@/common/components/InputControl";
 import { useAppointment } from "@/hooks/client/use-appointment";
 import type { Any } from "@/common/types/types";
 import PrimaryButton from "@/common/components/PrimaryButton";
-import withAuth, { AUTH_MODE } from "@/common/hocs/with-auth";
-import withPermissions from "@/common/hocs/with-permissions";
-import Routes from "@/common/routes";
-import { PermissionsObjects } from "@/common/data/permission.data";
 
 const defaultAppointment = {
   general_information: [] as string[],
@@ -75,8 +72,8 @@ const sectionIcons: Record<string, LucideIcon> = {
 
 interface FieldArraySectionProps {
   name: string;
-  control: Any;
-  register: Any;
+  control: any;
+  register: any;
   title: string;
   Icon: LucideIcon;
 }
@@ -89,6 +86,7 @@ const FieldArraySection: React.FC<FieldArraySectionProps> = ({
   Icon,
 }) => {
   const { fields, append, remove } = useFieldArray({ control, name });
+
   return (
     <section className="rounded-xl border border-gray-200 bg-white/80 backdrop-blur-sm shadow-xs hover:shadow-sm transition p-6">
       <div className="flex items-center gap-3 mb-5">
@@ -120,7 +118,7 @@ const FieldArraySection: React.FC<FieldArraySectionProps> = ({
             </div>
           ))
         ) : (
-          <p className="text-gray-400 italic">Geen items</p>
+          <p className="text-gray-400 italic">Nog geen items</p>
         )}
       </div>
 
@@ -137,9 +135,10 @@ const FieldArraySection: React.FC<FieldArraySectionProps> = ({
   );
 };
 
-function AppointmentCardEditPage() {
+export default function AppointmentCardEditPage() {
   const params = useParams();
   const clientId = params?.clientId?.toString() || "0";
+
   const { appointments, createAppointment, updateAppointment } = useAppointment(clientId);
   const appointmentData = appointments || defaultAppointment;
   const keysToExclude = ["id", "client_id", "created_at", "updated_at"];
@@ -147,13 +146,12 @@ function AppointmentCardEditPage() {
   const formDefaultValues = useMemo(() => {
     return Object.keys(appointmentData).reduce((acc, key) => {
       if (keysToExclude.includes(key)) return acc;
-      const value = (appointmentData as Any)[key];
+      const value = (appointmentData as any)[key];
       acc[key] = Array.isArray(value)
         ? value.map((item: string) => ({ content: item }))
         : value;
       return acc;
     }, {} as Record<string, Any>);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [appointmentData]);
 
   const methods = useForm({ defaultValues: formDefaultValues });
@@ -166,17 +164,17 @@ function AppointmentCardEditPage() {
   const onSubmit = (data: Any) => {
     const transformed: typeof appointmentData = Object.keys(data).reduce(
       (acc, key) => {
-        const val = (data as Any)[key];
+        const val = (data as any)[key];
         acc[key as keyof typeof appointmentData] = Array.isArray(val)
-          ? val.map((i: Any) => i.content || "")
+          ? val.map((i: any) => i.content || "")
           : val;
         return acc;
       },
       {} as typeof appointmentData
     );
-    if (appointments) {
-      updateAppointment(transformed)
-    }else{
+    if ((appointmentData as any).id) {
+      updateAppointment(transformed);
+    } else {
       createAppointment(transformed);
     }
   };
@@ -210,12 +208,3 @@ function AppointmentCardEditPage() {
     </FormProvider>
   );
 }
-
-
-export default withAuth(
-  withPermissions(AppointmentCardEditPage, {
-    redirectUrl: Routes.Common.NotFound,
-    requiredPermissions: PermissionsObjects.UpdateAppointmentCard, // TODO: Add correct permission
-    }),
-    { mode: AUTH_MODE.LOGGED_IN, redirectUrl: Routes.Auth.Login } 
-    );

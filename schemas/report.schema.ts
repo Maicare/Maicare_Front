@@ -4,17 +4,18 @@ import { z } from "zod";
 
 import * as Yup from "yup";
 export const ReportSchema: Yup.ObjectSchema<CreateReportOld> = Yup.object().shape({
-    report_text: Yup.string().required("Rapport is verplicht").test("minWords", "Voer meer dan 50 woorden in om het rapport in te dienen.", wordCount),
-    date: Yup.string().required("Datum is verplicht"),
-    id: Yup.string().optional(),
-    employee_id: Yup.string().required("Medewerker is verplicht"),
-    type: Yup.string().oneOf(Object.values(ReportTypes)).required("Rapporttype is verplicht"),
-    emotional_state: Yup.string().oneOf(Object.values(EmotionalState)).required("Emotionele toestand is verplicht"),
+  report_text: Yup.string().required("Geef alstublieft een rapport").test("minWords", "Voer meer dan 50 woorden in om het rapport in te dienen.", wordCount),
+  date: Yup.string().required("Geef alstublieft een datum"),
+  id: Yup.number().optional(),
+  employee_id: Yup.number().required("Geef alstublieft een werknemer"),
+  type: Yup.string().oneOf(Object.values(ReportTypes)).required("Gelieve het type rapport op te geven."),
+  emotional_state: Yup.string().oneOf(Object.values(EmotionalState)).required("Gelieve de emotionele toestand op te geven."),
 });
 
-// Definieer eerst de enums/schema's voor je types
+
+// First, define the enums/schemas for your types
 const EmotionalStateSchema = z.enum([
-  "excited", 
+  "excited",
   "happy",
   "sad",
   "normal",
@@ -36,26 +37,26 @@ const ReportTypesSchema = z.enum([
   ""
 ]);
 
-const IdSchema = z.string().uuid().min(1, "ID is verplicht");
+const IdSchema = z.union([z.number(), z.string()]).pipe(z.coerce.number().min(0, "ID is required"));
 
-// Maak dan het hoofd schema
+// Then create the main schema
 export const CreateReportSchema = z.object({
   date: z.coerce.date().refine(date => !isNaN(date.getTime()), {
-    message: "Datum is verplicht",
+    message: "Geboortedatum is vereist", // Invalid date format
   }),
-    
+
   emotional_state: EmotionalStateSchema,
-  
+
   employee_id: IdSchema,
-  
+
   report_text: z.string()
-    .min(1, "Rapporttekst is verplicht")
-    .max(5000, "Rapporttekst is te lang (maximaal 5000 tekens)"),
-    
+    .min(1, "Report text is required")
+    .max(5000, "Report text too long (max 5000 characters)"),
+
   type: ReportTypesSchema,
-  
+
   id: IdSchema.optional()
 });
 
-// Type geïnferreerd van het schema indien nodig
+// Infer the type from the schema if needed
 export type CreateReport = z.infer<typeof CreateReportSchema>;

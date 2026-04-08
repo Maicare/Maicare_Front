@@ -70,6 +70,27 @@ export type IntakeFormType = {
     time_since_submission?: string;
 };
 
+export type IntakeOutcomeType = {
+    outcome: 'accepted' | 'rejected' | 'pending'; // Adjust enums as needed
+    urgency_level: string;
+    report_summary: string;
+    risk_assessment: string;
+    client_details: {
+        first_name: string;
+        last_name: string;
+        email: string;
+        gender: string;
+        filenumber: string;
+        date_of_birth: string;
+        phone_number: string;
+        sender_id: string;
+        source: string;
+        education_level: string;
+        living_situation: string;
+        location_id?: number;
+    };
+};
+
 export type IntakeSearchParams = {
     search?: string;
     sort_by?: string;

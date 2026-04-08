@@ -5,48 +5,46 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { useGoal } from '@/hooks/goal/use-goal';
 import { Goal } from '@/types/goals.types';
-import {  Clock, Flag, Trash, Variable } from 'lucide-react';
+import { Calendar, Clock, Flag, Pencil, Target, Text, Trash, Variable } from 'lucide-react';
 import { useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import ObjectivesDetails from './_components/ObjectivesDetails';
 import { Badge } from '@/components/ui/badge';
 import { dateFormat } from '@/utils/timeFormatting';
 import { cn, getTailwindClasses } from '@/utils/cn';
+import PencilSquare from '@/components/icons/PencilSquare';
+import TrashIcon from '@/components/icons/TrashIcon';
 import { CreateGoal } from '@/schemas/goal.schema';
 import UpsertGoalSheet from '../../_components/UpsertGoalSheet';
 import PrimaryButton from '@/common/components/PrimaryButton';
-import withAuth, { AUTH_MODE } from '@/common/hocs/with-auth';
-import withPermissions from '@/common/hocs/with-permissions';
-import Routes from '@/common/routes';
-import { PermissionsObjects } from '@/common/data/permission.data';
 
 const ObjectivePage = () => {
   const { assessmentId, clientId, goalId } = useParams();
-  const { readOne } = useGoal({
+  const { readOne, updateOne } = useGoal({
     autoFetch: false,
-    clientId: clientId as string,
-    assessmentId: assessmentId as string,
+    clientId: parseInt(clientId as string),
+    assessmentId: parseInt(assessmentId as string),
   });
   const [goal, setGoal] = useState<Goal | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isEditOpen, setIsEditOpen] = useState(false);
 
   useEffect(() => {
-    const fetchGoal = async (id: string) => {
+    const fetchGoal = async (id: number) => {
       setIsLoading(true);
       const data = await readOne(id);
       setGoal(data);
       setIsLoading(false);
     };
     if (goalId) {
-      fetchGoal(goalId as string);
+      fetchGoal(+goalId);
     } else {
       setIsLoading(false);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [goalId]);
 
-  const handleUpdate = async (_values: CreateGoal) => {
+  const handleUpdate = async (values: CreateGoal) => {
     console.log("Update Clicked")
     setIsEditOpen(false);
   };
@@ -199,10 +197,4 @@ const ObjectivePage = () => {
   );
 };
 
-export default withAuth(
-  withPermissions(ObjectivePage, {
-    redirectUrl: Routes.Common.NotFound,
-    requiredPermissions: PermissionsObjects.ViewEmployee, // TODO: Add correct permission
-    }),
-    { mode: AUTH_MODE.LOGGED_IN, redirectUrl: Routes.Auth.Login } 
-    );
+export default ObjectivePage;

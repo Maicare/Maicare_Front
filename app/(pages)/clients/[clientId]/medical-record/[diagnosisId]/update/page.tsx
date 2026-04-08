@@ -6,22 +6,17 @@ import { useDiagnosis } from "@/hooks/diagnosis/use-diagnosis";
 import { useEffect, useState } from "react";
 import { Diagnosis } from "@/types/diagnosis.types";
 import { Id } from "@/common/types/types";
-import withAuth, { AUTH_MODE } from "@/common/hocs/with-auth";
-import withPermissions from "@/common/hocs/with-permissions";
-import Routes from "@/common/routes";
-import { PermissionsObjects } from "@/common/data/permission.data";
 
 const UpdateDiagnosisPage = () => {
     const router = useRouter();
-    const { clientId,diagnosisId } = useParams();
-
+    const { clientId, diagnosisId } = useParams();
     const onSuccess = () => {
         router.push(`/clients/${clientId}/medical-record`)
     }
     const onCancel = () => {
         router.back();
     }
-    const { readOne } = useDiagnosis({clientId:clientId as string, autoFetch: false });
+    const { readOne } = useDiagnosis({ clientId: parseInt(clientId as string), autoFetch: false });
     const [diagnose, setDiagnose] = useState<Diagnosis | undefined>(undefined);
     const [isLoading, setIsLoading] = useState(false);
     useEffect(() => {
@@ -31,10 +26,10 @@ const UpdateDiagnosisPage = () => {
             setDiagnose(data);//TODO: ask taha to add locationId in diagnose details
             setIsLoading(false);
         }
-        if (clientId && diagnosisId) fetchDiagnose(diagnosisId as string);
+        if (clientId && diagnosisId) fetchDiagnose(+diagnosisId);
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [clientId,diagnosisId]);
+    }, [clientId, diagnosisId]);
     if (isLoading || !diagnose) {
         return (
             // <UpsertClientFormSkeleton />
@@ -61,16 +56,10 @@ const UpdateDiagnosisPage = () => {
                         start_date: new Date(medication.start_date),
                         end_date: new Date(medication.end_date)
                     })),
-                }}
+                } as any}
             />
         </div>
     )
 }
 
-export default withAuth(
-  withPermissions(UpdateDiagnosisPage, {
-    redirectUrl: Routes.Common.NotFound,
-    requiredPermissions: PermissionsObjects.UpdateClientDiagnosis, // TODO: Add correct permission
-    }),
-    { mode: AUTH_MODE.LOGGED_IN, redirectUrl: Routes.Auth.Login } 
-    );
+export default UpdateDiagnosisPage

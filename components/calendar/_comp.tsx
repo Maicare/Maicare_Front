@@ -5,10 +5,8 @@ import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
-import { DateSelectArg,  EventClickArg } from "@fullcalendar/core";
-import "react-datepicker/dist/react-datepicker.css";
+import { DateSelectArg, EventClickArg } from "@fullcalendar/core";
 import BookingPopup, { CalendarEventDTO } from "./_comp2";
-import { Any, Id } from "@/common/types/types";
 
 const getContrastColor = (hex: string): string => {
   const h = hex.replace("#", "");
@@ -20,7 +18,7 @@ const getContrastColor = (hex: string): string => {
 };
 
 export type CalendarEvent = {
-  id: Id;
+  id: string;
   title: string;
   description?: string;
   start: string | Date;
@@ -50,12 +48,6 @@ const BookingCalendar = ({ initialEvents = [] }: BookingCalendarProps) => {
   );
   const [isDragging, setIsDragging] = useState(false);
   const [dragOffset, setDragOffset] = useState<{ x: number; y: number } | null>(null);
-  const [_startDate, setStartDate] = useState<Date>(
-    createRange?.start ? new Date(createRange.start) : new Date()
-  );
-  const [_endDate, setEndDate] = useState<Date>(
-    createRange?.end ? new Date(createRange.end) : new Date()
-  );
   const [selectedColor, setSelectedColor] = useState<string>(
     editEvent?.event.backgroundColor ?? "#4f46e5"
   );
@@ -154,12 +146,8 @@ const BookingCalendar = ({ initialEvents = [] }: BookingCalendarProps) => {
 
   useEffect(() => {
     if (createRange) {
-      setStartDate(new Date(createRange.start));
-      setEndDate(new Date(createRange.end));
       setSelectedColor('#4f46e5');
     } else if (editEvent) {
-      setStartDate(editEvent.event.start!);
-      setEndDate(editEvent.event.end!);
       setSelectedColor(editEvent.event.backgroundColor);
     }
   }, [createRange, editEvent]);
@@ -204,7 +192,7 @@ const BookingCalendar = ({ initialEvents = [] }: BookingCalendarProps) => {
     }
   };
 
-  const dtoToEvent = (dto: Stored): CalendarEvent & { extendedProps: Any } => ({
+  const dtoToEvent = (dto: Stored): CalendarEvent & { extendedProps: Record<string, unknown> } => ({
     id: dto.id,
     title: dto.description ?? "(No title)",
     description: dto.description,
@@ -288,7 +276,7 @@ const BookingCalendar = ({ initialEvents = [] }: BookingCalendarProps) => {
         backgroundColor: payload.backgroundColor,
         textColor: payload.textColor,
         extendedProps: payload,
-      } as CalendarEvent & { extendedProps: Any };
+      } as CalendarEvent & { extendedProps: Record<string, unknown> };
 
       api.addEvent(newEvent);
       setEvents((prev) => [...prev, newEvent]);
@@ -396,8 +384,8 @@ const BookingCalendar = ({ initialEvents = [] }: BookingCalendarProps) => {
             arg.isMirror && !arg.event.extendedProps.description
               ? "(No Description)"
               : (arg.event.extendedProps.description as string | undefined);
-          const employees = arg.event.extendedProps.participant_employee_ids?.length || 0;
-          const clients = arg.event.extendedProps.client_ids?.length || 0;
+          const employees = (arg.event.extendedProps.participant_employee_ids as string[] | undefined)?.length || 0;
+          const clients = (arg.event.extendedProps.client_ids as string[] | undefined)?.length || 0;
 
           return (
             <div className="fc-event-content-container p-1.5">

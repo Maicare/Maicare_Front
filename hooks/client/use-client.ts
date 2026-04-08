@@ -114,7 +114,7 @@ export function useClient({
     try {
       if (displayProgress) startProgress();
       const response = await useApi<Client>(
-        ApiRoutes.Client.UpdateOne.replace("{id}", id.toString()),
+        ApiRoutes.Client.ReadOne.replace("{id}", id.toString()),
         "PUT",
         {},
         data
@@ -137,49 +137,15 @@ export function useClient({
     }
   };
 
-  const deleteOne = async (id: string, options?: ApiOptions) => {
-    const { displayProgress = false, displaySuccess = false } = options || {};
-    try {
-      if (displayProgress) startProgress();
-      const response = await useApi<Client>(
-        ApiRoutes.Client.DeleteOne.replace("{id}", id.toString()),
-        "PUT",
-        {},
-        {}
-      );
-      if (!response.data) {
-        throw new Error("Failed to delete client");
-      }
-      if (displaySuccess && response.success) {
-        enqueueSnackbar("Client deleted successful!", { variant: "success" });
-      }
-      return response.data;
-    } catch (err: any) {
-      enqueueSnackbar(
-        err?.response?.data?.message || "Failed to delete client",
-        { variant: "error" }
-      );
-      throw err;
-    } finally {
-      if (displayProgress) stopProgress();
-    }
-  }
-
   const updateStatus = async (id: string, data: DepartureEntries, options?: ApiOptions) => {
     const { displayProgress = false, displaySuccess = false } = options || {};
-    const tData = data as any;
-    if (tData.schedueled_for){
-      tData.schedueled_for = tData.schedueled_for + ":00.161Z";
-    }else{
-      tData.schedueled_for = null;
-    }
     try {
       if (displayProgress) startProgress();
       const response = await useApi<Client>(
         ApiRoutes.Client.Status.replace("{id}", id),
         "PUT",
         {},
-        tData
+        data
       );
       if (!response.data) {
         throw new Error("Status update failed");
@@ -197,7 +163,7 @@ export function useClient({
   };
 
   const updateClientPicture = async (
-    id: number,
+    id: Id,
     attachement_id: string,
     options?: ApiOptions
   ) => {
@@ -250,25 +216,6 @@ export function useClient({
     }
   };
 
-  const readClientAddresses = async (id: Id) => {
-    try {
-      const response = await useApi<any>(
-        ApiRoutes.Client.addresses.replace("{id}", id.toString()),
-        "GET"
-      );
-      if (!response.data) {
-        throw new Error("Client not found");
-      }
-      return response.data;
-    } catch (err: any) {
-      enqueueSnackbar(
-        err?.response?.data?.message || "Failed to fetch client",
-        { variant: "error" }
-      );
-      throw err;
-    }
-  };
-
   const getStatusHistory = async (id: string, options?: ApiOptions) => {
     const { displayProgress = false, displaySuccess = false } = options || {};
     try {
@@ -287,41 +234,12 @@ export function useClient({
     }
   };
 
-  const readClientCounts = async (options?: ApiOptions) => {
-    const { displayProgress = false, displaySuccess = false } = options || {};
-    try {
-      if (displayProgress) startProgress();
-      const response = await useApi<{
-        clients_in_care: number,
-        clients_on_waiting_list: number,
-        clients_out_of_care: number,
-        total_clients: number
-      }>(
-        ApiRoutes.Client.ReadCounts,
-        "GET"
-      );
-      if (!response.data) {
-        throw new Error("error fetching client counts");
-      }
-      if (displaySuccess && response.success) {
-        enqueueSnackbar("Client counts fetched successfully", { variant: "success" });
-      }
-      return response.data;
-    } catch (err: any) {
-      enqueueSnackbar("Failed to get client counts", { variant: "error" });
-      throw err;
-    } finally {
-      if (displayProgress) stopProgress();
-    }
-  };
-
   //TODO: Add logic to CRUD user role
   return {
     clients,
     error,
     isLoading,
     page,
-    readClientAddresses,
     setPage,
     readOne,
     createOne,
@@ -329,8 +247,6 @@ export function useClient({
     readClientRelatedEmails,
     updateStatus,
     getStatusHistory,
-    updateOne,
-    readClientCounts,
-    deleteOne
+    updateOne
   };
 }

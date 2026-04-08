@@ -9,6 +9,7 @@ import {
   SelectContent,
   SelectItem,
 } from "@/components/ui/select";
+
 import { Id } from "@/common/types/types";
 
 interface MainShiftSelectProps {
@@ -31,16 +32,15 @@ const MainShiftSelect: FunctionComponent<MainShiftSelectProps> = ({
 
   useEffect(() => {
     if (!isLoading) {
-      if (value && !options.some((s) => s.id === value)) {
-        onChange("");
+      if (value && !options.some((s) => String(s.id) === String(value))) {
+        onChange(0);
       }
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [locationId, isLoading, options, value]);
   return (
     <Select
       value={String(value)}
-      onValueChange={(val) => onChange(val)}
+      onValueChange={(val) => onChange(val as Id)}
       disabled={isLoading || options.length === 0}
     >
       <SelectTrigger className="w-full">

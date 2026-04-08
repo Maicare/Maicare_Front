@@ -20,75 +20,50 @@ import { useEffect, useState } from "react";
 import { useEmployee } from "@/hooks/employee/use-employee";
 import { useClient } from "@/hooks/client/use-client";
 import { useLocation } from "@/hooks/location/use-location";
-import { useAuth } from "../hooks/use-auth";
-import { LanguageSwitcher } from "./language-switcher";
-import { Id } from "../types/types";
 
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     const { open } = useSidebar();
     const router = useRouter();
-
     const pathname = usePathname();
     const { clientId, employeeId, locationId } = useParams();
-    const isClient = pathname.startsWith(`/clients/`) && pathname !== `/clients/` && pathname !== `/clients/new`;
-    // const isHome = pathname === "/dashboard" || pathname === "/404" || pathname === "/403";
-    const isEmployee = pathname.startsWith(`/employees/`) && pathname !== `/employees/` && pathname !== `/employees/new`;
-    const isLocation = pathname.startsWith(`/locations/`) && pathname !== `/locations/`;
-    const [user, setUser] = useState({ first_name: "Loading", last_name: "", email: "", id: employeeId as string ?? clientId as string ?? locationId as string, profile_picture: "/images/avatar-1.jpg" });
+    const isClient = pathname.startsWith("/clients/") && pathname !== "/clients/" && pathname !== "/clients/new";
+    const isEmployee = pathname.startsWith("/employees/") && pathname !== "/employees/";
+    const isLocation = pathname.startsWith("/locations/") && pathname !== "/locations/";
+    const [user, setUser] = useState({ first_name: "Loading", last_name: "", email: "", id: parseInt(employeeId as string) ?? parseInt(clientId as string) ?? parseInt(locationId as string), profile_picture: "/images/avatar-1.jpg" } as { first_name: string; last_name: string; email: string; id: any; profile_picture: string });
+
     const [isLoading, setIsLoading] = useState(false);
     const { readOne } = useEmployee({ autoFetch: false });
     const { readOne: readClient } = useClient({ autoFetch: false });
     const { readOne: readLocation } = useLocation({ autoFetch: false });
-    const {user:authUser} = useAuth({autoFetch:true});
-    
     useEffect(() => {
-        const fetchEmployee = async (id: Id) => {
-            try {
-                setIsLoading(true);
-                const data = await readOne(id);
-                setUser({ ...data, profile_picture: data.profile_picture ?? "/images/avatar-1.jpg" });
-            } catch (error) {
-                console.error(error);
-            } finally {
-                setIsLoading(false);
-            }
+        const fetchEmployee = async (id: any) => {
+            setIsLoading(true);
+            const data = await readOne(id);
+            setUser({ ...data, profile_picture: data.profile_picture ?? "/images/avatar-1.jpg" });
+            setIsLoading(false);
         }
-        const fetchClient = async (id: Id) => {
-            try {
-                setIsLoading(true);
-                const data = await readClient(id);
-                if(data) {
-                    setUser({ ...data, profile_picture: data?.profile_picture ?? "/images/avatar-1.jpg", first_name: data?.first_name || "", last_name: data?.last_name || "", email: data?.email || "", id: data?.id || "" });
-                }
-            } catch (error) {
-                console.error(error);
-            } finally {
-                setIsLoading(false);
-            }
+        const fetchClient = async (id: any) => {
+            setIsLoading(true);
+            const data = await readClient(id);
+            setUser({ ...data, profile_picture: data.profile_picture ?? "/images/avatar-1.jpg" });
+            setIsLoading(false);
         }
-        const fetchLocation = async (id: Id) => {
-            try {
-                setIsLoading(true);
-                const data = await readLocation(id);
-                setUser({ first_name: data.name, last_name: "", email: data.address, id: data.id, profile_picture: "/images/avatar-1.jpg" });
-            } catch (error) {
-                console.error(error);
-            } finally {
-                setIsLoading(false);
-            }
+        const fetchLocation = async (id: any) => {
+            setIsLoading(true);
+            const data = await readLocation(id);
+            setUser({ first_name: data.name, last_name: "", email: data.address, id: data.id, profile_picture: "/images/avatar-1.jpg" });
+            setIsLoading(false);
         }
         if (isEmployee) {
             const employeeId = pathname.split("/")[2];
-            if (employeeId) fetchEmployee(employeeId);
+            if (employeeId) fetchEmployee(+employeeId);
         } else if (isClient) {
             const clientId = pathname.split("/")[2];
-            if (clientId) fetchClient(clientId);
+            if (clientId) fetchClient(+clientId);
         } else if (isLocation) {
             const locationId = pathname.split("/")[2];
-            if (locationId) fetchLocation(locationId);
-        }else{
-
+            if (locationId) fetchLocation(+locationId);
         }
     }
         , [isEmployee, isClient, isLocation, pathname]);
@@ -124,11 +99,11 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                     </SidebarMenu>
                 </SidebarHeader>
                 <SidebarContent>
-                    <NavMain items={isEmployee ? sidebarEmployeeLinks({ first_name: "Loading", last_name: "", id: employeeId as string ?? clientId as string }) : isClient ? sidebarClientLinks({ first_name: "Loading", last_name: "", id: employeeId as string ?? clientId as string }) : isLocation ? sidebarLocationLinks({ first_name: "Loading", last_name: "", id: locationId as string ?? clientId as string ?? employeeId as string }) : sidebarLinks} label={isEmployee ? "Medewerker" : isClient ? "Clienten" : isLocation ? "Locatie" : "Dashboard"} />
+                    <NavMain items={isEmployee ? sidebarEmployeeLinks({ first_name: "Loading", last_name: "", id: parseInt(employeeId as string) ?? parseInt(clientId as string) }) : isClient ? sidebarClientLinks({ first_name: "Loading", last_name: "", id: parseInt(employeeId as string) ?? parseInt(clientId as string) }) : isLocation ? sidebarLocationLinks({ first_name: "Loading", last_name: "", id: parseInt(locationId as string) ?? parseInt(clientId as string) ?? parseInt(employeeId as string) }) : sidebarLinks} label={isEmployee ? "Medewerker" : isClient ? "Clienten" : isLocation ? "Locatie" : "Dashboard"} />
                 </SidebarContent>
                 <SidebarFooter>
                     <ThemeSwitcher />
-                    <NavUser user={{ name: authUser?.first_name + " " + authUser?.last_name, email: authUser?.email||"Loading", avatar: (authUser as any)?.profile_picture }} />
+                    <NavUser user={{ name: user.first_name + " " + user.last_name, email: user.email, avatar: user.profile_picture || "/images/avatar-1.jpg" }} />
                 </SidebarFooter>
                 <SidebarRail />
             </Sidebar>
@@ -167,7 +142,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             </SidebarContent>
             <SidebarFooter>
                 <ThemeSwitcher />
-                <NavUser user={{ name: authUser?.first_name + " " + authUser?.last_name, email: authUser?.email||"Loading", avatar: (authUser as any)?.profile_picture }} />
+                <NavUser user={{ name: user.first_name + " " + user.last_name, email: user.email, avatar: user.profile_picture || "/images/avatar-1.jpg" }} />
             </SidebarFooter>
             <SidebarRail />
         </Sidebar>

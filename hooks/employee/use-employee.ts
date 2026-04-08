@@ -20,7 +20,7 @@ import { EmployeeForm as EmployeeFormType } from "@/types/employee.types";
 import { useMutation } from "@/common/hooks/use-mutate";
 import { AxiosError } from "axios";
 import { useRouter } from "next/navigation";
-import { CreateContractInput, CreateEmployeeRequestBody, EmployeeContract, UpdateEmployeeRequestBody } from "@/schemas/employee.schema";
+import { CreateEmployeeRequestBody, UpdateEmployeeRequestBody } from "@/schemas/employee.schema";
 import { Id } from "@/common/types/types";
 
 export function useEmployee({
@@ -38,7 +38,6 @@ export function useEmployee({
   const [page, setPage] = useState(pageParam);
   const { enqueueSnackbar } = useSnackbar();
   const router = useRouter();
-
   const { start: startProgress, stop: stopProgress } = useProgressBar();
   const {
     data: employees,
@@ -235,7 +234,7 @@ export function useEmployee({
   };
 
   const updateEmployeePicture = async (
-    id: number,
+    id: Id,
     attachement_id: string,
     options?: ApiOptions
   ) => {
@@ -283,12 +282,11 @@ export function useEmployee({
         newEmployee
       );
       if (created) {
-        
         mutate();
         enqueueSnackbar("Employee added successfully", {
           variant: "success",
         });
-        router.back();
+        router.push("/employees");
         return created;
       } else {
         const error = createEmployeeError as AxiosError;
@@ -339,103 +337,6 @@ export function useEmployee({
       throw err;
     }
   };
-  const updateEmployeeContract = async (
-    contract: EmployeeContract,
-    employeeId: number,
-    options?: ApiOptions
-  ) => {
-    const { displayProgress = false, displaySuccess = false } = options || {};
-    try {
-      if (displayProgress) startProgress();
-      const response = await useApi<EmployeeContract>(
-        ApiRoutes.Employee.Contract.UpdateOne.replace("{id}", employeeId.toString()),
-        "PUT",
-        {},
-        {...contract}
-      );
-      if (!response.data) {
-        throw new Error("Failed to update contract");
-      }
-      if (displaySuccess && response.success) {
-        enqueueSnackbar("Contract update successful!", { variant: "success" });
-      }
-      mutate()
-      return response.data;
-    } catch (err: any) {
-      enqueueSnackbar(
-        err?.response?.data?.message || "Failed to update contract",
-        { variant: "error" }
-      );
-      throw err;
-    } finally {
-      if (displayProgress) stopProgress();
-    }
-  };
-  const updateEmployeeIsSubContractor = async (
-    isSubcontractor: boolean,
-    employeeId: number,
-    options?: ApiOptions
-  ) => {
-    const { displayProgress = false, displaySuccess = false } = options || {};
-    try {
-      if (displayProgress) startProgress();
-      const response = await useApi<EmployeeContract>(
-        ApiRoutes.Employee.Contract.UpdateIsSubContractor.replace("{id}", employeeId.toString()),
-        "PUT",
-        {},
-        {
-          is_subcontractor:isSubcontractor
-        }
-      );
-      if (!response.data) {
-        throw new Error("Failed to update contract");
-      }
-      if (displaySuccess && response.success) {
-        enqueueSnackbar("Contract update successful!", { variant: "success" });
-      }
-      mutate()
-      return response.data;
-    } catch (err: any) {
-      enqueueSnackbar(
-        err?.response?.data?.message || "Failed to update contract",
-        { variant: "error" }
-      );
-      throw err;
-    } finally {
-      if (displayProgress) stopProgress();
-    }
-  };
-  const readEmployeeContract = async (
-    employeeId: Id,
-    options?: ApiOptions
-  ) => {
-    const { displayProgress = false, displaySuccess = false } = options || {};
-    try {
-      if (displayProgress) startProgress();
-      const response = await useApi<EmployeeContract>(
-        ApiRoutes.Employee.Contract.ReadOne.replace("{id}", employeeId.toString()),
-        "GET",
-        {},
-        {}
-      );
-      if (!response.data) {
-        throw new Error("Failed to retrieve contract");
-      }
-      if (displaySuccess && response.success) {
-        enqueueSnackbar("Contract retrieve successful!", { variant: "success" });
-      }
-      mutate()
-      return response.data;
-    } catch (err: any) {
-      enqueueSnackbar(
-        err?.response?.data?.message || "Failed to retrieve contract",
-        { variant: "error" }
-      );
-      throw err;
-    } finally {
-      if (displayProgress) stopProgress();
-    }
-  };
 
   const readEmployeesEmails = async (search: string) => {
     try {
@@ -470,10 +371,6 @@ export function useEmployee({
     updateEmployeePicture,
     readEmployeesEmails,
     createOne,
-    updateOne,
-    updateEmployeeContract,
-    readEmployeeContract,
-    mutate,
-    updateEmployeeIsSubContractor
+    updateOne
   };
 }

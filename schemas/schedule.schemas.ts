@@ -4,35 +4,35 @@ export const scheduleSchema = z
   .discriminatedUnion("is_custom", [
     z.object({
       is_custom: z.literal(true),
-      employee_id: z
-        .coerce.string({ invalid_type_error: "Selecteer een medewerker." })
-        .uuid(),
-      location_id: z
-        .coerce.string({ invalid_type_error: "Selecteer een locatie." })
-        .uuid(),
+      employee_id: z.union([z.string(), z.number()], {
+        invalid_type_error: "Please select an employee.",
+      }),
+      location_id: z.union([z.string(), z.number()], {
+        invalid_type_error: "Please select a location.",
+      }),
       start_datetime: z.union([
-        z.string().datetime({ message: "Kies een geldige startdatum & tijd." }),
+        z.string().datetime({ message: "Please pick a valid start date & time." }),
         z.date(),
       ]),
       end_datetime: z.union([
-        z.string().datetime({ message: "Kies een geldige einddatum & tijd." }),
+        z.string().datetime({ message: "Please pick a valid end date & time." }),
         z.date(),
       ]),
     }),
     z.object({
       is_custom: z.literal(false),
-      employee_id: z
-        .coerce.string({ invalid_type_error: "Selecteer een medewerker." })
-        .uuid(),
-      location_id: z
-        .coerce.string({ invalid_type_error: "Selecteer een locatie." })
-        .uuid(),
-      location_shift_id: z
-        .coerce.string({ invalid_type_error: "Selecteer een dienst." })
-        .uuid(),
+      employee_id: z.union([z.string(), z.number()], {
+        invalid_type_error: "Please select an employee.",
+      }),
+      location_id: z.union([z.string(), z.number()], {
+        invalid_type_error: "Please select a location.",
+      }),
+      location_shift_id: z.union([z.string(), z.number()], {
+        invalid_type_error: "Please select a shift.",
+      }),
       shift_date: z
         .string()
-        .refine((d) => !isNaN(Date.parse(d)), { message: "Kies een geldige dienst datum." }),
+        .refine((d) => !isNaN(Date.parse(d)), { message: "Please pick a valid shift date." }),
     }),
   ])
   .refine((d) => {
@@ -41,7 +41,7 @@ export const scheduleSchema = z
     }
     return true;
   }, {
-    message: "Zorg ervoor dat de einddatum/tijd na de startdatum/tijd ligt.",
+    message: "Please ensure the end date/time is after the start date/time.",
     path: ["end_datetime"],
   });
 

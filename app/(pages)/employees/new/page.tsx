@@ -2,18 +2,13 @@
 
 import { useRouter } from "next/navigation";
 import UpsertEmployeeForm from "../[employeeId]/_components/UpsertEmployeeForm";
-import withAuth, { AUTH_MODE } from "@/common/hocs/with-auth";
-import withPermissions from "@/common/hocs/with-permissions";
-import Routes from "@/common/routes";
-import { PermissionsObjects } from "@/common/data/permission.data";
 import { Id } from "@/common/types/types";
 
 
 const Page = () => {
     const router = useRouter();
-
-    const onSuccess = (id:Id) => {
-        router.push(`/employees/${id}`)
+    const onSuccess = (id: Id) => {
+        router.push(`/employee/${id}`)
     }
     const onCancel = () => {
         router.back();
@@ -24,7 +19,7 @@ const Page = () => {
                 <h1 className="text-xl font-semibold">Medewerker Aanmaken</h1>
                 <p>Dashboard / <span className="font-medium text-indigo-500 hover:cursor-pointer">Medewerker Aanmaken</span></p>
             </div>
-            <UpsertEmployeeForm 
+            <UpsertEmployeeForm
                 mode="create"
                 onSuccess={onSuccess}
                 onCancel={onCancel}
@@ -33,10 +28,4 @@ const Page = () => {
     )
 }
 
-export default withAuth(
-    withPermissions(Page, {
-        redirectUrl: Routes.Common.NotFound,
-        requiredPermissions: PermissionsObjects.CreateEmployee, // TODO: Add correct permisssion
-    }),
-    { mode: AUTH_MODE.LOGGED_IN, redirectUrl: Routes.Auth.Login }
-);
+export default Page

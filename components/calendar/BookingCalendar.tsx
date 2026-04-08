@@ -15,7 +15,7 @@ import BookingPopup, { UpsertPayload } from "./BookingPopup";
 import { CalendarAppointment, RecurrenceType } from "@/types/calendar.types";
 import { useCalendar } from "@/hooks/calendar/use-calendar";
 import { BriefcaseIcon, MapPinIcon, UserIcon, UsersIcon } from "lucide-react";
-import { Any, Id } from "@/common/types/types";
+import { Id } from "@/common/types/types";
 import MultiPartySelect from "./MultiPartySelect";
 
 /* ───────────────────────── helpers ───────────────────────── */
@@ -32,7 +32,7 @@ const getContrast = (hex: string) => {
 
 
 interface Props {
-  employeeId?: Id;
+  employeeId?: number;
   clientId?: Id;
   initialEvents?: EventInput[];
 }
@@ -76,7 +76,7 @@ export default function BookingCalendar({
     const employeeIds = a.participants_details?.map((p) => p.employee_id) ?? [];
 
     return {
-      id: String((a as Any).id),
+      id: String((a as { id: Id }).id),
       title: a.description ?? "",
       start: new Date(a.start_time),
       end: new Date(a.end_time),
@@ -90,13 +90,13 @@ export default function BookingCalendar({
     };
   };
 
-  // const dedupeById = (arr: EventInput[]) => {
-  //   const map = new Map<string, EventInput>();
-  //   for (const ev of arr) {
-  //     map.set(ev.id as string, ev);
-  //   }
-  //   return Array.from(map.values());
-  // };
+  const dedupeById = (arr: EventInput[]) => {
+    const map = new Map<string, EventInput>();
+    for (const ev of arr) {
+      map.set(ev.id as string, ev);
+    }
+    return Array.from(map.values());
+  };
 
   const loadEvents = async (start: Date, end: Date) => {
     if (!active) return setEvents([]);
@@ -108,7 +108,7 @@ export default function BookingCalendar({
 
       setEvents(data.map(toEventInput));
     } catch (e) {
-      console.error("Kon afspraken niet ophalen", e);
+      console.error("Could not fetch appointments", e);
     }
   };
 
@@ -116,7 +116,6 @@ export default function BookingCalendar({
     if (!fcRef.current) return;
     const view = fcRef.current.getApi().view;
     loadEvents(view.currentStart, view.currentEnd);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [employeeId, clientId, active]);
 
   useEffect(() => {
@@ -130,7 +129,7 @@ export default function BookingCalendar({
       todayBtn.parentElement &&
       !todayBtn.parentElement.contains(dropdownContainerRef.current)
     ) {
-      // voeg dropdown toe direct na de Vandaag knop
+      // insert dropdown immediately after the Today button
       todayBtn.parentElement.insertBefore(
         dropdownContainerRef.current,
         todayBtn.nextSibling
@@ -164,7 +163,7 @@ export default function BookingCalendar({
 
     const full = await readOneAppointment(click.event.id);
     if (full) {
-      /* converteer geneste arrays naar de platte IDs die de popup verwacht */
+      /* convert nested arrays into the flat IDs the popup expects */
       click.event.setExtendedProp(
         "client_ids",
         full.clients_details?.map(c => c.client_id) ?? [],
@@ -174,7 +173,7 @@ export default function BookingCalendar({
         full.participants_details?.map(p => p.employee_id) ?? [],
       );
 
-      /* houd een paar andere dingen synchroon met de server response */
+      /* keep a few other bits in sync with the server response */
       click.event.setExtendedProp("location", full.location);
       click.event.setExtendedProp("description", full.description);
       click.event.setStart(new Date(full.start_time));
@@ -218,7 +217,7 @@ export default function BookingCalendar({
         ev.setProp("title", p.description ?? "");
         Object.entries(p).forEach(([k, v]) => ev.setExtendedProp(k, v));
       }
-      /* update lokale state array */
+      /* update local state array */
       setEvents((prev) =>
         prev.map((e) => (e.id === p.id ? fcEvent : e)),
       );
@@ -230,20 +229,20 @@ export default function BookingCalendar({
   };
 
   const handleDelete = async (id: string) => {
-    // verwijder eerst op de server
+    // first delete on the server
     await deleteAppointment(id);
 
-    // verwijder dan uit FullCalendar lokale state
+    // then remove from FullCalendar  local state
     fcRef.current?.getApi().getEventById(id)?.remove();
     setEvents(prev => prev.filter(e => e.id !== id));
     closePopup();
   };
 
   const formatTime = (date: Date): string => {
-    return date.toLocaleTimeString('nl-NL', {
+    return date.toLocaleTimeString([], {
       hour: 'numeric',
       minute: '2-digit',
-      hour12: false
+      hour12: true
     });
   };
 
@@ -253,7 +252,7 @@ export default function BookingCalendar({
       workWeek: {
         type: "timeGridWeek",
         hiddenDays: [0, 6],
-        buttonText: "Werkweek",
+        buttonText: "Work Week",
       },
     }),
     []
@@ -311,10 +310,10 @@ export default function BookingCalendar({
         }
 
         dayHeaderContent={arg => {
-          const weekday = new Intl.DateTimeFormat("nl", { weekday: "short" }).format(arg.date);
+          const weekday = new Intl.DateTimeFormat("en", { weekday: "short" }).format(arg.date);
           if (arg.view.type === "dayGridMonth") return <span className="text-sm">{weekday}</span>;
 
-          const dayNum = new Intl.DateTimeFormat("nl", { day: "numeric" }).format(arg.date);
+          const dayNum = new Intl.DateTimeFormat("en", { day: "numeric" }).format(arg.date);
           return (
             <div className="flex flex-col items-center">
               <span className="text-sm">{weekday}</span>
@@ -346,7 +345,7 @@ export default function BookingCalendar({
 
         eventContent={(arg) => {
           const event = arg.event;
-          const desc = event.extendedProps.description || "(Geen beschrijving)";
+          const desc = event.extendedProps.description || "(No description)";
           const location = event.extendedProps.location;
           const showTime = arg.view.type.startsWith('timeGrid');
 
@@ -378,44 +377,44 @@ export default function BookingCalendar({
               {(clientIds.length > 0 || employeeIds.length > 0) && (
                 <div className="mt-1.5 flex items-center justify-between border-t border-white/20 pt-1">
                   <div className="flex items-center space-x-2">
-                    {/* Cliënten teller met tooltip */}
+                    {/* Clients count with tooltip */}
                     {clientIds.length > 0 && (
                       <div
                         className="group relative flex items-center text-[0.6rem]"
-                        title={`${clientIds.length} cliënt${clientIds.length !== 1 ? 'en' : ''}`}
+                        title={`${clientIds.length} client${clientIds.length !== 1 ? 's' : ''}`}
                       >
                         <UserIcon className="w-3 h-3 mr-0.5" />
                         <span>{clientIds.length}</span>
 
-                        {/* Tooltip voor cliëntnamen */}
+                        {/* Tooltip for client names */}
                         {clientIds.length > 0 && (
                           <div className="hidden group-hover:block absolute bottom-full left-0 mb-1 px-2 py-1 text-xs rounded bg-black text-white whitespace-nowrap z-50">
-                            {clientIds.length} cliënt{clientIds.length !== 1 ? 'en' : ''}
+                            {clientIds.length} client{clientIds.length !== 1 ? 's' : ''}
                           </div>
                         )}
                       </div>
                     )}
 
-                    {/* Medewerkers teller met tooltip */}
+                    {/* Employees count with tooltip */}
                     {employeeIds.length > 0 && (
                       <div
                         className="group relative flex items-center text-[0.6rem]"
-                        title={`${employeeIds.length} medewerker${employeeIds.length !== 1 ? 's' : ''}`}
+                        title={`${employeeIds.length} employee${employeeIds.length !== 1 ? 's' : ''}`}
                       >
                         <BriefcaseIcon className="w-3 h-3 mr-0.5" />
                         <span>{employeeIds.length}</span>
 
-                        {/* Tooltip voor medewerkernamen */}
+                        {/* Tooltip for employee names */}
                         {employeeIds.length > 0 && (
                           <div className="hidden group-hover:block absolute bottom-full left-0 mb-1 px-2 py-1 text-xs rounded bg-black text-white whitespace-nowrap z-50">
-                            {employeeIds.length} medewerker{employeeIds.length !== 1 ? 's' : ''}
+                            {employeeIds.length} employee{employeeIds.length !== 1 ? 's' : ''}
                           </div>
                         )}
                       </div>
                     )}
                   </div>
 
-                  {/* Totaal deelnemers indicator */}
+                  {/* Total participants indicator */}
                   <div className="text-[0.6rem] opacity-80 flex items-center">
                     <UsersIcon className="w-3 h-3 mr-0.5" />
                     <span>{totalParticipants}</span>
@@ -438,7 +437,7 @@ export default function BookingCalendar({
           el.style.boxShadow = '0 1px 2px rgba(0,0,0,0.1)';
           el.style.border = 'none';
 
-          // Voeg hover effect toe
+          // Add hover effect
           el.style.transition = 'all 0.2s ease';
           el.addEventListener('mouseenter', () => {
             el.style.filter = 'brightness(1.05)';
@@ -449,7 +448,7 @@ export default function BookingCalendar({
             el.style.boxShadow = '0 1px 2px rgba(0,0,0,0.1)';
           });
 
-          // Voeg tooltip styling toe
+          // Add tooltip styling
           const tooltipCSS = `
             .fc-event-tooltip {
               position: absolute;
@@ -507,7 +506,7 @@ export default function BookingCalendar({
         eventClassNames="rounded-lg px-2 py-1 transition-colors"
         dayCellClassNames="bg-white hover:bg-slate-50 transition-colors"
         viewClassNames="rounded-lg overflow-hidden p-2"
-        buttonText={{ today: "Vandaag", month: "Maand", timeGridWeek: "Week", workWeek: "Werkweek", day: "Dag" }}
+        buttonText={{ today: "Today", month: "Month", timeGridWeek: "Week", workWeek: "Work Week", day: "Day" }}
       />
 
       {popupPos && (createRange || editEvent) && (

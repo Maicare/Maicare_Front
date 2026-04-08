@@ -1,4 +1,5 @@
 "use client";
+import { Id } from "@/common/types/types";
 
 import { useDiagnosis } from "@/hooks/diagnosis/use-diagnosis";
 import { Diagnosis, Medication } from "@/types/diagnosis.types";
@@ -15,18 +16,14 @@ import UpsertMedicationSheet from "./_components/UpsertMedicationSheet";
 import { useMedication } from "@/hooks/medication/use-medication";
 import { CreateMedication } from "@/schemas/medication.schema";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
-import withAuth, { AUTH_MODE } from "@/common/hocs/with-auth";
-import withPermissions from "@/common/hocs/with-permissions";
-import Routes from "@/common/routes";
-import { PermissionsObjects } from "@/common/data/permission.data";
 
 const DiagnosisPAge = () => {
     const { clientId, diagnosisId } = useParams();
     const { readOne } = useDiagnosis({
-        clientId: clientId as string,
+        clientId: parseInt(clientId as string),
         autoFetch: false
     });
-    const { createOne, updateOne, deleteOne } = useMedication({ clientId: clientId as string, diagnosisId: diagnosisId as string, autoFetch: false });
+    const { createOne, updateOne, deleteOne } = useMedication({ clientId: parseInt(clientId as string), diagnosisId: parseInt(diagnosisId as string), autoFetch: false });
     const [diagnosis, setDiagnosis] = useState<Diagnosis | null>(null);
     const [isMutate, setIsMutate] = useState(true);
     const router = useRouter();
@@ -53,7 +50,7 @@ const DiagnosisPAge = () => {
     if (!diagnosis) {
         return (
             <div className="w-full flex items-center justify-center">
-                <h1 className="text-lg font-bold text-slate-600">Laden...</h1>
+                <h1 className="text-lg font-bold text-slate-600">Loading...</h1>
             </div>
         );
 
@@ -73,7 +70,7 @@ const DiagnosisPAge = () => {
 
         return {
             start: formatDate(startDate),
-            end: validEndDate ? formatDate(endDate) : "Heden",
+            end: validEndDate ? formatDate(endDate) : "Present",
             ongoing: endDate && endDate?.getTime() > Date.now() ? true : false,
         };
     };
@@ -112,7 +109,7 @@ const DiagnosisPAge = () => {
             console.log(error);
         }
     }
-    const handleDelete = async (id: string) => {
+    const handleDelete = async (id: Id) => {
         try {
             await deleteOne(
                 id.toString(),
@@ -133,7 +130,7 @@ const DiagnosisPAge = () => {
                     <HeartPulse size={24} className='text-indigo-400' />  {diagnosis.title}
                 </h1>
                 <PrimaryButton
-                    text="Terug"
+                    text="Back"
                     onClick={handleBack}
                     disabled={false}
                     icon={ArrowBigLeft}
@@ -154,7 +151,7 @@ const DiagnosisPAge = () => {
                 />
                 <div className="col-span-2 w-full rounded-sm shadow-md p-4 bg-white">
                     <div className="flex items-center justify-between mb-4">
-                        <h1 className='flex items-center gap-2 m-0 p-0 font-extrabold text-lg text-slate-600'><PillBottle size={18} className='text-indigo-400' /> Medicatie informatie</h1>
+                        <h1 className='flex items-center gap-2 m-0 p-0 font-extrabold text-lg text-slate-600'><PillBottle size={18} className='text-indigo-400' /> Medication Information</h1>
                         <UpsertMedicationSheet
                             isOpen={open}
                             handleCreate={handleCreate}
@@ -180,19 +177,19 @@ const DiagnosisPAge = () => {
                                                     )} />
                                                     <span className="text-xs">{med.name}</span>
                                                     {med.is_critical && (
-                                                        <span className="text-[8px] font-bold text-red-500 rounded-lg border-1 px-1 bg-red-50 border-red-500">(KRITIEK)</span>
+                                                        <span className="text-[8px] font-bold text-red-500 rounded-lg border-1 px-1 bg-red-50 border-red-500">(CRITICAL)</span>
                                                     )}
                                                 </div>
                                                 {medicationPeriod?.ongoing ? (
                                                     <span className="p-1 flex items-center gap-1 text-xs text-green-600 border-1 rounded-lg bg-green-50 border-green-500">
                                                         <AlertCircle className="h-3 w-3" />
-                                                        Actief
+                                                        Active
                                                     </span>
                                                 )
                                                     : (
                                                         <span className="p-1 flex items-center gap-1 text-xs text-orange-600 border-1 rounded-lg bg-orange-50 border-orange-500" >
                                                             <AlertCircle className="h-3 w-3" />
-                                                            Voltooid
+                                                            Completed
                                                         </span>
                                                     )
                                                 }
@@ -208,13 +205,13 @@ const DiagnosisPAge = () => {
                                                         </Button>
                                                     </DropdownMenuTrigger>
                                                     <DropdownMenuContent align="end" className="bg-white">
-                                                        <DropdownMenuLabel>Acties</DropdownMenuLabel>
+                                                        <DropdownMenuLabel>Actions</DropdownMenuLabel>
                                                         <DropdownMenuItem
                                                             onClick={() => { setMedication(med); setOpen(true) }}
                                                             className="hover:bg-indigo-100 hover:text-indigo-500 transition-colors ease-in-out cursor-pointer flex items-center gap-2"
                                                         >
                                                             <Edit2 className="h-4 w-4" />
-                                                            <span className="text-sm font-medium">Bewerken</span>
+                                                            <span className="text-sm font-medium">Edit</span>
                                                         </DropdownMenuItem>
                                                         <AlertDialogTrigger asChild>
                                                             <DropdownMenuItem
@@ -222,7 +219,7 @@ const DiagnosisPAge = () => {
                                                                 className="hover:bg-red-100 hover:text-red-500 transition-colors ease-in-out cursor-pointer flex items-center gap-2"
                                                             >
                                                                 <AlertCircle className="h-4 w-4" />
-                                                                <span className="text-sm font-medium">Verwijderen</span>
+                                                                <span className="text-sm font-medium">Delete</span>
                                                             </DropdownMenuItem>
                                                         </AlertDialogTrigger>
                                                     </DropdownMenuContent>
@@ -233,15 +230,15 @@ const DiagnosisPAge = () => {
                                                             <span className="h-12 w-12 rounded-full bg-red-200 flex items-center justify-center">
                                                                 <AlertTriangle className="text-red-600 h-8 w-8" />
                                                             </span>
-                                                            <span className="text-lg font-semibold">Medicatie verwijderen</span>
+                                                            <span className="text-lg font-semibold">Delete Diagnosis</span>
                                                         </AlertDialogTitle>
                                                         <AlertDialogDescription className="text-center">
-                                                            Weet u zeker dat u deze medicatie wilt verwijderen? Deze actie kan niet ongedaan worden gemaakt.
+                                                            Are you sure you want to delete this diagnosis record? This action cannot be undone.
                                                         </AlertDialogDescription>
                                                     </AlertDialogHeader>
                                                     <AlertDialogFooter className="w-full grid grid-cols-2 gap-2 space-x-0">
                                                         <AlertDialogCancel className="w-full border-none ring-0 bg-indigo-200 px-2 py-1 text-indigo-500 hover:bg-indigo-400 hover:text-white transition-colors ml-0 space-x-0">
-                                                            Annuleren
+                                                            Cancel
                                                         </AlertDialogCancel>
                                                         <AlertDialogAction
                                                             onClick={async () => {
@@ -249,7 +246,7 @@ const DiagnosisPAge = () => {
                                                             }}
                                                             className="w-full border-none ring-0 bg-red-200 px-2 py-1 text-red-500 hover:bg-red-500 hover:text-white transition-colors ml-0 space-x-0"
                                                         >
-                                                            Verwijderen
+                                                            Delete
                                                         </AlertDialogAction>
                                                     </AlertDialogFooter>
                                                 </AlertDialogContent>
@@ -270,7 +267,7 @@ const DiagnosisPAge = () => {
                                                         "text-xs font-semibold p-1 rounded-lg border-1",
                                                         !med.self_administered ? "text-green-500 bg-green-50 border-green-500" : "text-orange-500 bg-orange-50 border-orange-500"
                                                     )}>
-                                                        {!med.self_administered ? "Toegediend door medewerker" : "Zelf toegediend"}
+                                                        {!med.self_administered ? "Administered by Jhon Doe" : "Self Administered"}
                                                     </span>
                                                 </div>
                                             </div>
@@ -288,10 +285,4 @@ const DiagnosisPAge = () => {
     )
 }
 
-export default withAuth(
-  withPermissions(DiagnosisPAge, {
-    redirectUrl: Routes.Common.NotFound,
-    requiredPermissions: PermissionsObjects.ViewClientDiagnosis, // TODO: Add correct permission
-    }),
-    { mode: AUTH_MODE.LOGGED_IN, redirectUrl: Routes.Auth.Login } 
-    );
+export default DiagnosisPAge

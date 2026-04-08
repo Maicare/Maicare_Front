@@ -20,7 +20,7 @@ import ScheduleDetails from "./ScheduleDetails";
 import { ensureHex } from "@/utils/color-utils";
 import { useShift } from "@/hooks/shift/use-shift";
 import { createRoot } from "react-dom/client";
-import { Any } from "@/common/types/types";
+import { Id } from "@/common/types/types";
 import ShiftPlaceholder from "@/app/(pages)/schedules/_components/ShiftPlaceholder";
 
 interface DayWithShifts {
@@ -90,13 +90,13 @@ const sameInstant = (a: Date | string | undefined, b: Date | string) => {
   return d1 === d2;
 };
 
-const ScheduleCalendar: FunctionComponent<{ locationId: string }> = ({ locationId }: { locationId: string }) => {
+const ScheduleCalendar: FunctionComponent<{ locationId: Id }> = ({ locationId }: { locationId: Id }) => {
   const calendarContainerRef = useRef<HTMLDivElement | null>(null);
   const calendarRef = useRef<FullCalendar>(null);
 
   const { readSchedulesByMonth, deleteSchedule } = useSchedule();
 
-  const { shifts } = useShift({ location_id: locationId as string, autoFetch: true })
+  const { shifts } = useShift({ location_id: locationId, autoFetch: true })
 
   const [events, setEvents] = useState<EventInput[]>([]);
   const [createRange, setCreateRange] = useState<DateSelectArg | null>(null);
@@ -121,7 +121,7 @@ const ScheduleCalendar: FunctionComponent<{ locationId: string }> = ({ locationI
     }
   );
 
-  const openCreateForShift = (shiftDef: Any, day: Date) => {
+  const openCreateForShift = (shiftDef: any, day: Date) => {
     const left = window.innerWidth / 2 - 190;
     const top = window.innerHeight / 2 - 225;
 
@@ -133,9 +133,8 @@ const ScheduleCalendar: FunctionComponent<{ locationId: string }> = ({ locationI
       startStr: day.toISOString(),
       endStr: day.toISOString(),
       allDay: true,
-      jsEvent: null as Any,
-    // eslint-disable-next-line @typescript-eslint/no-non-null-asserted-optional-chain
-      view: calendarRef.current?.getApi().view!,
+      jsEvent: null as any,
+      view: calendarRef.current?.getApi().view as any,
     });
 
     setEditEvent(null);
@@ -164,8 +163,8 @@ const ScheduleCalendar: FunctionComponent<{ locationId: string }> = ({ locationI
       startStr: cust.start_time,
       endStr: cust.end_time,
       allDay: false,
-      jsEvent: null as Any,
-      view: calendarRef.current!.getApi().view,
+      jsEvent: null as any,
+      view: calendarRef.current?.getApi().view as any,
     });
 
     setEditEvent(null);
@@ -195,7 +194,7 @@ const ScheduleCalendar: FunctionComponent<{ locationId: string }> = ({ locationI
 
       try {
         const data = (await readSchedulesByMonth(
-          locationId,
+          String(locationId),
           year,
           month
         )) as DayWithShifts[] | null;
@@ -210,14 +209,14 @@ const ScheduleCalendar: FunctionComponent<{ locationId: string }> = ({ locationI
         data.forEach((dayEntry) => {
           dayEntry.shifts.forEach((sh) => {
 
-            if (sh.location_id !== Number(locationId)) return;
+            if (String(sh.location_id) !== String(locationId)) return;
             const assignedColor = ensureHex(sh.color, sh.employee_id);
 
-            let _displayEnd = sh.end_time;
+            let displayEnd = sh.end_time;
             if (new Date(sh.end_time).getDate() !== new Date(sh.start_time).getDate()) {
               const tmp = new Date(sh.start_time);
               tmp.setMinutes(tmp.getMinutes() + 1);
-              _displayEnd = tmp.toISOString();
+              displayEnd = tmp.toISOString();
             }
             newEvents.push({
               id: sh.shift_id.toString(),
@@ -259,7 +258,7 @@ const ScheduleCalendar: FunctionComponent<{ locationId: string }> = ({ locationI
 
     fetchEvents();
     return () => setEvents([]);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+
   }, [locationId, viewDate.year, viewDate.month, refreshFlag]);
 
   useEffect(() => {
@@ -357,7 +356,7 @@ const ScheduleCalendar: FunctionComponent<{ locationId: string }> = ({ locationI
     }
   };
 
-  const openShiftEditor = (shift: Any) => {
+  const openShiftEditor = (shift: any) => {
     const left = window.innerWidth / 2 - 190;
     const top = window.innerHeight / 2 - 225;
 
@@ -381,7 +380,7 @@ const ScheduleCalendar: FunctionComponent<{ locationId: string }> = ({ locationI
           color: ensureHex(shift.color, shift.employee_id),
         },
       },
-    } as Any);
+    } as any);
 
     setCreateRange(null);
     setPopupPos({ left, top });
@@ -425,9 +424,9 @@ const ScheduleCalendar: FunctionComponent<{ locationId: string }> = ({ locationI
           <FullCalendar
             ref={calendarRef}
             key={calendarKey}
-            initialDate={new Date(viewDate.year, viewDate.month - 1, 1)}
             plugins={[dayGridPlugin]}
             initialView="dayGridMonth"
+            initialDate={new Date(viewDate.year, viewDate.month - 1, 1)}
             fixedWeekCount={false}
             headerToolbar={{
               start: "prev,next today",
@@ -481,7 +480,7 @@ const ScheduleCalendar: FunctionComponent<{ locationId: string }> = ({ locationI
 
               info.el.addEventListener("click", (e) => {
                 if ((e.target as HTMLElement).closest(".fc-daygrid-day-number")) return;
-                const jsEvent = e as Any;
+                const jsEvent = e as any;
                 setCreateRange({
                   start: info.date,
                   end: info.date,
@@ -534,7 +533,7 @@ const ScheduleCalendar: FunctionComponent<{ locationId: string }> = ({ locationI
 
               const customShifts = (() => {
                 if (!hasEvents) return [];
-                const map = new Map<string, Any>();
+                const map = new Map<string, any>();
 
                 shiftsForDay.forEach((sh) => {
                   const name = sh.extendedProps?.shift_name as string | undefined;
@@ -577,7 +576,7 @@ const ScheduleCalendar: FunctionComponent<{ locationId: string }> = ({ locationI
               const root = createRoot(holder);
               holder._root = root;
               holder._version = ++holderVersion;
-              (holder as Any)._root = root;
+              (holder as any)._root = root;
 
               const allShifts = shifts ?? [];
               const defaultShifts = allShifts.filter((s) =>
@@ -624,9 +623,9 @@ const ScheduleCalendar: FunctionComponent<{ locationId: string }> = ({ locationI
                               const src = shiftsForDay.find(
                                 (ev) =>
                                   typeof ev.start !== "number" &&
-                                  sameInstant(ev.start as Any, sh.start_time) &&
+                                  sameInstant(ev.start as any, sh.start_time) &&
                                   typeof ev.end !== "number" &&
-                                  sameInstant(ev.end as Any, sh.end_time)
+                                  sameInstant(ev.end as any, sh.end_time)
                               );
 
                               const badgeHandler = src ? mkClick(src) : undefined;

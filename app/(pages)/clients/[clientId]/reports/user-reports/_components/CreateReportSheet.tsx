@@ -6,7 +6,7 @@ import PrimaryButton from '@/common/components/PrimaryButton';
 import { CalendarIcon, Info, PlusCircle } from 'lucide-react';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { DAILY_REPORT_TYPES_OPTIONS,  EMOTIONAL_STATE_OPTIONS,  Report, REPORT_TYPE_RECORD } from '@/types/reports.types';
+import { DAILY_REPORT_TYPES_OPTIONS, EMOTIONAL_STATE_OPTIONS, Report } from '@/types/reports.types';
 import Tooltip from '@/common/components/Tooltip';
 import { useForm } from 'react-hook-form';
 import { CreateReport, CreateReportSchema } from '@/schemas/report.schema';
@@ -30,21 +30,24 @@ type Props = {
 }
 
 const CreateReportSheet = ({ mode, handleCreate, handleUpdate, report, handleOpen, isOpen }: Props) => {
-    const { user } = useAuth({});
+    const { user } = useAuth();
     const [loading, setLoading] = useState(false);
     const form = useForm<CreateReport>({
         resolver: zodResolver(CreateReportSchema),
         defaultValues: report ? {
             ...report,
-            date: new Date(report?.date)
+            date: new Date(report?.date),
+            employee_id: Number(report.employee_id),
+            id: report.id ? Number(report.id) : undefined,
         } : {
             date: new Date(),
             emotional_state: "",
             report_text: "",
             type: "",
-            employee_id: user?.employee_id || "0"
+            employee_id: Number(user?.employee_id) || 0
         },
     });
+    console.log(report)
     // 2. Define a submit handler.
     async function onSubmit(values: CreateReport) {
         setLoading(true);
@@ -58,15 +61,15 @@ const CreateReportSheet = ({ mode, handleCreate, handleUpdate, report, handleOpe
     }
     useEffect(() => {
         if (user?.employee_id) {
-            form.setValue("employee_id", user?.employee_id);
+            form.setValue("employee_id", Number(user?.employee_id));
         }
         if (report) {
             form.setValue("date", new Date(report.date));
             form.setValue("emotional_state", report.emotional_state);
             form.setValue("type", report.type);
             form.setValue("report_text", report.report_text);
-            form.setValue("employee_id", report.employee_id);
-            form.setValue("id", report.id);
+            form.setValue("employee_id", Number(report.employee_id));
+            form.setValue("id", report.id ? Number(report.id) : undefined);
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [user?.employee_id, report])
@@ -74,7 +77,7 @@ const CreateReportSheet = ({ mode, handleCreate, handleUpdate, report, handleOpe
         <Sheet open={isOpen} onOpenChange={(o) => handleOpen(o)}>
             <SheetTrigger asChild>
                 <PrimaryButton
-                    text="Toevoegen"
+                    text="Add"
                     // onClick={handleAdd}
                     disabled={false}
                     icon={PlusCircle}
@@ -84,9 +87,9 @@ const CreateReportSheet = ({ mode, handleCreate, handleUpdate, report, handleOpe
             </SheetTrigger>
             <SheetContent className='bg-slate-200/50 backdrop-blur-sm' onPointerDownOutside={(e) => e.preventDefault()} >
                 <SheetHeader>
-                    <SheetTitle>Nieuwe rapportage</SheetTitle>
+                    <SheetTitle>Nieuwe Rapporten</SheetTitle>
                     <SheetDescription>
-                        Maak een nieuwe rapportage aan voor deze cliënt
+                        Creëer Nieuwe Rapporten.
                     </SheetDescription>
                 </SheetHeader>
                 <Form {...form} >
@@ -97,21 +100,21 @@ const CreateReportSheet = ({ mode, handleCreate, handleUpdate, report, handleOpe
                             render={({ field }) => (
                                 <FormItem>
                                     <FormLabel className='flex items-center justify-between'>
-                                        Rapport type
-                                        <Tooltip text='Dit is het type rapport'>
+                                        Betrokenheid melder
+                                        <Tooltip text='This is Betrokenheid melder '>
                                             <Info className='h-5 w-5 mr-2' />
                                         </Tooltip>
                                     </FormLabel>
                                     <FormControl>
                                         <Select onValueChange={field.onChange} defaultValue={field.value} >
                                             <SelectTrigger className="w-full">
-                                                <SelectValue placeholder="Rapport type" />
+                                                <SelectValue placeholder="Betrokenheid melder" />
                                             </SelectTrigger>
                                             <SelectContent className="bg-white">
                                                 <SelectGroup>
                                                     {
                                                         DAILY_REPORT_TYPES_OPTIONS.filter(v => v.value !== "").map((item, index) => (
-                                                            <SelectItem key={index} value={item.value} className="hover:bg-slate-100 cursor-pointer">{REPORT_TYPE_RECORD[item.value as keyof typeof REPORT_TYPE_RECORD]}</SelectItem>
+                                                            <SelectItem key={index} value={item.value} className="hover:bg-slate-100 cursor-pointer">{item.label}</SelectItem>
                                                         ))
                                                     }
                                                 </SelectGroup>
@@ -128,15 +131,15 @@ const CreateReportSheet = ({ mode, handleCreate, handleUpdate, report, handleOpe
                             render={({ field }) => (
                                 <FormItem>
                                     <FormLabel className='flex items-center justify-between'>
-                                        Emotionele staat
-                                        <Tooltip text='Dit is de emotionele staat van de cliënt'>
+                                        Emotionele toestand
+                                        <Tooltip text='This is Betrokenheid melder '>
                                             <Info className='h-5 w-5 mr-2' />
                                         </Tooltip>
                                     </FormLabel>
                                     <FormControl>
                                         <Select onValueChange={field.onChange} defaultValue={field.value} >
                                             <SelectTrigger className="w-full">
-                                                <SelectValue placeholder="Emotionele staat" />
+                                                <SelectValue placeholder="Betrokenheid melder" />
                                             </SelectTrigger>
                                             <SelectContent className="bg-white">
                                                 <SelectGroup>
@@ -172,7 +175,7 @@ const CreateReportSheet = ({ mode, handleCreate, handleUpdate, report, handleOpe
                                                     <CalendarIcon className="mr-2 h-4 w-4" />
                                                     {field.value
                                                         ? format(field.value, 'PPPp')
-                                                        : 'Kies een datum en tijd'}
+                                                        : 'Pick a date and time'}
                                                 </Button>
                                             </FormControl>
                                         </PopoverTrigger>
@@ -223,15 +226,15 @@ const CreateReportSheet = ({ mode, handleCreate, handleUpdate, report, handleOpe
                             render={({ field }) => (
                                 <FormItem className=''>
                                     <FormLabel className='flex items-center justify-between text-sm font-semibold'>
-                                        Toelichting
-                                        <Tooltip text='Dit is een toelichting op de rapportage'>
+                                        Toelichting op de oorzaak/oorzaken
+                                        <Tooltip text='This is toelichting op de oorzaak/oorzaken'>
                                             <Info className='h-5 w-5 mr-2' />
                                         </Tooltip>
                                     </FormLabel>
                                     <FormControl className=''>
                                         <div className="relative">
                                             <Textarea
-                                                placeholder="Toelichting"
+                                                placeholder="toelichting op de oorzaak/oorzaken"
                                                 className="resize-none"
                                                 rows={6}
                                                 {...field}
@@ -248,9 +251,9 @@ const CreateReportSheet = ({ mode, handleCreate, handleUpdate, report, handleOpe
                         />
 
                         <SheetFooter className='flex items-center justify-between'>
-                            <Button disabled={loading} type="submit">Verzenden</Button>
+                            <Button disabled={loading} type="submit">Save changes</Button>
                             <SheetClose asChild>
-                                <Button variant="outline">Annuleren</Button>
+                                <Button variant="outline">Cancel</Button>
                             </SheetClose>
                         </SheetFooter>
                     </form>

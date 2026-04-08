@@ -20,7 +20,7 @@ import { Id } from '@/common/types/types';
 type Props = {
     mode: "create" | "update";
     handleCreate: (values: CreateShift) => void;
-    handleUpdate: (values: CreateShift&{id:Id}) => void;
+    handleUpdate: (values: CreateShift & { id: Id }) => void;
     shift?: Shift;
     isOpen: boolean;
     handleOpen: (bool: boolean) => void;
@@ -34,19 +34,19 @@ const CreateShiftSheet = ({ mode, handleCreate, handleUpdate, shift, handleOpen,
         defaultValues: shift ? {
             ...shift
         } : {
-            location_id: locationId as string,
+            location_id: parseInt(locationId as string),
             shift: "",
             start_time: "00:00",
             end_time: "23:59"
         },
     });
-    // 2. Definieer een submit handler.
+    // 2. Define a submit handler.
     async function onSubmit(values: CreateShift) {
         setLoading(true);
         if (mode === "create") {
             handleCreate(values);
         } else {
-            handleUpdate({...values,id:shift!.id});
+            handleUpdate({ ...values, id: shift!.id } as CreateShift & { id: Id });
         }
         handleOpen(false);
         setLoading(false);
@@ -64,7 +64,7 @@ const CreateShiftSheet = ({ mode, handleCreate, handleUpdate, shift, handleOpen,
         <Sheet open={isOpen} onOpenChange={(o) => handleOpen(o)}>
             <SheetTrigger asChild>
                 <PrimaryButton
-                    text="Toevoegen"
+                    text="Add"
                     // onClick={handleAdd}
                     disabled={false}
                     icon={PlusCircle}
@@ -74,9 +74,9 @@ const CreateShiftSheet = ({ mode, handleCreate, handleUpdate, shift, handleOpen,
             </SheetTrigger>
             <SheetContent className='bg-slate-200/50 backdrop-blur-sm overflow-scroll' onPointerDownOutside={(e) => e.preventDefault()} >
                 <SheetHeader>
-                    <SheetTitle>{mode === "create" ? "Nieuwe Dienst" : "Dienst Bewerken"}</SheetTitle>
+                    <SheetTitle>Nieuwe Shift</SheetTitle>
                     <SheetDescription>
-                        {mode === "create" ? "Creëer Nieuwe Dienst." : "Bewerk bestaande dienst."}
+                        Creëer Nieuwe Shift.
                     </SheetDescription>
                 </SheetHeader>
                 <Form {...form} >
@@ -89,9 +89,9 @@ const CreateShiftSheet = ({ mode, handleCreate, handleUpdate, shift, handleOpen,
                                     <FormLabel>Naam</FormLabel>
                                     <FormControl>
                                         <div className="relative">
-                                            <Input placeholder="bijv: Ochtenddienst" {...field} />
+                                            <Input placeholder="eg: Morning shift" {...field} />
                                             <div className="absolute right-2 top-0 translate-y-1/2 h-5 w-5 ">
-                                                <Tooltip text='Dit is de naam van de dienst'>
+                                                <Tooltip text='This is Naam'>
                                                     <Info className='h-5 w-5' />
                                                 </Tooltip>
                                             </div>
@@ -106,12 +106,12 @@ const CreateShiftSheet = ({ mode, handleCreate, handleUpdate, shift, handleOpen,
                             name="start_time"
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>Starttijd</FormLabel>
+                                    <FormLabel>Start Time</FormLabel>
                                     <FormControl>
                                         <div className="relative">
                                             <ReactDatePicker
                                                 selected={createDateFromTimeString(field.value)}
-                                                onChange={(d)=> d && field.onChange(formatTimeFromDate(d))}
+                                                onChange={(d) => d && field.onChange(formatTimeFromDate(d))}
                                                 showTimeSelect
                                                 showTimeSelectOnly
                                                 timeIntervals={15}
@@ -130,12 +130,12 @@ const CreateShiftSheet = ({ mode, handleCreate, handleUpdate, shift, handleOpen,
                             name="end_time"
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>Eindtijd</FormLabel>
+                                    <FormLabel>End Time</FormLabel>
                                     <FormControl>
                                         <div className="relative">
                                             <ReactDatePicker
                                                 selected={createDateFromTimeString(field.value)}
-                                                onChange={(d)=> d && field.onChange(formatTimeFromDate(d))}
+                                                onChange={(d) => d && field.onChange(formatTimeFromDate(d))}
                                                 showTimeSelect
                                                 showTimeSelectOnly
                                                 timeIntervals={15}
@@ -149,11 +149,9 @@ const CreateShiftSheet = ({ mode, handleCreate, handleUpdate, shift, handleOpen,
                                 </FormItem>
                             )}
                         />
-                        <Button disabled={loading} type="submit" className='bg-indigo-200 text-indigo-600 hover:text-white hover:bg-indigo-600 transition-colors'>
-                            {loading ? "Opslaan..." : "Wijzigingen Opslaan"}
-                        </Button>
+                        <Button disabled={loading} type="submit" className='bg-indigo-200 text-indigo-600 hover:text-white hover:bg-indigo-600 transition-colors'>Save changes</Button>
                         <SheetClose asChild>
-                            <Button className='bg-red-200 text-red-600 hover:text-white hover:bg-red-600 transition-colors'>Annuleren</Button>
+                            <Button className='bg-red-200 text-red-600 hover:text-white hover:bg-red-600 transition-colors'>Cancel</Button>
                         </SheetClose>
                     </form>
                 </Form>

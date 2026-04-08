@@ -1,7 +1,7 @@
 "use client";
 
 import PrimaryButton from "@/common/components/PrimaryButton";
-import {  BookMarked, PlusCircle } from "lucide-react";
+import { BookMarked, PlusCircle } from "lucide-react";
 import { useState } from "react";
 import UpsertCertificationForm from "./_components/UpsertCertificationForm";
 import { CreateCertificate } from "@/schemas/certification.schema";
@@ -13,24 +13,20 @@ import CertificationItem from "./_components/CertificationItem";
 import Loader from "@/components/common/loader";
 import LargeErrorMessage from "@/components/common/Alerts/LargeErrorMessage";
 import { useParams } from "next/navigation";
-import withAuth, { AUTH_MODE } from "@/common/hocs/with-auth";
-import withPermissions from "@/common/hocs/with-permissions";
-import Routes from "@/common/routes";
-import { PermissionsObjects } from "@/common/data/permission.data";
 import { Id } from "@/common/types/types";
 
 const Page = () => {
     const [adding, setAdding] = useState(false);
     const [editing, setEditing] = useState(false);
     const [certification, setCertification] = useState<CreateCertificate & { id: Id } | null>(null);
-    const {employeeId} = useParams();
+    const { employeeId } = useParams();
 
     const { isLoading, certificates, mutate, deleteOne } = useCertificate({ autoFetch: true, employeeId: employeeId as string });
 
     const { open } = useModal(
         getDangerActionConfirmationModal({
-            msg: "Weet u zeker dat u dit certificaat wilt verwijderen?",
-            title: "Certificaat Verwijderen",
+            msg: "Weet u zeker dat u deze ervaring wilt verwijderen?",
+            title: "Ervaring Verwijderen",
         })
     );
 
@@ -39,7 +35,7 @@ const Page = () => {
         mutate();
         window.scrollTo({
             top: 0,
-            behavior: "smooth", // Optioneel: Voegt soepele scroll toe
+            behavior: "smooth", // Optional: Adds smooth scrolling
         });
     }
     const cancelAdd = () => {
@@ -47,17 +43,17 @@ const Page = () => {
         mutate();
     }
     const handleEdit = (certification: Certification) => {
-        const transformed: CreateCertificate & { id: Id } = {
+        const transformed = {
             ...certification,
             date_issued: new Date(certification.date_issued),
             id: certification.id
-        }
+        } as CreateCertificate & { id: Id };
         setCertification(transformed);
         setEditing(true);
         mutate();
         window.scrollTo({
             top: 0,
-            behavior: "smooth", // Optioneel: Voegt soepele scroll toe
+            behavior: "smooth", // Optional: Adds smooth scrolling
         });
     }
     const cancelEdit = () => {
@@ -80,10 +76,10 @@ const Page = () => {
         <div className="w-full flex flex-col gap-4">
             <div className="flex items-center justify-between">
                 <h1 className='flex items-center gap-2 m-0 p-0 font-extrabold text-lg text-slate-600'>
-                    <BookMarked size={24} className='text-indigo-400' />  Certificaten
+                    <BookMarked size={24} className='text-indigo-400' />  Certification
                 </h1>
                 <PrimaryButton
-                    text="Toevoegen"
+                    text="Add"
                     onClick={handleAdd}
                     disabled={adding}
                     icon={PlusCircle}
@@ -92,9 +88,9 @@ const Page = () => {
                 />
             </div>
             {adding ?
-                <UpsertCertificationForm employeeId={employeeId as string} onCancel={cancelAdd} mode="add" onSuccess={cancelAdd} />
+                <UpsertCertificationForm employeeId={parseInt(employeeId as string)} onCancel={cancelAdd} mode="add" onSuccess={cancelAdd} />
                 : editing ?
-                    <UpsertCertificationForm employeeId={employeeId as string} onCancel={cancelEdit} mode="update" onSuccess={cancelEdit} defaultValues={certification || undefined} />
+                    <UpsertCertificationForm employeeId={parseInt(employeeId as string)} onCancel={cancelEdit} mode="update" onSuccess={cancelEdit} defaultValues={(certification || undefined) as any} />
                     : null
             }
             <div className="grid grid-cols-4 gap-4">
@@ -104,12 +100,12 @@ const Page = () => {
                         : certificates?.length === 0 ?
                             <div className="col-span-4 w-full flex items-center justify-center">
                                 <LargeErrorMessage
-                                firstLine={"Oeps!"}
-                                secondLine={
-                                    "Het lijkt erop dat er nog geen certificaten zijn toegevoegd voor deze medewerker."
-                                }
-                                className="w-full"
-                            />
+                                    firstLine={"Oops!"}
+                                    secondLine={
+                                        "Het lijkt erop dat er geen medewerkers zijn die aan uw zoekcriteria voldoen."
+                                    }
+                                    className="w-full"
+                                />
                             </div>
                             :
 
@@ -122,10 +118,4 @@ const Page = () => {
     )
 }
 
-export default withAuth(
-  withPermissions(Page, {
-    redirectUrl: Routes.Common.NotFound,
-    requiredPermissions: PermissionsObjects.ViewEmployee, // TODO: Voeg correcte permissie toe
-    }),
-    { mode: AUTH_MODE.LOGGED_IN, redirectUrl: Routes.Auth.Login } 
-    );
+export default Page

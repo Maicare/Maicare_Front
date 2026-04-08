@@ -13,17 +13,13 @@ import { getDangerActionConfirmationModal } from "@/components/common/Modals/Dan
 import Loader from "@/components/common/loader";
 import LargeErrorMessage from "@/components/common/Alerts/LargeErrorMessage";
 import { useParams } from "next/navigation";
-import withAuth, { AUTH_MODE } from "@/common/hocs/with-auth";
-import withPermissions from "@/common/hocs/with-permissions";
-import Routes from "@/common/routes";
-import { PermissionsObjects } from "@/common/data/permission.data";
 import { Id } from "@/common/types/types";
 
 const Page = () => {
     const [adding, setAdding] = useState(false);
     const [editing, setEditing] = useState(false);
     const [experience, setExperience] = useState<CreateExperience & { id: Id } | null>(null);
-    const {employeeId} = useParams();
+    const { employeeId } = useParams();
 
 
     const { isLoading, experiences, mutate, deleteOne } = useExperience({ autoFetch: true, employeeId: employeeId as string });
@@ -40,7 +36,7 @@ const Page = () => {
         mutate();
         window.scrollTo({
             top: 0,
-            behavior: "smooth", // Optioneel: Voegt soepele scroll toe
+            behavior: "smooth", // Optional: Adds smooth scrolling
         });
     }
     const cancelAdd = () => {
@@ -48,18 +44,18 @@ const Page = () => {
         mutate();
     }
     const handleEdit = (experience: Experience) => {
-        const transformed: CreateExperience & { id: Id } = {
+        const transformed = {
             ...experience,
             start_date: new Date(experience.start_date),
             end_date: new Date(experience.end_date),
             id: experience.id
-        }
+        } as CreateExperience & { id: Id };
         setExperience(transformed);
         setEditing(true);
         mutate();
         window.scrollTo({
             top: 0,
-            behavior: "smooth", // Optioneel: Voegt soepele scroll toe
+            behavior: "smooth", // Optional: Adds smooth scrolling
         });
     }
     const cancelEdit = () => {
@@ -83,10 +79,10 @@ const Page = () => {
         <div className="w-full flex flex-col gap-4">
             <div className="flex items-center justify-between">
                 <h1 className='flex items-center gap-2 m-0 p-0 font-extrabold text-lg text-slate-600'>
-                    <Briefcase size={24} className='text-indigo-400' />  Werkervaring
+                    <Briefcase size={24} className='text-indigo-400' />  Experience
                 </h1>
                 <PrimaryButton
-                    text="Toevoegen"
+                    text="Add"
                     onClick={handleAdd}
                     disabled={adding}
                     icon={PlusCircle}
@@ -95,9 +91,9 @@ const Page = () => {
                 />
             </div>
             {adding ?
-                <UpsertExperienceForm employeeId={employeeId as string} onCancel={cancelAdd} mode="add" onSuccess={cancelAdd} />
+                <UpsertExperienceForm employeeId={parseInt(employeeId as string)} onCancel={cancelAdd} mode="add" onSuccess={cancelAdd} />
                 : editing ?
-                    <UpsertExperienceForm employeeId={employeeId as string} onCancel={cancelEdit} mode="update" onSuccess={cancelEdit} defaultValues={experience || undefined} />
+                    <UpsertExperienceForm employeeId={parseInt(employeeId as string)} onCancel={cancelEdit} mode="update" onSuccess={cancelEdit} defaultValues={(experience || undefined) as any} />
                     : null
             }
             <div className="w-full bg-white p-4 rounded-md shadow-md">
@@ -106,9 +102,9 @@ const Page = () => {
                         <Loader />
                         : experiences?.length === 0 ?
                             <LargeErrorMessage
-                                firstLine={"Oeps!"}
+                                firstLine={"Oops!"}
                                 secondLine={
-                                    "Het lijkt erop dat er nog geen werkervaring is toegevoegd voor deze medewerker."
+                                    "Het lijkt erop dat er geen medewerkers zijn die aan uw zoekcriteria voldoen."
                                 }
                             />
                             :
@@ -125,10 +121,4 @@ const Page = () => {
     )
 }
 
-export default withAuth(
-  withPermissions(Page, {
-    redirectUrl: Routes.Common.NotFound,
-    requiredPermissions: PermissionsObjects.ViewEmployee, // TODO: Voeg correcte permissie toe
-    }),
-    { mode: AUTH_MODE.LOGGED_IN, redirectUrl: Routes.Auth.Login } 
-    );
+export default Page

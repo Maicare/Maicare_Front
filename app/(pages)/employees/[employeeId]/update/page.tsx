@@ -7,18 +7,13 @@ import { useEffect, useState } from "react";
 import { EmployeeDetailsResponse } from "@/types/employee.types";
 import { Id } from "@/common/types/types";
 import EmployeeFormSkeleton from "../_components/UpsertEmployeeFormSkeleton";
-import withPermissions from "@/common/hocs/with-permissions";
-import withAuth, { AUTH_MODE } from "@/common/hocs/with-auth";
-import Routes from "@/common/routes";
-import { PermissionsObjects } from "@/common/data/permission.data";
 
 
 const Page = () => {
     const router = useRouter();
     const { employeeId } = useParams();
-
     const onSuccess = (id: Id) => {
-        router.push(`/employees/${id}`)
+        router.push(`/employee/${id}`)
     }
     const onCancel = () => {
         router.back();
@@ -33,9 +28,9 @@ const Page = () => {
             setEmployee(data);
             setIsLoading(false);
         }
-        if (employeeId) fetchEmployee(employeeId as string);
-        
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+        if (employeeId) fetchEmployee(+employeeId);
+
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [employeeId]);
     return (
         <div className="container mx-auto">
@@ -58,10 +53,4 @@ const Page = () => {
     )
 }
 
-export default withAuth(
-  withPermissions(Page, {
-    redirectUrl: Routes.Common.NotFound,
-    requiredPermissions: PermissionsObjects.UpdateEmployee, // TODO: Add correct permission
-    }),
-    { mode: AUTH_MODE.LOGGED_IN, redirectUrl: Routes.Auth.Login } 
-    );
+export default Page

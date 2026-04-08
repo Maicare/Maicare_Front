@@ -6,8 +6,8 @@ import { Briefcase, Calendar as CalendarIco, X } from "lucide-react";
 
 import { useSchedule } from "@/hooks/schedule/use-schedule";
 import { useShift } from "@/hooks/shift/use-shift";
-import { Any, Id } from "@/common/types/types";
 import ShiftPlaceholder, { ScheduleRow } from "@/app/(pages)/schedules/_components/ShiftPlaceholder";
+import { Id } from "@/common/types/types";
 
 type ShiftDef = {
   id: number;
@@ -33,13 +33,13 @@ const sameUtcDay = (a: Date, b: Date) =>
   a.getUTCDate() === b.getUTCDate();
 
 export interface CalendarScheduleResponse {
-  shift_id: number;
-  employee_id: number;
+  shift_id: Id;
+  employee_id: Id;
   employee_first_name: string;
   employee_last_name: string;
   start_time: string;
   end_time: string;
-  location_id: number;
+  location_id: Id;
   color: string | null;
   shift_name: string;
 }
@@ -86,7 +86,7 @@ const ScheduleDetails = ({
     setLoading(true);
     setError(null);
 
-    readSchedulesByDay(locationId, y, m, d, { displayProgress: false })
+    readSchedulesByDay(String(locationId), y, m, d, { displayProgress: false })
       .then((raw) => {
         const rows = (raw as unknown as DailyResponse)?.shifts ?? [];
 
@@ -99,21 +99,13 @@ const ScheduleDetails = ({
 
         setDaily(filtered);
       })
-      .catch((err: Any) => setError(err.message ?? "Failed to load schedules"))
+      .catch((err: any) => setError(err.message ?? "Failed to load schedules"))
       .finally(() => setLoading(false));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [date, locationId, refreshKey]);
 
   const defaultShifts: ShiftDef[] = useMemo(
     () =>
-      (shiftDefs ?? [])
-        .filter((s) => DEFAULT_NAMES.has(s.shift))
-        .map((s) => ({
-          id: Number((s as Any).id),
-          shift: (s as Any).shift,
-          start_time: (s as Any).start_time,
-          end_time: (s as Any).end_time,
-        })) as ShiftDef[],
+      (shiftDefs ?? []).filter((s) => DEFAULT_NAMES.has(s.shift)) as ShiftDef[],
     [shiftDefs]
   );
 
@@ -267,7 +259,7 @@ const ScheduleDetails = ({
               {defaultShifts.map((def) => (
                 <ShiftPlaceholder
                   key={def.id}
-                  shift={def as Any}
+                  shift={def as any}
                   isDefault
                   detailed
                   schedule={scheduleRows}
@@ -290,7 +282,7 @@ const ScheduleDetails = ({
               {customShifts.map((cs) => (
                 <ShiftPlaceholder
                   key={cs.id}
-                  shift={cs as Any}
+                  shift={cs as any}
                   isDefault={false}
                   detailed
                   schedule={scheduleRows}

@@ -9,6 +9,7 @@ import { DateSelectArg, EventClickArg, EventInput } from "@fullcalendar/core";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
+import { Id } from "@/common/types/types";
 import { X, Calendar as CalendarIcon, Clock } from "lucide-react";
 import { format } from "date-fns";
 import {
@@ -27,14 +28,15 @@ import {
   FormControl,
   FormMessage,
 } from "@/components/ui/form";
+import { LocationSelect } from "@/components/employee/LocationSelect";
 import { useSchedule } from "@/hooks/schedule/use-schedule";
 import {
   scheduleSchema,
   CreateScheduleType,
 } from "@/schemas/schedule.schemas";
 import SingleEmployeeSelect from "./SingleEmployeeSelect";
+import { ensureHex } from "@/utils/color-utils";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Any, Id } from "@/common/types/types";
 import MainShiftSelect from "@/app/(pages)/schedules/_components/MainShiftSelect";
 
 export interface SchedulePopupProps {
@@ -45,7 +47,7 @@ export interface SchedulePopupProps {
   position: { left: number; top: number };
   containerRef: React.RefObject<HTMLDivElement | null>;
   onClose: () => void;
-  onUpsert: (payload: Any, isEdit: boolean) => void;
+  onUpsert: (payload: any, isEdit: boolean) => void;
   onDelete: (id: string) => void;
   initialEmployeeId?: Id;
   initialLocationId?: Id;
@@ -55,13 +57,13 @@ export interface SchedulePopupProps {
 }
 
 export type SchedulePayload = {
-  id: Id;
+  id: string;
   employee_id: Id;
   location_id: Id;
   color: string;
   is_custom: boolean;
 
-  location_shift_id: Id;
+  location_shift_id: number;
   shift_date: string;
 
   start_datetime?: Date;
@@ -90,12 +92,15 @@ const POPUP_HEIGHT = 450;
 const calcIsCustom = (
   ev: EventClickArg | null,
   initialShiftId: Id | undefined
-) =>
-  ev
-    ? !(ev.event.extendedProps?.location_shift_id > 0)
-    : initialShiftId && initialShiftId !== ""
+) => {
+  const isShiftIdZero = typeof initialShiftId === "number" ? initialShiftId === 0 : !initialShiftId;
+
+  return ev
+    ? !(Number(ev.event.extendedProps?.location_shift_id) > 0)
+    : !isShiftIdZero
       ? false
       : true;
+}
 
 const SchedulePopup: FunctionComponent<SchedulePopupProps> = ({
   createRange,
@@ -190,14 +195,14 @@ const SchedulePopup: FunctionComponent<SchedulePopupProps> = ({
 
     const isDuplicate = existingEvents.some((ev) => {
       if (String(ev.id) === (editEvent?.event.id ?? "__editing")) return false;
-      const ep = ev.extendedProps as Any;
+      const ep = ev.extendedProps as any;
       if (ep.employee_id !== data.employee_id) return false;
 
       if (data.is_custom) {
         return (
           ep.is_custom &&
-          sameInstant(ev.start as Any, data.start_datetime) &&
-          sameInstant(ev.end as Any, data.end_datetime)
+          sameInstant(ev.start as any, data.start_datetime) &&
+          sameInstant(ev.end as any, data.end_datetime)
         );
       }
 
@@ -241,7 +246,7 @@ const SchedulePopup: FunctionComponent<SchedulePopupProps> = ({
     onUpsert(
       {
         ...apiPayload,
-        id: editEvent?.event.id ?? (saved as Any).id ?? Date.now(),
+        id: editEvent?.event.id ?? (saved as any).id ?? Date.now(),
       },
       !!editEvent
     );

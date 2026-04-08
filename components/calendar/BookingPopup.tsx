@@ -13,7 +13,7 @@ import {
 } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
-import { Any, Id } from "@/common/types/types";
+import { Id } from "@/common/types/types";
 import { Button } from "@/components/ui/button";
 import { X } from "lucide-react";
 import { Calendar } from "@/components/ui/calendar";
@@ -36,8 +36,8 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 
-import MultiEmployeeSelect from "./MultiEmployeeSelect";
 import MultiClientSelect from "./MultiClientSelect";
+import MultiEmployeeSelect from "./MultiEmployeeSelect";
 import RecurrenceSelect from "./RecurrenceSelect";
 import { useCalendar } from "@/hooks/calendar/use-calendar";
 import {
@@ -115,12 +115,12 @@ const BookingPopup: FunctionComponent<BookingPopupProps> = ({
       client_ids: editEvent
         ? (editEvent.event.extendedProps.client_ids as Id[]) ?? []
         : initialClientId != null
-          ? [initialClientId]
+          ? [initialClientId as Id]
           : [],
       participant_employee_ids: editEvent
         ? (editEvent.event.extendedProps.participant_employee_ids as Id[]) ?? []
         : initialEmployeeId != null
-          ? [initialEmployeeId]
+          ? [initialEmployeeId as Id]
           : [],
       description:
         (editEvent?.event.extendedProps.description as string) ?? "",
@@ -139,7 +139,7 @@ const BookingPopup: FunctionComponent<BookingPopupProps> = ({
     },
   });
 
-  const { control,  handleSubmit, formState: { errors } } = form;
+  const { control, handleSubmit, formState: { errors } } = form;
 
   const chosenColor = useWatch({
     control,
@@ -242,7 +242,7 @@ const BookingPopup: FunctionComponent<BookingPopupProps> = ({
 
     onUpsert(
       {
-        id: editEvent?.event.id ?? String((saved as Any)?.id ?? Date.now()),
+        id: editEvent?.event.id ?? String((saved as { id?: string | number })?.id ?? Date.now()),
         ...data,
         textColor: fg,
       },

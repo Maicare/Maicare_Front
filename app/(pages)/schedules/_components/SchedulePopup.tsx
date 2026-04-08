@@ -35,7 +35,6 @@ import {
 import SingleEmployeeSelect from "./SingleEmployeeSelect";
 import { Checkbox } from "@/components/ui/checkbox";
 import MainShiftSelect from "./MainShiftSelect";
-import { Any, Id } from "@/common/types/types";
 
 export interface SchedulePopupProps {
   createRange: DateSelectArg | null;
@@ -45,22 +44,22 @@ export interface SchedulePopupProps {
   position: { left: number; top: number };
   containerRef: React.RefObject<HTMLDivElement | null>;
   onClose: () => void;
-  onUpsert: (payload: Any, isEdit: boolean) => void;
-  onDelete: (id: Id) => void;
-  initialEmployeeId?: Id;
-  initialLocationId?: Id;
-  initialShiftId?: Id;
-  locationId: Id;
+  onUpsert: (payload: any, isEdit: boolean) => void;
+  onDelete: (id: string) => void;
+  initialEmployeeId?: number;
+  initialLocationId?: number;
+  initialShiftId?: number;
+  locationId: number;
 }
 
 export type SchedulePayload = {
-  id: Id;
-  employee_id: Id;
-  location_id: Id;
+  id: string;
+  employee_id: number;
+  location_id: number;
   color: string;
   is_custom: boolean;
 
-  location_shift_id: Id;
+  location_shift_id: number;
   shift_date: string;
 
   start_datetime?: Date;
@@ -70,11 +69,11 @@ export type SchedulePayload = {
 
 type FormValues = {
   is_custom: boolean;
-  employee_id: Id;
-  location_id: Id;
+  employee_id: number;
+  location_id: number;
   start_datetime: Date;
   end_datetime: Date;
-  location_shift_id: Id;
+  location_shift_id: number;
   shift_date: string;
 };
 
@@ -87,10 +86,12 @@ const SchedulePopup: FunctionComponent<SchedulePopupProps> = ({
   eventStart,
   eventEnd,
   position,
+  containerRef,
   onClose,
   onUpsert,
   onDelete,
   initialEmployeeId,
+  initialLocationId,
   initialShiftId,
   locationId,
 }) => {
@@ -132,7 +133,7 @@ const SchedulePopup: FunctionComponent<SchedulePopupProps> = ({
 
   const isCustom = watch("is_custom");
   const currentLocationId = watch("location_id");
-  // const location_shift_qid = watch("location_shift_id")
+  const location_shift_qid = watch("location_shift_id")
 
   useEffect(() => {
     const baseStart =
@@ -194,7 +195,7 @@ const SchedulePopup: FunctionComponent<SchedulePopupProps> = ({
     onUpsert(
       {
         ...apiPayload,
-        id: editEvent?.event.id ?? (saved as Any).id ?? Date.now(),
+        id: editEvent?.event.id ?? (saved as any).id ?? Date.now(),
       },
       !!editEvent
     );
